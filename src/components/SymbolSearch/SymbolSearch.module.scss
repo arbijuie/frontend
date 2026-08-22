@@ -1,0 +1,32 @@
+.wrapper {
+  position: relative;
+}
+
+.input {
+  width: 100%;
+  padding: 0.5rem 0.75rem 0.5rem 2rem;
+  border-radius: 0.5rem;
+  border: 1px solid v.$border-color;
+  background: v.$bg-card;
+  color: v.$text-primary;
+  font-size: 0.82rem;
+
+  &::placeholder {
+    color: v.$text-muted;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: v.$accent-purple;
+  }
+}
+
+.icon {
+  position: absolute;
+  left: 0.625rem;
+  top: 45%;
+  transform: translateY(-50%);
+  color: v.$text-muted;
+  font-size: 1.35rem;
+  pointer-events: none;
+}

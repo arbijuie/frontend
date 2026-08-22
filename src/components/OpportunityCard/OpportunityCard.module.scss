@@ -1,0 +1,90 @@
+.card {
+  background: v.$bg-card;
+  border: 1px solid v.$border-color;
+  border-radius: 0.75rem;
+  padding: 0.75rem 0.875rem;
+  margin-bottom: 0.5rem;
+}
+
+.topRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.65rem;
+}
+
+.symbol {
+  font-weight: 700;
+  font-size: 1rem;
+  color: v.$text-primary;
+}
+
+.route {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin-bottom: 0.8rem;
+}
+
+.arrow {
+  color: v.$text-muted;
+  font-size: 0.75rem;
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem 0.75rem;
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
+}
+
+.metricLabel {
+  color: v.$text-muted;
+  font-size: 0.8rem;
+  margin-bottom: 0.2rem;
+}
+
+.metricValue {
+  font-weight: 600;
+  color: v.$text-primary;
+}
+
+.score {
+  color: v.$accent-purple;
+}
+
+.expandButton {
+  margin-top: 0.5rem;
+  background: none;
+  border: none;
+  color: v.$accent-purple;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.details {
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid v.$border-color;
+}
+
+.detailRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: v.$text-secondary;
+  padding: 0.2rem 0;
+}
+
+.positive {
+  color: v.$green;
+}
+
+.negative {
+  color: v.$red;
+}
+
+.neutral {
+  color: v.$text-primary;
+}

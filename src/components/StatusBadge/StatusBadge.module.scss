@@ -1,0 +1,22 @@
+.badge {
+  padding: 0.2rem 0.625rem;
+  border-radius: 0.375rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.ready {
+  background: v.$green-bg;
+  color: v.$green;
+}
+
+.watching {
+  background: v.$yellow-bg;
+  color: v.$yellow;
+}
+
+.blocked {
+  background: v.$red-bg;
+  color: v.$red;
+}

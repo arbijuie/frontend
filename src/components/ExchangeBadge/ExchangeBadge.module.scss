@@ -1,0 +1,21 @@
+.badge {
+  padding: 0.3rem 0.7rem;
+  border-radius: 0.375rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.hyperliquid {
+  background: v.$exchange-hyperliquid-bg;
+  color: v.$exchange-hyperliquid-text;
+}
+
+.lighter {
+  background: v.$exchange-lighter-bg;
+  color: v.$exchange-lighter-text;
+}
+
+.unknown {
+  background: rgba(148, 163, 184, 0.15);
+  color: v.$text-secondary;
+}

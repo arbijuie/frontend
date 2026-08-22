@@ -1,0 +1,31 @@
+.card {
+  background: v.$bg-card;
+  border: 1px solid v.$border-color;
+  border-radius: 0.75rem;
+  padding: 0.75rem 0.875rem;
+  margin-bottom: 0.5rem;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.line {
+  height: 0.75rem;
+  border-radius: 0.25rem;
+  background: v.$border-color;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.metricsRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem 0.75rem;
+  margin-top: 0.875rem;
+}
