@@ -1,7 +1,7 @@
+import styles from './StatusStatCards.module.scss';
 import type { StatusResponse } from '../../api/types';
 import StatCard from '../StatCard/StatCard';
 import { formatUptime } from '../../lib/format';
-import styles from './StatusStatCards.module.scss';
 
 interface StatusStatCardsProps {
   status: StatusResponse;

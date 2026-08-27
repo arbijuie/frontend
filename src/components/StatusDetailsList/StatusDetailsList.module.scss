@@ -1,0 +1,26 @@
+.card {
+  background: v.$bg-card;
+  border: 1px solid v.$border-color;
+  border-radius: 0.75rem;
+  padding: 0.75rem 0.875rem;
+  margin-bottom: 1rem;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.375rem 0;
+  font-size: 0.875rem;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid v.$border-color;
+  }
+}
+
+.label {
+  color: v.$text-muted;
+}
+
+.value {
+  color: v.$text-primary;
+}
