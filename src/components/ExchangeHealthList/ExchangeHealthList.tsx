@@ -1,5 +1,5 @@
-import type { StatusResponse } from '../../api/types';
 import styles from './ExchangeHealthList.module.scss';
+import type { StatusResponse } from '../../api/types';
 
 interface ExchangeHealthListProps {
   exchangeStatus: StatusResponse['exchange_last_ok'];

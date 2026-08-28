@@ -5,9 +5,11 @@ import { formatUptime } from '../../lib/format';
 
 interface StatusStatCardsProps {
   status: StatusResponse;
+  liveUptimeSeconds?: number;
 }
 
-const StatusStatCards = ({ status }: StatusStatCardsProps) => {
+const StatusStatCards = ({ status, liveUptimeSeconds }: StatusStatCardsProps) => {
+  const uptimeSeconds = liveUptimeSeconds ?? status.uptime_s;
   const hasPolls = status.poll_count_total > 0;
   const successRate = hasPolls
     ? ((status.poll_count_success / status.poll_count_total) * 100).toFixed(1)
@@ -15,7 +17,7 @@ const StatusStatCards = ({ status }: StatusStatCardsProps) => {
 
   return (
     <div className={styles.grid}>
-      <StatCard label="Uptime" value={formatUptime(status.uptime_s)} />
+      <StatCard label="Uptime" value={formatUptime(uptimeSeconds)} />
       <StatCard
         label="Poll Success Rate"
         value={successRate != null ? `${successRate}%` : '—'}

@@ -28,11 +28,13 @@ export function formatCountdown(target: Date, now: Date): { text: string; urgent
 }
 
 export function formatUptime(seconds: number): string {
+  if (seconds < 60) {
+    return `${Math.floor(seconds)}s`;
+  }
   const days = Math.floor(seconds / 86400);
   const hours = Math.floor((seconds % 86400) / 3600);
   const minutes = Math.floor((seconds % 3600) / 60);
   const parts: string[] = [];
-  
   if (days > 0) parts.push(`${days}d`);
   if (hours > 0 || days > 0) parts.push(`${hours}h`);
   parts.push(`${minutes}m`);
@@ -42,4 +44,13 @@ export function formatUptime(seconds: number): string {
 export function formatDateTime(iso: string | null): string {
   if (!iso) return '—';
   return new Date(iso).toLocaleString();
+}
+
+export function getLiveUptimeSeconds(
+  snapshotUptimeSeconds: number,
+  fetchedAtMs: number,
+  now: Date
+): number {
+  const elapsedSinceFetch = (now.getTime() - fetchedAtMs) / 1000;
+  return snapshotUptimeSeconds + Math.max(0, elapsedSinceFetch);
 }
