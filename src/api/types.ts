@@ -13,6 +13,10 @@ export interface OpportunityItem {
   basis_bps: number;
   basis_bonus_bps: number;
   fee_impact_bps: number;
+  slippage_impact_bps: number;
+  total_cost_bps: number;
+  effective_hl_taker_fee: number | null;
+  effective_lighter_taker_fee: number | null;
   long_hours_to_next_funding: number | null;
   short_hours_to_next_funding: number | null;
   funding_timing_asymmetry_hours: number | null;
@@ -44,6 +48,8 @@ export interface ConfigResponse {
   anti_churn_score_multiplier: number;
   hl_fee_per_side: number;
   lighter_fee_per_side: number;
+  default_order_size_usd: number;
+  slippage_volume_depth_ratio: number;
   expected_hold_hours: number;
   basis_weight: number;
   liquidity_weight: number;
