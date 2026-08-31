@@ -1,0 +1,56 @@
+.card {
+  background: v.$bg-card;
+  border: 1px solid v.$border-color;
+  border-radius: 0.75rem;
+  padding: 0.75rem 0.875rem;
+  margin-bottom: 0.5rem;
+
+  &.active {
+    border-color: v.$accent-purple;
+  }
+}
+
+.topRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+
+.name {
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: v.$text-primary;
+}
+
+.badge {
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.375rem;
+  background: rgba(139, 92, 246, 0.2);
+  color: v.$accent-purple;
+}
+
+.description {
+  font-size: 0.75rem;
+  color: v.$text-muted;
+  margin-bottom: 0.5rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+}
+
+.rowLabel {
+  color: v.$text-muted;
+}
+
+.rowValue {
+  color: v.$text-secondary;
+  text-align: right;
+}
