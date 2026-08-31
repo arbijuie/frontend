@@ -82,8 +82,6 @@ const ConfigAccordion = ({ config }: ConfigAccordionProps) => {
       >
         <ConfigRow label="Loop Interval" value={config.loop_interval_s} unit="s" />
         <ConfigRow label="Stale Data Threshold" value={config.stale_data_s} unit="s" />
-        <ConfigRow label="API Host" value={config.api_host} />
-        <ConfigRow label="API Port" value={config.api_port} />
       </ConfigSection>
 
       <ConfigSection
