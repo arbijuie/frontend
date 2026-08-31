@@ -1,0 +1,35 @@
+.section {
+  background: v.$bg-card;
+  border: 1px solid v.$border-color;
+  border-radius: 0.75rem;
+  margin-bottom: 0.5rem;
+  overflow: hidden;
+}
+
+.header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: none;
+  border: none;
+  color: v.$text-primary;
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.75rem 0.875rem;
+  cursor: pointer;
+}
+
+.chevron {
+  color: v.$text-muted;
+  transition: transform 0.2s ease;
+  font-size: 0.75rem;
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+.body {
+  padding: 0 0.875rem 0.75rem;
+}
