@@ -15,6 +15,8 @@ export interface OpportunityItem {
   fee_impact_bps: number;
   slippage_impact_bps: number;
   total_cost_bps: number;
+  hl_depth_source: 'real' | 'proxy' | 'none';
+  lighter_depth_source: 'real' | 'proxy' | 'none';
   effective_hl_taker_fee: number | null;
   effective_lighter_taker_fee: number | null;
   long_hours_to_next_funding: number | null;
@@ -50,6 +52,7 @@ export interface ConfigResponse {
   lighter_fee_per_side: number;
   default_order_size_usd: number;
   slippage_volume_depth_ratio: number;
+  require_real_depth: boolean;
   expected_hold_hours: number;
   basis_weight: number;
   liquidity_weight: number;
