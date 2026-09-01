@@ -49,6 +49,21 @@ pnpm dev
 
 Opens on `http://localhost:5173`. Requires CORS to be enabled on the backend (`src/api/server.py`) for `http://localhost:5173`.
 
+### Fast-Local Pairing
+
+If the UI stays empty too often during local checks, run backend in `Fast-Local`
+profile from the root `README.md`, then run frontend as usual:
+
+```bash
+cd frontend
+pnpm dev
+```
+
+Variable scope reminder:
+
+- Backend runtime uses `ARB_...` variables (root `.env` or shell session).
+- Frontend runtime uses `VITE_...` variables (`frontend/.env.local`).
+
 To build for production:
 
 ```bash
