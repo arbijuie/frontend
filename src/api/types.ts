@@ -1,5 +1,15 @@
 export type LiquidityTier = 'H' | 'M' | 'L';
 export type OpportunityStatus = 'ready' | 'watching' | 'blocked';
+export type FundingTrend = 'rising' | 'falling' | 'stable';
+
+export interface FundingForecast {
+  predicted_apr: number;
+  avg_24h_apr: number | null;
+  avg_72h_apr: number | null;
+  trend: FundingTrend;
+  std_apr: number;
+  is_unstable: boolean;
+}
 
 export interface OpportunityItem {
   symbol: string;
@@ -26,6 +36,9 @@ export interface OpportunityItem {
   min_profitable_hours: number | null;
   hours_to_breakeven: number | null;
   combined_score: number;
+  long_forecast: FundingForecast | null;
+  short_forecast: FundingForecast | null;
+  funding_instability_multiplier: number;
   basis_trend: number | null;
   liquidity_tier: LiquidityTier | null;
   status: OpportunityStatus;
@@ -60,6 +73,12 @@ export interface ConfigResponse {
   max_funding_timing_asymmetry_hours: number;
   max_basis_bps: number;
   max_basis_trend_bps_per_tick: number;
+  funding_ema_span_hours: number;
+  funding_avg_short_hours: number;
+  funding_avg_long_hours: number;
+  funding_instability_threshold: number;
+  funding_instability_min_std_apr: number;
+  funding_instability_multiplier: number;
   loop_interval_s: number;
   stale_data_s: number;
   exec_enabled: boolean;

@@ -1,9 +1,16 @@
 import styles from './OpportunityCard.module.scss';
 import { useState } from 'react';
-import type { OpportunityItem } from '../../api/types';
+import type { OpportunityItem, FundingTrend } from '../../api/types';
 import StatusBadge from '../StatusBadge/StatusBadge';
 import ExchangeBadge from '../ExchangeBadge/ExchangeBadge';
 import { signColor, getFundingTargetTime, formatCountdown } from '../../lib/format';
+
+const trendIcon: Record<FundingTrend, string> = { rising: '↑', falling: '↓', stable: '→' };
+const trendClass: Record<FundingTrend, string> = {
+  rising: styles.positive,
+  falling: styles.negative,
+  stable: styles.neutral,
+};
 
 interface OpportunityCardProps {
   item: OpportunityItem;
@@ -35,7 +42,7 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
       </div>
       <div className={styles.metrics}>
         <div>
-          <div className={styles.metricLabel}>Funding APR</div>
+          <div className={styles.metricLabel}>Funding Diff APR</div>
           <div className={`${styles.metricValue} ${styles[signColor(item.funding_diff_apr)]}`}>
             {item.funding_diff_apr.toFixed(2)}%
           </div>
@@ -78,6 +85,10 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
         </div>
       </div>
 
+      {(item.long_forecast?.is_unstable || item.short_forecast?.is_unstable) && (
+        <div className={styles.instabilityBadge}>⚠ Funding unstable</div>
+      )}
+
       {item.reasons.length > 0 && <div className={styles.reasons}>{item.reasons.join(', ')}</div>}
 
       <button className={styles.expandButton} onClick={() => setExpanded(!expanded)}>
@@ -104,6 +115,56 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
             <span>Fee impact</span>
             <span>{item.fee_impact_bps.toFixed(1)} bps</span>
           </div>
+          {item.long_forecast && (
+            <>
+              <div className={styles.detailRow}>
+                <span>Trend (long)</span>
+                <span className={trendClass[item.long_forecast.trend]}>
+                  {trendIcon[item.long_forecast.trend]} {item.long_forecast.trend}
+                </span>
+              </div>
+              <div className={styles.detailRow}>
+                <span>Predicted APR (long)</span>
+                <span>{item.long_forecast.predicted_apr.toFixed(2)}%</span>
+              </div>
+              <div className={styles.detailRow}>
+                <span>Avg 24h / 72h (long)</span>
+                <span>
+                  {item.long_forecast.avg_24h_apr?.toFixed(2) ?? '—'} /{' '}
+                  {item.long_forecast.avg_72h_apr?.toFixed(2) ?? '—'}
+                </span>
+              </div>
+            </>
+          )}
+          {item.short_forecast && (
+            <>
+              <div className={styles.detailRow}>
+                <span>Trend (short)</span>
+                <span className={trendClass[item.short_forecast.trend]}>
+                  {trendIcon[item.short_forecast.trend]} {item.short_forecast.trend}
+                </span>
+              </div>
+              <div className={styles.detailRow}>
+                <span>Predicted APR (short)</span>
+                <span>{item.short_forecast.predicted_apr.toFixed(2)}%</span>
+              </div>
+              <div className={styles.detailRow}>
+                <span>Avg 24h / 72h (short)</span>
+                <span>
+                  {item.short_forecast.avg_24h_apr?.toFixed(2) ?? '—'} /{' '}
+                  {item.short_forecast.avg_72h_apr?.toFixed(2) ?? '—'}
+                </span>
+              </div>
+            </>
+          )}
+          {item.funding_instability_multiplier < 1.0 && (
+            <div className={styles.detailRow}>
+              <span>Instability penalty</span>
+              <span className={styles.negative}>
+                ×{item.funding_instability_multiplier.toFixed(2)}
+              </span>
+            </div>
+          )}
         </div>
       )}
     </div>
