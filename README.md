@@ -72,6 +72,12 @@ To build for production:
 pnpm build
 ```
 
+To run frontend unit tests:
+
+```bash
+pnpm test
+```
+
 ## What's implemented
 
 - **Opportunities page** — live list of arbitrage opportunities from `GET /opportunities`

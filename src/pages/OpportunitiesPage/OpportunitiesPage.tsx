@@ -1,5 +1,5 @@
 import styles from './OpportunitiesPage.module.scss';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import { useOpportunities } from '../../hooks/useOpportunities';
 import { useStatus } from '../../hooks/useStatus';
 import { useConfig } from '../../hooks/useConfig';
@@ -11,6 +11,7 @@ import FloatingRefreshButton from '../../components/FloatingRefreshButton/Floati
 import RuntimeKnobsCard from '../../components/RuntimeKnobsCard/RuntimeKnobsCard';
 import PipelineDiagnosticsHint from '../../components/PipelineDiagnosticsHint/PipelineDiagnosticsHint';
 import { useNow } from '../../hooks/useNow';
+import { useTransientFlag } from '../../hooks/useTransientFlag';
 import { POLL_INTERVAL_MS } from '../../api/config';
 
 export default function OpportunitiesPage() {
@@ -20,7 +21,7 @@ export default function OpportunitiesPage() {
     staleTime: 0,
     refetchInterval: POLL_INTERVAL_MS,
   });
-  const [justChecked, setJustChecked] = useState(false);
+  const { flag: justChecked, trigger: showJustChecked } = useTransientFlag();
   const prevUpdatedAt = useRef<string | null>(null);
   const now = useNow();
 
@@ -32,8 +33,7 @@ export default function OpportunitiesPage() {
     const result = await refetch();
     const newUpdatedAt = result.data?.updated_at ?? null;
     if (newUpdatedAt && newUpdatedAt === prevUpdatedAt.current) {
-      setJustChecked(true);
-      setTimeout(() => setJustChecked(false), 2000);
+      showJustChecked();
     }
   };
 

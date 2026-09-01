@@ -10,7 +10,8 @@ const PipelineDiagnosticsHint = ({ status }: PipelineDiagnosticsHintProps) => {
   const postCost = status.screener_post_cost_candidates;
   const validated = status.screener_validated_candidates;
   const ready = status.screener_ready_candidates;
-  const unhealthyExchanges = Object.values(status.exchange_last_ok).filter((v) => v !== true).length;
+  const downExchanges = Object.values(status.exchange_last_ok).filter((v) => v === false).length;
+  const unknownExchanges = Object.values(status.exchange_last_ok).filter((v) => v === null).length;
 
   if (raw > 0 && postCost === 0) {
     return (
@@ -22,11 +23,20 @@ const PipelineDiagnosticsHint = ({ status }: PipelineDiagnosticsHintProps) => {
     );
   }
 
-  if (raw === 0 && unhealthyExchanges > 0) {
+  if (raw === 0 && downExchanges > 0) {
     return (
       <div className={styles.warnBox}>
         <span className={`${styles.badge} ${styles.warnBadge}`}>warn</span>
-        No raw candidates and {unhealthyExchanges} exchange health flag(s) are degraded.
+        No raw candidates and {downExchanges} exchange health flag(s) are degraded.
+      </div>
+    );
+  }
+
+  if (raw === 0 && unknownExchanges > 0) {
+    return (
+      <div className={styles.infoBox}>
+        <span className={`${styles.badge} ${styles.infoBadge}`}>info</span>
+        No raw candidates while {unknownExchanges} exchange health flag(s) are still unknown.
       </div>
     );
   }

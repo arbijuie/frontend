@@ -1,5 +1,5 @@
 import styles from '../../pages/OpportunitiesPage/OpportunitiesPage.module.scss';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import { useStatus } from '../../hooks/useStatus';
 import StatusStatCards from '../../components/StatusStatCards/StatusStatCards';
 import StatusDetailsList from '../../components/StatusDetailsList/StatusDetailsList';
@@ -8,6 +8,7 @@ import FloatingRefreshButton from '../../components/FloatingRefreshButton/Floati
 import RuntimeKnobsCard from '../../components/RuntimeKnobsCard/RuntimeKnobsCard';
 import PipelineDiagnosticsHint from '../../components/PipelineDiagnosticsHint/PipelineDiagnosticsHint';
 import { useNow } from '../../hooks/useNow';
+import { useTransientFlag } from '../../hooks/useTransientFlag';
 import { getLiveUptimeSeconds } from '../../lib/format';
 import { useConfig } from '../../hooks/useConfig';
 import { POLL_INTERVAL_MS } from '../../api/config';
@@ -21,7 +22,7 @@ const StatusPage = () => {
   const now = useNow();
   const liveUptimeSeconds = data ? getLiveUptimeSeconds(data.uptime_s, fetchedAt, now) : undefined;
 
-  const [justChecked, setJustChecked] = useState(false);
+  const { flag: justChecked, trigger: showJustChecked } = useTransientFlag();
   const prevUpdatedAt = useRef<string | null>(null);
 
   const handleRefresh = async () => {
@@ -29,8 +30,7 @@ const StatusPage = () => {
     const result = await refetch();
     const newUpdatedAt = result.data?.last_updated_at ?? null;
     if (newUpdatedAt && newUpdatedAt === prevUpdatedAt.current) {
-      setJustChecked(true);
-      setTimeout(() => setJustChecked(false), 2000);
+      showJustChecked();
     }
   };
 
