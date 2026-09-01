@@ -24,3 +24,31 @@
   padding: 0.375rem 2rem 0.375rem 0.625rem;
   font-size: 0.75rem;
 }
+
+.filterHint {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin: 0.5rem 0 0.75rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid v.$border-color;
+  border-radius: 0.625rem;
+  background: rgba(255, 255, 255, 0.02);
+  color: v.$text-secondary;
+  font-size: 0.78rem;
+}
+
+.filterHintButton {
+  border: 1px solid v.$accent-purple;
+  background: transparent;
+  color: v.$accent-purple;
+  border-radius: 0.5rem;
+  padding: 0.3rem 0.55rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.filterHintButton:hover {
+  background: rgba(139, 92, 246, 0.12);
+}

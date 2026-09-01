@@ -98,7 +98,7 @@ export interface ConfigResponse {
   exec_recovery_require_manual_ack: boolean;
 }
 
-export type ConfigPresetName = 'conservative' | 'balanced' | 'aggressive';
+export type ConfigPresetName = 'conservative' | 'balanced' | 'aggressive' | 'exploratory';
 
 export interface ConfigUpdateRequest {
   preset?: ConfigPresetName;
@@ -132,6 +132,7 @@ export interface StatusResponse {
   screener_post_cost_candidates: number;
   screener_validated_candidates: number;
   screener_ready_candidates: number;
+  screener_drop_counters: Record<string, number>;
 }
 
 export interface WsAuthTicketResponse {

@@ -10,10 +10,27 @@ const PipelineDiagnosticsHint = ({ status }: PipelineDiagnosticsHintProps) => {
   const postCost = status.screener_post_cost_candidates;
   const validated = status.screener_validated_candidates;
   const ready = status.screener_ready_candidates;
+  const drops = status.screener_drop_counters ?? {};
+  const strictDepth = drops.strict_depth ?? 0;
+  const strictDepthHl = drops.strict_depth_hyperliquid ?? 0;
+  const strictDepthLt = drops.strict_depth_lighter ?? 0;
+  const hlL2Errors = drops.hl_l2_book_fetch_error ?? 0;
+  const minScoreDrops = drops.min_score ?? 0;
+  const minVolumeDrops = drops.min_volume ?? 0;
   const downExchanges = Object.values(status.exchange_last_ok).filter((v) => v === false).length;
   const unknownExchanges = Object.values(status.exchange_last_ok).filter((v) => v === null).length;
 
   if (raw > 0 && postCost === 0) {
+    if (strictDepth > 0) {
+      return (
+        <div className={styles.warnBox}>
+          <span className={`${styles.badge} ${styles.warnBadge}`}>warn</span>
+          All {raw} raw candidates were dropped by strict depth checks ({strictDepth} drops: HL{' '}
+          {strictDepthHl}, Lighter {strictDepthLt}).
+          {hlL2Errors > 0 && ` HL l2Book fetch errors: ${hlL2Errors}.`}
+        </div>
+      );
+    }
     return (
       <div className={styles.warnBox}>
         <span className={`${styles.badge} ${styles.warnBadge}`}>warn</span>
@@ -42,6 +59,15 @@ const PipelineDiagnosticsHint = ({ status }: PipelineDiagnosticsHintProps) => {
   }
 
   if (raw === 0) {
+    if (minVolumeDrops > 0 || minScoreDrops > 0) {
+      return (
+        <div className={styles.infoBox}>
+          <span className={`${styles.badge} ${styles.infoBadge}`}>info</span>
+          No raw candidates in this cycle. Main drops: min volume {minVolumeDrops}, min score{' '}
+          {minScoreDrops}.
+        </div>
+      );
+    }
     return (
       <div className={styles.infoBox}>
         <span className={`${styles.badge} ${styles.infoBadge}`}>info</span>

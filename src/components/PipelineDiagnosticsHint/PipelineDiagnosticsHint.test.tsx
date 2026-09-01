@@ -21,6 +21,7 @@ function makeStatus(overrides: Partial<StatusResponse> = {}): StatusResponse {
     screener_post_cost_candidates: 5,
     screener_validated_candidates: 5,
     screener_ready_candidates: 1,
+    screener_drop_counters: {},
     ...overrides,
   };
 }
@@ -34,11 +35,17 @@ describe('PipelineDiagnosticsHint', () => {
           screener_post_cost_candidates: 0,
           screener_validated_candidates: 0,
           screener_ready_candidates: 0,
+          screener_drop_counters: {
+            strict_depth: 12,
+            strict_depth_hyperliquid: 10,
+            strict_depth_lighter: 2,
+            hl_l2_book_fetch_error: 8,
+          },
         })}
       />,
     );
 
-    expect(screen.getByText(/Cost filters are removing all candidates/i)).toBeTruthy();
+    expect(screen.getByText(/strict depth checks/i)).toBeTruthy();
   });
 
   it('shows warn when no raw candidates and exchange is down', () => {

@@ -84,6 +84,11 @@ const OpportunitiesList = ({ items, updatedAt, now }: OpportunitiesListProps) =>
     statusFilter === 'all' ? bySearch : bySearch.filter((i) => i.status === statusFilter);
   const sorted = sortItems(byStatus, sortKey);
   const emptyMessage = buildEmptyMessage(search, statusFilter);
+  const hiddenByFilter =
+    sorted.length === 0 &&
+    statusFilter !== 'all' &&
+    search.trim() === '' &&
+    counts.all > 0;
 
   return (
     <div>
@@ -105,6 +110,21 @@ const OpportunitiesList = ({ items, updatedAt, now }: OpportunitiesListProps) =>
         </div>
         <StatusFilterTabs value={statusFilter} onChange={setStatusFilter} counts={counts} />
       </div>
+      {hiddenByFilter && (
+        <div className={styles.filterHint}>
+          <span>
+            There are {counts.all} opportunities in total, but none in the{' '}
+            {STATUS_LABELS[statusFilter as Exclude<StatusFilter, 'all'>]} filter.
+          </span>
+          <button
+            type="button"
+            className={styles.filterHintButton}
+            onClick={() => setStatusFilter('all')}
+          >
+            Show all
+          </button>
+        </div>
+      )}
       {sorted.length === 0 ? (
         <EmptyState title={emptyMessage.title} description={emptyMessage.description} />
       ) : (
