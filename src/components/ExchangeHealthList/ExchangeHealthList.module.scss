@@ -29,12 +29,28 @@
   border-radius: 50%;
 }
 
+.healthState {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.healthLabel {
+  font-size: 0.75rem;
+  color: v.$text-muted;
+  text-transform: lowercase;
+}
+
 .ok {
   background: v.$green;
 }
 
 .notOk {
   background: v.$red;
+}
+
+.unknown {
+  background: v.$text-muted;
 }
 
 .empty {

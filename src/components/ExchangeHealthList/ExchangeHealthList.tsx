@@ -17,7 +17,16 @@ const ExchangeHealthList = ({ exchangeStatus }: ExchangeHealthListProps) => {
       {entries.map(([exchange, isOk]) => (
         <div key={exchange} className={styles.row}>
           <span className={styles.exchangeName}>{exchange}</span>
-          <span className={`${styles.dot} ${isOk ? styles.ok : styles.notOk}`} />
+          <span className={styles.healthState}>
+            <span
+              className={`${styles.dot} ${
+                isOk === true ? styles.ok : isOk === false ? styles.notOk : styles.unknown
+              }`}
+            />
+            <span className={styles.healthLabel}>
+              {isOk === true ? 'ok' : isOk === false ? 'down' : 'unknown'}
+            </span>
+          </span>
         </div>
       ))}
     </div>

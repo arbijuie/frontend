@@ -155,6 +155,7 @@ const ConfigPage = () => {
             config={data}
             onApplyPreset={onApplyPreset}
             applyingPresetKey={applyingPresetKey}
+            disableAll={updateConfig.isPending}
           />
 
           <h2 className={layoutStyles.sectionTitle}>Custom Runbook Fields</h2>

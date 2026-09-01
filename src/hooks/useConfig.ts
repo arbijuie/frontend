@@ -1,11 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchConfig } from "../api/config-endpoint";
 
-export function useConfig() {
+interface UseConfigOptions {
+  staleTime?: number;
+  refetchInterval?: number;
+}
+
+export function useConfig(options: UseConfigOptions = {}) {
   const query = useQuery({
     queryKey: ["config"],
     queryFn: fetchConfig,
-    staleTime: Infinity,
+    staleTime: options.staleTime ?? Infinity,
+    refetchInterval: options.refetchInterval,
   });
 
   return {

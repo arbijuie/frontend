@@ -1,0 +1,54 @@
+.warnBox {
+  margin-bottom: 0.6rem;
+  padding: 0.6rem;
+  border: 1px solid rgba(251, 191, 36, 0.45);
+  border-radius: 0.65rem;
+  background: rgba(251, 191, 36, 0.12);
+  color: v.$text-secondary;
+  font-size: 0.82rem;
+}
+
+.infoBox {
+  margin-bottom: 0.6rem;
+  padding: 0.6rem;
+  border: 1px solid v.$border-color;
+  border-radius: 0.65rem;
+  background: v.$bg-card;
+  color: v.$text-muted;
+  font-size: 0.82rem;
+}
+
+.okBox {
+  margin-bottom: 0.6rem;
+  padding: 0.6rem;
+  border: 1px solid rgba(34, 197, 94, 0.45);
+  border-radius: 0.65rem;
+  background: rgba(34, 197, 94, 0.1);
+  color: v.$text-secondary;
+  font-size: 0.82rem;
+}
+
+.badge {
+  display: inline-block;
+  margin-right: 0.4rem;
+  padding: 0.05rem 0.35rem;
+  border-radius: 999px;
+  font-size: 0.66rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.warnBadge {
+  background: rgba(251, 191, 36, 0.25);
+  color: #f59e0b;
+}
+
+.infoBadge {
+  background: rgba(148, 163, 184, 0.2);
+  color: v.$text-muted;
+}
+
+.okBadge {
+  background: rgba(34, 197, 94, 0.2);
+  color: #22c55e;
+}

@@ -5,16 +5,17 @@ interface PresetCardProps {
   preset: Preset;
   isActive: boolean;
   isApplying: boolean;
+  isDisabled: boolean;
   onApply: (preset: Preset) => void;
 }
 
-const PresetCard = ({ preset, isActive, isApplying, onApply }: PresetCardProps) => {
+const PresetCard = ({ preset, isActive, isApplying, isDisabled, onApply }: PresetCardProps) => {
   return (
     <button
       type="button"
       className={`${styles.card} ${isActive ? styles.active : ""}`}
       onClick={() => onApply(preset)}
-      disabled={isApplying}
+      disabled={isDisabled}
     >
       <div className={styles.topRow}>
         <span className={styles.name}>{preset.name}</span>

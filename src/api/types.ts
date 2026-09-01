@@ -127,7 +127,7 @@ export interface StatusResponse {
   poll_count_total: number;
   poll_count_success: number;
   poll_count_failed: number;
-  exchange_last_ok: Record<string, boolean>;
+  exchange_last_ok: Record<string, boolean | null>;
   screener_raw_candidates: number;
   screener_post_cost_candidates: number;
   screener_validated_candidates: number;

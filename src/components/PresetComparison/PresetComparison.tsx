@@ -8,12 +8,14 @@ interface PresetComparisonProps {
   config: ConfigResponse;
   onApplyPreset: (preset: Preset) => void;
   applyingPresetKey: string | null;
+  disableAll: boolean;
 }
 
 const PresetComparison = ({
   config,
   onApplyPreset,
   applyingPresetKey,
+  disableAll,
 }: PresetComparisonProps) => {
   const matched = findMatchingPreset(config);
 
@@ -30,6 +32,7 @@ const PresetComparison = ({
           preset={preset}
           isActive={matched?.name === preset.name}
           isApplying={applyingPresetKey === preset.key}
+          isDisabled={disableAll}
           onApply={onApplyPreset}
         />
       ))}

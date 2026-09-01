@@ -9,7 +9,11 @@ export function useUpdateConfig() {
     mutationFn: patchConfig,
     onSuccess: async (data) => {
       queryClient.setQueryData(["config"], data);
-      await queryClient.invalidateQueries({ queryKey: ["config"] });
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["config"] }),
+        queryClient.invalidateQueries({ queryKey: ["status"] }),
+        queryClient.invalidateQueries({ queryKey: ["opportunities"] }),
+      ]);
     },
   });
 }

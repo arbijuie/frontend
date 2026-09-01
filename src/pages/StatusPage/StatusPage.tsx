@@ -5,11 +5,19 @@ import StatusStatCards from '../../components/StatusStatCards/StatusStatCards';
 import StatusDetailsList from '../../components/StatusDetailsList/StatusDetailsList';
 import ExchangeHealthList from '../../components/ExchangeHealthList/ExchangeHealthList';
 import FloatingRefreshButton from '../../components/FloatingRefreshButton/FloatingRefreshButton';
+import RuntimeKnobsCard from '../../components/RuntimeKnobsCard/RuntimeKnobsCard';
+import PipelineDiagnosticsHint from '../../components/PipelineDiagnosticsHint/PipelineDiagnosticsHint';
 import { useNow } from '../../hooks/useNow';
 import { getLiveUptimeSeconds } from '../../lib/format';
+import { useConfig } from '../../hooks/useConfig';
+import { POLL_INTERVAL_MS } from '../../api/config';
 
 const StatusPage = () => {
   const { data, error, loading, fetching, refetch, fetchedAt } = useStatus();
+  const { data: config } = useConfig({
+    staleTime: 0,
+    refetchInterval: POLL_INTERVAL_MS,
+  });
   const now = useNow();
   const liveUptimeSeconds = data ? getLiveUptimeSeconds(data.uptime_s, fetchedAt, now) : undefined;
 
@@ -40,6 +48,10 @@ const StatusPage = () => {
           </div>
         </div>
       </div>
+
+      {config && <RuntimeKnobsCard config={config} />}
+
+      {data && <PipelineDiagnosticsHint status={data} />}
 
       {justChecked && <div className={styles.hint}>Already up to date</div>}
 

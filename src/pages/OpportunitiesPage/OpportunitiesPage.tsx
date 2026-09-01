@@ -1,18 +1,31 @@
 import styles from './OpportunitiesPage.module.scss';
 import { useRef, useState } from 'react';
 import { useOpportunities } from '../../hooks/useOpportunities';
+import { useStatus } from '../../hooks/useStatus';
+import { useConfig } from '../../hooks/useConfig';
 import OpportunitiesList from '../../components/OpportunitiesList/OpportunitiesList';
 import StatsGrid from '../../components/StatsGrid/StatsGrid';
 import OpportunityCardSkeleton from '../../components/OpportunityCardSkeleton/OpportunityCardSkeleton';
 import EmptyState from '../../components/EmptyState/EmptyState';
 import FloatingRefreshButton from '../../components/FloatingRefreshButton/FloatingRefreshButton';
+import RuntimeKnobsCard from '../../components/RuntimeKnobsCard/RuntimeKnobsCard';
+import PipelineDiagnosticsHint from '../../components/PipelineDiagnosticsHint/PipelineDiagnosticsHint';
 import { useNow } from '../../hooks/useNow';
+import { POLL_INTERVAL_MS } from '../../api/config';
 
 export default function OpportunitiesPage() {
   const { data, error, loading, fetching, refetch } = useOpportunities();
+  const { data: status } = useStatus();
+  const { data: config } = useConfig({
+    staleTime: 0,
+    refetchInterval: POLL_INTERVAL_MS,
+  });
   const [justChecked, setJustChecked] = useState(false);
   const prevUpdatedAt = useRef<string | null>(null);
   const now = useNow();
+
+  const rawCandidates = status?.screener_raw_candidates ?? null;
+  const postCostCandidates = status?.screener_post_cost_candidates ?? null;
 
   const handleRefresh = async () => {
     prevUpdatedAt.current = data?.updated_at ?? null;
@@ -39,9 +52,15 @@ export default function OpportunitiesPage() {
           <div className={styles.summaryRow}>
             <span className={styles.summaryPill}>count: {data?.count ?? '—'}</span>
             <span className={styles.summaryPill}>ready: {data?.ready_count ?? '—'}</span>
+            <span className={styles.summaryPill}>raw: {rawCandidates ?? '—'}</span>
+            <span className={styles.summaryPill}>post-cost: {postCostCandidates ?? '—'}</span>
           </div>
         </div>
       </div>
+
+      {config && <RuntimeKnobsCard config={config} />}
+
+      {status && <PipelineDiagnosticsHint status={status} />}
 
       {justChecked && <div className={styles.hint}>Already up to date</div>}
 

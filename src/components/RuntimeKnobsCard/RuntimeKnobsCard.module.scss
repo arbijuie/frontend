@@ -1,0 +1,28 @@
+.card {
+  margin-bottom: 0.75rem;
+  padding: 0.6rem;
+  border: 1px solid v.$border-color;
+  border-radius: 0.75rem;
+  background: v.$bg-card;
+}
+
+.title {
+  font-size: 0.8rem;
+  color: v.$text-muted;
+}
+
+.row {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.pill {
+  padding: 0.2rem 0.5rem;
+  border: 1px solid v.$border-color;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  color: v.$text-secondary;
+  background: v.$bg-card;
+}
