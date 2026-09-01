@@ -3,7 +3,7 @@ export type OpportunityStatus = 'ready' | 'watching' | 'blocked';
 export type FundingTrend = 'rising' | 'falling' | 'stable';
 
 export interface FundingForecast {
-  predicted_apr: number;
+  expected_apr: number;
   avg_24h_apr: number | null;
   avg_72h_apr: number | null;
   trend: FundingTrend;

@@ -124,8 +124,8 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
                 </span>
               </div>
               <div className={styles.detailRow}>
-                <span>Predicted APR (long)</span>
-                <span>{item.long_forecast.predicted_apr.toFixed(2)}%</span>
+                <span>Expected APR (long)</span>
+                <span>{item.long_forecast.expected_apr.toFixed(2)}%</span>
               </div>
               <div className={styles.detailRow}>
                 <span>Avg 24h / 72h (long)</span>
@@ -145,8 +145,8 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
                 </span>
               </div>
               <div className={styles.detailRow}>
-                <span>Predicted APR (short)</span>
-                <span>{item.short_forecast.predicted_apr.toFixed(2)}%</span>
+                <span>Expected APR (short)</span>
+                <span>{item.short_forecast.expected_apr.toFixed(2)}%</span>
               </div>
               <div className={styles.detailRow}>
                 <span>Avg 24h / 72h (short)</span>
