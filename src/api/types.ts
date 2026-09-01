@@ -97,6 +97,22 @@ export interface ConfigResponse {
   exec_recovery_require_manual_ack: boolean;
 }
 
+export type ConfigPresetName = 'conservative' | 'balanced' | 'aggressive';
+
+export interface ConfigUpdateRequest {
+  preset?: ConfigPresetName;
+  persist?: boolean;
+  min_score_bps?: number;
+  min_volume_24h?: number;
+  min_open_interest?: number;
+  min_persistence_hours?: number;
+  expected_hold_hours?: number;
+  basis_weight?: number;
+  stale_data_s?: number;
+  anti_churn_cooldown_s?: number;
+  anti_churn_score_multiplier?: number;
+}
+
 export interface StatusResponse {
   uptime_s: number;
   started_at: string;

@@ -12,5 +12,7 @@ export function useConfig() {
     data: query.data ?? null,
     error: query.error instanceof Error ? query.error.message : null,
     loading: query.isLoading,
+    fetching: query.isFetching,
+    refetch: query.refetch,
   };
 }

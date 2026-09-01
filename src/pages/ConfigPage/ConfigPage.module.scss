@@ -1,0 +1,72 @@
+.editorCard {
+  background: v.$bg-card;
+  border: 1px solid v.$border-color;
+  border-radius: 0.75rem;
+  padding: 0.875rem;
+  margin-bottom: 1rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.6rem;
+}
+
+@media (min-width: 640px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.label {
+  font-size: 0.75rem;
+  color: v.$text-muted;
+}
+
+.input {
+  background: v.$bg-primary;
+  border: 1px solid v.$border-color;
+  border-radius: 0.5rem;
+  color: v.$text-primary;
+  padding: 0.45rem 0.55rem;
+  font-size: 0.875rem;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.8rem;
+}
+
+.buttonPrimary,
+.buttonSecondary {
+  border-radius: 0.5rem;
+  padding: 0.45rem 0.7rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.buttonPrimary {
+  border: 1px solid v.$accent-purple;
+  background: rgba(139, 92, 246, 0.18);
+  color: v.$text-primary;
+}
+
+.buttonSecondary {
+  border: 1px solid v.$border-color;
+  background: transparent;
+  color: v.$text-secondary;
+}
+
+.buttonPrimary:disabled,
+.buttonSecondary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

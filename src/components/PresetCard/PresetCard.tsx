@@ -4,14 +4,27 @@ import styles from "./PresetCard.module.scss";
 interface PresetCardProps {
   preset: Preset;
   isActive: boolean;
+  isApplying: boolean;
+  onApply: (preset: Preset) => void;
 }
 
-const PresetCard = ({ preset, isActive }: PresetCardProps) => {
+const PresetCard = ({ preset, isActive, isApplying, onApply }: PresetCardProps) => {
   return (
-    <div className={`${styles.card} ${isActive ? styles.active : ""}`}>
+    <button
+      type="button"
+      className={`${styles.card} ${isActive ? styles.active : ""}`}
+      onClick={() => onApply(preset)}
+      disabled={isApplying}
+    >
       <div className={styles.topRow}>
         <span className={styles.name}>{preset.name}</span>
-        {isActive && <span className={styles.badge}>Currently active</span>}
+        {isApplying ? (
+          <span className={styles.badge}>Applying...</span>
+        ) : isActive ? (
+          <span className={styles.badge}>Currently active</span>
+        ) : (
+          <span className={styles.badge}>Apply</span>
+        )}
       </div>
       <div className={styles.description}>{preset.description}</div>
       <div className={styles.grid}>
@@ -26,7 +39,7 @@ const PresetCard = ({ preset, isActive }: PresetCardProps) => {
         <span className={styles.rowLabel}>Anti-Churn Cooldown</span>
         <span className={styles.rowValue}>{preset.values.anti_churn_cooldown_s}s</span>
       </div>
-    </div>
+    </button>
   );
 };
 

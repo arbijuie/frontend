@@ -1,23 +1,38 @@
 import type { ConfigResponse } from "../api/types";
 
+export type EditableConfigField =
+  | "min_score_bps"
+  | "min_volume_24h"
+  | "min_open_interest"
+  | "min_persistence_hours"
+  | "expected_hold_hours"
+  | "basis_weight"
+  | "stale_data_s"
+  | "anti_churn_cooldown_s"
+  | "anti_churn_score_multiplier";
+
+export const EDITABLE_CONFIG_FIELDS: EditableConfigField[] = [
+  "min_score_bps",
+  "min_volume_24h",
+  "min_open_interest",
+  "min_persistence_hours",
+  "expected_hold_hours",
+  "basis_weight",
+  "stale_data_s",
+  "anti_churn_cooldown_s",
+  "anti_churn_score_multiplier",
+];
+
 export interface Preset {
+  key: "conservative" | "balanced" | "aggressive";
   name: string;
   description: string;
-  values: {
-    min_score_bps: number;
-    min_volume_24h: number;
-    min_open_interest: number;
-    min_persistence_hours: number;
-    expected_hold_hours: number;
-    basis_weight: number;
-    stale_data_s: number;
-    anti_churn_cooldown_s: number;
-    anti_churn_score_multiplier: number;
-  };
+  values: Record<EditableConfigField, number>;
 }
 
 export const PRESETS: Preset[] = [
   {
+    key: "conservative",
     name: "Conservative",
     description: "Fewer but higher-quality opportunities.",
     values: {
@@ -33,6 +48,7 @@ export const PRESETS: Preset[] = [
     },
   },
   {
+    key: "balanced",
     name: "Balanced",
     description: "Default profile for regular monitoring.",
     values: {
@@ -48,6 +64,7 @@ export const PRESETS: Preset[] = [
     },
   },
   {
+    key: "aggressive",
     name: "Aggressive",
     description: "High-frequency signal discovery; more noise, faster reaction.",
     values: {
@@ -73,7 +90,7 @@ function nearlyEqual(a: number, b: number): boolean {
 export function findMatchingPreset(config: ConfigResponse): Preset | null {
   return (
     PRESETS.find((preset) =>
-      (Object.keys(preset.values) as (keyof Preset["values"])[]).every((key) =>
+      EDITABLE_CONFIG_FIELDS.every((key) =>
         nearlyEqual(config[key], preset.values[key])
       )
     ) ?? null

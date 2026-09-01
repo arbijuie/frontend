@@ -19,16 +19,18 @@ Web dashboard for the funding rate arbitrage screener. Shows opportunities found
    pnpm install
 ```
 
-2. Create your local env file:
+1. Create your local env file:
 
 ```bash
    cp .env.local.example .env.local
 ```
 
-3. Fill in `.env.local`:
+1. Fill in `.env.local`:
 
+```bash
 VITE_ARB_API_URL=http://127.0.0.1:8000
 VITE_ARB_API_TOKEN=
+```
 
 Leave `VITE_ARB_API_TOKEN` empty unless `ARB_API_TOKEN` is set on the backend.
 
@@ -77,10 +79,13 @@ pnpm build
   - Live countdown to next funding time per leg
   - Summary stats (total/ready/watching/blocked)
   - Auto-refresh every 30s (matches backend's `ARB_LOOP_INTERVAL_S`) + manual refresh button
+- **Config page** — reads live config (`GET /config`) and can apply updates (`PATCH /config`)
+  - One-click preset apply (Conservative/Balanced/Aggressive)
+  - Custom edits for runbook fields only (same scope as backend `PATCH /config`)
+  - Save persists to backend runtime and `.env` by default
 
 ## Not yet implemented
 
-- Config page (`GET /config`)
 - Status page (`GET /status`)
 - WebSocket live updates (currently REST polling only)
 - Telegram bot integration

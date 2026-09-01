@@ -29,6 +29,21 @@
   background: v.$green;
 }
 
+.summaryRow {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.summaryPill {
+  padding: 0.2rem 0.5rem;
+  border: 1px solid v.$border-color;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  color: v.$text-secondary;
+  background: v.$bg-card;
+}
+
 .errorBox {
   padding: 1rem;
   color: v.$red;

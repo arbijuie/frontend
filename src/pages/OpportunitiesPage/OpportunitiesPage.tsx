@@ -36,6 +36,10 @@ export default function OpportunitiesPage() {
               <span>· updated {new Date(data.updated_at).toLocaleTimeString()}</span>
             )}
           </div>
+          <div className={styles.summaryRow}>
+            <span className={styles.summaryPill}>count: {data?.count ?? '—'}</span>
+            <span className={styles.summaryPill}>ready: {data?.ready_count ?? '—'}</span>
+          </div>
         </div>
       </div>
 
