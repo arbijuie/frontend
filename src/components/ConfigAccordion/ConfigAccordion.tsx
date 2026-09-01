@@ -73,6 +73,7 @@ const ConfigAccordion = ({ config }: ConfigAccordionProps) => {
           value={config.max_basis_trend_bps_per_tick}
           unit="bps/tick"
         />
+        <ConfigRow label="Max Funding Diff APR" value={config.max_reasonable_apr} unit="%" />
       </ConfigSection>
 
       <ConfigSection
@@ -80,6 +81,8 @@ const ConfigAccordion = ({ config }: ConfigAccordionProps) => {
         isOpen={openSections.has("Runtime")}
         onToggle={() => toggleSection("Runtime")}
       >
+        <ConfigRow label="Default Order Size" value={config.default_order_size_usd} prefix="$" />
+        <ConfigRow label="Require Real Depth" value={config.require_real_depth} />
         <ConfigRow label="Loop Interval" value={config.loop_interval_s} unit="s" />
         <ConfigRow label="Stale Data Threshold" value={config.stale_data_s} unit="s" />
       </ConfigSection>

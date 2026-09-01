@@ -18,8 +18,21 @@ interface OpportunityCardProps {
   now: Date;
 }
 
+function formatSigned(value: number, fractionDigits = 2): string {
+  const abs = Math.abs(value).toFixed(fractionDigits);
+  if (value > 0) return `+${abs}`;
+  if (value < 0) return `-${abs}`;
+  return abs;
+}
+
 const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
   const [expanded, setExpanded] = useState(false);
+  const scoreFromComponents =
+    item.funding_edge_bps +
+    item.basis_bonus_bps -
+    item.total_cost_bps -
+    item.funding_timing_penalty_bps;
+  const scoreAdjustment = item.combined_score - scoreFromComponents;
   const longCountdown =
     updatedAt && item.long_hours_to_next_funding != null
       ? formatCountdown(getFundingTargetTime(updatedAt, item.long_hours_to_next_funding), now)
@@ -48,13 +61,35 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
           </div>
         </div>
         <div>
-          <div className={styles.metricLabel}>Funding Edge</div>
+          <div className={styles.metricLabelWithHelp}>
+            Funding Edge
+            <span
+              className={styles.helpDot}
+              title="Projected funding PnL for expected hold window: funding_diff_apr * hold_hours / 8760 * 100"
+            >
+              ?
+            </span>
+          </div>
           <div className={`${styles.metricValue} ${styles[signColor(item.funding_edge_bps)]}`}>
             {item.funding_edge_bps.toFixed(1)} bps
           </div>
         </div>
         <div>
-          <div className={styles.metricLabel}>Score</div>
+          <div className={styles.metricLabel}>Total Cost</div>
+          <div className={`${styles.metricValue} ${styles.negative}`}>
+            {item.total_cost_bps.toFixed(1)} bps
+          </div>
+        </div>
+        <div>
+          <div className={styles.metricLabelWithHelp}>
+            Score
+            <span
+              className={styles.helpDot}
+              title="Combined score = Funding Edge + Basis Bonus - Total Cost - Timing Penalty (plus instability/rounding adjustment)"
+            >
+              ?
+            </span>
+          </div>
           <div className={`${styles.metricValue} ${styles[signColor(item.combined_score)]}`}>
             {item.combined_score.toFixed(1)}
           </div>
@@ -97,6 +132,40 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
 
       {expanded && (
         <div className={styles.details}>
+          <div className={styles.breakdownCard}>
+            <div className={styles.breakdownTitle}>Score breakdown (bps)</div>
+            <div className={styles.detailRow}>
+              <span>Funding edge</span>
+              <span className={styles.positive}>{formatSigned(item.funding_edge_bps)}</span>
+            </div>
+            <div className={styles.detailRow}>
+              <span>Basis bonus</span>
+              <span className={styles.positive}>{formatSigned(item.basis_bonus_bps)}</span>
+            </div>
+            <div className={styles.detailRow}>
+              <span>Total cost (fees + slippage)</span>
+              <span className={styles.negative}>{formatSigned(-item.total_cost_bps)}</span>
+            </div>
+            <div className={styles.detailRow}>
+              <span>Timing penalty</span>
+              <span className={styles.negative}>
+                {formatSigned(-item.funding_timing_penalty_bps)}
+              </span>
+            </div>
+            {Math.abs(scoreAdjustment) >= 0.1 && (
+              <div className={styles.detailRow}>
+                <span>Adjustment (instability/rounding)</span>
+                <span className={styles[signColor(scoreAdjustment)]}>{formatSigned(scoreAdjustment)}</span>
+              </div>
+            )}
+            <div className={`${styles.detailRow} ${styles.breakdownTotal}`}>
+              <span>Combined score</span>
+              <span className={styles[signColor(item.combined_score)]}>
+                {formatSigned(item.combined_score)}
+              </span>
+            </div>
+          </div>
+
           <div className={styles.detailRow}>
             <span>Persistence</span>
             <span>
@@ -114,6 +183,14 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
           <div className={styles.detailRow}>
             <span>Fee impact</span>
             <span>{item.fee_impact_bps.toFixed(1)} bps</span>
+          </div>
+          <div className={styles.detailRow}>
+            <span>Slippage impact</span>
+            <span>{item.slippage_impact_bps.toFixed(1)} bps</span>
+          </div>
+          <div className={styles.detailRow}>
+            <span>Total cost</span>
+            <span>{item.total_cost_bps.toFixed(1)} bps</span>
           </div>
           {item.long_forecast && (
             <>

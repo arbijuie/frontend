@@ -10,7 +10,7 @@ import {
   type EditableConfigField,
   type Preset,
 } from "../../lib/presets";
-import type { ConfigResponse } from "../../api/types";
+import type { ConfigResponse, ConfigUpdateRequest } from "../../api/types";
 
 const FIELD_LABELS: Record<EditableConfigField, string> = {
   min_score_bps: "Min Score (bps)",
@@ -18,10 +18,12 @@ const FIELD_LABELS: Record<EditableConfigField, string> = {
   min_open_interest: "Min Open Interest ($)",
   min_persistence_hours: "Min Persistence (h)",
   expected_hold_hours: "Expected Hold (h)",
+  default_order_size_usd: "Default Order Size ($)",
   basis_weight: "Basis Weight",
   stale_data_s: "Stale Data Threshold (s)",
   anti_churn_cooldown_s: "Anti-Churn Cooldown (s)",
   anti_churn_score_multiplier: "Anti-Churn Score Multiplier",
+  max_reasonable_apr: "Max Funding Diff APR (%)",
 };
 
 function toDraft(config: ConfigResponse): Record<EditableConfigField, string> {
@@ -31,10 +33,12 @@ function toDraft(config: ConfigResponse): Record<EditableConfigField, string> {
     min_open_interest: String(config.min_open_interest),
     min_persistence_hours: String(config.min_persistence_hours),
     expected_hold_hours: String(config.expected_hold_hours),
+    default_order_size_usd: String(config.default_order_size_usd),
     basis_weight: String(config.basis_weight),
     stale_data_s: String(config.stale_data_s),
     anti_churn_cooldown_s: String(config.anti_churn_cooldown_s),
     anti_churn_score_multiplier: String(config.anti_churn_score_multiplier),
+    max_reasonable_apr: String(config.max_reasonable_apr),
   };
 }
 
@@ -42,6 +46,7 @@ const ConfigPage = () => {
   const { data, error, loading, fetching, refetch } = useConfig();
   const updateConfig = useUpdateConfig();
   const [overrides, setOverrides] = useState<Partial<Record<EditableConfigField, string>>>({});
+  const [requireRealDepthOverride, setRequireRealDepthOverride] = useState<boolean | null>(null);
   const [localError, setLocalError] = useState<string | null>(null);
   const [hint, setHint] = useState<string | null>(null);
   const [applyingPresetKey, setApplyingPresetKey] = useState<string | null>(null);
@@ -60,6 +65,11 @@ const ConfigPage = () => {
     });
   }, [data, overrides]);
 
+  const requireRealDepthDraft = requireRealDepthOverride ?? data?.require_real_depth ?? true;
+  const requireRealDepthChanged = data
+    ? requireRealDepthDraft !== data.require_real_depth
+    : false;
+
   const onApplyPreset = async (preset: Preset) => {
     setLocalError(null);
     setHint(null);
@@ -67,6 +77,7 @@ const ConfigPage = () => {
     try {
       await updateConfig.mutateAsync({ preset: preset.key, persist: true });
       setOverrides({});
+      setRequireRealDepthOverride(null);
       setHint(`${preset.name} preset applied`);
     } catch (e) {
       setLocalError(e instanceof Error ? e.message : "Failed to apply preset");
@@ -80,6 +91,7 @@ const ConfigPage = () => {
       return;
     }
     setOverrides({});
+    setRequireRealDepthOverride(null);
     setLocalError(null);
     setHint("Draft reset to live config");
   };
@@ -102,7 +114,7 @@ const ConfigPage = () => {
       }
     }
 
-    if (Object.keys(parsed).length === 0) {
+    if (Object.keys(parsed).length === 0 && !requireRealDepthChanged) {
       setHint("No changes to save");
       setLocalError(null);
       return;
@@ -111,8 +123,13 @@ const ConfigPage = () => {
     setLocalError(null);
     setHint(null);
     try {
-      await updateConfig.mutateAsync({ ...parsed, persist: true });
+      const payload: ConfigUpdateRequest = { ...parsed, persist: true };
+      if (requireRealDepthChanged) {
+        payload.require_real_depth = requireRealDepthDraft;
+      }
+      await updateConfig.mutateAsync(payload);
       setOverrides({});
+      setRequireRealDepthOverride(null);
       setHint("Config updated");
     } catch (e) {
       setLocalError(e instanceof Error ? e.message : "Failed to update config");
@@ -161,6 +178,14 @@ const ConfigPage = () => {
                     />
                   </label>
                 ))}
+                <label className={pageStyles.toggleField}>
+                  <input
+                    type="checkbox"
+                    checked={requireRealDepthDraft}
+                    onChange={(e) => setRequireRealDepthOverride(e.target.checked)}
+                  />
+                  <span className={pageStyles.label}>Require Real Depth</span>
+                </label>
               </div>
               <div className={pageStyles.actions}>
                 <button
@@ -177,7 +202,9 @@ const ConfigPage = () => {
                   onClick={onSaveDraft}
                   disabled={updateConfig.isPending}
                 >
-                  {updateConfig.isPending ? "Saving..." : `Save (${changedFields.length})`}
+                  {updateConfig.isPending
+                    ? "Saving..."
+                    : `Save (${changedFields.length + (requireRealDepthChanged ? 1 : 0)})`}
                 </button>
                 <button
                   type="button"

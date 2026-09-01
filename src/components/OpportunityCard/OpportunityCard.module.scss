@@ -45,6 +45,29 @@
   margin-bottom: 0.2rem;
 }
 
+.metricLabelWithHelp {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: v.$text-muted;
+  font-size: 0.8rem;
+  margin-bottom: 0.2rem;
+}
+
+.helpDot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 0.9rem;
+  height: 0.9rem;
+  border: 1px solid v.$border-color;
+  border-radius: 50%;
+  color: v.$text-secondary;
+  font-size: 0.65rem;
+  line-height: 1;
+  cursor: help;
+}
+
 .metricValue {
   font-weight: 600;
   color: v.$text-primary;
@@ -69,12 +92,35 @@
   border-top: 1px solid v.$border-color;
 }
 
+.breakdownCard {
+  background: rgba(139, 92, 246, 0.08);
+  border: 1px solid rgba(139, 92, 246, 0.28);
+  border-radius: 0.55rem;
+  padding: 0.45rem 0.55rem;
+  margin-bottom: 0.35rem;
+}
+
+.breakdownTitle {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: v.$text-muted;
+  margin-bottom: 0.15rem;
+}
+
 .detailRow {
   display: flex;
   justify-content: space-between;
   font-size: 0.75rem;
   color: v.$text-secondary;
   padding: 0.2rem 0;
+}
+
+.breakdownTotal {
+  border-top: 1px dashed rgba(148, 163, 184, 0.35);
+  margin-top: 0.15rem;
+  padding-top: 0.35rem;
+  font-weight: 700;
 }
 
 .positive {

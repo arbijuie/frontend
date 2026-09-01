@@ -6,10 +6,12 @@ export type EditableConfigField =
   | "min_open_interest"
   | "min_persistence_hours"
   | "expected_hold_hours"
+  | "default_order_size_usd"
   | "basis_weight"
   | "stale_data_s"
   | "anti_churn_cooldown_s"
-  | "anti_churn_score_multiplier";
+  | "anti_churn_score_multiplier"
+  | "max_reasonable_apr";
 
 export const EDITABLE_CONFIG_FIELDS: EditableConfigField[] = [
   "min_score_bps",
@@ -17,10 +19,12 @@ export const EDITABLE_CONFIG_FIELDS: EditableConfigField[] = [
   "min_open_interest",
   "min_persistence_hours",
   "expected_hold_hours",
+  "default_order_size_usd",
   "basis_weight",
   "stale_data_s",
   "anti_churn_cooldown_s",
   "anti_churn_score_multiplier",
+  "max_reasonable_apr",
 ];
 
 export interface Preset {
@@ -41,10 +45,12 @@ export const PRESETS: Preset[] = [
       min_open_interest: 1_000_000,
       min_persistence_hours: 4,
       expected_hold_hours: 72,
+      default_order_size_usd: 10_000,
       basis_weight: 0.4,
       stale_data_s: 20,
       anti_churn_cooldown_s: 21600,
       anti_churn_score_multiplier: 1.7,
+      max_reasonable_apr: 300,
     },
   },
   {
@@ -57,10 +63,12 @@ export const PRESETS: Preset[] = [
       min_open_interest: 500_000,
       min_persistence_hours: 2,
       expected_hold_hours: 72,
+      default_order_size_usd: 10_000,
       basis_weight: 0.5,
       stale_data_s: 30,
       anti_churn_cooldown_s: 14400,
       anti_churn_score_multiplier: 1.5,
+      max_reasonable_apr: 500,
     },
   },
   {
@@ -73,10 +81,12 @@ export const PRESETS: Preset[] = [
       min_open_interest: 0,
       min_persistence_hours: 0,
       expected_hold_hours: 48,
+      default_order_size_usd: 2_000,
       basis_weight: 0.6,
       stale_data_s: 45,
       anti_churn_cooldown_s: 7200,
       anti_churn_score_multiplier: 1.3,
+      max_reasonable_apr: 800,
     },
   },
 ];

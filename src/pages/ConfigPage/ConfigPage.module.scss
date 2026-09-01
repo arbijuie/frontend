@@ -24,6 +24,12 @@
   gap: 0.25rem;
 }
 
+.toggleField {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .label {
   font-size: 0.75rem;
   color: v.$text-muted;

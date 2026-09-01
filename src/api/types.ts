@@ -79,6 +79,7 @@ export interface ConfigResponse {
   funding_instability_threshold: number;
   funding_instability_min_std_apr: number;
   funding_instability_multiplier: number;
+  max_reasonable_apr: number;
   loop_interval_s: number;
   stale_data_s: number;
   exec_enabled: boolean;
@@ -107,10 +108,13 @@ export interface ConfigUpdateRequest {
   min_open_interest?: number;
   min_persistence_hours?: number;
   expected_hold_hours?: number;
+  default_order_size_usd?: number;
+  require_real_depth?: boolean;
   basis_weight?: number;
   stale_data_s?: number;
   anti_churn_cooldown_s?: number;
   anti_churn_score_multiplier?: number;
+  max_reasonable_apr?: number;
 }
 
 export interface StatusResponse {
@@ -124,6 +128,10 @@ export interface StatusResponse {
   poll_count_success: number;
   poll_count_failed: number;
   exchange_last_ok: Record<string, boolean>;
+  screener_raw_candidates: number;
+  screener_post_cost_candidates: number;
+  screener_validated_candidates: number;
+  screener_ready_candidates: number;
 }
 
 export interface WsAuthTicketResponse {
