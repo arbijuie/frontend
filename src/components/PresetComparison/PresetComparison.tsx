@@ -1,5 +1,5 @@
 import type { ConfigResponse } from "../../api/types";
-import { PRESETS, findMatchingPreset } from "../../lib/presets";
+import { buildPresets, findMatchingPreset } from "../../lib/presets";
 import PresetCard from "../PresetCard/PresetCard";
 import styles from "./PresetComparison.module.scss";
 import type { Preset } from "../../lib/presets";
@@ -17,7 +17,8 @@ const PresetComparison = ({
   applyingPresetKey,
   disableAll,
 }: PresetComparisonProps) => {
-  const matched = findMatchingPreset(config);
+  const presets = buildPresets(config);
+  const matched = findMatchingPreset(config, presets);
 
   return (
     <div>
@@ -26,7 +27,7 @@ const PresetComparison = ({
           Current config doesn't exactly match any preset — running a custom configuration.
         </div>
       )}
-      {PRESETS.map((preset) => (
+      {presets.map((preset) => (
         <PresetCard
           key={preset.name}
           preset={preset}

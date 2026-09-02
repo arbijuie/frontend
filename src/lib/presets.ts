@@ -1,95 +1,54 @@
-import type { ConfigResponse } from "../api/types";
+import type { ConfigPresetName, ConfigResponse } from "../api/types";
 
-export type EditableConfigField =
-  | "min_score_bps"
-  | "min_volume_24h"
-  | "min_open_interest"
-  | "min_persistence_hours"
-  | "expected_hold_hours"
-  | "default_order_size_usd"
-  | "basis_weight"
-  | "stale_data_s"
-  | "anti_churn_cooldown_s"
-  | "anti_churn_score_multiplier"
-  | "max_reasonable_apr";
+export type EditableConfigField = string;
 
-export const EDITABLE_CONFIG_FIELDS: EditableConfigField[] = [
-  "min_score_bps",
-  "min_volume_24h",
-  "min_open_interest",
-  "min_persistence_hours",
-  "expected_hold_hours",
-  "default_order_size_usd",
-  "basis_weight",
-  "stale_data_s",
-  "anti_churn_cooldown_s",
-  "anti_churn_score_multiplier",
-  "max_reasonable_apr",
-];
-
-export interface Preset {
-  key: "conservative" | "balanced" | "aggressive";
+type PresetMeta = {
   name: string;
   description: string;
-  values: Record<EditableConfigField, number>;
-}
+};
 
-export const PRESETS: Preset[] = [
-  {
-    key: "conservative",
+const PRESET_META: Record<ConfigPresetName, PresetMeta> = {
+  conservative: {
     name: "Conservative",
     description: "Fewer but higher-quality opportunities.",
-    values: {
-      min_score_bps: 12,
-      min_volume_24h: 1_000_000,
-      min_open_interest: 1_000_000,
-      min_persistence_hours: 4,
-      expected_hold_hours: 72,
-      default_order_size_usd: 10_000,
-      basis_weight: 0.4,
-      stale_data_s: 20,
-      anti_churn_cooldown_s: 21600,
-      anti_churn_score_multiplier: 1.7,
-      max_reasonable_apr: 300,
-    },
   },
-  {
-    key: "balanced",
+  balanced: {
     name: "Balanced",
     description: "Default profile for regular monitoring.",
-    values: {
-      min_score_bps: 8,
-      min_volume_24h: 250_000,
-      min_open_interest: 500_000,
-      min_persistence_hours: 2,
-      expected_hold_hours: 72,
-      default_order_size_usd: 10_000,
-      basis_weight: 0.5,
-      stale_data_s: 30,
-      anti_churn_cooldown_s: 14400,
-      anti_churn_score_multiplier: 1.5,
-      max_reasonable_apr: 500,
-    },
   },
-  {
-    key: "aggressive",
+  aggressive: {
     name: "Aggressive",
     description: "High-frequency signal discovery; more noise, faster reaction.",
-    values: {
-      min_score_bps: 5,
-      min_volume_24h: 100_000,
-      min_open_interest: 0,
-      min_persistence_hours: 0,
-      expected_hold_hours: 48,
-      default_order_size_usd: 2_000,
-      basis_weight: 0.6,
-      stale_data_s: 45,
-      anti_churn_cooldown_s: 7200,
-      anti_churn_score_multiplier: 1.3,
-      max_reasonable_apr: 800,
-    },
   },
-];
+  exploratory: {
+    name: "Exploratory",
+    description: "Looser filters for discovery and market exploration.",
+  },
+};
+
+export interface Preset {
+  key: ConfigPresetName;
+  name: string;
+  description: string;
+  values: Record<string, number | boolean>;
+}
+
+function prettifyPresetName(value: string): string {
+  return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
+export function buildPresets(config: ConfigResponse): Preset[] {
+  return Object.entries(config.runbook_presets).map(([key, values]) => {
+    const presetKey = key as ConfigPresetName;
+    const meta = PRESET_META[presetKey];
+    return {
+      key: presetKey,
+      name: meta?.name ?? prettifyPresetName(key),
+      description: meta?.description ?? "Runtime-provided preset values.",
+      values,
+    };
+  });
+}
 
 const EPSILON = 0.001;
 
@@ -97,12 +56,21 @@ function nearlyEqual(a: number, b: number): boolean {
   return Math.abs(a - b) < EPSILON;
 }
 
-export function findMatchingPreset(config: ConfigResponse): Preset | null {
-  return (
-    PRESETS.find((preset) =>
-      EDITABLE_CONFIG_FIELDS.every((key) =>
-        nearlyEqual(config[key], preset.values[key])
-      )
-    ) ?? null
-  );
+export function findMatchingPreset(config: ConfigResponse, presets: Preset[]): Preset | null {
+  return presets.find((preset) => {
+    return config.runbook_config_fields.every((key) => {
+      const configValue = config[key as keyof ConfigResponse];
+      const presetValue = preset.values[key];
+      if (presetValue === undefined) {
+        return false;
+      }
+      if (typeof configValue === "number" && typeof presetValue === "number") {
+        return nearlyEqual(configValue, presetValue);
+      }
+      if (typeof configValue === "boolean" && typeof presetValue === "boolean") {
+        return configValue === presetValue;
+      }
+      return false;
+    });
+  }) ?? null;
 }

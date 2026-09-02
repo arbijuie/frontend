@@ -5,14 +5,10 @@ import { useConfig } from "../../hooks/useConfig";
 import { useUpdateConfig } from "../../hooks/useUpdateConfig";
 import PresetComparison from "../../components/PresetComparison/PresetComparison";
 import ConfigAccordion from "../../components/ConfigAccordion/ConfigAccordion";
-import {
-  EDITABLE_CONFIG_FIELDS,
-  type EditableConfigField,
-  type Preset,
-} from "../../lib/presets";
+import { type EditableConfigField } from "../../lib/presets";
 import type { ConfigResponse, ConfigUpdateRequest } from "../../api/types";
 
-const FIELD_LABELS: Record<EditableConfigField, string> = {
+const FIELD_LABELS: Record<string, string> = {
   min_score_bps: "Min Score (bps)",
   min_volume_24h: "Min Volume 24h ($)",
   min_open_interest: "Min Open Interest ($)",
@@ -26,20 +22,20 @@ const FIELD_LABELS: Record<EditableConfigField, string> = {
   max_reasonable_apr: "Max Funding Diff APR (%)",
 };
 
-function toDraft(config: ConfigResponse): Record<EditableConfigField, string> {
-  return {
-    min_score_bps: String(config.min_score_bps),
-    min_volume_24h: String(config.min_volume_24h),
-    min_open_interest: String(config.min_open_interest),
-    min_persistence_hours: String(config.min_persistence_hours),
-    expected_hold_hours: String(config.expected_hold_hours),
-    default_order_size_usd: String(config.default_order_size_usd),
-    basis_weight: String(config.basis_weight),
-    stale_data_s: String(config.stale_data_s),
-    anti_churn_cooldown_s: String(config.anti_churn_cooldown_s),
-    anti_churn_score_multiplier: String(config.anti_churn_score_multiplier),
-    max_reasonable_apr: String(config.max_reasonable_apr),
-  };
+function toDraft(
+  config: ConfigResponse,
+  editableNumericFields: EditableConfigField[]
+): Record<EditableConfigField, string> {
+  const draft: Record<EditableConfigField, string> = {};
+  for (const field of editableNumericFields) {
+    draft[field] = String(config[field as keyof ConfigResponse]);
+  }
+  return draft;
+}
+
+function numericConfigValue(config: ConfigResponse, field: string): number {
+  const value = config[field as keyof ConfigResponse];
+  return typeof value === "number" ? value : Number.NaN;
 }
 
 const ConfigPage = () => {
@@ -50,41 +46,41 @@ const ConfigPage = () => {
   const [localError, setLocalError] = useState<string | null>(null);
   const [hint, setHint] = useState<string | null>(null);
   const [applyingPresetKey, setApplyingPresetKey] = useState<string | null>(null);
+  const editableNumericFields = useMemo(() => {
+    if (!data) {
+      return [] as EditableConfigField[];
+    }
+    return data.runbook_config_fields.filter((field) => {
+      if (field === "require_real_depth") {
+        return false;
+      }
+      const value = data[field as keyof ConfigResponse];
+      return typeof value === "number";
+    });
+  }, [data]);
 
   const draft = data
-    ? ({ ...toDraft(data), ...overrides } as Record<EditableConfigField, string>)
+    ? ({
+        ...toDraft(data, editableNumericFields),
+        ...overrides,
+      } as Record<EditableConfigField, string>)
     : null;
 
   const changedFields = useMemo(() => {
     if (!data) {
       return [] as EditableConfigField[];
     }
-    return EDITABLE_CONFIG_FIELDS.filter((field) => {
-      const parsed = Number((overrides[field] ?? String(data[field])).trim());
-      return Number.isFinite(parsed) && parsed !== data[field];
+    return editableNumericFields.filter((field) => {
+      const liveValue = numericConfigValue(data, field);
+      const parsed = Number((overrides[field] ?? String(liveValue)).trim());
+      return Number.isFinite(parsed) && parsed !== liveValue;
     });
-  }, [data, overrides]);
+  }, [data, editableNumericFields, overrides]);
 
   const requireRealDepthDraft = requireRealDepthOverride ?? data?.require_real_depth ?? true;
   const requireRealDepthChanged = data
     ? requireRealDepthDraft !== data.require_real_depth
     : false;
-
-  const onApplyPreset = async (preset: Preset) => {
-    setLocalError(null);
-    setHint(null);
-    setApplyingPresetKey(preset.key);
-    try {
-      await updateConfig.mutateAsync({ preset: preset.key, persist: true });
-      setOverrides({});
-      setRequireRealDepthOverride(null);
-      setHint(`${preset.name} preset applied`);
-    } catch (e) {
-      setLocalError(e instanceof Error ? e.message : "Failed to apply preset");
-    } finally {
-      setApplyingPresetKey(null);
-    }
-  };
 
   const onResetDraft = () => {
     if (!data) {
@@ -101,15 +97,15 @@ const ConfigPage = () => {
       return;
     }
 
-    const parsed: Partial<Record<EditableConfigField, number>> = {};
-    for (const field of EDITABLE_CONFIG_FIELDS) {
+    const parsed: Record<string, number> = {};
+    for (const field of editableNumericFields) {
       const next = Number(draft[field]);
       if (!Number.isFinite(next)) {
-        setLocalError(`Invalid number for ${FIELD_LABELS[field]}`);
+        setLocalError(`Invalid number for ${FIELD_LABELS[field] ?? field}`);
         setHint(null);
         return;
       }
-      if (next !== data[field]) {
+      if (next !== numericConfigValue(data, field)) {
         parsed[field] = next;
       }
     }
@@ -123,7 +119,8 @@ const ConfigPage = () => {
     setLocalError(null);
     setHint(null);
     try {
-      const payload: ConfigUpdateRequest = { ...parsed, persist: true };
+      const payload: ConfigUpdateRequest = { persist: true };
+      Object.assign(payload as Record<string, number>, parsed);
       if (requireRealDepthChanged) {
         payload.require_real_depth = requireRealDepthDraft;
       }
@@ -153,7 +150,23 @@ const ConfigPage = () => {
           <h2 className={layoutStyles.sectionTitle}>Presets</h2>
           <PresetComparison
             config={data}
-            onApplyPreset={onApplyPreset}
+            onApplyPreset={(preset) => {
+              setLocalError(null);
+              setHint(null);
+              setApplyingPresetKey(preset.key);
+              void (async () => {
+                try {
+                  await updateConfig.mutateAsync({ preset: preset.key, persist: true });
+                  setOverrides({});
+                  setRequireRealDepthOverride(null);
+                  setHint(`${preset.name} preset applied`);
+                } catch (e) {
+                  setLocalError(e instanceof Error ? e.message : "Failed to apply preset");
+                } finally {
+                  setApplyingPresetKey(null);
+                }
+              })();
+            }}
             applyingPresetKey={applyingPresetKey}
             disableAll={updateConfig.isPending}
           />
@@ -162,9 +175,9 @@ const ConfigPage = () => {
           {draft && (
             <div className={pageStyles.editorCard}>
               <div className={pageStyles.grid}>
-                {EDITABLE_CONFIG_FIELDS.map((field) => (
+                {editableNumericFields.map((field) => (
                   <label key={field} className={pageStyles.field}>
-                    <span className={pageStyles.label}>{FIELD_LABELS[field]}</span>
+                    <span className={pageStyles.label}>{FIELD_LABELS[field] ?? field}</span>
                     <input
                       className={pageStyles.input}
                       type="number"

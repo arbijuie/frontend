@@ -96,6 +96,8 @@ export interface ConfigResponse {
   exec_adl_critical_quantile: number;
   exec_recovery_cooldown_s: number;
   exec_recovery_require_manual_ack: boolean;
+  runbook_config_fields: string[];
+  runbook_presets: Record<string, Record<string, number | boolean>>;
 }
 
 export type ConfigPresetName = 'conservative' | 'balanced' | 'aggressive' | 'exploratory';
