@@ -81,6 +81,9 @@ export interface ConfigResponse {
   funding_instability_min_std_apr: number;
   funding_instability_multiplier: number;
   max_reasonable_apr: number;
+  max_entry_adl_level: number;
+  require_isolated_margin: boolean;
+  allow_unknown_margin_mode: boolean;
   loop_interval_s: number;
   stale_data_s: number;
   exec_enabled: boolean;
@@ -119,6 +122,9 @@ export interface ConfigUpdateRequest {
   anti_churn_cooldown_s?: number;
   anti_churn_score_multiplier?: number;
   max_reasonable_apr?: number;
+  max_entry_adl_level?: number;
+  require_isolated_margin?: boolean;
+  allow_unknown_margin_mode?: boolean;
 }
 
 export interface StatusResponse {

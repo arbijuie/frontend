@@ -74,6 +74,9 @@ const ConfigAccordion = ({ config }: ConfigAccordionProps) => {
           unit="bps/tick"
         />
         <ConfigRow label="Max Funding Diff APR" value={config.max_reasonable_apr} unit="%" />
+        <ConfigRow label="Max Entry ADL Level" value={config.max_entry_adl_level} unit="/5" />
+        <ConfigRow label="Require Isolated Margin" value={config.require_isolated_margin} />
+        <ConfigRow label="Allow Unknown Margin Mode" value={config.allow_unknown_margin_mode} />
       </ConfigSection>
 
       <ConfigSection
