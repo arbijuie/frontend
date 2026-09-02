@@ -66,6 +66,7 @@ export interface ConfigResponse {
   default_order_size_usd: number;
   slippage_volume_depth_ratio: number;
   require_real_depth: boolean;
+  real_depth_proxy_floor_ratio: number;
   expected_hold_hours: number;
   basis_weight: number;
   liquidity_weight: number;
@@ -112,6 +113,7 @@ export interface ConfigUpdateRequest {
   expected_hold_hours?: number;
   default_order_size_usd?: number;
   require_real_depth?: boolean;
+  real_depth_proxy_floor_ratio?: number;
   basis_weight?: number;
   stale_data_s?: number;
   anti_churn_cooldown_s?: number;

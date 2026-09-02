@@ -15,6 +15,7 @@ const FIELD_LABELS: Record<string, string> = {
   min_persistence_hours: "Min Persistence (h)",
   expected_hold_hours: "Expected Hold (h)",
   default_order_size_usd: "Default Order Size ($)",
+  real_depth_proxy_floor_ratio: "Real-Depth Proxy Floor Ratio",
   basis_weight: "Basis Weight",
   stale_data_s: "Stale Data Threshold (s)",
   anti_churn_cooldown_s: "Anti-Churn Cooldown (s)",
