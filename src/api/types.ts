@@ -1,6 +1,30 @@
 export type LiquidityTier = 'H' | 'M' | 'L';
 export type OpportunityStatus = 'ready' | 'watching' | 'blocked';
 export type FundingTrend = 'rising' | 'falling' | 'stable';
+export type OpportunityReasonSeverity = 'watching' | 'blocked';
+export type OpportunityReasonCode =
+  | 'persistence_insufficient'
+  | 'break_even_window'
+  | 'score_below_min'
+  | 'funding_flips'
+  | 'basis_limit'
+  | 'basis_trend_unstable'
+  | 'basis_divergence_hard'
+  | 'basis_divergence_window'
+  | 'funding_timing_asymmetry'
+  | 'funding_unstable'
+  | 'funding_trend_thin_edge'
+  | 'stale_data'
+  | 'margin_mode_unknown'
+  | 'adl_limit'
+  | 'margin_mode_cross'
+  | 'anti_churn_cooldown';
+
+export interface OpportunityReason {
+  code: OpportunityReasonCode;
+  message: string;
+  severity: OpportunityReasonSeverity;
+}
 
 export interface FundingForecast {
   expected_apr: number;
@@ -45,7 +69,7 @@ export interface OpportunityItem {
   basis_divergence_hours: number | null;
   liquidity_tier: LiquidityTier | null;
   status: OpportunityStatus;
-  reasons: string[];
+  reasons: OpportunityReason[];
 }
 
 export interface OpportunitiesResponse {

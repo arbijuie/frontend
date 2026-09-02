@@ -124,7 +124,9 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
         <div className={styles.instabilityBadge}>⚠ Funding unstable</div>
       )}
 
-      {item.reasons.length > 0 && <div className={styles.reasons}>{item.reasons.join(', ')}</div>}
+      {item.reasons.length > 0 && (
+        <div className={styles.reasons}>{item.reasons.map((reason) => reason.message).join(', ')}</div>
+      )}
 
       <button className={styles.expandButton} onClick={() => setExpanded(!expanded)}>
         {expanded ? 'Hide details' : 'More details'}

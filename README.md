@@ -85,6 +85,7 @@ pnpm test
   - Live countdown to next funding time per leg
   - Summary stats (total/ready/watching/blocked)
   - Auto-refresh every 30s (matches backend's `ARB_LOOP_INTERVAL_S`) + manual refresh button
+  - Validation reasons are structured objects (`code`, `message`, `severity`) rendered per card
   - Pipeline counters and diagnostics hints for empty-result triage (`raw`, `post-cost`, `validated`, `ready`)
   - Runtime tuning snapshot card (`min_score`, `hold`, `order size`, `real depth`, `max diff APR`)
 - **Config page** — reads live config (`GET /config`) and can apply updates (`PATCH /config`)
