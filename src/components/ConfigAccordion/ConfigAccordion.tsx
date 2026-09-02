@@ -60,6 +60,26 @@ const ConfigAccordion = ({ config }: ConfigAccordionProps) => {
       >
         <ConfigRow label="Expected Hold" value={config.expected_hold_hours} unit="h" />
         <ConfigRow label="Basis Weight" value={config.basis_weight} />
+        <ConfigRow label="Basis Bonus Cap" value={config.basis_bonus_cap_bps} unit="bps" />
+        <ConfigRow
+          label="Basis Divergence Threshold"
+          value={config.basis_divergence_threshold_bps}
+          unit="bps"
+        />
+        <ConfigRow
+          label="Max Basis Divergence"
+          value={config.max_basis_divergence_hours}
+          unit="h"
+        />
+        <ConfigRow
+          label="Basis Expansion Penalty"
+          value={config.basis_expansion_penalty_bps_per_hour}
+          unit="bps/h"
+        />
+        <ConfigRow
+          label="Hold Window Instability Scale"
+          value={config.hold_window_instability_scale}
+        />
         <ConfigRow label="Liquidity Weight" value={config.liquidity_weight} />
         <ConfigRow label="Timing Penalty" value={config.timing_penalty_bps_per_hour} unit="bps/h" />
         <ConfigRow

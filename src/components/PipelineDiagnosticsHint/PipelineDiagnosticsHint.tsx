@@ -17,6 +17,9 @@ const PipelineDiagnosticsHint = ({ status }: PipelineDiagnosticsHintProps) => {
   const hlL2Errors = drops.hl_l2_book_fetch_error ?? 0;
   const minScoreDrops = drops.min_score ?? 0;
   const minVolumeDrops = drops.min_volume ?? 0;
+  const basisBonusCapped = drops.basis_bonus_capped ?? 0;
+  const adaptiveHoldApplied = drops.adaptive_hold_applied ?? 0;
+  const basisDivergencePenalty = drops.basis_divergence_penalty ?? 0;
   const downExchanges = Object.values(status.exchange_last_ok).filter((v) => v === false).length;
   const unknownExchanges = Object.values(status.exchange_last_ok).filter((v) => v === null).length;
 
@@ -77,6 +80,16 @@ const PipelineDiagnosticsHint = ({ status }: PipelineDiagnosticsHintProps) => {
   }
 
   if (validated > 0 && ready === 0) {
+    if (basisBonusCapped > 0 || adaptiveHoldApplied > 0 || basisDivergencePenalty > 0) {
+      return (
+        <div className={styles.infoBox}>
+          <span className={`${styles.badge} ${styles.infoBadge}`}>info</span>
+          Candidates are present but none are ready yet. Risk dampeners active: basis bonus capped{' '}
+          {basisBonusCapped}, adaptive hold applied {adaptiveHoldApplied}, basis divergence penalty{' '}
+          {basisDivergencePenalty}.
+        </div>
+      );
+    }
     return (
       <div className={styles.infoBox}>
         <span className={`${styles.badge} ${styles.infoBadge}`}>info</span>

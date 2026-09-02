@@ -149,6 +149,26 @@ describe('PipelineDiagnosticsHint', () => {
     expect(screen.getByText(/none are ready yet/i)).toBeTruthy();
   });
 
+  it('shows basis dampener diagnostics when validated but no ready candidates', () => {
+    render(
+      <PipelineDiagnosticsHint
+        status={makeStatus({
+          screener_raw_candidates: 7,
+          screener_post_cost_candidates: 4,
+          screener_validated_candidates: 4,
+          screener_ready_candidates: 0,
+          screener_drop_counters: {
+            basis_bonus_capped: 3,
+            adaptive_hold_applied: 2,
+            basis_divergence_penalty: 1,
+          },
+        })}
+      />,
+    );
+
+    expect(screen.getByText(/risk dampeners active/i)).toBeTruthy();
+  });
+
   it('renders nothing when no diagnostic message applies', () => {
     const { container } = render(
       <PipelineDiagnosticsHint
