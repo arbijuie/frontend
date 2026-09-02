@@ -53,8 +53,10 @@ Opens on `http://localhost:5173`. Requires CORS to be enabled on the backend (`s
 
 ### Fast-Local Pairing
 
-If the UI stays empty too often during local checks, run backend in `Fast-Local`
-profile from the root `README.md`, then run frontend as usual:
+If the UI stays empty too often during local checks, apply a lighter runtime preset via
+`PATCH /config` (`aggressive` or `exploratory`) or use a temporary session-only runbook patch (`persist=false`).
+
+See operational examples in `../docs/13-operations-workflows.md`, then run frontend as usual:
 
 ```bash
 cd frontend
@@ -106,7 +108,7 @@ pnpm test
 
 ## Project structure
 
-\`\`\`
+```text
 frontend/src/
 ├── api/ # fetch functions + TS types for backend responses
 ├── components/ # one folder per component (Component.tsx + Component.module.scss)
@@ -114,7 +116,7 @@ frontend/src/
 ├── lib/ # plain utility functions (formatting, colors, etc.)
 ├── pages/ # route-level pages
 └── styles/ # shared SCSS variables/tokens
-\`\`\`
+```
 
 ## Coding conventions
 

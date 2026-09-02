@@ -11,8 +11,8 @@ This is a **read-only** UI for a funding rate arbitrage screener (Hyperliquid �
 Backend endpoints and current frontend status:
 
 - `GET /opportunities` — **done** (Opportunities page)
-- `GET /config` — **not built yet** (planned: accordion sections — Screener Filters, Anti-Churn, Fees, Scoring Model, Runtime, Execution Safety Contract marked inactive)
-- `GET /status` — **not built yet** (planned: headline stat cards for uptime/poll success rate/last poll duration, details list, exchange health)
+- `GET /config` — **done** (Config page with preset apply and scoped runbook field updates via `PATCH /config`)
+- `GET /status` — **done** (Status page with runtime metrics, screener stage counters, and exchange health)
 - `WS /ws/opportunities` — **not used yet**, deliberately deferred in favor of REST polling (see Data Fetching). Ticket-based auth for this was researched but isn't implemented in the frontend.
 
 Eventual goal: a Telegram bot sending similar opportunity data as notifications — keep `OpportunityCard` self-contained, since it may become the basis for a bot notification or Mini App deep-link route later.
