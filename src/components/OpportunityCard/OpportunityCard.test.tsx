@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 
 import OpportunityCard from './OpportunityCard';
 import type { OpportunityItem } from '../../api/types';
@@ -59,5 +59,18 @@ describe('OpportunityCard', () => {
 
     expect(screen.getByText(/score 4.00bps < min score 5.00bps/i)).toBeTruthy();
     expect(screen.getByText(/funding direction flipped 1x/i)).toBeTruthy();
+  });
+
+  it('includes basis divergence penalty in score breakdown', () => {
+    const item = makeItem();
+    item.basis_expansion_penalty_bps = 1;
+    item.combined_score = 12;
+
+    render(<OpportunityCard item={item} updatedAt={'2026-01-01T00:00:00Z'} now={new Date()} />);
+
+    fireEvent.click(screen.getByRole('button', { name: /more details/i }));
+
+    expect(screen.getByText(/basis divergence penalty/i)).toBeTruthy();
+    expect(screen.getByText(/-1\.00/)).toBeTruthy();
   });
 });

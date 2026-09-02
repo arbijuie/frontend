@@ -31,7 +31,8 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
     item.funding_edge_bps +
     item.basis_bonus_bps -
     item.total_cost_bps -
-    item.funding_timing_penalty_bps;
+    item.funding_timing_penalty_bps -
+    item.basis_expansion_penalty_bps;
   const scoreAdjustment = item.combined_score - scoreFromComponents;
   const longCountdown =
     updatedAt && item.long_hours_to_next_funding != null
@@ -85,7 +86,7 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
             Score
             <span
               className={styles.helpDot}
-              title="Combined score = Funding Edge + Basis Bonus - Total Cost - Timing Penalty (plus instability/rounding adjustment)"
+              title="Combined score = Funding Edge + Basis Bonus - Total Cost - Timing Penalty - Basis Divergence Penalty (plus instability/liquidity/rounding adjustment)"
             >
               ?
             </span>
@@ -154,9 +155,13 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
                 {formatSigned(-item.funding_timing_penalty_bps)}
               </span>
             </div>
+            <div className={styles.detailRow}>
+              <span>Basis divergence penalty</span>
+              <span className={styles.negative}>{formatSigned(-item.basis_expansion_penalty_bps)}</span>
+            </div>
             {Math.abs(scoreAdjustment) >= 0.1 && (
               <div className={styles.detailRow}>
-                <span>Adjustment (instability/rounding)</span>
+                <span>Adjustment (instability/liquidity/rounding)</span>
                 <span className={styles[signColor(scoreAdjustment)]}>{formatSigned(scoreAdjustment)}</span>
               </div>
             )}
