@@ -69,16 +69,6 @@ const ConfigAccordion = ({ config }: ConfigAccordionProps) => {
           value={config.lighter_maker_fee_per_side}
           unit="%"
         />
-        <ConfigRow
-          label="Legacy Hyperliquid Fee (taker alias)"
-          value={config.hl_fee_per_side}
-          unit="%"
-        />
-        <ConfigRow
-          label="Legacy Lighter Fee (taker alias)"
-          value={config.lighter_fee_per_side}
-          unit="%"
-        />
       </ConfigSection>
 
       <ConfigSection
