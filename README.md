@@ -80,6 +80,18 @@ To run frontend unit tests:
 pnpm test
 ```
 
+To regenerate API contract types from backend OpenAPI:
+
+```bash
+pnpm types:generate
+```
+
+To verify generated types are up to date (same check used in CI):
+
+```bash
+pnpm types:check
+```
+
 ## What's implemented
 
 - **Opportunities page** — live list of arbitrage opportunities from `GET /opportunities`
@@ -110,7 +122,7 @@ pnpm test
 
 ```text
 frontend/src/
-├── api/ # fetch functions + TS types for backend responses
+├── api/ # fetch functions + generated OpenAPI-based TS contract types
 ├── components/ # one folder per component (Component.tsx + Component.module.scss)
 ├── hooks/ # data-fetching hooks (TanStack Query)
 ├── lib/ # plain utility functions (formatting, colors, etc.)

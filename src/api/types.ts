@@ -1,191 +1,25 @@
-export type LiquidityTier = 'H' | 'M' | 'L';
-export type OpportunityStatus = 'ready' | 'watching' | 'blocked';
-export type FundingTrend = 'rising' | 'falling' | 'stable';
-export type OpportunityReasonSeverity = 'watching' | 'blocked';
-export type OpportunityReasonCode =
-  | 'persistence_insufficient'
-  | 'break_even_window'
-  | 'score_below_min'
-  | 'funding_flips'
-  | 'basis_limit'
-  | 'basis_trend_unstable'
-  | 'basis_divergence_hard'
-  | 'basis_divergence_window'
-  | 'funding_timing_asymmetry'
-  | 'funding_unstable'
-  | 'funding_trend_thin_edge'
-  | 'stale_data'
-  | 'margin_mode_unknown'
-  | 'adl_limit'
-  | 'margin_mode_cross'
-  | 'anti_churn_cooldown';
+import type { components } from "./generated/openapi";
 
-export interface OpportunityReason {
-  code: OpportunityReasonCode;
-  message: string;
-  severity: OpportunityReasonSeverity;
-}
+type ApiSchemas = components["schemas"];
 
-export interface FundingForecast {
-  expected_apr: number;
-  avg_24h_apr: number | null;
-  avg_72h_apr: number | null;
-  trend: FundingTrend;
-  std_apr: number;
-  is_unstable: boolean;
-}
+type _OpportunityItem = ApiSchemas["OpportunityItem"];
+type _FundingForecastItem = ApiSchemas["FundingForecastItem"];
+type _ConfigUpdateRequest = ApiSchemas["ConfigUpdateRequest"];
 
-export interface OpportunityItem {
-  symbol: string;
-  long_exchange: string;
-  short_exchange: string;
-  persistence_hours: number | null;
-  long_rate_apr: number;
-  short_rate_apr: number;
-  funding_diff_apr: number;
-  funding_edge_bps: number;
-  basis_bps: number;
-  basis_bonus_bps: number;
-  fee_impact_bps: number;
-  slippage_impact_bps: number;
-  total_cost_bps: number;
-  hl_depth_source: 'real' | 'proxy' | 'none';
-  lighter_depth_source: 'real' | 'proxy' | 'none';
-  effective_hl_taker_fee: number | null;
-  effective_lighter_taker_fee: number | null;
-  long_hours_to_next_funding: number | null;
-  short_hours_to_next_funding: number | null;
-  funding_timing_asymmetry_hours: number | null;
-  funding_timing_penalty_bps: number;
-  basis_expansion_penalty_bps: number;
-  min_profitable_hours: number | null;
-  hours_to_breakeven: number | null;
-  effective_hold_hours: number | null;
-  combined_score: number;
-  long_forecast: FundingForecast | null;
-  short_forecast: FundingForecast | null;
-  funding_instability_multiplier: number;
-  basis_trend: number | null;
-  basis_divergence_hours: number | null;
-  liquidity_tier: LiquidityTier | null;
-  status: OpportunityStatus;
-  reasons: OpportunityReason[];
-}
+export type LiquidityTier = NonNullable<_OpportunityItem["liquidity_tier"]>;
+export type OpportunityStatus = _OpportunityItem["status"];
+export type FundingTrend = _FundingForecastItem["trend"];
+export type OpportunityReasonSeverity = ApiSchemas["ReasonItem"]["severity"];
+export type OpportunityReasonCode = ApiSchemas["ReasonCode"];
 
-export interface OpportunitiesResponse {
-  count: number;
-  ready_count: number;
-  updated_at: string | null;
-  opportunities: OpportunityItem[];
-}
+export type OpportunityReason = ApiSchemas["ReasonItem"];
+export type FundingForecast = _FundingForecastItem;
+export type OpportunityItem = _OpportunityItem;
+export type OpportunitiesResponse = ApiSchemas["OpportunitiesResponse"];
 
-export interface ConfigResponse {
-  api_host: string;
-  api_port: number;
-  min_score_bps: number;
-  min_volume_24h: number;
-  min_open_interest: number;
-  min_persistence_hours: number;
-  anti_churn_cooldown_s: number;
-  anti_churn_score_multiplier: number;
-  hl_taker_fee_per_side: number;
-  hl_maker_fee_per_side: number;
-  lighter_taker_fee_per_side: number;
-  lighter_maker_fee_per_side: number;
-  default_order_size_usd: number;
-  slippage_volume_depth_ratio: number;
-  require_real_depth: boolean;
-  real_depth_proxy_floor_ratio: number;
-  expected_hold_hours: number;
-  basis_weight: number;
-  basis_bonus_cap_bps: number;
-  basis_divergence_threshold_bps: number;
-  max_basis_divergence_hours: number;
-  basis_expansion_penalty_bps_per_hour: number;
-  hold_window_instability_scale: number;
-  liquidity_weight: number;
-  timing_penalty_bps_per_hour: number;
-  max_funding_timing_asymmetry_hours: number;
-  max_basis_bps: number;
-  max_basis_trend_bps_per_tick: number;
-  funding_ema_span_hours: number;
-  funding_avg_short_hours: number;
-  funding_avg_long_hours: number;
-  funding_instability_threshold: number;
-  funding_instability_min_std_apr: number;
-  funding_instability_multiplier: number;
-  max_reasonable_apr: number;
-  max_entry_adl_level: number;
-  require_isolated_margin: boolean;
-  allow_unknown_margin_mode: boolean;
-  loop_interval_s: number;
-  stale_data_s: number;
-  exec_enabled: boolean;
-  exec_dry_run: boolean;
-  exec_stop_on_consecutive_rollbacks: number;
-  exec_stop_on_api_errors_per_window: number;
-  exec_api_error_window_s: number;
-  exec_stop_on_median_slippage_bps: number;
-  exec_slippage_sample_size: number;
-  exec_stop_on_stale_data_s: number;
-  exec_margin_alert_pct: number;
-  exec_margin_force_close_pct: number;
-  exec_adl_warn_quantile: number;
-  exec_adl_critical_quantile: number;
-  exec_recovery_cooldown_s: number;
-  exec_recovery_require_manual_ack: boolean;
-  runbook_config_fields: string[];
-  runbook_presets: Record<string, Record<string, number | boolean>>;
-}
+export type ConfigResponse = ApiSchemas["ConfigResponse"];
+export type ConfigPresetName = Exclude<NonNullable<_ConfigUpdateRequest["preset"]>, null>;
+export type ConfigUpdateRequest = _ConfigUpdateRequest;
 
-export type ConfigPresetName = 'conservative' | 'balanced' | 'aggressive' | 'exploratory';
-
-export interface ConfigUpdateRequest {
-  preset?: ConfigPresetName;
-  persist?: boolean;
-  min_score_bps?: number;
-  min_volume_24h?: number;
-  min_open_interest?: number;
-  min_persistence_hours?: number;
-  expected_hold_hours?: number;
-  default_order_size_usd?: number;
-  require_real_depth?: boolean;
-  real_depth_proxy_floor_ratio?: number;
-  basis_weight?: number;
-  basis_bonus_cap_bps?: number;
-  basis_divergence_threshold_bps?: number;
-  max_basis_divergence_hours?: number;
-  basis_expansion_penalty_bps_per_hour?: number;
-  hold_window_instability_scale?: number;
-  stale_data_s?: number;
-  anti_churn_cooldown_s?: number;
-  anti_churn_score_multiplier?: number;
-  max_reasonable_apr?: number;
-  max_entry_adl_level?: number;
-  require_isolated_margin?: boolean;
-  allow_unknown_margin_mode?: boolean;
-}
-
-export interface StatusResponse {
-  uptime_s: number;
-  started_at: string;
-  last_updated_at: string | null;
-  last_poll_started_at: string | null;
-  last_poll_finished_at: string | null;
-  last_poll_duration_ms: number | null;
-  poll_count_total: number;
-  poll_count_success: number;
-  poll_count_failed: number;
-  exchange_last_ok: Record<string, boolean | null>;
-  screener_raw_candidates: number;
-  screener_post_cost_candidates: number;
-  screener_validated_candidates: number;
-  screener_ready_candidates: number;
-  screener_drop_counters: Record<string, number>;
-}
-
-export interface WsAuthTicketResponse {
-  ticket: string;
-  expires_at: string;
-  ttl_s: number;
-}
+export type StatusResponse = ApiSchemas["StatusResponse"];
+export type WsAuthTicketResponse = ApiSchemas["WsAuthTicketResponse"];

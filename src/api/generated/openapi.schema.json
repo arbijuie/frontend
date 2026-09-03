@@ -1,0 +1,2352 @@
+{
+  "components": {
+    "schemas": {
+      "BacktestGateResponse": {
+        "properties": {
+          "lock_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lock Id"
+          },
+          "passed": {
+            "title": "Passed",
+            "type": "boolean"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "strategy_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Strategy Id"
+          },
+          "strategy_profile_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Strategy Profile Id"
+          }
+        },
+        "required": [
+          "passed"
+        ],
+        "title": "BacktestGateResponse",
+        "type": "object"
+      },
+      "BacktestLockListItem": {
+        "properties": {
+          "created_at": {
+            "title": "Created At",
+            "type": "string"
+          },
+          "gate_passed": {
+            "title": "Gate Passed",
+            "type": "boolean"
+          },
+          "lock_id": {
+            "title": "Lock Id",
+            "type": "string"
+          },
+          "max_drawdown_bps": {
+            "title": "Max Drawdown Bps",
+            "type": "number"
+          },
+          "strategy_id": {
+            "title": "Strategy Id",
+            "type": "string"
+          },
+          "strategy_profile_id": {
+            "title": "Strategy Profile Id",
+            "type": "string"
+          },
+          "total_pnl_bps": {
+            "title": "Total Pnl Bps",
+            "type": "number"
+          }
+        },
+        "required": [
+          "lock_id",
+          "created_at",
+          "strategy_profile_id",
+          "strategy_id",
+          "gate_passed",
+          "total_pnl_bps",
+          "max_drawdown_bps"
+        ],
+        "title": "BacktestLockListItem",
+        "type": "object"
+      },
+      "BacktestLockListResponse": {
+        "properties": {
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/BacktestLockListItem"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "count"
+        ],
+        "title": "BacktestLockListResponse",
+        "type": "object"
+      },
+      "BacktestLockResponse": {
+        "properties": {
+          "created_at": {
+            "title": "Created At",
+            "type": "string"
+          },
+          "gate_passed": {
+            "title": "Gate Passed",
+            "type": "boolean"
+          },
+          "lock_id": {
+            "title": "Lock Id",
+            "type": "string"
+          },
+          "max_drawdown_bps": {
+            "title": "Max Drawdown Bps",
+            "type": "number"
+          },
+          "metrics": {
+            "$ref": "#/components/schemas/BacktestMetricsItem"
+          },
+          "min_total_pnl_bps": {
+            "title": "Min Total Pnl Bps",
+            "type": "number"
+          },
+          "min_win_rate": {
+            "title": "Min Win Rate",
+            "type": "number"
+          },
+          "schema_version": {
+            "title": "Schema Version",
+            "type": "integer"
+          },
+          "strategy_id": {
+            "title": "Strategy Id",
+            "type": "string"
+          },
+          "strategy_profile_id": {
+            "title": "Strategy Profile Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "schema_version",
+          "lock_id",
+          "created_at",
+          "strategy_profile_id",
+          "strategy_id",
+          "metrics",
+          "min_win_rate",
+          "min_total_pnl_bps",
+          "max_drawdown_bps",
+          "gate_passed"
+        ],
+        "title": "BacktestLockResponse",
+        "type": "object"
+      },
+      "BacktestMetricsItem": {
+        "properties": {
+          "closed_trades": {
+            "title": "Closed Trades",
+            "type": "integer"
+          },
+          "entries": {
+            "title": "Entries",
+            "type": "integer"
+          },
+          "exits": {
+            "title": "Exits",
+            "type": "integer"
+          },
+          "max_drawdown_bps": {
+            "title": "Max Drawdown Bps",
+            "type": "number"
+          },
+          "median_trade_pnl_bps": {
+            "title": "Median Trade Pnl Bps",
+            "type": "number"
+          },
+          "strategy_id": {
+            "title": "Strategy Id",
+            "type": "string"
+          },
+          "symbols_covered": {
+            "title": "Symbols Covered",
+            "type": "integer"
+          },
+          "total_pnl_bps": {
+            "title": "Total Pnl Bps",
+            "type": "number"
+          },
+          "total_samples": {
+            "title": "Total Samples",
+            "type": "integer"
+          },
+          "win_rate": {
+            "title": "Win Rate",
+            "type": "number"
+          }
+        },
+        "required": [
+          "total_samples",
+          "symbols_covered",
+          "entries",
+          "exits",
+          "closed_trades",
+          "win_rate",
+          "total_pnl_bps",
+          "median_trade_pnl_bps",
+          "max_drawdown_bps",
+          "strategy_id"
+        ],
+        "title": "BacktestMetricsItem",
+        "type": "object"
+      },
+      "BacktestReplayRequest": {
+        "properties": {
+          "cycle_hours": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cycle Hours"
+          },
+          "end": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "End"
+          },
+          "entry_score_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Entry Score Bps"
+          },
+          "exit_score_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Exit Score Bps"
+          },
+          "min_samples_per_symbol": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Min Samples Per Symbol"
+          },
+          "start": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Start"
+          },
+          "strategy_id": {
+            "default": "baseline-v1",
+            "title": "Strategy Id",
+            "type": "string"
+          },
+          "symbols": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Symbols",
+            "type": "array"
+          }
+        },
+        "title": "BacktestReplayRequest",
+        "type": "object"
+      },
+      "BacktestReplayResponse": {
+        "properties": {
+          "metrics": {
+            "$ref": "#/components/schemas/BacktestMetricsItem"
+          }
+        },
+        "required": [
+          "metrics"
+        ],
+        "title": "BacktestReplayResponse",
+        "type": "object"
+      },
+      "BacktestSummaryResponse": {
+        "properties": {
+          "first_snapshot_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "First Snapshot At"
+          },
+          "last_snapshot_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Snapshot At"
+          },
+          "symbols_covered": {
+            "title": "Symbols Covered",
+            "type": "integer"
+          },
+          "total_snapshots": {
+            "title": "Total Snapshots",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "total_snapshots",
+          "symbols_covered"
+        ],
+        "title": "BacktestSummaryResponse",
+        "type": "object"
+      },
+      "ConfigResponse": {
+        "properties": {
+          "allow_unknown_margin_mode": {
+            "title": "Allow Unknown Margin Mode",
+            "type": "boolean"
+          },
+          "anti_churn_cooldown_s": {
+            "title": "Anti Churn Cooldown S",
+            "type": "number"
+          },
+          "anti_churn_score_multiplier": {
+            "title": "Anti Churn Score Multiplier",
+            "type": "number"
+          },
+          "api_host": {
+            "title": "Api Host",
+            "type": "string"
+          },
+          "api_port": {
+            "title": "Api Port",
+            "type": "integer"
+          },
+          "backtest_capture_enabled": {
+            "title": "Backtest Capture Enabled",
+            "type": "boolean"
+          },
+          "backtest_db_path": {
+            "title": "Backtest Db Path",
+            "type": "string"
+          },
+          "backtest_entry_score_bps": {
+            "title": "Backtest Entry Score Bps",
+            "type": "number"
+          },
+          "backtest_exit_score_bps": {
+            "title": "Backtest Exit Score Bps",
+            "type": "number"
+          },
+          "backtest_gate_max_drawdown_bps": {
+            "title": "Backtest Gate Max Drawdown Bps",
+            "type": "number"
+          },
+          "backtest_gate_min_total_pnl_bps": {
+            "title": "Backtest Gate Min Total Pnl Bps",
+            "type": "number"
+          },
+          "backtest_gate_min_win_rate": {
+            "title": "Backtest Gate Min Win Rate",
+            "type": "number"
+          },
+          "backtest_gate_require_lock_for_execution": {
+            "title": "Backtest Gate Require Lock For Execution",
+            "type": "boolean"
+          },
+          "backtest_min_samples_per_symbol": {
+            "title": "Backtest Min Samples Per Symbol",
+            "type": "integer"
+          },
+          "backtest_replay_cycle_hours": {
+            "title": "Backtest Replay Cycle Hours",
+            "type": "number"
+          },
+          "backtest_strategy_lock_path": {
+            "title": "Backtest Strategy Lock Path",
+            "type": "string"
+          },
+          "basis_bonus_cap_bps": {
+            "title": "Basis Bonus Cap Bps",
+            "type": "number"
+          },
+          "basis_divergence_threshold_bps": {
+            "title": "Basis Divergence Threshold Bps",
+            "type": "number"
+          },
+          "basis_expansion_penalty_bps_per_hour": {
+            "title": "Basis Expansion Penalty Bps Per Hour",
+            "type": "number"
+          },
+          "basis_weight": {
+            "title": "Basis Weight",
+            "type": "number"
+          },
+          "default_order_size_usd": {
+            "title": "Default Order Size Usd",
+            "type": "number"
+          },
+          "exec_adl_critical_quantile": {
+            "title": "Exec Adl Critical Quantile",
+            "type": "integer"
+          },
+          "exec_adl_warn_quantile": {
+            "title": "Exec Adl Warn Quantile",
+            "type": "integer"
+          },
+          "exec_api_error_window_s": {
+            "title": "Exec Api Error Window S",
+            "type": "number"
+          },
+          "exec_dry_run": {
+            "title": "Exec Dry Run",
+            "type": "boolean"
+          },
+          "exec_enabled": {
+            "title": "Exec Enabled",
+            "type": "boolean"
+          },
+          "exec_margin_alert_pct": {
+            "title": "Exec Margin Alert Pct",
+            "type": "number"
+          },
+          "exec_margin_force_close_pct": {
+            "title": "Exec Margin Force Close Pct",
+            "type": "number"
+          },
+          "exec_recovery_cooldown_s": {
+            "title": "Exec Recovery Cooldown S",
+            "type": "number"
+          },
+          "exec_recovery_require_manual_ack": {
+            "title": "Exec Recovery Require Manual Ack",
+            "type": "boolean"
+          },
+          "exec_slippage_sample_size": {
+            "title": "Exec Slippage Sample Size",
+            "type": "integer"
+          },
+          "exec_stop_on_api_errors_per_window": {
+            "title": "Exec Stop On Api Errors Per Window",
+            "type": "integer"
+          },
+          "exec_stop_on_consecutive_rollbacks": {
+            "title": "Exec Stop On Consecutive Rollbacks",
+            "type": "integer"
+          },
+          "exec_stop_on_median_slippage_bps": {
+            "title": "Exec Stop On Median Slippage Bps",
+            "type": "number"
+          },
+          "exec_stop_on_stale_data_s": {
+            "title": "Exec Stop On Stale Data S",
+            "type": "number"
+          },
+          "exec_strategy_profile_id": {
+            "title": "Exec Strategy Profile Id",
+            "type": "string"
+          },
+          "expected_hold_hours": {
+            "title": "Expected Hold Hours",
+            "type": "number"
+          },
+          "funding_avg_long_hours": {
+            "title": "Funding Avg Long Hours",
+            "type": "number"
+          },
+          "funding_avg_short_hours": {
+            "title": "Funding Avg Short Hours",
+            "type": "number"
+          },
+          "funding_ema_span_hours": {
+            "title": "Funding Ema Span Hours",
+            "type": "number"
+          },
+          "funding_instability_min_std_apr": {
+            "title": "Funding Instability Min Std Apr",
+            "type": "number"
+          },
+          "funding_instability_multiplier": {
+            "title": "Funding Instability Multiplier",
+            "type": "number"
+          },
+          "funding_instability_threshold": {
+            "title": "Funding Instability Threshold",
+            "type": "number"
+          },
+          "hl_maker_fee_per_side": {
+            "title": "Hl Maker Fee Per Side",
+            "type": "number"
+          },
+          "hl_taker_fee_per_side": {
+            "title": "Hl Taker Fee Per Side",
+            "type": "number"
+          },
+          "hold_window_instability_scale": {
+            "title": "Hold Window Instability Scale",
+            "type": "number"
+          },
+          "lighter_maker_fee_per_side": {
+            "title": "Lighter Maker Fee Per Side",
+            "type": "number"
+          },
+          "lighter_taker_fee_per_side": {
+            "title": "Lighter Taker Fee Per Side",
+            "type": "number"
+          },
+          "liquidity_weight": {
+            "title": "Liquidity Weight",
+            "type": "number"
+          },
+          "loop_interval_s": {
+            "title": "Loop Interval S",
+            "type": "number"
+          },
+          "max_basis_bps": {
+            "title": "Max Basis Bps",
+            "type": "number"
+          },
+          "max_basis_divergence_hours": {
+            "title": "Max Basis Divergence Hours",
+            "type": "number"
+          },
+          "max_basis_trend_bps_per_tick": {
+            "title": "Max Basis Trend Bps Per Tick",
+            "type": "number"
+          },
+          "max_entry_adl_level": {
+            "title": "Max Entry Adl Level",
+            "type": "integer"
+          },
+          "max_funding_timing_asymmetry_hours": {
+            "title": "Max Funding Timing Asymmetry Hours",
+            "type": "number"
+          },
+          "max_reasonable_apr": {
+            "title": "Max Reasonable Apr",
+            "type": "number"
+          },
+          "min_open_interest": {
+            "title": "Min Open Interest",
+            "type": "number"
+          },
+          "min_persistence_hours": {
+            "title": "Min Persistence Hours",
+            "type": "number"
+          },
+          "min_score_bps": {
+            "title": "Min Score Bps",
+            "type": "number"
+          },
+          "min_volume_24h": {
+            "title": "Min Volume 24H",
+            "type": "number"
+          },
+          "real_depth_proxy_floor_ratio": {
+            "title": "Real Depth Proxy Floor Ratio",
+            "type": "number"
+          },
+          "require_isolated_margin": {
+            "title": "Require Isolated Margin",
+            "type": "boolean"
+          },
+          "require_real_depth": {
+            "title": "Require Real Depth",
+            "type": "boolean"
+          },
+          "runbook_config_fields": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Runbook Config Fields",
+            "type": "array"
+          },
+          "runbook_presets": {
+            "additionalProperties": {
+              "additionalProperties": {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "boolean"
+                  }
+                ]
+              },
+              "type": "object"
+            },
+            "title": "Runbook Presets",
+            "type": "object"
+          },
+          "slippage_volume_depth_ratio": {
+            "title": "Slippage Volume Depth Ratio",
+            "type": "number"
+          },
+          "stale_data_s": {
+            "title": "Stale Data S",
+            "type": "number"
+          },
+          "timing_penalty_bps_per_hour": {
+            "title": "Timing Penalty Bps Per Hour",
+            "type": "number"
+          }
+        },
+        "required": [
+          "api_host",
+          "api_port",
+          "min_score_bps",
+          "min_volume_24h",
+          "min_open_interest",
+          "min_persistence_hours",
+          "anti_churn_cooldown_s",
+          "anti_churn_score_multiplier",
+          "hl_taker_fee_per_side",
+          "hl_maker_fee_per_side",
+          "lighter_taker_fee_per_side",
+          "lighter_maker_fee_per_side",
+          "default_order_size_usd",
+          "slippage_volume_depth_ratio",
+          "require_real_depth",
+          "real_depth_proxy_floor_ratio",
+          "expected_hold_hours",
+          "basis_weight",
+          "basis_bonus_cap_bps",
+          "basis_divergence_threshold_bps",
+          "max_basis_divergence_hours",
+          "basis_expansion_penalty_bps_per_hour",
+          "hold_window_instability_scale",
+          "liquidity_weight",
+          "timing_penalty_bps_per_hour",
+          "max_funding_timing_asymmetry_hours",
+          "max_basis_bps",
+          "max_basis_trend_bps_per_tick",
+          "funding_ema_span_hours",
+          "funding_avg_short_hours",
+          "funding_avg_long_hours",
+          "funding_instability_threshold",
+          "funding_instability_min_std_apr",
+          "funding_instability_multiplier",
+          "max_reasonable_apr",
+          "max_entry_adl_level",
+          "require_isolated_margin",
+          "allow_unknown_margin_mode",
+          "loop_interval_s",
+          "stale_data_s",
+          "exec_enabled",
+          "exec_dry_run",
+          "exec_strategy_profile_id",
+          "exec_stop_on_consecutive_rollbacks",
+          "exec_stop_on_api_errors_per_window",
+          "exec_api_error_window_s",
+          "exec_stop_on_median_slippage_bps",
+          "exec_slippage_sample_size",
+          "exec_stop_on_stale_data_s",
+          "exec_margin_alert_pct",
+          "exec_margin_force_close_pct",
+          "exec_adl_warn_quantile",
+          "exec_adl_critical_quantile",
+          "exec_recovery_cooldown_s",
+          "exec_recovery_require_manual_ack",
+          "backtest_capture_enabled",
+          "backtest_db_path",
+          "backtest_entry_score_bps",
+          "backtest_exit_score_bps",
+          "backtest_replay_cycle_hours",
+          "backtest_min_samples_per_symbol",
+          "backtest_strategy_lock_path",
+          "backtest_gate_require_lock_for_execution",
+          "backtest_gate_min_win_rate",
+          "backtest_gate_min_total_pnl_bps",
+          "backtest_gate_max_drawdown_bps",
+          "runbook_config_fields",
+          "runbook_presets"
+        ],
+        "title": "ConfigResponse",
+        "type": "object"
+      },
+      "ConfigUpdateRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "allow_unknown_margin_mode": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Allow Unknown Margin Mode"
+          },
+          "anti_churn_cooldown_s": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Anti Churn Cooldown S"
+          },
+          "anti_churn_score_multiplier": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Anti Churn Score Multiplier"
+          },
+          "basis_bonus_cap_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Basis Bonus Cap Bps"
+          },
+          "basis_divergence_threshold_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Basis Divergence Threshold Bps"
+          },
+          "basis_expansion_penalty_bps_per_hour": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Basis Expansion Penalty Bps Per Hour"
+          },
+          "basis_weight": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Basis Weight"
+          },
+          "default_order_size_usd": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Default Order Size Usd"
+          },
+          "expected_hold_hours": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expected Hold Hours"
+          },
+          "hold_window_instability_scale": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hold Window Instability Scale"
+          },
+          "max_basis_divergence_hours": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Basis Divergence Hours"
+          },
+          "max_entry_adl_level": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Entry Adl Level"
+          },
+          "max_reasonable_apr": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Reasonable Apr"
+          },
+          "min_open_interest": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Min Open Interest"
+          },
+          "min_persistence_hours": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Min Persistence Hours"
+          },
+          "min_score_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Min Score Bps"
+          },
+          "min_volume_24h": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Min Volume 24H"
+          },
+          "persist": {
+            "default": true,
+            "title": "Persist",
+            "type": "boolean"
+          },
+          "preset": {
+            "anyOf": [
+              {
+                "enum": [
+                  "conservative",
+                  "balanced",
+                  "aggressive",
+                  "exploratory"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Preset"
+          },
+          "real_depth_proxy_floor_ratio": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Real Depth Proxy Floor Ratio"
+          },
+          "require_isolated_margin": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Require Isolated Margin"
+          },
+          "require_real_depth": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Require Real Depth"
+          },
+          "stale_data_s": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Stale Data S"
+          }
+        },
+        "title": "ConfigUpdateRequest",
+        "type": "object"
+      },
+      "ExecutionPreflightCandidateItem": {
+        "properties": {
+          "combined_score": {
+            "title": "Combined Score",
+            "type": "number"
+          },
+          "long_exchange": {
+            "title": "Long Exchange",
+            "type": "string"
+          },
+          "reasons": {
+            "items": {
+              "$ref": "#/components/schemas/ExecutionPreflightCandidateReasonItem"
+            },
+            "title": "Reasons",
+            "type": "array"
+          },
+          "short_exchange": {
+            "title": "Short Exchange",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "ready",
+              "watching",
+              "blocked"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "symbol": {
+            "title": "Symbol",
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "long_exchange",
+          "short_exchange",
+          "combined_score",
+          "status"
+        ],
+        "title": "ExecutionPreflightCandidateItem",
+        "type": "object"
+      },
+      "ExecutionPreflightCandidateReasonItem": {
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "severity": {
+            "enum": [
+              "watching",
+              "blocked"
+            ],
+            "title": "Severity",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "severity",
+          "message"
+        ],
+        "title": "ExecutionPreflightCandidateReasonItem",
+        "type": "object"
+      },
+      "ExecutionPreflightGateItem": {
+        "properties": {
+          "lock_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lock Id"
+          },
+          "passed": {
+            "title": "Passed",
+            "type": "boolean"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "strategy_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Strategy Id"
+          },
+          "strategy_profile_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Strategy Profile Id"
+          }
+        },
+        "required": [
+          "passed"
+        ],
+        "title": "ExecutionPreflightGateItem",
+        "type": "object"
+      },
+      "ExecutionPreflightModeItem": {
+        "properties": {
+          "exec_dry_run": {
+            "title": "Exec Dry Run",
+            "type": "boolean"
+          },
+          "exec_enabled": {
+            "title": "Exec Enabled",
+            "type": "boolean"
+          },
+          "strategy_profile_id": {
+            "title": "Strategy Profile Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "exec_enabled",
+          "exec_dry_run",
+          "strategy_profile_id"
+        ],
+        "title": "ExecutionPreflightModeItem",
+        "type": "object"
+      },
+      "ExecutionPreflightReasonItem": {
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "severity": {
+            "enum": [
+              "watching",
+              "blocked"
+            ],
+            "title": "Severity",
+            "type": "string"
+          },
+          "source": {
+            "enum": [
+              "gate",
+              "runtime",
+              "candidate"
+            ],
+            "title": "Source",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "severity",
+          "source",
+          "message"
+        ],
+        "title": "ExecutionPreflightReasonItem",
+        "type": "object"
+      },
+      "ExecutionPreflightResponse": {
+        "properties": {
+          "blockers": {
+            "items": {
+              "$ref": "#/components/schemas/ExecutionPreflightReasonItem"
+            },
+            "title": "Blockers",
+            "type": "array"
+          },
+          "candidate": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ExecutionPreflightCandidateItem"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "checked_at": {
+            "title": "Checked At",
+            "type": "string"
+          },
+          "decision": {
+            "enum": [
+              "ready",
+              "watching",
+              "blocked"
+            ],
+            "title": "Decision",
+            "type": "string"
+          },
+          "gate": {
+            "$ref": "#/components/schemas/ExecutionPreflightGateItem"
+          },
+          "lock_detail_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lock Detail Url"
+          },
+          "lock_metrics": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BacktestMetricsItem"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "mode": {
+            "$ref": "#/components/schemas/ExecutionPreflightModeItem"
+          },
+          "ready": {
+            "title": "Ready",
+            "type": "boolean"
+          },
+          "runtime": {
+            "$ref": "#/components/schemas/ExecutionPreflightRuntimeItem"
+          }
+        },
+        "required": [
+          "ready",
+          "decision",
+          "checked_at",
+          "mode",
+          "gate",
+          "runtime"
+        ],
+        "title": "ExecutionPreflightResponse",
+        "type": "object"
+      },
+      "ExecutionPreflightRuntimeItem": {
+        "properties": {
+          "exchange_last_ok": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "title": "Exchange Last Ok",
+            "type": "object"
+          },
+          "last_updated_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Updated At"
+          },
+          "poll_count_success": {
+            "title": "Poll Count Success",
+            "type": "integer"
+          },
+          "screener_ready_candidates": {
+            "title": "Screener Ready Candidates",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "poll_count_success",
+          "exchange_last_ok",
+          "screener_ready_candidates"
+        ],
+        "title": "ExecutionPreflightRuntimeItem",
+        "type": "object"
+      },
+      "FundingForecastItem": {
+        "properties": {
+          "avg_24h_apr": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avg 24H Apr"
+          },
+          "avg_72h_apr": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avg 72H Apr"
+          },
+          "expected_apr": {
+            "title": "Expected Apr",
+            "type": "number"
+          },
+          "is_unstable": {
+            "default": false,
+            "title": "Is Unstable",
+            "type": "boolean"
+          },
+          "std_apr": {
+            "default": 0.0,
+            "title": "Std Apr",
+            "type": "number"
+          },
+          "trend": {
+            "default": "stable",
+            "enum": [
+              "rising",
+              "falling",
+              "stable"
+            ],
+            "title": "Trend",
+            "type": "string"
+          }
+        },
+        "required": [
+          "expected_apr"
+        ],
+        "title": "FundingForecastItem",
+        "type": "object"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "title": "Detail",
+            "type": "array"
+          }
+        },
+        "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "OpportunitiesResponse": {
+        "properties": {
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "opportunities": {
+            "items": {
+              "$ref": "#/components/schemas/OpportunityItem"
+            },
+            "title": "Opportunities",
+            "type": "array"
+          },
+          "ready_count": {
+            "title": "Ready Count",
+            "type": "integer"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          }
+        },
+        "required": [
+          "count",
+          "ready_count",
+          "opportunities"
+        ],
+        "title": "OpportunitiesResponse",
+        "type": "object"
+      },
+      "OpportunityItem": {
+        "properties": {
+          "basis_bonus_bps": {
+            "title": "Basis Bonus Bps",
+            "type": "number"
+          },
+          "basis_bps": {
+            "title": "Basis Bps",
+            "type": "number"
+          },
+          "basis_divergence_hours": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Basis Divergence Hours"
+          },
+          "basis_expansion_penalty_bps": {
+            "default": 0.0,
+            "title": "Basis Expansion Penalty Bps",
+            "type": "number"
+          },
+          "basis_trend": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Basis Trend"
+          },
+          "combined_score": {
+            "title": "Combined Score",
+            "type": "number"
+          },
+          "effective_hl_taker_fee": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Effective Hl Taker Fee"
+          },
+          "effective_hold_hours": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Effective Hold Hours"
+          },
+          "effective_lighter_taker_fee": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Effective Lighter Taker Fee"
+          },
+          "fee_impact_bps": {
+            "title": "Fee Impact Bps",
+            "type": "number"
+          },
+          "funding_diff_apr": {
+            "title": "Funding Diff Apr",
+            "type": "number"
+          },
+          "funding_edge_bps": {
+            "title": "Funding Edge Bps",
+            "type": "number"
+          },
+          "funding_instability_multiplier": {
+            "default": 1.0,
+            "title": "Funding Instability Multiplier",
+            "type": "number"
+          },
+          "funding_timing_asymmetry_hours": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Funding Timing Asymmetry Hours"
+          },
+          "funding_timing_penalty_bps": {
+            "title": "Funding Timing Penalty Bps",
+            "type": "number"
+          },
+          "hl_depth_source": {
+            "default": "none",
+            "enum": [
+              "real",
+              "proxy",
+              "none"
+            ],
+            "title": "Hl Depth Source",
+            "type": "string"
+          },
+          "hours_to_breakeven": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hours To Breakeven"
+          },
+          "lighter_depth_source": {
+            "default": "none",
+            "enum": [
+              "real",
+              "proxy",
+              "none"
+            ],
+            "title": "Lighter Depth Source",
+            "type": "string"
+          },
+          "liquidity_tier": {
+            "anyOf": [
+              {
+                "enum": [
+                  "H",
+                  "M",
+                  "L"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Liquidity Tier"
+          },
+          "long_exchange": {
+            "title": "Long Exchange",
+            "type": "string"
+          },
+          "long_forecast": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/FundingForecastItem"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "long_hours_to_next_funding": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Long Hours To Next Funding"
+          },
+          "long_rate_apr": {
+            "title": "Long Rate Apr",
+            "type": "number"
+          },
+          "min_profitable_hours": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Min Profitable Hours"
+          },
+          "persistence_hours": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Persistence Hours"
+          },
+          "reasons": {
+            "items": {
+              "$ref": "#/components/schemas/ReasonItem"
+            },
+            "title": "Reasons",
+            "type": "array"
+          },
+          "short_exchange": {
+            "title": "Short Exchange",
+            "type": "string"
+          },
+          "short_forecast": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/FundingForecastItem"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "short_hours_to_next_funding": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Short Hours To Next Funding"
+          },
+          "short_rate_apr": {
+            "title": "Short Rate Apr",
+            "type": "number"
+          },
+          "slippage_impact_bps": {
+            "default": 0.0,
+            "title": "Slippage Impact Bps",
+            "type": "number"
+          },
+          "status": {
+            "enum": [
+              "ready",
+              "watching",
+              "blocked"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "symbol": {
+            "title": "Symbol",
+            "type": "string"
+          },
+          "total_cost_bps": {
+            "default": 0.0,
+            "title": "Total Cost Bps",
+            "type": "number"
+          }
+        },
+        "required": [
+          "symbol",
+          "long_exchange",
+          "short_exchange",
+          "long_rate_apr",
+          "short_rate_apr",
+          "funding_diff_apr",
+          "funding_edge_bps",
+          "basis_bps",
+          "basis_bonus_bps",
+          "fee_impact_bps",
+          "funding_timing_penalty_bps",
+          "combined_score",
+          "status"
+        ],
+        "title": "OpportunityItem",
+        "type": "object"
+      },
+      "ReasonCode": {
+        "enum": [
+          "persistence_insufficient",
+          "break_even_window",
+          "score_below_min",
+          "funding_flips",
+          "basis_limit",
+          "basis_trend_unstable",
+          "basis_divergence_hard",
+          "basis_divergence_window",
+          "funding_timing_asymmetry",
+          "funding_unstable",
+          "funding_trend_thin_edge",
+          "stale_data",
+          "margin_mode_unknown",
+          "adl_limit",
+          "margin_mode_cross",
+          "anti_churn_cooldown"
+        ],
+        "title": "ReasonCode",
+        "type": "string"
+      },
+      "ReasonItem": {
+        "properties": {
+          "code": {
+            "$ref": "#/components/schemas/ReasonCode"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "severity": {
+            "enum": [
+              "watching",
+              "blocked"
+            ],
+            "title": "Severity",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "message",
+          "severity"
+        ],
+        "title": "ReasonItem",
+        "type": "object"
+      },
+      "StatusResponse": {
+        "properties": {
+          "exchange_last_ok": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "title": "Exchange Last Ok",
+            "type": "object"
+          },
+          "execution_backtest_gate_passed": {
+            "title": "Execution Backtest Gate Passed",
+            "type": "boolean"
+          },
+          "execution_backtest_gate_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Execution Backtest Gate Reason"
+          },
+          "execution_strategy_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Execution Strategy Id"
+          },
+          "execution_strategy_lock_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Execution Strategy Lock Id"
+          },
+          "execution_strategy_profile_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Execution Strategy Profile Id"
+          },
+          "last_poll_duration_ms": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Poll Duration Ms"
+          },
+          "last_poll_finished_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Poll Finished At"
+          },
+          "last_poll_started_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Poll Started At"
+          },
+          "last_updated_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Updated At"
+          },
+          "poll_count_failed": {
+            "title": "Poll Count Failed",
+            "type": "integer"
+          },
+          "poll_count_success": {
+            "title": "Poll Count Success",
+            "type": "integer"
+          },
+          "poll_count_total": {
+            "title": "Poll Count Total",
+            "type": "integer"
+          },
+          "screener_drop_counters": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Screener Drop Counters",
+            "type": "object"
+          },
+          "screener_post_cost_candidates": {
+            "title": "Screener Post Cost Candidates",
+            "type": "integer"
+          },
+          "screener_raw_candidates": {
+            "title": "Screener Raw Candidates",
+            "type": "integer"
+          },
+          "screener_ready_candidates": {
+            "title": "Screener Ready Candidates",
+            "type": "integer"
+          },
+          "screener_validated_candidates": {
+            "title": "Screener Validated Candidates",
+            "type": "integer"
+          },
+          "started_at": {
+            "title": "Started At",
+            "type": "string"
+          },
+          "uptime_s": {
+            "title": "Uptime S",
+            "type": "number"
+          }
+        },
+        "required": [
+          "uptime_s",
+          "started_at",
+          "poll_count_total",
+          "poll_count_success",
+          "poll_count_failed",
+          "exchange_last_ok",
+          "screener_raw_candidates",
+          "screener_post_cost_candidates",
+          "screener_validated_candidates",
+          "screener_ready_candidates",
+          "execution_backtest_gate_passed"
+        ],
+        "title": "StatusResponse",
+        "type": "object"
+      },
+      "ValidationError": {
+        "properties": {
+          "ctx": {
+            "title": "Context",
+            "type": "object"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "title": "Location",
+            "type": "array"
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Error Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError",
+        "type": "object"
+      },
+      "WsAuthTicketResponse": {
+        "properties": {
+          "expires_at": {
+            "title": "Expires At",
+            "type": "string"
+          },
+          "ticket": {
+            "title": "Ticket",
+            "type": "string"
+          },
+          "ttl_s": {
+            "title": "Ttl S",
+            "type": "number"
+          }
+        },
+        "required": [
+          "ticket",
+          "expires_at",
+          "ttl_s"
+        ],
+        "title": "WsAuthTicketResponse",
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "title": "Arbitrage Screener API",
+    "version": "0.3.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/backtest/gate": {
+      "get": {
+        "operationId": "get_backtest_gate_backtest_gate_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BacktestGateResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Backtest Gate"
+      }
+    },
+    "/backtest/lock": {
+      "post": {
+        "operationId": "lock_backtest_strategy_backtest_lock_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BacktestReplayRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BacktestLockResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Lock Backtest Strategy"
+      }
+    },
+    "/backtest/locks": {
+      "get": {
+        "operationId": "list_backtest_locks_backtest_locks_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 500,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BacktestLockListResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Backtest Locks"
+      }
+    },
+    "/backtest/locks/{lock_id}": {
+      "get": {
+        "operationId": "get_backtest_lock_by_id_backtest_locks__lock_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "lock_id",
+            "required": true,
+            "schema": {
+              "title": "Lock Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BacktestLockResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Backtest Lock By Id"
+      }
+    },
+    "/backtest/replay": {
+      "post": {
+        "operationId": "run_backtest_replay_backtest_replay_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BacktestReplayRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BacktestReplayResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Run Backtest Replay"
+      }
+    },
+    "/backtest/summary": {
+      "get": {
+        "operationId": "get_backtest_summary_backtest_summary_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BacktestSummaryResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Backtest Summary"
+      }
+    },
+    "/config": {
+      "get": {
+        "operationId": "get_config_config_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Config"
+      },
+      "patch": {
+        "operationId": "patch_config_config_patch",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfigUpdateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Patch Config"
+      }
+    },
+    "/execution/preflight": {
+      "get": {
+        "operationId": "get_execution_preflight_execution_preflight_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "symbol",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Symbol"
+            }
+          },
+          {
+            "in": "query",
+            "name": "include_candidate",
+            "required": false,
+            "schema": {
+              "default": true,
+              "title": "Include Candidate",
+              "type": "boolean"
+            }
+          },
+          {
+            "in": "query",
+            "name": "include_lock_metrics",
+            "required": false,
+            "schema": {
+              "default": false,
+              "title": "Include Lock Metrics",
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExecutionPreflightResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Execution Preflight"
+      }
+    },
+    "/opportunities": {
+      "get": {
+        "operationId": "get_opportunities_opportunities_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunitiesResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Opportunities"
+      }
+    },
+    "/status": {
+      "get": {
+        "operationId": "get_status_status_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatusResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Status"
+      }
+    },
+    "/ws/auth-ticket": {
+      "post": {
+        "operationId": "issue_ws_auth_ticket_ws_auth_ticket_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WsAuthTicketResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Issue Ws Auth Ticket"
+      }
+    }
+  }
+}
