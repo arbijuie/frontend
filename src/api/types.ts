@@ -92,8 +92,6 @@ export interface ConfigResponse {
   hl_maker_fee_per_side: number;
   lighter_taker_fee_per_side: number;
   lighter_maker_fee_per_side: number;
-  hl_fee_per_side?: number;
-  lighter_fee_per_side?: number;
   default_order_size_usd: number;
   slippage_volume_depth_ratio: number;
   require_real_depth: boolean;

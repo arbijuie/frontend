@@ -17,8 +17,6 @@ function makeConfig(): ConfigResponse {
     hl_maker_fee_per_side: 0,
     lighter_taker_fee_per_side: 0.001,
     lighter_maker_fee_per_side: 0,
-    hl_fee_per_side: 0.035,
-    lighter_fee_per_side: 0.001,
     default_order_size_usd: 1000,
     slippage_volume_depth_ratio: 0.5,
     require_real_depth: true,

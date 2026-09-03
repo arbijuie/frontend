@@ -38,8 +38,6 @@ function makeConfig(): ConfigResponse {
     hl_maker_fee_per_side: 0,
     lighter_taker_fee_per_side: 0.001,
     lighter_maker_fee_per_side: 0,
-    hl_fee_per_side: 0.035,
-    lighter_fee_per_side: 0.001,
     default_order_size_usd: 1000,
     slippage_volume_depth_ratio: 0.5,
     require_real_depth: true,
@@ -95,24 +93,6 @@ function makeConfig(): ConfigResponse {
 describe('ConfigPage', () => {
   beforeEach(() => {
     vi.resetAllMocks();
-  });
-
-  it('shows deprecation notice for fee aliases', () => {
-    mockedUseConfig.mockReturnValue({
-      data: makeConfig(),
-      error: null,
-      loading: false,
-      fetching: false,
-      refetch: vi.fn(),
-    });
-    mockedUseUpdateConfig.mockReturnValue({
-      mutateAsync: vi.fn(),
-      isPending: false,
-    } as never);
-
-    render(<ConfigPage />);
-
-    expect(screen.getByText(/compatibility-only for this release/i)).toBeTruthy();
   });
 
   it('does not send legacy fee alias keys in PATCH payload', async () => {

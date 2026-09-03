@@ -147,10 +147,6 @@ const ConfigPage = () => {
       {localError && <div className={layoutStyles.errorBox}>Error: {localError}</div>}
       {loading && !data && <div>Loading config...</div>}
       {hint && <div className={layoutStyles.hint}>{hint}</div>}
-      <div className={pageStyles.deprecationNote}>
-        Fee aliases are compatibility-only for this release and will be removed in the next
-        release. Use taker/maker fee fields as the canonical contract.
-      </div>
 
       {data && (
         <>
