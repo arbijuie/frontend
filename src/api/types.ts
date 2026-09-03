@@ -88,6 +88,10 @@ export interface ConfigResponse {
   min_persistence_hours: number;
   anti_churn_cooldown_s: number;
   anti_churn_score_multiplier: number;
+  hl_taker_fee_per_side: number;
+  hl_maker_fee_per_side: number;
+  lighter_taker_fee_per_side: number;
+  lighter_maker_fee_per_side: number;
   hl_fee_per_side: number;
   lighter_fee_per_side: number;
   default_order_size_usd: number;

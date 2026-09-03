@@ -49,8 +49,36 @@ const ConfigAccordion = ({ config }: ConfigAccordionProps) => {
         isOpen={openSections.has("Fees")}
         onToggle={() => toggleSection("Fees")}
       >
-        <ConfigRow label="Hyperliquid Fee (per side)" value={config.hl_fee_per_side} unit="%" />
-        <ConfigRow label="Lighter Fee (per side)" value={config.lighter_fee_per_side} unit="%" />
+        <ConfigRow
+          label="Hyperliquid Taker Fee (per side)"
+          value={config.hl_taker_fee_per_side}
+          unit="%"
+        />
+        <ConfigRow
+          label="Hyperliquid Maker Fee (per side)"
+          value={config.hl_maker_fee_per_side}
+          unit="%"
+        />
+        <ConfigRow
+          label="Lighter Taker Fee (fallback, per side)"
+          value={config.lighter_taker_fee_per_side}
+          unit="%"
+        />
+        <ConfigRow
+          label="Lighter Maker Fee (per side)"
+          value={config.lighter_maker_fee_per_side}
+          unit="%"
+        />
+        <ConfigRow
+          label="Legacy Hyperliquid Fee (taker alias)"
+          value={config.hl_fee_per_side}
+          unit="%"
+        />
+        <ConfigRow
+          label="Legacy Lighter Fee (taker alias)"
+          value={config.lighter_fee_per_side}
+          unit="%"
+        />
       </ConfigSection>
 
       <ConfigSection
