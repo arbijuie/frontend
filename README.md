@@ -86,7 +86,7 @@ pnpm test
   - Search by symbol, filter by status (ready/watching/blocked), sort (score/funding APR/breakeven)
   - Live countdown to next funding time per leg
   - Summary stats (total/ready/watching/blocked)
-  - Auto-refresh every 30s (matches backend's `ARB_LOOP_INTERVAL_S`) + manual refresh button
+  - Auto-refresh every 32s (`POLL_INTERVAL_MS`) + manual refresh button
   - Validation reasons are structured objects (`code`, `message`, `severity`) rendered per card
   - Pipeline counters and diagnostics hints for empty-result triage (`raw`, `post-cost`, `validated`, `ready`)
   - Runtime tuning snapshot card (`min_score`, `hold`, `order size`, `real depth`, `max diff APR`)
