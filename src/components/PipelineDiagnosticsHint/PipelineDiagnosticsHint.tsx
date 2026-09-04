@@ -12,9 +12,11 @@ const PipelineDiagnosticsHint = ({ status }: PipelineDiagnosticsHintProps) => {
   const ready = status.screener_ready_candidates;
   const drops = status.screener_drop_counters ?? {};
   const strictDepth = drops.strict_depth ?? 0;
-  const strictDepthHl = drops.strict_depth_hyperliquid ?? 0;
-  const strictDepthLt = drops.strict_depth_lighter ?? 0;
-  const hlL2Errors = drops.hl_l2_book_fetch_error ?? 0;
+  const strictDepthHyperliquid =
+    drops.strict_depth_by_exchange_hyperliquid ?? drops.strict_depth_hyperliquid ?? 0;
+  const strictDepthLighter = drops.strict_depth_by_exchange_lighter ?? drops.strict_depth_lighter ?? 0;
+  const hyperliquidL2Errors =
+    drops.l2_book_fetch_error_hyperliquid ?? drops.hl_l2_book_fetch_error ?? 0;
   const minScoreDrops = drops.min_score ?? 0;
   const minVolumeDrops = drops.min_volume ?? 0;
   const basisBonusCapped = drops.basis_bonus_capped ?? 0;
@@ -28,9 +30,9 @@ const PipelineDiagnosticsHint = ({ status }: PipelineDiagnosticsHintProps) => {
       return (
         <div className={styles.warnBox}>
           <span className={`${styles.badge} ${styles.warnBadge}`}>warn</span>
-          All {raw} raw candidates were dropped by strict depth checks ({strictDepth} drops: HL{' '}
-          {strictDepthHl}, Lighter {strictDepthLt}).
-          {hlL2Errors > 0 && ` HL l2Book fetch errors: ${hlL2Errors}.`}
+          All {raw} raw candidates were dropped by strict depth checks ({strictDepth} drops:
+          Hyperliquid {strictDepthHyperliquid}, Lighter {strictDepthLighter}).
+          {hyperliquidL2Errors > 0 && ` Hyperliquid l2Book fetch errors: ${hyperliquidL2Errors}.`}
         </div>
       );
     }
