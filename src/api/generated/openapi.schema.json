@@ -658,6 +658,13 @@
             "title": "Stale Data S",
             "type": "number"
           },
+          "taker_fee_per_side_by_exchange": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "title": "Taker Fee Per Side By Exchange",
+            "type": "object"
+          },
           "timing_penalty_bps_per_hour": {
             "title": "Timing Penalty Bps Per Hour",
             "type": "number"
@@ -676,6 +683,7 @@
           "hl_maker_fee_per_side",
           "lighter_taker_fee_per_side",
           "lighter_maker_fee_per_side",
+          "taker_fee_per_side_by_exchange",
           "default_order_size_usd",
           "slippage_volume_depth_ratio",
           "require_real_depth",
@@ -1453,16 +1461,17 @@
             "title": "Combined Score",
             "type": "number"
           },
-          "effective_hl_taker_fee": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Effective Hl Taker Fee"
+          "depth_source_by_exchange": {
+            "additionalProperties": {
+              "enum": [
+                "real",
+                "proxy",
+                "none"
+              ],
+              "type": "string"
+            },
+            "title": "Depth Source By Exchange",
+            "type": "object"
           },
           "effective_hold_hours": {
             "anyOf": [
@@ -1475,16 +1484,12 @@
             ],
             "title": "Effective Hold Hours"
           },
-          "effective_lighter_taker_fee": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Effective Lighter Taker Fee"
+          "effective_taker_fee_by_exchange": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "title": "Effective Taker Fee By Exchange",
+            "type": "object"
           },
           "fee_impact_bps": {
             "title": "Fee Impact Bps",
@@ -1518,16 +1523,6 @@
             "title": "Funding Timing Penalty Bps",
             "type": "number"
           },
-          "hl_depth_source": {
-            "default": "none",
-            "enum": [
-              "real",
-              "proxy",
-              "none"
-            ],
-            "title": "Hl Depth Source",
-            "type": "string"
-          },
           "hours_to_breakeven": {
             "anyOf": [
               {
@@ -1538,16 +1533,6 @@
               }
             ],
             "title": "Hours To Breakeven"
-          },
-          "lighter_depth_source": {
-            "default": "none",
-            "enum": [
-              "real",
-              "proxy",
-              "none"
-            ],
-            "title": "Lighter Depth Source",
-            "type": "string"
           },
           "liquidity_tier": {
             "anyOf": [
