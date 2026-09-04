@@ -1,11 +1,11 @@
-import styles from './OpportunityCard.module.scss';
-import { useState } from 'react';
-import type { OpportunityItem, FundingTrend } from '../../api/types';
-import StatusBadge from '../StatusBadge/StatusBadge';
-import ExchangeBadge from '../ExchangeBadge/ExchangeBadge';
-import { signColor, getFundingTargetTime, formatCountdown } from '../../lib/format';
+import styles from "./OpportunityCard.module.scss";
+import { useState } from "react";
+import type { OpportunityItem, FundingTrend } from "../../api/types";
+import StatusBadge from "../StatusBadge/StatusBadge";
+import ExchangeBadge from "../ExchangeBadge/ExchangeBadge";
+import { signColor, getFundingTargetTime, formatCountdown } from "../../lib/format";
 
-const trendIcon: Record<FundingTrend, string> = { rising: '↑', falling: '↓', stable: '→' };
+const trendIcon: Record<FundingTrend, string> = { rising: "↑", falling: "↓", stable: "→" };
 const trendClass: Record<FundingTrend, string> = {
   rising: styles.positive,
   falling: styles.negative,
@@ -104,19 +104,19 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
         <div>
           <div className={styles.metricLabel}>Breakeven</div>
           <div className={styles.metricValue}>
-            {item.hours_to_breakeven != null ? `${item.hours_to_breakeven.toFixed(1)}h` : '—'}
+            {item.hours_to_breakeven != null ? `${item.hours_to_breakeven.toFixed(1)}h` : "—"}
           </div>
         </div>
         <div>
           <div className={styles.metricLabel}>Next funding (L)</div>
-          <div className={`${styles.metricValue} ${longCountdown?.urgent ? styles.negative : ''}`}>
-            {longCountdown ? longCountdown.text : '—'}
+          <div className={`${styles.metricValue} ${longCountdown?.urgent ? styles.negative : ""}`}>
+            {longCountdown ? longCountdown.text : "—"}
           </div>
         </div>
         <div>
           <div className={styles.metricLabel}>Next funding (S)</div>
-          <div className={`${styles.metricValue} ${shortCountdown?.urgent ? styles.negative : ''}`}>
-            {shortCountdown ? shortCountdown.text : '—'}
+          <div className={`${styles.metricValue} ${shortCountdown?.urgent ? styles.negative : ""}`}>
+            {shortCountdown ? shortCountdown.text : "—"}
           </div>
         </div>
       </div>
@@ -125,12 +125,14 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
         <div className={styles.instabilityBadge}>⚠ Funding unstable</div>
       )}
 
-      {item.reasons.length > 0 && (
-        <div className={styles.reasons}>{item.reasons.map((reason) => reason.message).join(', ')}</div>
-      )}
+      {item.reasons?.length ? (
+        <div className={styles.reasons}>
+          {item.reasons.map((reason) => reason.message).join(", ")}
+        </div>
+      ) : null}
 
       <button className={styles.expandButton} onClick={() => setExpanded(!expanded)}>
-        {expanded ? 'Hide details' : 'More details'}
+        {expanded ? "Hide details" : "More details"}
       </button>
 
       {expanded && (
@@ -157,12 +159,16 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
             </div>
             <div className={styles.detailRow}>
               <span>Basis divergence penalty</span>
-              <span className={styles.negative}>{formatSigned(-item.basis_expansion_penalty_bps)}</span>
+              <span className={styles.negative}>
+                {formatSigned(-item.basis_expansion_penalty_bps)}
+              </span>
             </div>
             {Math.abs(scoreAdjustment) >= 0.1 && (
               <div className={styles.detailRow}>
                 <span>Adjustment (instability/liquidity/rounding)</span>
-                <span className={styles[signColor(scoreAdjustment)]}>{formatSigned(scoreAdjustment)}</span>
+                <span className={styles[signColor(scoreAdjustment)]}>
+                  {formatSigned(scoreAdjustment)}
+                </span>
               </div>
             )}
             <div className={`${styles.detailRow} ${styles.breakdownTotal}`}>
@@ -176,7 +182,7 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
           <div className={styles.detailRow}>
             <span>Persistence</span>
             <span>
-              {item.persistence_hours != null ? `${item.persistence_hours.toFixed(1)}h` : '—'}
+              {item.persistence_hours != null ? `${item.persistence_hours.toFixed(1)}h` : "—"}
             </span>
           </div>
           <div className={styles.detailRow}>
@@ -185,7 +191,7 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
           </div>
           <div className={styles.detailRow}>
             <span>Basis trend</span>
-            <span>{item.basis_trend != null ? item.basis_trend.toFixed(2) : '—'}</span>
+            <span>{item.basis_trend != null ? item.basis_trend.toFixed(2) : "—"}</span>
           </div>
           <div className={styles.detailRow}>
             <span>Fee impact</span>
@@ -214,8 +220,8 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
               <div className={styles.detailRow}>
                 <span>Avg 24h / 72h (long)</span>
                 <span>
-                  {item.long_forecast.avg_24h_apr?.toFixed(2) ?? '—'} /{' '}
-                  {item.long_forecast.avg_72h_apr?.toFixed(2) ?? '—'}
+                  {item.long_forecast.avg_24h_apr?.toFixed(2) ?? "—"} /{" "}
+                  {item.long_forecast.avg_72h_apr?.toFixed(2) ?? "—"}
                 </span>
               </div>
             </>
@@ -235,8 +241,8 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
               <div className={styles.detailRow}>
                 <span>Avg 24h / 72h (short)</span>
                 <span>
-                  {item.short_forecast.avg_24h_apr?.toFixed(2) ?? '—'} /{' '}
-                  {item.short_forecast.avg_72h_apr?.toFixed(2) ?? '—'}
+                  {item.short_forecast.avg_24h_apr?.toFixed(2) ?? "—"} /{" "}
+                  {item.short_forecast.avg_72h_apr?.toFixed(2) ?? "—"}
                 </span>
               </div>
             </>

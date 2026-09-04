@@ -13,15 +13,20 @@ function makeStatus(overrides: Partial<StatusResponse> = {}): StatusResponse {
     poll_count_total: 1,
     poll_count_success: 1,
     poll_count_failed: 0,
+
     exchange_last_ok: {
       hyperliquid: true,
       lighter: true,
     },
+
+    execution_backtest_gate_passed: true,
+
     screener_raw_candidates: 10,
     screener_post_cost_candidates: 5,
     screener_validated_candidates: 5,
     screener_ready_candidates: 1,
     screener_drop_counters: {},
+
     ...overrides,
   };
 }

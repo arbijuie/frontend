@@ -84,9 +84,7 @@ const ConfigPage = () => {
   }, [data, editableNumericFields, overrides]);
 
   const requireRealDepthDraft = requireRealDepthOverride ?? data?.require_real_depth ?? true;
-  const requireRealDepthChanged = data
-    ? requireRealDepthDraft !== data.require_real_depth
-    : false;
+  const requireRealDepthChanged = data ? requireRealDepthDraft !== data.require_real_depth : false;
 
   const onResetDraft = () => {
     if (!data) {
@@ -103,7 +101,7 @@ const ConfigPage = () => {
       return;
     }
 
-    const parsed: Record<string, number> = {};
+    const parsed: Partial<Record<EditableConfigField, number>> = {};
     for (const field of editableNumericFields) {
       const next = Number(draft[field]);
       if (!Number.isFinite(next)) {
@@ -125,11 +123,11 @@ const ConfigPage = () => {
     setLocalError(null);
     setHint(null);
     try {
-      const payload: ConfigUpdateRequest = { persist: true };
-      Object.assign(payload as Record<string, number>, parsed);
-      if (requireRealDepthChanged) {
-        payload.require_real_depth = requireRealDepthDraft;
-      }
+      const payload: ConfigUpdateRequest = {
+        persist: true,
+        ...parsed,
+        ...(requireRealDepthChanged ? { require_real_depth: requireRealDepthDraft } : {}),
+      };
       await updateConfig.mutateAsync(payload);
       setOverrides({});
       setRequireRealDepthOverride(null);

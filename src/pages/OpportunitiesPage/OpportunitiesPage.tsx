@@ -91,7 +91,7 @@ export default function OpportunitiesPage() {
       {data && data.opportunities.length > 0 && (
         <>
           <StatsGrid items={data.opportunities} />
-          <OpportunitiesList items={data.opportunities} updatedAt={data.updated_at} now={now} />
+          <OpportunitiesList items={data.opportunities} updatedAt={data.updated_at ?? null} now={now} />
         </>
       )}
 
