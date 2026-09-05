@@ -1,4 +1,4 @@
-# Arbijuie Frontend
+﻿# Arbijuie Frontend
 
 Public operator interface for the Arbijuie funding-rate arbitrage product.
 
