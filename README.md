@@ -101,7 +101,7 @@ pnpm types:check
   - Auto-refresh every 32s (`POLL_INTERVAL_MS`) + manual refresh button
   - Validation reasons are structured objects (`code`, `message`, `severity`) rendered per card
   - Pipeline counters and diagnostics hints for empty-result triage (`raw`, `post-cost`, `validated`, `ready`)
-  - Runtime tuning snapshot card (`min_score`, `hold`, `order size`, `real depth`, `max diff APR`)
+  - Runtime tuning snapshot card (`min_score`, `hold`, `order size`, `max entry slippage`, `depth quality`, `max diff APR`)
 - **Config page** — reads live config (`GET /config`) and can apply updates (`PATCH /config`)
   - One-click preset apply (Conservative/Balanced/Aggressive)
   - Custom edits for runbook fields only (same scope as backend `PATCH /config`)

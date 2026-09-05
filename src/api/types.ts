@@ -7,6 +7,7 @@ type _FundingForecastItem = ApiSchemas["FundingForecastItem"];
 type _ConfigUpdateRequest = ApiSchemas["ConfigUpdateRequest"];
 
 export type LiquidityTier = NonNullable<_OpportunityItem["liquidity_tier"]>;
+export type DepthQuality = NonNullable<_OpportunityItem["depth_quality"]>;
 export type OpportunityStatus = _OpportunityItem["status"];
 export type FundingTrend = _FundingForecastItem["trend"];
 export type OpportunityReasonSeverity = ApiSchemas["ReasonItem"]["severity"];

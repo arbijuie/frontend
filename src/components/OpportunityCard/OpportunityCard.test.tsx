@@ -38,6 +38,8 @@ function makeItem(): OpportunityItem {
     basis_trend: null,
     basis_divergence_hours: null,
     liquidity_tier: 'M',
+    recommended_size_usd: 1000,
+    depth_quality: 'B',
     status: 'watching',
     reasons: [
       {

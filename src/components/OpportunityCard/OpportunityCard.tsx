@@ -202,6 +202,18 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
             <span>{item.slippage_impact_bps.toFixed(1)} bps</span>
           </div>
           <div className={styles.detailRow}>
+            <span>Recommended size</span>
+            <span>
+              {item.recommended_size_usd != null
+                ? `$${item.recommended_size_usd.toLocaleString()}`
+                : "—"}
+            </span>
+          </div>
+          <div className={styles.detailRow}>
+            <span>Depth quality</span>
+            <span>{item.depth_quality ?? "—"}</span>
+          </div>
+          <div className={styles.detailRow}>
             <span>Total cost</span>
             <span>{item.total_cost_bps.toFixed(1)} bps</span>
           </div>

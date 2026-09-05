@@ -77,6 +77,8 @@ Eventual goal: a Telegram bot sending similar opportunity data as notifications 
 - **Breakeven** (`hours_to_breakeven`) — hours needed to hold the position before fees are covered. `null` means it couldn't be calculated.
 - **Status** (`ready`/`watching`/`blocked`) — the backend's own entry validator verdict. `ready` = passed all checks. `watching` = candidate but not stable enough yet. `blocked` = currently not tradable. Don't visually treat `watching`/`blocked` as equal to `ready` (e.g. "top score" stats should only consider `ready` items).
 - **Liquidity tier** (`H`/`M`/`L`) — rough liquidity classification; a high score on a low-liquidity (`L`) symbol deserves more caution, not less.
+- **Recommended size** (`recommended_size_usd`) — liquidity-capped size the screener used for slippage (not a live order).
+- **Depth quality** (`depth_quality`) — `A`/`B`/`C`/`D` from entry slippage at the recommended size. Below the configured floor is `blocked`.
 
 ## Funding Countdown Timer
 
