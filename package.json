@@ -3,6 +3,12 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "prettier": {
+    "semi": true,
+    "singleQuote": false,
+    "trailingComma": "es5",
+    "printWidth": 100
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
