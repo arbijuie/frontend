@@ -687,6 +687,10 @@ export interface components {
             };
             /** Fee Impact Bps */
             fee_impact_bps: number;
+            /** Fee Source By Exchange */
+            fee_source_by_exchange?: {
+                [key: string]: "real" | "config";
+            };
             /** Funding Diff Apr */
             funding_diff_apr: number;
             /** Funding Edge Bps */
@@ -746,7 +750,7 @@ export interface components {
          * ReasonCode
          * @enum {string}
          */
-        ReasonCode: "persistence_insufficient" | "break_even_window" | "score_below_min" | "funding_flips" | "basis_limit" | "basis_trend_unstable" | "basis_divergence_hard" | "basis_divergence_window" | "funding_timing_asymmetry" | "funding_unstable" | "funding_trend_thin_edge" | "stale_data" | "margin_mode_unknown" | "adl_limit" | "margin_mode_cross" | "anti_churn_cooldown";
+        ReasonCode: "persistence_insufficient" | "break_even_window" | "score_below_min" | "funding_flips" | "basis_limit" | "basis_trend_unstable" | "basis_divergence_hard" | "basis_divergence_window" | "funding_timing_asymmetry" | "funding_unstable" | "funding_trend_thin_edge" | "stale_data" | "real_depth_unavailable" | "real_fee_unavailable" | "margin_mode_unknown" | "adl_limit" | "margin_mode_cross" | "anti_churn_cooldown";
         /** ReasonItem */
         ReasonItem: {
             code: components["schemas"]["ReasonCode"];

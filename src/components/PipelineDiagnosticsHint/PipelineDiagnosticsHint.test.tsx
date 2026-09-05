@@ -70,7 +70,7 @@ describe('PipelineDiagnosticsHint', () => {
       />,
     );
 
-    expect(screen.getByText(/cost filters are removing all candidates/i)).toBeTruthy();
+    expect(screen.getByText(/verify live depth\/fee data availability/i)).toBeTruthy();
   });
 
   it('shows warn when no raw candidates and exchange is down', () => {
@@ -152,6 +152,25 @@ describe('PipelineDiagnosticsHint', () => {
     );
 
     expect(screen.getByText(/none are ready yet/i)).toBeTruthy();
+  });
+
+  it('shows source-gap diagnostics when validated candidates miss real data', () => {
+    render(
+      <PipelineDiagnosticsHint
+        status={makeStatus({
+          screener_raw_candidates: 7,
+          screener_post_cost_candidates: 4,
+          screener_validated_candidates: 4,
+          screener_ready_candidates: 0,
+          screener_drop_counters: {
+            missing_real_depth: 3,
+            missing_real_fee: 2,
+          },
+        })}
+      />,
+    );
+
+    expect(screen.getByText(/real-source gaps/i)).toBeTruthy();
   });
 
   it('shows basis dampener diagnostics when validated but no ready candidates', () => {

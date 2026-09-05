@@ -19,6 +19,8 @@ const PipelineDiagnosticsHint = ({ status }: PipelineDiagnosticsHintProps) => {
     drops.l2_book_fetch_error_hyperliquid ?? drops.hl_l2_book_fetch_error ?? 0;
   const minScoreDrops = drops.min_score ?? 0;
   const minVolumeDrops = drops.min_volume ?? 0;
+  const missingRealDepth = drops.missing_real_depth ?? 0;
+  const missingRealFee = drops.missing_real_fee ?? 0;
   const basisBonusCapped = drops.basis_bonus_capped ?? 0;
   const adaptiveHoldApplied = drops.adaptive_hold_applied ?? 0;
   const basisDivergencePenalty = drops.basis_divergence_penalty ?? 0;
@@ -39,8 +41,8 @@ const PipelineDiagnosticsHint = ({ status }: PipelineDiagnosticsHintProps) => {
     return (
       <div className={styles.warnBox}>
         <span className={`${styles.badge} ${styles.warnBadge}`}>warn</span>
-        Cost filters are removing all candidates. Try reducing default_order_size_usd and/or
-        disabling require_real_depth for local diagnostics.
+        Cost filters are removing all candidates. Try reducing default_order_size_usd and
+        verify live depth/fee data availability.
       </div>
     );
   }
@@ -82,6 +84,15 @@ const PipelineDiagnosticsHint = ({ status }: PipelineDiagnosticsHintProps) => {
   }
 
   if (validated > 0 && ready === 0) {
+    if (missingRealDepth > 0 || missingRealFee > 0) {
+      return (
+        <div className={styles.infoBox}>
+          <span className={`${styles.badge} ${styles.infoBadge}`}>info</span>
+          Candidates are present but not ready due to real-source gaps: missing real depth{' '}
+          {missingRealDepth}, missing real fee {missingRealFee}.
+        </div>
+      );
+    }
     if (basisBonusCapped > 0 || adaptiveHoldApplied > 0 || basisDivergencePenalty > 0) {
       return (
         <div className={styles.infoBox}>

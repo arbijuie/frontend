@@ -1495,6 +1495,17 @@
             "title": "Fee Impact Bps",
             "type": "number"
           },
+          "fee_source_by_exchange": {
+            "additionalProperties": {
+              "enum": [
+                "real",
+                "config"
+              ],
+              "type": "string"
+            },
+            "title": "Fee Source By Exchange",
+            "type": "object"
+          },
           "funding_diff_apr": {
             "title": "Funding Diff Apr",
             "type": "number"
@@ -1693,6 +1704,8 @@
           "funding_unstable",
           "funding_trend_thin_edge",
           "stale_data",
+          "real_depth_unavailable",
+          "real_fee_unavailable",
           "margin_mode_unknown",
           "adl_limit",
           "margin_mode_cross",
