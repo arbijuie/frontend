@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 
 import OpportunityCard from './OpportunityCard';
-import type { OpportunityItem } from '../../api/types';
+import { type OpportunityItem, TEST_TAKER_FEE_BY_EXCHANGE } from '../../api/types';
 
 function makeItem(): OpportunityItem {
   return {
@@ -18,10 +18,11 @@ function makeItem(): OpportunityItem {
     fee_impact_bps: 2,
     slippage_impact_bps: 1,
     total_cost_bps: 3,
-    hl_depth_source: 'real',
-    lighter_depth_source: 'real',
-    effective_hl_taker_fee: null,
-    effective_lighter_taker_fee: null,
+    depth_source_by_exchange: {
+      hyperliquid: 'real',
+      lighter: 'real',
+    },
+    effective_taker_fee_by_exchange: TEST_TAKER_FEE_BY_EXCHANGE,
     long_hours_to_next_funding: 0.5,
     short_hours_to_next_funding: 0.2,
     funding_timing_asymmetry_hours: 0.3,

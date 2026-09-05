@@ -23,3 +23,10 @@ export type ConfigUpdateRequest = _ConfigUpdateRequest;
 
 export type StatusResponse = ApiSchemas["StatusResponse"];
 export type WsAuthTicketResponse = ApiSchemas["WsAuthTicketResponse"];
+
+export const TEST_HYPERLIQUID_TAKER_FEE = 0.035;
+export const TEST_LIGHTER_TAKER_FEE = 0.001;
+export const TEST_TAKER_FEE_BY_EXCHANGE: Record<string, number> = {
+	hyperliquid: TEST_HYPERLIQUID_TAKER_FEE,
+	lighter: TEST_LIGHTER_TAKER_FEE,
+};
