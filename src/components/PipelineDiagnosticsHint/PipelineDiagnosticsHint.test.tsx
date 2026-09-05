@@ -202,6 +202,22 @@ describe('PipelineDiagnosticsHint', () => {
     expect(screen.getByText(/risk dampeners active/i)).toBeTruthy();
   });
 
+  it('uses zero defaults when drop counters are absent', () => {
+    render(
+      <PipelineDiagnosticsHint
+        status={makeStatus({
+          screener_raw_candidates: 7,
+          screener_post_cost_candidates: 4,
+          screener_validated_candidates: 4,
+          screener_ready_candidates: 0,
+          screener_drop_counters: undefined,
+        })}
+      />,
+    );
+
+    expect(screen.getByText(/monitor score\/cost thresholds/i)).toBeTruthy();
+  });
+
   it('renders nothing when no diagnostic message applies', () => {
     const { container } = render(
       <PipelineDiagnosticsHint

@@ -51,4 +51,21 @@ describe('useTransientFlag', () => {
 
     vi.useRealTimers();
   });
+
+  it('clears pending timeout on unmount', () => {
+    vi.useFakeTimers();
+    const clearTimeoutSpy = vi.spyOn(window, 'clearTimeout');
+    const { result, unmount } = renderHook(() => useTransientFlag(2000));
+
+    act(() => {
+      result.current.trigger();
+    });
+
+    unmount();
+
+    expect(clearTimeoutSpy).toHaveBeenCalled();
+
+    clearTimeoutSpy.mockRestore();
+    vi.useRealTimers();
+  });
 });
