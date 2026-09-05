@@ -2,6 +2,35 @@ import { render, screen } from '@testing-library/react';
 import PipelineDiagnosticsHint from './PipelineDiagnosticsHint';
 import type { StatusResponse } from '../../api/types';
 
+function makeDropCounters(
+  overrides: Partial<NonNullable<StatusResponse['screener_drop_counters']>> = {},
+): NonNullable<StatusResponse['screener_drop_counters']> {
+  return {
+    stale: 0,
+    persistence: 0,
+    min_volume: 0,
+    min_open_interest: 0,
+    apr_cap: 0,
+    non_positive_funding_edge: 0,
+    basis_gate: 0,
+    min_score: 0,
+    basis_bonus_capped: 0,
+    adaptive_hold_applied: 0,
+    basis_divergence_penalty: 0,
+    strict_depth: 0,
+    strict_depth_by_exchange_hyperliquid: 0,
+    strict_depth_by_exchange_lighter: 0,
+    l2_book_fetch_error_hyperliquid: 0,
+    missing_real_depth: 0,
+    missing_real_depth_hyperliquid: 0,
+    missing_real_depth_lighter: 0,
+    missing_real_fee: 0,
+    missing_real_fee_hyperliquid: 0,
+    missing_real_fee_lighter: 0,
+    ...overrides,
+  };
+}
+
 function makeStatus(overrides: Partial<StatusResponse> = {}): StatusResponse {
   return {
     uptime_s: 10,
@@ -25,52 +54,32 @@ function makeStatus(overrides: Partial<StatusResponse> = {}): StatusResponse {
     screener_post_cost_candidates: 5,
     screener_validated_candidates: 5,
     screener_ready_candidates: 1,
-    screener_drop_counters: {},
+    screener_drop_counters: makeDropCounters(),
 
     ...overrides,
   };
 }
 
 describe('PipelineDiagnosticsHint', () => {
-  it('shows warn when cost filters remove all candidates', () => {
+  it('shows warn when strict depth checks suppress readiness', () => {
     render(
       <PipelineDiagnosticsHint
         status={makeStatus({
           screener_raw_candidates: 12,
-          screener_post_cost_candidates: 0,
-          screener_validated_candidates: 0,
+          screener_post_cost_candidates: 12,
+          screener_validated_candidates: 12,
           screener_ready_candidates: 0,
-          screener_drop_counters: {
+          screener_drop_counters: makeDropCounters({
             strict_depth: 12,
-            strict_depth_hyperliquid: 10,
-            strict_depth_lighter: 2,
-            hl_l2_book_fetch_error: 8,
-          },
+            strict_depth_by_exchange_hyperliquid: 10,
+            strict_depth_by_exchange_lighter: 2,
+            l2_book_fetch_error_hyperliquid: 8,
+          }),
         })}
       />,
     );
 
-    expect(screen.getByText(/strict depth checks/i)).toBeTruthy();
-  });
-
-  it('shows generic cost-filter warning when strict depth drops are absent', () => {
-    render(
-      <PipelineDiagnosticsHint
-        status={makeStatus({
-          screener_raw_candidates: 6,
-          screener_post_cost_candidates: 0,
-          screener_validated_candidates: 0,
-          screener_ready_candidates: 0,
-          screener_drop_counters: {
-            strict_depth: 0,
-            strict_depth_hyperliquid: 0,
-            strict_depth_lighter: 0,
-          },
-        })}
-      />,
-    );
-
-    expect(screen.getByText(/verify live depth\/fee data availability/i)).toBeTruthy();
+    expect(screen.getByText(/suppressing readiness/i)).toBeTruthy();
   });
 
   it('shows warn when no raw candidates and exchange is down', () => {
@@ -105,10 +114,10 @@ describe('PipelineDiagnosticsHint', () => {
         status={makeStatus({
           screener_raw_candidates: 0,
           exchange_last_ok: { hyperliquid: true, lighter: true },
-          screener_drop_counters: {
+          screener_drop_counters: makeDropCounters({
             min_volume: 11,
             min_score: 4,
-          },
+          }),
         })}
       />,
     );
@@ -122,10 +131,10 @@ describe('PipelineDiagnosticsHint', () => {
         status={makeStatus({
           screener_raw_candidates: 0,
           exchange_last_ok: { hyperliquid: true, lighter: true },
-          screener_drop_counters: {
+          screener_drop_counters: makeDropCounters({
             min_volume: 0,
             min_score: 0,
-          },
+          }),
         })}
       />,
     );
@@ -162,10 +171,10 @@ describe('PipelineDiagnosticsHint', () => {
           screener_post_cost_candidates: 4,
           screener_validated_candidates: 4,
           screener_ready_candidates: 0,
-          screener_drop_counters: {
+          screener_drop_counters: makeDropCounters({
             missing_real_depth: 3,
             missing_real_fee: 2,
-          },
+          }),
         })}
       />,
     );
@@ -181,11 +190,11 @@ describe('PipelineDiagnosticsHint', () => {
           screener_post_cost_candidates: 4,
           screener_validated_candidates: 4,
           screener_ready_candidates: 0,
-          screener_drop_counters: {
+          screener_drop_counters: makeDropCounters({
             basis_bonus_capped: 3,
             adaptive_hold_applied: 2,
             basis_divergence_penalty: 1,
-          },
+          }),
         })}
       />,
     );

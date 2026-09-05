@@ -437,12 +437,8 @@ export interface components {
             min_score_bps: number;
             /** Min Volume 24H */
             min_volume_24h: number;
-            /** Real Depth Proxy Floor Ratio */
-            real_depth_proxy_floor_ratio: number;
             /** Require Isolated Margin */
             require_isolated_margin: boolean;
-            /** Require Real Depth */
-            require_real_depth: boolean;
             /** Runbook Config Fields */
             runbook_config_fields: string[];
             /** Runbook Presets */
@@ -451,8 +447,6 @@ export interface components {
                     [key: string]: number | boolean;
                 };
             };
-            /** Slippage Volume Depth Ratio */
-            slippage_volume_depth_ratio: number;
             /** Stale Data S */
             stale_data_s: number;
             /** Taker Fee Per Side By Exchange */
@@ -505,12 +499,8 @@ export interface components {
             persist: boolean;
             /** Preset */
             preset?: ("conservative" | "balanced" | "aggressive" | "exploratory") | null;
-            /** Real Depth Proxy Floor Ratio */
-            real_depth_proxy_floor_ratio?: number | null;
             /** Require Isolated Margin */
             require_isolated_margin?: boolean | null;
-            /** Require Real Depth */
-            require_real_depth?: boolean | null;
             /** Stale Data S */
             stale_data_s?: number | null;
         };
@@ -677,7 +667,7 @@ export interface components {
             combined_score: number;
             /** Depth Source By Exchange */
             depth_source_by_exchange?: {
-                [key: string]: "real" | "proxy" | "none";
+                [key: string]: "real" | "none";
             };
             /** Effective Hold Hours */
             effective_hold_hours?: number | null;
@@ -762,6 +752,127 @@ export interface components {
              */
             severity: "watching" | "blocked";
         };
+        /** StatusDropCounters */
+        StatusDropCounters: {
+            /**
+             * Adaptive Hold Applied
+             * @default 0
+             */
+            adaptive_hold_applied: number;
+            /**
+             * Apr Cap
+             * @default 0
+             */
+            apr_cap: number;
+            /**
+             * Basis Bonus Capped
+             * @default 0
+             */
+            basis_bonus_capped: number;
+            /**
+             * Basis Divergence Penalty
+             * @default 0
+             */
+            basis_divergence_penalty: number;
+            /**
+             * Basis Gate
+             * @default 0
+             */
+            basis_gate: number;
+            /**
+             * L2 Book Fetch Error Hyperliquid
+             * @default 0
+             */
+            l2_book_fetch_error_hyperliquid: number;
+            /**
+             * Min Open Interest
+             * @default 0
+             */
+            min_open_interest: number;
+            /**
+             * Min Score
+             * @default 0
+             */
+            min_score: number;
+            /**
+             * Min Volume
+             * @default 0
+             */
+            min_volume: number;
+            /**
+             * Missing Real Depth
+             * @default 0
+             */
+            missing_real_depth: number;
+            /**
+             * Missing Real Depth Hyperliquid
+             * @default 0
+             */
+            missing_real_depth_hyperliquid: number;
+            /**
+             * Missing Real Depth Lighter
+             * @default 0
+             */
+            missing_real_depth_lighter: number;
+            /**
+             * Missing Real Fee
+             * @default 0
+             */
+            missing_real_fee: number;
+            /**
+             * Missing Real Fee Hyperliquid
+             * @default 0
+             */
+            missing_real_fee_hyperliquid: number;
+            /**
+             * Missing Real Fee Lighter
+             * @default 0
+             */
+            missing_real_fee_lighter: number;
+            /**
+             * Non Positive Funding Edge
+             * @default 0
+             */
+            non_positive_funding_edge: number;
+            /**
+             * Persistence
+             * @default 0
+             */
+            persistence: number;
+            /**
+             * Stale
+             * @default 0
+             */
+            stale: number;
+            /**
+             * Strict Depth
+             * @default 0
+             */
+            strict_depth: number;
+            /**
+             * Strict Depth By Exchange Hyperliquid
+             * @default 0
+             */
+            strict_depth_by_exchange_hyperliquid: number;
+            /**
+             * Strict Depth By Exchange Lighter
+             * @default 0
+             */
+            strict_depth_by_exchange_lighter: number;
+        };
+        /** StatusReasonSeverityCounts */
+        StatusReasonSeverityCounts: {
+            /**
+             * Blocked
+             * @default 0
+             */
+            blocked: number;
+            /**
+             * Watching
+             * @default 0
+             */
+            watching: number;
+        };
         /** StatusResponse */
         StatusResponse: {
             /** Exchange Last Ok */
@@ -792,16 +903,18 @@ export interface components {
             poll_count_success: number;
             /** Poll Count Total */
             poll_count_total: number;
-            /** Screener Drop Counters */
-            screener_drop_counters?: {
-                [key: string]: number;
-            };
+            screener_drop_counters?: components["schemas"]["StatusDropCounters"];
             /** Screener Post Cost Candidates */
             screener_post_cost_candidates: number;
             /** Screener Raw Candidates */
             screener_raw_candidates: number;
             /** Screener Ready Candidates */
             screener_ready_candidates: number;
+            /** Screener Reason Code Counts */
+            screener_reason_code_counts?: {
+                [key: string]: number;
+            };
+            screener_reason_severity_counts?: components["schemas"]["StatusReasonSeverityCounts"];
             /** Screener Validated Candidates */
             screener_validated_candidates: number;
             /** Started At */

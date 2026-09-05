@@ -45,9 +45,6 @@ function makeConfig(): ConfigResponse {
     lighter_maker_fee_per_side: 0,
     taker_fee_per_side_by_exchange: TEST_TAKER_FEE_BY_EXCHANGE,
     default_order_size_usd: 1000,
-    slippage_volume_depth_ratio: 0.5,
-    require_real_depth: true,
-    real_depth_proxy_floor_ratio: 0.25,
     expected_hold_hours: 72,
     basis_weight: 0.5,
     basis_bonus_cap_bps: 80,
@@ -98,11 +95,10 @@ function makeConfig(): ConfigResponse {
     backtest_gate_min_win_rate: 0.55,
     backtest_gate_min_total_pnl_bps: 0,
     backtest_gate_max_drawdown_bps: 50,
-    runbook_config_fields: ['min_score_bps', 'require_real_depth'],
+    runbook_config_fields: ['min_score_bps'],
     runbook_presets: {
       balanced: {
         min_score_bps: 8,
-        require_real_depth: true,
       },
     },
   };

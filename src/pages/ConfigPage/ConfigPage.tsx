@@ -15,7 +15,6 @@ const FIELD_LABELS: Record<string, string> = {
   min_persistence_hours: "Min Persistence (h)",
   expected_hold_hours: "Expected Hold (h)",
   default_order_size_usd: "Default Order Size ($)",
-  real_depth_proxy_floor_ratio: "Real-Depth Proxy Floor Ratio",
   basis_weight: "Basis Weight",
   basis_bonus_cap_bps: "Basis Bonus Cap (bps)",
   basis_divergence_threshold_bps: "Basis Divergence Threshold (bps)",
@@ -48,7 +47,6 @@ const ConfigPage = () => {
   const { data, error, loading, fetching, refetch } = useConfig();
   const updateConfig = useUpdateConfig();
   const [overrides, setOverrides] = useState<Partial<Record<EditableConfigField, string>>>({});
-  const [requireRealDepthOverride, setRequireRealDepthOverride] = useState<boolean | null>(null);
   const [localError, setLocalError] = useState<string | null>(null);
   const [hint, setHint] = useState<string | null>(null);
   const [applyingPresetKey, setApplyingPresetKey] = useState<string | null>(null);
@@ -57,9 +55,6 @@ const ConfigPage = () => {
       return [] as EditableConfigField[];
     }
     return data.runbook_config_fields.filter((field) => {
-      if (field === "require_real_depth") {
-        return false;
-      }
       const value = data[field as keyof ConfigResponse];
       return typeof value === "number";
     });
@@ -83,15 +78,11 @@ const ConfigPage = () => {
     });
   }, [data, editableNumericFields, overrides]);
 
-  const requireRealDepthDraft = requireRealDepthOverride ?? data?.require_real_depth ?? true;
-  const requireRealDepthChanged = data ? requireRealDepthDraft !== data.require_real_depth : false;
-
   const onResetDraft = () => {
     if (!data) {
       return;
     }
     setOverrides({});
-    setRequireRealDepthOverride(null);
     setLocalError(null);
     setHint("Draft reset to live config");
   };
@@ -114,7 +105,7 @@ const ConfigPage = () => {
       }
     }
 
-    if (Object.keys(parsed).length === 0 && !requireRealDepthChanged) {
+    if (Object.keys(parsed).length === 0) {
       setHint("No changes to save");
       setLocalError(null);
       return;
@@ -126,11 +117,9 @@ const ConfigPage = () => {
       const payload: ConfigUpdateRequest = {
         persist: true,
         ...parsed,
-        ...(requireRealDepthChanged ? { require_real_depth: requireRealDepthDraft } : {}),
       };
       await updateConfig.mutateAsync(payload);
       setOverrides({});
-      setRequireRealDepthOverride(null);
       setHint("Config updated");
     } catch (e) {
       setLocalError(e instanceof Error ? e.message : "Failed to update config");
@@ -162,7 +151,6 @@ const ConfigPage = () => {
                 try {
                   await updateConfig.mutateAsync({ preset: preset.key, persist: true });
                   setOverrides({});
-                  setRequireRealDepthOverride(null);
                   setHint(`${preset.name} preset applied`);
                 } catch (e) {
                   setLocalError(e instanceof Error ? e.message : "Failed to apply preset");
@@ -196,14 +184,6 @@ const ConfigPage = () => {
                     />
                   </label>
                 ))}
-                <label className={pageStyles.toggleField}>
-                  <input
-                    type="checkbox"
-                    checked={requireRealDepthDraft}
-                    onChange={(e) => setRequireRealDepthOverride(e.target.checked)}
-                  />
-                  <span className={pageStyles.label}>Require Real Depth</span>
-                </label>
               </div>
               <div className={pageStyles.actions}>
                 <button
@@ -222,7 +202,7 @@ const ConfigPage = () => {
                 >
                   {updateConfig.isPending
                     ? "Saving..."
-                    : `Save (${changedFields.length + (requireRealDepthChanged ? 1 : 0)})`}
+                    : `Save (${changedFields.length})`}
                 </button>
                 <button
                   type="button"

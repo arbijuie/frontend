@@ -123,8 +123,6 @@ const ConfigAccordion = ({ config }: ConfigAccordionProps) => {
         onToggle={() => toggleSection("Runtime")}
       >
         <ConfigRow label="Default Order Size" value={config.default_order_size_usd} prefix="$" />
-        <ConfigRow label="Require Real Depth" value={config.require_real_depth} />
-        <ConfigRow label="Real-Depth Proxy Floor Ratio" value={config.real_depth_proxy_floor_ratio} />
         <ConfigRow label="Loop Interval" value={config.loop_interval_s} unit="s" />
         <ConfigRow label="Stale Data Threshold" value={config.stale_data_s} unit="s" />
       </ConfigSection>

@@ -614,16 +614,8 @@
             "title": "Min Volume 24H",
             "type": "number"
           },
-          "real_depth_proxy_floor_ratio": {
-            "title": "Real Depth Proxy Floor Ratio",
-            "type": "number"
-          },
           "require_isolated_margin": {
             "title": "Require Isolated Margin",
-            "type": "boolean"
-          },
-          "require_real_depth": {
-            "title": "Require Real Depth",
             "type": "boolean"
           },
           "runbook_config_fields": {
@@ -649,10 +641,6 @@
             },
             "title": "Runbook Presets",
             "type": "object"
-          },
-          "slippage_volume_depth_ratio": {
-            "title": "Slippage Volume Depth Ratio",
-            "type": "number"
           },
           "stale_data_s": {
             "title": "Stale Data S",
@@ -685,9 +673,6 @@
           "lighter_maker_fee_per_side",
           "taker_fee_per_side_by_exchange",
           "default_order_size_usd",
-          "slippage_volume_depth_ratio",
-          "require_real_depth",
-          "real_depth_proxy_floor_ratio",
           "expected_hold_hours",
           "basis_weight",
           "basis_bonus_cap_bps",
@@ -956,17 +941,6 @@
             ],
             "title": "Preset"
           },
-          "real_depth_proxy_floor_ratio": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Real Depth Proxy Floor Ratio"
-          },
           "require_isolated_margin": {
             "anyOf": [
               {
@@ -977,17 +951,6 @@
               }
             ],
             "title": "Require Isolated Margin"
-          },
-          "require_real_depth": {
-            "anyOf": [
-              {
-                "type": "boolean"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Require Real Depth"
           },
           "stale_data_s": {
             "anyOf": [
@@ -1465,7 +1428,6 @@
             "additionalProperties": {
               "enum": [
                 "real",
-                "proxy",
                 "none"
               ],
               "type": "string"
@@ -1740,6 +1702,135 @@
         "title": "ReasonItem",
         "type": "object"
       },
+      "StatusDropCounters": {
+        "additionalProperties": false,
+        "properties": {
+          "adaptive_hold_applied": {
+            "default": 0,
+            "title": "Adaptive Hold Applied",
+            "type": "integer"
+          },
+          "apr_cap": {
+            "default": 0,
+            "title": "Apr Cap",
+            "type": "integer"
+          },
+          "basis_bonus_capped": {
+            "default": 0,
+            "title": "Basis Bonus Capped",
+            "type": "integer"
+          },
+          "basis_divergence_penalty": {
+            "default": 0,
+            "title": "Basis Divergence Penalty",
+            "type": "integer"
+          },
+          "basis_gate": {
+            "default": 0,
+            "title": "Basis Gate",
+            "type": "integer"
+          },
+          "l2_book_fetch_error_hyperliquid": {
+            "default": 0,
+            "title": "L2 Book Fetch Error Hyperliquid",
+            "type": "integer"
+          },
+          "min_open_interest": {
+            "default": 0,
+            "title": "Min Open Interest",
+            "type": "integer"
+          },
+          "min_score": {
+            "default": 0,
+            "title": "Min Score",
+            "type": "integer"
+          },
+          "min_volume": {
+            "default": 0,
+            "title": "Min Volume",
+            "type": "integer"
+          },
+          "missing_real_depth": {
+            "default": 0,
+            "title": "Missing Real Depth",
+            "type": "integer"
+          },
+          "missing_real_depth_hyperliquid": {
+            "default": 0,
+            "title": "Missing Real Depth Hyperliquid",
+            "type": "integer"
+          },
+          "missing_real_depth_lighter": {
+            "default": 0,
+            "title": "Missing Real Depth Lighter",
+            "type": "integer"
+          },
+          "missing_real_fee": {
+            "default": 0,
+            "title": "Missing Real Fee",
+            "type": "integer"
+          },
+          "missing_real_fee_hyperliquid": {
+            "default": 0,
+            "title": "Missing Real Fee Hyperliquid",
+            "type": "integer"
+          },
+          "missing_real_fee_lighter": {
+            "default": 0,
+            "title": "Missing Real Fee Lighter",
+            "type": "integer"
+          },
+          "non_positive_funding_edge": {
+            "default": 0,
+            "title": "Non Positive Funding Edge",
+            "type": "integer"
+          },
+          "persistence": {
+            "default": 0,
+            "title": "Persistence",
+            "type": "integer"
+          },
+          "stale": {
+            "default": 0,
+            "title": "Stale",
+            "type": "integer"
+          },
+          "strict_depth": {
+            "default": 0,
+            "title": "Strict Depth",
+            "type": "integer"
+          },
+          "strict_depth_by_exchange_hyperliquid": {
+            "default": 0,
+            "title": "Strict Depth By Exchange Hyperliquid",
+            "type": "integer"
+          },
+          "strict_depth_by_exchange_lighter": {
+            "default": 0,
+            "title": "Strict Depth By Exchange Lighter",
+            "type": "integer"
+          }
+        },
+        "title": "StatusDropCounters",
+        "type": "object"
+      },
+      "StatusReasonSeverityCounts": {
+        "additionalProperties": false,
+        "properties": {
+          "blocked": {
+            "default": 0,
+            "title": "Blocked",
+            "type": "integer"
+          },
+          "watching": {
+            "default": 0,
+            "title": "Watching",
+            "type": "integer"
+          }
+        },
+        "title": "StatusReasonSeverityCounts",
+        "type": "object"
+      },
       "StatusResponse": {
         "properties": {
           "exchange_last_ok": {
@@ -1861,11 +1952,7 @@
             "type": "integer"
           },
           "screener_drop_counters": {
-            "additionalProperties": {
-              "type": "integer"
-            },
-            "title": "Screener Drop Counters",
-            "type": "object"
+            "$ref": "#/components/schemas/StatusDropCounters"
           },
           "screener_post_cost_candidates": {
             "title": "Screener Post Cost Candidates",
@@ -1878,6 +1965,16 @@
           "screener_ready_candidates": {
             "title": "Screener Ready Candidates",
             "type": "integer"
+          },
+          "screener_reason_code_counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Screener Reason Code Counts",
+            "type": "object"
+          },
+          "screener_reason_severity_counts": {
+            "$ref": "#/components/schemas/StatusReasonSeverityCounts"
           },
           "screener_validated_candidates": {
             "title": "Screener Validated Candidates",

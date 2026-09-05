@@ -33,7 +33,7 @@ const StatusStatCards = ({ status, liveUptimeSeconds }: StatusStatCardsProps) =>
       />
       <StatCard label="Total Polls" value={status.poll_count_total} />
       <StatCard label="Raw Candidates" value={status.screener_raw_candidates} />
-      <StatCard label="After Cost" value={status.screener_post_cost_candidates} />
+         <StatCard label="Cost-Enriched" value={status.screener_post_cost_candidates} />
       <StatCard label="Validated" value={status.screener_validated_candidates} />
       <StatCard
         label="Ready"

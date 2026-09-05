@@ -13,7 +13,7 @@ const StatusDetailsList = ({ status }: StatusDetailsListProps) => {
     { label: "Last poll started", value: formatDateTime(status.last_poll_started_at ?? null) },
     { label: "Last poll finished", value: formatDateTime(status.last_poll_finished_at ?? null) },
     { label: "Screener raw candidates", value: String(status.screener_raw_candidates) },
-    { label: "Screener after cost", value: String(status.screener_post_cost_candidates) },
+    { label: "Screener cost-enriched candidates", value: String(status.screener_post_cost_candidates) },
     {
       label: "Screener validated candidates",
       value: String(status.screener_validated_candidates),

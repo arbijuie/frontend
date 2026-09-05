@@ -7,45 +7,22 @@ interface PipelineDiagnosticsHintProps {
 
 const PipelineDiagnosticsHint = ({ status }: PipelineDiagnosticsHintProps) => {
   const raw = status.screener_raw_candidates;
-  const postCost = status.screener_post_cost_candidates;
   const validated = status.screener_validated_candidates;
   const ready = status.screener_ready_candidates;
-  const drops = status.screener_drop_counters ?? {};
-  const strictDepth = drops.strict_depth ?? 0;
-  const strictDepthHyperliquid =
-    drops.strict_depth_by_exchange_hyperliquid ?? drops.strict_depth_hyperliquid ?? 0;
-  const strictDepthLighter = drops.strict_depth_by_exchange_lighter ?? drops.strict_depth_lighter ?? 0;
-  const hyperliquidL2Errors =
-    drops.l2_book_fetch_error_hyperliquid ?? drops.hl_l2_book_fetch_error ?? 0;
-  const minScoreDrops = drops.min_score ?? 0;
-  const minVolumeDrops = drops.min_volume ?? 0;
-  const missingRealDepth = drops.missing_real_depth ?? 0;
-  const missingRealFee = drops.missing_real_fee ?? 0;
-  const basisBonusCapped = drops.basis_bonus_capped ?? 0;
-  const adaptiveHoldApplied = drops.adaptive_hold_applied ?? 0;
-  const basisDivergencePenalty = drops.basis_divergence_penalty ?? 0;
+  const drops = status.screener_drop_counters;
+  const strictDepth = drops?.strict_depth ?? 0;
+  const strictDepthHyperliquid = drops?.strict_depth_by_exchange_hyperliquid ?? 0;
+  const strictDepthLighter = drops?.strict_depth_by_exchange_lighter ?? 0;
+  const hyperliquidL2Errors = drops?.l2_book_fetch_error_hyperliquid ?? 0;
+  const minScoreDrops = drops?.min_score ?? 0;
+  const minVolumeDrops = drops?.min_volume ?? 0;
+  const missingRealDepth = drops?.missing_real_depth ?? 0;
+  const missingRealFee = drops?.missing_real_fee ?? 0;
+  const basisBonusCapped = drops?.basis_bonus_capped ?? 0;
+  const adaptiveHoldApplied = drops?.adaptive_hold_applied ?? 0;
+  const basisDivergencePenalty = drops?.basis_divergence_penalty ?? 0;
   const downExchanges = Object.values(status.exchange_last_ok).filter((v) => v === false).length;
   const unknownExchanges = Object.values(status.exchange_last_ok).filter((v) => v === null).length;
-
-  if (raw > 0 && postCost === 0) {
-    if (strictDepth > 0) {
-      return (
-        <div className={styles.warnBox}>
-          <span className={`${styles.badge} ${styles.warnBadge}`}>warn</span>
-          All {raw} raw candidates were dropped by strict depth checks ({strictDepth} drops:
-          Hyperliquid {strictDepthHyperliquid}, Lighter {strictDepthLighter}).
-          {hyperliquidL2Errors > 0 && ` Hyperliquid l2Book fetch errors: ${hyperliquidL2Errors}.`}
-        </div>
-      );
-    }
-    return (
-      <div className={styles.warnBox}>
-        <span className={`${styles.badge} ${styles.warnBadge}`}>warn</span>
-        Cost filters are removing all candidates. Try reducing default_order_size_usd and
-        verify live depth/fee data availability.
-      </div>
-    );
-  }
 
   if (raw === 0 && downExchanges > 0) {
     return (
@@ -84,6 +61,16 @@ const PipelineDiagnosticsHint = ({ status }: PipelineDiagnosticsHintProps) => {
   }
 
   if (validated > 0 && ready === 0) {
+    if (strictDepth > 0) {
+      return (
+        <div className={styles.warnBox}>
+          <span className={`${styles.badge} ${styles.warnBadge}`}>warn</span>
+          Strict depth checks are suppressing readiness ({strictDepth} drops: Hyperliquid{' '}
+          {strictDepthHyperliquid}, Lighter {strictDepthLighter}).
+          {hyperliquidL2Errors > 0 && ` Hyperliquid l2Book fetch errors: ${hyperliquidL2Errors}.`}
+        </div>
+      );
+    }
     if (missingRealDepth > 0 || missingRealFee > 0) {
       return (
         <div className={styles.infoBox}>
