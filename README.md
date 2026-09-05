@@ -56,7 +56,7 @@ Opens on `http://localhost:5173`. Requires CORS to be enabled on the backend (`s
 If the UI stays empty too often during local checks, apply a lighter runtime preset via
 `PATCH /config` (`aggressive` or `exploratory`) or use a temporary session-only runbook patch (`persist=false`).
 
-See operational examples in `../docs/13-operations-workflows.md`, then run frontend as usual:
+See operational examples in [../docs/operations/index.md](../docs/operations/index.md), then run frontend as usual:
 
 ```bash
 cd frontend
