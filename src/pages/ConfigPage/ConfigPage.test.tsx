@@ -1,7 +1,12 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 
 import ConfigPage from './ConfigPage';
-import type { ConfigResponse } from '../../api/types';
+import {
+  type ConfigResponse,
+  TEST_HYPERLIQUID_TAKER_FEE,
+  TEST_LIGHTER_TAKER_FEE,
+  TEST_TAKER_FEE_BY_EXCHANGE,
+} from '../../api/types';
 import { useConfig } from '../../hooks/useConfig';
 import { useUpdateConfig } from '../../hooks/useUpdateConfig';
 
@@ -34,10 +39,11 @@ function makeConfig(): ConfigResponse {
     min_persistence_hours: 0,
     anti_churn_cooldown_s: 14400,
     anti_churn_score_multiplier: 1.5,
-    hl_taker_fee_per_side: 0.035,
+    hl_taker_fee_per_side: TEST_HYPERLIQUID_TAKER_FEE,
     hl_maker_fee_per_side: 0,
-    lighter_taker_fee_per_side: 0.001,
+    lighter_taker_fee_per_side: TEST_LIGHTER_TAKER_FEE,
     lighter_maker_fee_per_side: 0,
+    taker_fee_per_side_by_exchange: TEST_TAKER_FEE_BY_EXCHANGE,
     default_order_size_usd: 1000,
     slippage_volume_depth_ratio: 0.5,
     require_real_depth: true,

@@ -455,6 +455,10 @@ export interface components {
             slippage_volume_depth_ratio: number;
             /** Stale Data S */
             stale_data_s: number;
+            /** Taker Fee Per Side By Exchange */
+            taker_fee_per_side_by_exchange: {
+                [key: string]: number;
+            };
             /** Timing Penalty Bps Per Hour */
             timing_penalty_bps_per_hour: number;
         };
@@ -671,12 +675,16 @@ export interface components {
             basis_trend?: number | null;
             /** Combined Score */
             combined_score: number;
-            /** Effective Hl Taker Fee */
-            effective_hl_taker_fee?: number | null;
+            /** Depth Source By Exchange */
+            depth_source_by_exchange?: {
+                [key: string]: "real" | "proxy" | "none";
+            };
             /** Effective Hold Hours */
             effective_hold_hours?: number | null;
-            /** Effective Lighter Taker Fee */
-            effective_lighter_taker_fee?: number | null;
+            /** Effective Taker Fee By Exchange */
+            effective_taker_fee_by_exchange?: {
+                [key: string]: number;
+            };
             /** Fee Impact Bps */
             fee_impact_bps: number;
             /** Funding Diff Apr */
@@ -692,20 +700,8 @@ export interface components {
             funding_timing_asymmetry_hours?: number | null;
             /** Funding Timing Penalty Bps */
             funding_timing_penalty_bps: number;
-            /**
-             * Hl Depth Source
-             * @default none
-             * @enum {string}
-             */
-            hl_depth_source: "real" | "proxy" | "none";
             /** Hours To Breakeven */
             hours_to_breakeven?: number | null;
-            /**
-             * Lighter Depth Source
-             * @default none
-             * @enum {string}
-             */
-            lighter_depth_source: "real" | "proxy" | "none";
             /** Liquidity Tier */
             liquidity_tier?: ("H" | "M" | "L") | null;
             /** Long Exchange */
