@@ -1,0 +1,52 @@
+.panel {
+  background: v.$bg-card;
+  border: 0.0625rem solid v.$border-color;
+  border-radius: 0.75rem;
+  padding: 0.875rem;
+  margin-bottom: 1rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem 0.75rem;
+  font-size: 0.8125rem;
+  margin-bottom: 0.75rem;
+}
+
+.metricLabel {
+  color: v.$text-muted;
+  font-size: 0.6875rem;
+}
+
+.metricValue {
+  font-weight: 600;
+  color: v.$text-primary;
+}
+
+.positive {
+  color: v.$green;
+}
+
+.negative {
+  color: v.$red;
+}
+
+.neutral {
+  color: v.$text-primary;
+}
+
+.createLockButton {
+  width: 100%;
+  background: v.$accent-purple;
+  color: #fff;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.625rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+
+  &:disabled {
+    opacity: 0.6;
+  }
+}
