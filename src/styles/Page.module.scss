@@ -1,0 +1,29 @@
+.page {
+  padding: 0.75rem;
+  max-width: 30rem;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: 1.65rem;
+  color: v.$text-primary;
+}
+
+.sectionTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: v.$text-secondary;
+  margin: 0.75rem 0;
+}
+
+.errorBox {
+  padding: 1rem;
+  color: v.$red;
+}
+
+.hint {
+  font-size: 0.6875rem;
+  color: v.$text-muted;
+  margin-bottom: 0.5rem;
+  text-align: right;
+}
