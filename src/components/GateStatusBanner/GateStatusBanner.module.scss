@@ -1,0 +1,40 @@
+.banner {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  margin-bottom: 1rem;
+  font-size: 0.8125rem;
+}
+
+.pass {
+  background: v.$green-bg;
+  color: v.$text-primary;
+  border: 0.0625rem solid v.$green;
+}
+
+.fail {
+  background: rgba(234, 179, 8, 0.12);
+  color: v.$text-primary;
+  border: 0.0625rem solid v.$yellow;
+}
+
+.badge {
+  flex-shrink: 0;
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.375rem;
+}
+
+.passBadge {
+  background: v.$green;
+  color: v.$bg-primary;
+}
+
+.failBadge {
+  background: v.$yellow;
+  color: v.$bg-primary;
+}
