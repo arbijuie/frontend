@@ -1,0 +1,53 @@
+.form {
+  background: v.$bg-card;
+  border: 0.0625rem solid v.$border-color;
+  border-radius: 0.75rem;
+  padding: 0.875rem;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.row {
+  display: flex;
+  gap: 0.625rem;
+
+  > * {
+    flex: 1;
+  }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.label {
+  font-size: 0.75rem;
+  color: v.$text-muted;
+}
+
+.input {
+  background: v.$bg-primary;
+  border: 0.0625rem solid v.$border-color;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.625rem;
+  color: v.$text-primary;
+  font-size: 0.8125rem;
+}
+
+.submitButton {
+  background: v.$accent-purple;
+  color: #fff;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.625rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+
+  &:disabled {
+    opacity: 0.6;
+  }
+}
