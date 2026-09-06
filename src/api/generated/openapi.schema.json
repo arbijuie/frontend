@@ -590,13 +590,29 @@
             "title": "Max Entry Adl Level",
             "type": "integer"
           },
+          "max_entry_slippage_bps": {
+            "title": "Max Entry Slippage Bps",
+            "type": "number"
+          },
           "max_funding_timing_asymmetry_hours": {
             "title": "Max Funding Timing Asymmetry Hours",
+            "type": "number"
+          },
+          "max_position_pct": {
+            "title": "Max Position Pct",
             "type": "number"
           },
           "max_reasonable_apr": {
             "title": "Max Reasonable Apr",
             "type": "number"
+          },
+          "max_volume_fraction": {
+            "title": "Max Volume Fraction",
+            "type": "number"
+          },
+          "min_depth_quality": {
+            "title": "Min Depth Quality",
+            "type": "string"
           },
           "min_open_interest": {
             "title": "Min Open Interest",
@@ -612,6 +628,10 @@
           },
           "min_volume_24h": {
             "title": "Min Volume 24H",
+            "type": "number"
+          },
+          "portfolio_usd": {
+            "title": "Portfolio Usd",
             "type": "number"
           },
           "require_isolated_margin": {
@@ -673,6 +693,11 @@
           "lighter_maker_fee_per_side",
           "taker_fee_per_side_by_exchange",
           "default_order_size_usd",
+          "max_entry_slippage_bps",
+          "min_depth_quality",
+          "portfolio_usd",
+          "max_position_pct",
+          "max_volume_fraction",
           "expected_hold_hours",
           "basis_weight",
           "basis_bonus_cap_bps",
@@ -864,6 +889,28 @@
             ],
             "title": "Max Entry Adl Level"
           },
+          "max_entry_slippage_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Entry Slippage Bps"
+          },
+          "max_position_pct": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Position Pct"
+          },
           "max_reasonable_apr": {
             "anyOf": [
               {
@@ -874,6 +921,17 @@
               }
             ],
             "title": "Max Reasonable Apr"
+          },
+          "max_volume_fraction": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Volume Fraction"
           },
           "min_open_interest": {
             "anyOf": [
@@ -923,6 +981,17 @@
             "default": true,
             "title": "Persist",
             "type": "boolean"
+          },
+          "portfolio_usd": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Portfolio Usd"
           },
           "preset": {
             "anyOf": [
@@ -1424,6 +1493,23 @@
             "title": "Combined Score",
             "type": "number"
           },
+          "depth_quality": {
+            "anyOf": [
+              {
+                "enum": [
+                  "A",
+                  "B",
+                  "C",
+                  "D"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Depth Quality"
+          },
           "depth_source_by_exchange": {
             "additionalProperties": {
               "enum": [
@@ -1581,6 +1667,17 @@
             "title": "Reasons",
             "type": "array"
           },
+          "recommended_size_usd": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Recommended Size Usd"
+          },
           "short_exchange": {
             "title": "Short Exchange",
             "type": "string"
@@ -1667,6 +1764,7 @@
           "funding_trend_thin_edge",
           "stale_data",
           "real_depth_unavailable",
+          "depth_quality_below_min",
           "real_fee_unavailable",
           "margin_mode_unknown",
           "adl_limit",

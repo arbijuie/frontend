@@ -425,10 +425,18 @@ export interface components {
             max_basis_trend_bps_per_tick: number;
             /** Max Entry Adl Level */
             max_entry_adl_level: number;
+            /** Max Entry Slippage Bps */
+            max_entry_slippage_bps: number;
             /** Max Funding Timing Asymmetry Hours */
             max_funding_timing_asymmetry_hours: number;
+            /** Max Position Pct */
+            max_position_pct: number;
             /** Max Reasonable Apr */
             max_reasonable_apr: number;
+            /** Max Volume Fraction */
+            max_volume_fraction: number;
+            /** Min Depth Quality */
+            min_depth_quality: string;
             /** Min Open Interest */
             min_open_interest: number;
             /** Min Persistence Hours */
@@ -437,6 +445,8 @@ export interface components {
             min_score_bps: number;
             /** Min Volume 24H */
             min_volume_24h: number;
+            /** Portfolio Usd */
+            portfolio_usd: number;
             /** Require Isolated Margin */
             require_isolated_margin: boolean;
             /** Runbook Config Fields */
@@ -482,8 +492,14 @@ export interface components {
             max_basis_divergence_hours?: number | null;
             /** Max Entry Adl Level */
             max_entry_adl_level?: number | null;
+            /** Max Entry Slippage Bps */
+            max_entry_slippage_bps?: number | null;
+            /** Max Position Pct */
+            max_position_pct?: number | null;
             /** Max Reasonable Apr */
             max_reasonable_apr?: number | null;
+            /** Max Volume Fraction */
+            max_volume_fraction?: number | null;
             /** Min Open Interest */
             min_open_interest?: number | null;
             /** Min Persistence Hours */
@@ -497,6 +513,8 @@ export interface components {
              * @default true
              */
             persist: boolean;
+            /** Portfolio Usd */
+            portfolio_usd?: number | null;
             /** Preset */
             preset?: ("conservative" | "balanced" | "aggressive" | "exploratory") | null;
             /** Require Isolated Margin */
@@ -665,6 +683,8 @@ export interface components {
             basis_trend?: number | null;
             /** Combined Score */
             combined_score: number;
+            /** Depth Quality */
+            depth_quality?: ("A" | "B" | "C" | "D") | null;
             /** Depth Source By Exchange */
             depth_source_by_exchange?: {
                 [key: string]: "real" | "none";
@@ -711,6 +731,8 @@ export interface components {
             persistence_hours?: number | null;
             /** Reasons */
             reasons?: components["schemas"]["ReasonItem"][];
+            /** Recommended Size Usd */
+            recommended_size_usd?: number | null;
             /** Short Exchange */
             short_exchange: string;
             short_forecast?: components["schemas"]["FundingForecastItem"] | null;
@@ -740,7 +762,7 @@ export interface components {
          * ReasonCode
          * @enum {string}
          */
-        ReasonCode: "persistence_insufficient" | "break_even_window" | "score_below_min" | "funding_flips" | "basis_limit" | "basis_trend_unstable" | "basis_divergence_hard" | "basis_divergence_window" | "funding_timing_asymmetry" | "funding_unstable" | "funding_trend_thin_edge" | "stale_data" | "real_depth_unavailable" | "real_fee_unavailable" | "margin_mode_unknown" | "adl_limit" | "margin_mode_cross" | "anti_churn_cooldown";
+        ReasonCode: "persistence_insufficient" | "break_even_window" | "score_below_min" | "funding_flips" | "basis_limit" | "basis_trend_unstable" | "basis_divergence_hard" | "basis_divergence_window" | "funding_timing_asymmetry" | "funding_unstable" | "funding_trend_thin_edge" | "stale_data" | "real_depth_unavailable" | "depth_quality_below_min" | "real_fee_unavailable" | "margin_mode_unknown" | "adl_limit" | "margin_mode_cross" | "anti_churn_cooldown";
         /** ReasonItem */
         ReasonItem: {
             code: components["schemas"]["ReasonCode"];

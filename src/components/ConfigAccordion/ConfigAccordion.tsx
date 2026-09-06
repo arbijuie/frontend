@@ -123,6 +123,11 @@ const ConfigAccordion = ({ config }: ConfigAccordionProps) => {
         onToggle={() => toggleSection("Runtime")}
       >
         <ConfigRow label="Default Order Size" value={config.default_order_size_usd} prefix="$" />
+        <ConfigRow label="Max Entry Slippage" value={config.max_entry_slippage_bps} unit="bps" />
+        <ConfigRow label="Min Depth Quality" value={config.min_depth_quality} />
+        <ConfigRow label="Portfolio" value={config.portfolio_usd} prefix="$" />
+        <ConfigRow label="Max Position Pct" value={config.max_position_pct} />
+        <ConfigRow label="Max Volume Fraction" value={config.max_volume_fraction} />
         <ConfigRow label="Loop Interval" value={config.loop_interval_s} unit="s" />
         <ConfigRow label="Stale Data Threshold" value={config.stale_data_s} unit="s" />
       </ConfigSection>
