@@ -2,7 +2,11 @@ import { useBacktestLocks } from "../../hooks/useBacktest";
 import BacktestLockCard from "../BacktestLockCard/BacktestLockCard";
 import EmptyState from "../EmptyState/EmptyState";
 
-const BacktestLockList = () => {
+interface BacktestLockListProps {
+  onSelectLock: (lockId: string) => void;
+}
+
+const BacktestLockList = ({ onSelectLock }: BacktestLockListProps) => {
   const { data, error, loading } = useBacktestLocks();
 
   if (loading) return <div>Loading locks...</div>;
@@ -19,7 +23,7 @@ const BacktestLockList = () => {
   return (
     <div>
       {data.items.map((lock) => (
-        <BacktestLockCard key={lock.lock_id} lock={lock} />
+        <BacktestLockCard key={lock.lock_id} lock={lock} onSelect={onSelectLock} />
       ))}
     </div>
   );
