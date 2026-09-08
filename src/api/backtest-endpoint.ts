@@ -7,6 +7,7 @@ import type {
   BacktestLockListResponse,
   BacktestGateResponse,
 } from "./types";
+import { parseApiError } from "../lib/api-errors";
 
 export async function fetchBacktestSummary(): Promise<BacktestSummaryResponse> {
   const res = await fetch(`${API_URL}/backtest/summary`, { headers: authHeaders() });
@@ -42,7 +43,7 @@ export async function runBacktestReplay(
     headers: { ...authHeaders(), "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
-  if (!res.ok) throw new Error(`POST /backtest/replay failed: ${res.status}`);
+  if (!res.ok) throw await parseApiError(res);
   return res.json();
 }
 
@@ -52,6 +53,6 @@ export async function createBacktestLock(payload: BacktestReplayRequest): Promis
     headers: { ...authHeaders(), "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
-  if (!res.ok) throw new Error(`POST /backtest/lock failed: ${res.status}`);
+  if (!res.ok) throw await parseApiError(res);
   return res.json();
 }
