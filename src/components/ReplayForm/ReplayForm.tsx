@@ -1,13 +1,14 @@
+import styles from "./ReplayForm.module.scss";
 import { useState, type SubmitEvent } from "react";
 import type { BacktestReplayRequest } from "../../api/types";
-import styles from "./ReplayForm.module.scss";
 
 interface ReplayFormProps {
   onSubmit: (request: BacktestReplayRequest) => void;
   submitting: boolean;
+  fieldErrors?: Record<string, string>;
 }
 
-const ReplayForm = ({ onSubmit, submitting }: ReplayFormProps) => {
+const ReplayForm = ({ onSubmit, submitting, fieldErrors }: ReplayFormProps) => {
   const [symbols, setSymbols] = useState("");
   const [start, setStart] = useState("");
   const [end, setEnd] = useState("");
@@ -46,27 +47,30 @@ const ReplayForm = ({ onSubmit, submitting }: ReplayFormProps) => {
           onChange={(e) => setSymbols(e.target.value)}
           placeholder="AERO, KAITO"
         />
+        {fieldErrors?.symbols && <span className={styles.fieldError}>{fieldErrors.symbols}</span>}
       </label>
-      <div className={styles.row}>
-        <label className={styles.field}>
-          <span className={styles.label}>Start</span>
-          <input
-            className={styles.input}
-            type="datetime-local"
-            value={start}
-            onChange={(e) => setStart(e.target.value)}
-          />
-        </label>
-        <label className={styles.field}>
-          <span className={styles.label}>End</span>
-          <input
-            className={styles.input}
-            type="datetime-local"
-            value={end}
-            onChange={(e) => setEnd(e.target.value)}
-          />
-        </label>
-      </div>
+
+      <label className={styles.field}>
+        <span className={styles.label}>Start</span>
+        <input
+          className={styles.input}
+          type="datetime-local"
+          value={start}
+          onChange={(e) => setStart(e.target.value)}
+        />
+        {fieldErrors?.start && <span className={styles.fieldError}>{fieldErrors.start}</span>}
+      </label>
+      <label className={styles.field}>
+        <span className={styles.label}>End</span>
+        <input
+          className={styles.input}
+          type="datetime-local"
+          value={end}
+          onChange={(e) => setEnd(e.target.value)}
+        />
+        {fieldErrors?.end && <span className={styles.fieldError}>{fieldErrors.end}</span>}
+      </label>
+
       <div className={styles.row}>
         <label className={styles.field}>
           <span className={styles.label}>Entry Score (bps)</span>
@@ -77,6 +81,9 @@ const ReplayForm = ({ onSubmit, submitting }: ReplayFormProps) => {
             value={entryScoreBps}
             onChange={(e) => setEntryScoreBps(e.target.value)}
           />
+          {fieldErrors?.entry_score_bps && (
+            <span className={styles.fieldError}>{fieldErrors.entry_score_bps}</span>
+          )}
         </label>
         <label className={styles.field}>
           <span className={styles.label}>Exit Score (bps)</span>
@@ -87,6 +94,9 @@ const ReplayForm = ({ onSubmit, submitting }: ReplayFormProps) => {
             value={exitScoreBps}
             onChange={(e) => setExitScoreBps(e.target.value)}
           />
+          {fieldErrors?.exit_score_bps && (
+            <span className={styles.fieldError}>{fieldErrors.exit_score_bps}</span>
+          )}
         </label>
       </div>
       <div className={styles.row}>
@@ -99,6 +109,9 @@ const ReplayForm = ({ onSubmit, submitting }: ReplayFormProps) => {
             value={cycleHours}
             onChange={(e) => setCycleHours(e.target.value)}
           />
+          {fieldErrors?.cycle_hours && (
+            <span className={styles.fieldError}>{fieldErrors.cycle_hours}</span>
+          )}
         </label>
         <label className={styles.field}>
           <span className={styles.label}>Min Samples / Symbol</span>
@@ -109,6 +122,9 @@ const ReplayForm = ({ onSubmit, submitting }: ReplayFormProps) => {
             value={minSamples}
             onChange={(e) => setMinSamples(e.target.value)}
           />
+          {fieldErrors?.min_samples_per_symbol && (
+            <span className={styles.fieldError}>{fieldErrors.min_samples_per_symbol}</span>
+          )}
         </label>
       </div>
       <label className={styles.field}>
@@ -119,6 +135,9 @@ const ReplayForm = ({ onSubmit, submitting }: ReplayFormProps) => {
           value={strategyId}
           onChange={(e) => setStrategyId(e.target.value)}
         />
+        {fieldErrors?.strategy_id && (
+          <span className={styles.fieldError}>{fieldErrors.strategy_id}</span>
+        )}
       </label>
       <button className={styles.submitButton} type="submit" disabled={submitting}>
         {submitting ? "Running..." : "Run Replay"}
