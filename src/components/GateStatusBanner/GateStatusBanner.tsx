@@ -13,7 +13,9 @@ const GateStatusBanner = ({ gate }: GateStatusBannerProps) => {
       </span>
       <span>
         {gate.passed
-          ? `Strategy ${gate.strategy_id ?? "unknown"} is cleared (lock ${gate.lock_id ?? "—"}).`
+          ? gate.strategy_id
+            ? `Strategy ${gate.strategy_id} is cleared (lock ${gate.lock_id ?? "—"}).`
+            : "No strategy is currently bound — execution has no active gate restriction."
           : (gate.reason ?? "No passing strategy lock yet — execution stays disabled.")}
       </span>
     </div>
