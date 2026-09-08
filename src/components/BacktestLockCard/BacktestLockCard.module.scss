@@ -72,25 +72,13 @@
   color: v.$text-primary;
 }
 
-.expandButton {
+.viewButton {
+  width: 100%;
   background: none;
-  border: none;
+  border: 0.0625rem solid v.$border-color;
+  border-radius: 0.5rem;
   color: v.$accent-purple;
   font-size: 0.75rem;
-  padding: 0;
+  padding: 0.375rem;
   cursor: pointer;
-}
-
-.details {
-  margin-top: 0.5rem;
-  padding-top: 0.5rem;
-  border-top: 0.0625rem solid v.$border-color;
-}
-
-.detailRow {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.75rem;
-  color: v.$text-secondary;
-  padding: 0.1875rem 0;
 }

@@ -1,17 +1,13 @@
-import { useState } from "react";
 import type { BacktestLockListItem } from "../../api/types";
-import { useBacktestLock } from "../../hooks/useBacktest";
 import { formatDateTime, signColor } from "../../lib/format";
 import styles from "./BacktestLockCard.module.scss";
 
 interface BacktestLockCardProps {
   lock: BacktestLockListItem;
+  onSelect: (lockId: string) => void;
 }
 
-const BacktestLockCard = ({ lock }: BacktestLockCardProps) => {
-  const [expanded, setExpanded] = useState(false);
-  const { data: detail, loading, error } = useBacktestLock(expanded ? lock.lock_id : null);
-
+const BacktestLockCard = ({ lock, onSelect }: BacktestLockCardProps) => {
   return (
     <div className={styles.card}>
       <div className={styles.topRow}>
@@ -33,45 +29,13 @@ const BacktestLockCard = ({ lock }: BacktestLockCardProps) => {
           </div>
         </div>
         <div>
-          <div className={styles.metricLabel}>Max Drawdown</div>
+          <div className={styles.metricLabel}>Max Drawdown (achieved)</div>
           <div className={styles.metricValue}>{lock.max_drawdown_bps.toFixed(1)} bps</div>
         </div>
       </div>
-      <button className={styles.expandButton} onClick={() => setExpanded(!expanded)}>
-        {expanded ? "Hide details" : "More details"}
+      <button className={styles.viewButton} onClick={() => onSelect(lock.lock_id)}>
+        View details
       </button>
-      {expanded && (
-        <div className={styles.details}>
-          {error && <div className={styles.detailRow}>Error: {error}</div>}
-          {loading && <div className={styles.detailRow}>Loading...</div>}
-          {detail && (
-            <>
-              <div className={styles.detailRow}>
-                <span>Strategy Profile</span>
-                <span>{detail.strategy_profile_id}</span>
-              </div>
-              <div className={styles.detailRow}>
-                <span>Schema Version</span>
-                <span>{detail.schema_version}</span>
-              </div>
-              <div className={styles.detailRow}>
-                <span>Min Win Rate</span>
-                <span>{(detail.min_win_rate * 100).toFixed(1)}%</span>
-              </div>
-              <div className={styles.detailRow}>
-                <span>Min Total PnL</span>
-                <span>{detail.min_total_pnl_bps.toFixed(1)} bps</span>
-              </div>
-              <div className={styles.detailRow}>
-                <span>Samples / Symbols</span>
-                <span>
-                  {detail.metrics.total_samples} / {detail.metrics.symbols_covered}
-                </span>
-              </div>
-            </>
-          )}
-        </div>
-      )}
     </div>
   );
 };
