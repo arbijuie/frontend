@@ -13,8 +13,10 @@ import PipelineDiagnosticsHint from '../../components/PipelineDiagnosticsHint/Pi
 import { useNow } from '../../hooks/useNow';
 import { useTransientFlag } from '../../hooks/useTransientFlag';
 import { POLL_INTERVAL_MS } from '../../api/config';
+import { usePageTitle } from '../../hooks/usePageTitle';
 
 export default function OpportunitiesPage() {
+  usePageTitle('Opportunities');
   const { data, error, loading, fetching, refetch } = useOpportunities();
   const { data: status } = useStatus();
   const { data: config } = useConfig({

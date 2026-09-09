@@ -12,8 +12,10 @@ import { useTransientFlag } from '../../hooks/useTransientFlag';
 import { getLiveUptimeSeconds } from '../../lib/format';
 import { useConfig } from '../../hooks/useConfig';
 import { POLL_INTERVAL_MS } from '../../api/config';
+import { usePageTitle } from '../../hooks/usePageTitle';
 
 const StatusPage = () => {
+  usePageTitle('Status');
   const { data, error, loading, fetching, refetch, fetchedAt } = useStatus();
   const { data: config } = useConfig({
     staleTime: 0,
