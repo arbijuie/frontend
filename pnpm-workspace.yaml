@@ -1,3 +1,8 @@
 allowBuilds:
   '@parcel/watcher': true
   esbuild: true
+
+# GHSA-2883-xcg3-v3hh: @redocly/openapi-core (via openapi-typescript) pins js-yaml 4.3.1 exactly.
+# Patch release only; remove once openapi-typescript ships a fixed redocly core.
+overrides:
+  js-yaml@4.3.1: 4.3.2

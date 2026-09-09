@@ -77,8 +77,14 @@ Behavior contributors can rely on:
 pnpm lint
 pnpm test
 pnpm build
+pnpm audit:ci   # dependency audit, high severity and above (same gate as CI)
 pnpm types:check
 ```
+
+`pnpm check` runs lint, test, build and the audit in one go. `pnpm install` also
+installs a repository `pre-push` git hook that runs `pnpm check` automatically
+whenever the commits being pushed touch `frontend/`. Bypass in an emergency with
+`ARB_SKIP_PREPUSH_CHECKS=1`.
 
 ## Contributing
 
