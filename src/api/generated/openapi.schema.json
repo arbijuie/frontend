@@ -188,6 +188,13 @@
             "title": "Entries",
             "type": "integer"
           },
+          "exit_reasons": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Exit Reasons",
+            "type": "object"
+          },
           "exits": {
             "title": "Exits",
             "type": "integer"
@@ -238,6 +245,17 @@
       },
       "BacktestReplayRequest": {
         "properties": {
+          "basis_reversal_exit": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Basis Reversal Exit"
+          },
           "cycle_hours": {
             "anyOf": [
               {
@@ -282,6 +300,28 @@
             ],
             "title": "Exit Score Bps"
           },
+          "funding_decay_exit_ratio": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Funding Decay Exit Ratio"
+          },
+          "liquidity_drain_exit_ratio": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Liquidity Drain Exit Ratio"
+          },
           "min_samples_per_symbol": {
             "anyOf": [
               {
@@ -315,6 +355,17 @@
             },
             "title": "Symbols",
             "type": "array"
+          },
+          "time_stop_hold_multiplier": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Time Stop Hold Multiplier"
           }
         },
         "title": "BacktestReplayRequest",
@@ -394,6 +445,10 @@
             "title": "Api Port",
             "type": "integer"
           },
+          "backtest_basis_reversal_exit": {
+            "title": "Backtest Basis Reversal Exit",
+            "type": "boolean"
+          },
           "backtest_capture_enabled": {
             "title": "Backtest Capture Enabled",
             "type": "boolean"
@@ -408,6 +463,10 @@
           },
           "backtest_exit_score_bps": {
             "title": "Backtest Exit Score Bps",
+            "type": "number"
+          },
+          "backtest_funding_decay_exit_ratio": {
+            "title": "Backtest Funding Decay Exit Ratio",
             "type": "number"
           },
           "backtest_gate_max_drawdown_bps": {
@@ -426,6 +485,10 @@
             "title": "Backtest Gate Require Lock For Execution",
             "type": "boolean"
           },
+          "backtest_liquidity_drain_exit_ratio": {
+            "title": "Backtest Liquidity Drain Exit Ratio",
+            "type": "number"
+          },
           "backtest_min_samples_per_symbol": {
             "title": "Backtest Min Samples Per Symbol",
             "type": "integer"
@@ -437,6 +500,10 @@
           "backtest_strategy_lock_path": {
             "title": "Backtest Strategy Lock Path",
             "type": "string"
+          },
+          "backtest_time_stop_hold_multiplier": {
+            "title": "Backtest Time Stop Hold Multiplier",
+            "type": "number"
           },
           "basis_bonus_cap_bps": {
             "title": "Basis Bonus Cap Bps",
@@ -743,6 +810,10 @@
           "backtest_exit_score_bps",
           "backtest_replay_cycle_hours",
           "backtest_min_samples_per_symbol",
+          "backtest_funding_decay_exit_ratio",
+          "backtest_basis_reversal_exit",
+          "backtest_liquidity_drain_exit_ratio",
+          "backtest_time_stop_hold_multiplier",
           "backtest_strategy_lock_path",
           "backtest_gate_require_lock_for_execution",
           "backtest_gate_min_win_rate",
