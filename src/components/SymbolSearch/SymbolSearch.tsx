@@ -1,4 +1,4 @@
-import styles from './SymbolSearch.module.scss';
+import styles from "./SymbolSearch.module.scss";
 
 interface SymbolSearchProps {
   value: string;

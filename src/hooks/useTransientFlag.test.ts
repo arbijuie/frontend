@@ -1,8 +1,8 @@
-import { renderHook, act } from '@testing-library/react';
-import { useTransientFlag } from './useTransientFlag';
+import { renderHook, act } from "@testing-library/react";
+import { useTransientFlag } from "./useTransientFlag";
 
-describe('useTransientFlag', () => {
-  it('sets flag to true and resets after duration', () => {
+describe("useTransientFlag", () => {
+  it("sets flag to true and resets after duration", () => {
     vi.useFakeTimers();
     const { result } = renderHook(() => useTransientFlag(2000));
 
@@ -26,7 +26,7 @@ describe('useTransientFlag', () => {
     vi.useRealTimers();
   });
 
-  it('restarts timer when triggered again', () => {
+  it("restarts timer when triggered again", () => {
     vi.useFakeTimers();
     const { result } = renderHook(() => useTransientFlag(2000));
 
@@ -52,9 +52,9 @@ describe('useTransientFlag', () => {
     vi.useRealTimers();
   });
 
-  it('clears pending timeout on unmount', () => {
+  it("clears pending timeout on unmount", () => {
     vi.useFakeTimers();
-    const clearTimeoutSpy = vi.spyOn(window, 'clearTimeout');
+    const clearTimeoutSpy = vi.spyOn(window, "clearTimeout");
     const { result, unmount } = renderHook(() => useTransientFlag(2000));
 
     act(() => {

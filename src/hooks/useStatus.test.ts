@@ -1,26 +1,26 @@
-import { renderHook } from '@testing-library/react';
+import { renderHook } from "@testing-library/react";
 
-import { useQuery } from '@tanstack/react-query';
-import { useStatus } from './useStatus';
-import { fetchStatus } from '../api/status';
-import { POLL_INTERVAL_MS } from '../api/config';
+import { useQuery } from "@tanstack/react-query";
+import { useStatus } from "./useStatus";
+import { fetchStatus } from "../api/status";
+import { POLL_INTERVAL_MS } from "../api/config";
 
-vi.mock('@tanstack/react-query', () => ({
+vi.mock("@tanstack/react-query", () => ({
   useQuery: vi.fn(),
 }));
 
-vi.mock('../api/status', () => ({
+vi.mock("../api/status", () => ({
   fetchStatus: vi.fn(),
 }));
 
 const mockedUseQuery = vi.mocked(useQuery);
 
-describe('useStatus', () => {
+describe("useStatus", () => {
   beforeEach(() => {
     vi.resetAllMocks();
   });
 
-  it('uses polling interval and maps query state', () => {
+  it("uses polling interval and maps query state", () => {
     const refetch = vi.fn();
     mockedUseQuery.mockReturnValue({
       data: { uptime_s: 1 },
@@ -34,7 +34,7 @@ describe('useStatus', () => {
     const { result } = renderHook(() => useStatus());
 
     expect(mockedUseQuery).toHaveBeenCalledWith({
-      queryKey: ['status'],
+      queryKey: ["status"],
       queryFn: fetchStatus,
       refetchInterval: POLL_INTERVAL_MS,
     });
@@ -46,10 +46,10 @@ describe('useStatus', () => {
     expect(result.current.fetchedAt).toBe(123);
   });
 
-  it('normalizes non-Error query failures', () => {
+  it("normalizes non-Error query failures", () => {
     mockedUseQuery.mockReturnValue({
       data: undefined,
-      error: 'boom',
+      error: "boom",
       isLoading: false,
       isFetching: false,
       refetch: vi.fn(),

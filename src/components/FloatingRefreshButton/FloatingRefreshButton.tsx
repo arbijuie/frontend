@@ -1,4 +1,4 @@
-import styles from './FloatingRefreshButton.module.scss';
+import styles from "./FloatingRefreshButton.module.scss";
 
 interface FloatingRefreshButtonProps {
   fetching: boolean;
@@ -13,7 +13,7 @@ const FloatingRefreshButton = ({ fetching, onClick }: FloatingRefreshButtonProps
       disabled={fetching}
       aria-label="Refresh opportunities"
     >
-      <span className={fetching ? styles.spinning : ''}>↻</span>
+      <span className={fetching ? styles.spinning : ""}>↻</span>
     </button>
   );
 };

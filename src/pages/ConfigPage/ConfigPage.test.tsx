@@ -1,28 +1,28 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 
-import ConfigPage from './ConfigPage';
+import ConfigPage from "./ConfigPage";
 import {
   type ConfigResponse,
   TEST_HYPERLIQUID_TAKER_FEE,
   TEST_LIGHTER_TAKER_FEE,
   TEST_TAKER_FEE_BY_EXCHANGE,
-} from '../../api/types';
-import { useConfig } from '../../hooks/useConfig';
-import { useUpdateConfig } from '../../hooks/useUpdateConfig';
+} from "../../api/types";
+import { useConfig } from "../../hooks/useConfig";
+import { useUpdateConfig } from "../../hooks/useUpdateConfig";
 
-vi.mock('../../hooks/useConfig', () => ({
+vi.mock("../../hooks/useConfig", () => ({
   useConfig: vi.fn(),
 }));
 
-vi.mock('../../hooks/useUpdateConfig', () => ({
+vi.mock("../../hooks/useUpdateConfig", () => ({
   useUpdateConfig: vi.fn(),
 }));
 
-vi.mock('../../components/PresetComparison/PresetComparison', () => ({
+vi.mock("../../components/PresetComparison/PresetComparison", () => ({
   default: () => <div>Preset comparison mock</div>,
 }));
 
-vi.mock('../../components/ConfigAccordion/ConfigAccordion', () => ({
+vi.mock("../../components/ConfigAccordion/ConfigAccordion", () => ({
   default: () => <div>Config accordion mock</div>,
 }));
 
@@ -31,7 +31,7 @@ const mockedUseUpdateConfig = vi.mocked(useUpdateConfig);
 
 function makeConfig(): ConfigResponse {
   return {
-    api_host: '127.0.0.1',
+    api_host: "127.0.0.1",
     api_port: 8000,
     min_score_bps: 5,
     min_volume_24h: 100000,
@@ -46,7 +46,7 @@ function makeConfig(): ConfigResponse {
     taker_fee_per_side_by_exchange: TEST_TAKER_FEE_BY_EXCHANGE,
     default_order_size_usd: 1000,
     max_entry_slippage_bps: 10,
-    min_depth_quality: 'B',
+    min_depth_quality: "B",
     portfolio_usd: 0,
     max_position_pct: 0.2,
     max_volume_fraction: 0.01,
@@ -76,7 +76,7 @@ function makeConfig(): ConfigResponse {
     stale_data_s: 35,
     exec_enabled: false,
     exec_dry_run: true,
-    exec_strategy_profile_id: 'baseline-v1',
+    exec_strategy_profile_id: "baseline-v1",
     exec_stop_on_consecutive_rollbacks: 3,
     exec_stop_on_api_errors_per_window: 5,
     exec_api_error_window_s: 600,
@@ -90,17 +90,17 @@ function makeConfig(): ConfigResponse {
     exec_recovery_cooldown_s: 900,
     exec_recovery_require_manual_ack: true,
     backtest_capture_enabled: false,
-    backtest_db_path: 'data/backtest.sqlite3',
+    backtest_db_path: "data/backtest.sqlite3",
     backtest_entry_score_bps: 10,
     backtest_exit_score_bps: 3,
     backtest_replay_cycle_hours: 1,
     backtest_min_samples_per_symbol: 24,
-    backtest_strategy_lock_path: 'data/backtest_strategy_lock.json',
+    backtest_strategy_lock_path: "data/backtest_strategy_lock.json",
     backtest_gate_require_lock_for_execution: true,
     backtest_gate_min_win_rate: 0.55,
     backtest_gate_min_total_pnl_bps: 0,
     backtest_gate_max_drawdown_bps: 50,
-    runbook_config_fields: ['min_score_bps'],
+    runbook_config_fields: ["min_score_bps"],
     runbook_presets: {
       balanced: {
         min_score_bps: 8,
@@ -109,12 +109,12 @@ function makeConfig(): ConfigResponse {
   };
 }
 
-describe('ConfigPage', () => {
+describe("ConfigPage", () => {
   beforeEach(() => {
     vi.resetAllMocks();
   });
 
-  it('does not send legacy fee alias keys in PATCH payload', async () => {
+  it("does not send legacy fee alias keys in PATCH payload", async () => {
     const mutateAsync = vi.fn().mockResolvedValue(makeConfig());
 
     mockedUseConfig.mockReturnValue({
@@ -131,9 +131,9 @@ describe('ConfigPage', () => {
 
     render(<ConfigPage />);
 
-    const input = screen.getByLabelText('Min Score (bps)');
-    fireEvent.change(input, { target: { value: '9' } });
-    fireEvent.click(screen.getByRole('button', { name: /save \(/i }));
+    const input = screen.getByLabelText("Min Score (bps)");
+    fireEvent.change(input, { target: { value: "9" } });
+    fireEvent.click(screen.getByRole("button", { name: /save \(/i }));
 
     await waitFor(() => {
       expect(mutateAsync).toHaveBeenCalledTimes(1);
@@ -142,7 +142,7 @@ describe('ConfigPage', () => {
     const payload = mutateAsync.mock.calls[0][0] as Record<string, unknown>;
     expect(payload.persist).toBe(true);
     expect(payload.min_score_bps).toBe(9);
-    expect('hl_fee_per_side' in payload).toBe(false);
-    expect('lighter_fee_per_side' in payload).toBe(false);
+    expect("hl_fee_per_side" in payload).toBe(false);
+    expect("lighter_fee_per_side" in payload).toBe(false);
   });
 });
