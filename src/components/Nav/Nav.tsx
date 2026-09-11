@@ -1,11 +1,12 @@
 import styles from "./Nav.module.scss";
 import { NavLink } from "react-router-dom";
-import { LineChart, Activity, Settings } from "lucide-react";
+import { LineChart, Activity, Settings, FlaskConical } from "lucide-react";
 
 const NAV_ITEMS = [
   { to: "/", label: "Opportunities", icon: LineChart },
   { to: "/status", label: "Status", icon: Activity },
   { to: "/config", label: "Config", icon: Settings },
+  { to: "/backtest", label: "Backtest", icon: FlaskConical },
 ];
 
 const Nav = () => {

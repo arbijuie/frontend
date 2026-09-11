@@ -2,6 +2,7 @@ import styles from "./BacktestLockDetail.module.scss";
 import { useBacktestLock } from "../../hooks/useBacktest";
 import EmptyState from "../EmptyState/EmptyState";
 import { formatDateTime, signColor } from "../../lib/format";
+import { ShieldCheck, BarChart3 } from "lucide-react";
 
 interface BacktestLockDetailProps {
   lockId: string | null;
@@ -26,7 +27,7 @@ const BacktestLockDetail = ({ lockId }: BacktestLockDetailProps) => {
   return (
     <div className={styles.panel}>
       <div className={styles.topRow}>
-        <span className={styles.strategyId}>{data.strategy_id}</span>
+        <h2 className={styles.strategyId}>{data.strategy_id}</h2>
         <span
           className={`${styles.badge} ${data.gate_passed ? styles.passBadge : styles.failBadge}`}
         >
@@ -38,7 +39,10 @@ const BacktestLockDetail = ({ lockId }: BacktestLockDetailProps) => {
       </div>
 
       <div className={styles.section}>
-        <div className={styles.sectionLabel}>Gate Thresholds</div>
+        <h3 className={styles.sectionLabel}>
+          <ShieldCheck size={14} />
+          Gate Thresholds
+        </h3>
         <div className={styles.row}>
           <span>Strategy Profile</span>
           <span>{data.strategy_profile_id}</span>
@@ -62,7 +66,10 @@ const BacktestLockDetail = ({ lockId }: BacktestLockDetailProps) => {
       </div>
 
       <div className={styles.section}>
-        <div className={styles.sectionLabel}>Achieved Metrics</div>
+        <h3 className={styles.sectionLabel}>
+          <BarChart3 size={14} />
+          Achieved Metrics
+        </h3>
         <div className={styles.row}>
           <span>Samples / Symbols</span>
           <span>

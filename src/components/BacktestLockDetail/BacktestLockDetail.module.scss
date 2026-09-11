@@ -49,10 +49,19 @@
 }
 
 .sectionLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
   font-size: 0.75rem;
-  font-weight: 600;
-  color: v.$text-secondary;
-  margin-bottom: 0.375rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: v.$accent-purple;
+  margin: 0 0 0.5rem;
+
+  svg {
+    flex-shrink: 0;
+  }
 }
 
 .row {

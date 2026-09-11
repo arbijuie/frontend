@@ -6,9 +6,15 @@ interface ReplayResultPanelProps {
   metrics: BacktestMetrics;
   onCreateLock?: () => void;
   creatingLock?: boolean;
+  lockCreated?: boolean;
 }
 
-const ReplayResultPanel = ({ metrics, onCreateLock, creatingLock }: ReplayResultPanelProps) => {
+const ReplayResultPanel = ({
+  metrics,
+  onCreateLock,
+  creatingLock,
+  lockCreated,
+}: ReplayResultPanelProps) => {
   return (
     <div className={styles.panel}>
       <div className={styles.grid}>
@@ -58,8 +64,16 @@ const ReplayResultPanel = ({ metrics, onCreateLock, creatingLock }: ReplayResult
         </div>
       </div>
       {onCreateLock && (
-        <button className={styles.createLockButton} onClick={onCreateLock} disabled={creatingLock}>
-          {creatingLock ? "Locking..." : "Create Strategy Lock from this Result"}
+        <button
+          className={styles.createLockButton}
+          onClick={onCreateLock}
+          disabled={creatingLock || lockCreated}
+        >
+          {creatingLock
+            ? "Locking..."
+            : lockCreated
+              ? "Lock Created ✓"
+              : "Create Strategy Lock from this Result"}
         </button>
       )}
     </div>
