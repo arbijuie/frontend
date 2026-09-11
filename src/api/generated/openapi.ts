@@ -261,6 +261,10 @@ export interface components {
             closed_trades: number;
             /** Entries */
             entries: number;
+            /** Exit Reasons */
+            exit_reasons?: {
+                [key: string]: number;
+            };
             /** Exits */
             exits: number;
             /** Max Drawdown Bps */
@@ -280,6 +284,8 @@ export interface components {
         };
         /** BacktestReplayRequest */
         BacktestReplayRequest: {
+            /** Basis Reversal Exit */
+            basis_reversal_exit?: boolean | null;
             /** Cycle Hours */
             cycle_hours?: number | null;
             /** End */
@@ -288,6 +294,10 @@ export interface components {
             entry_score_bps?: number | null;
             /** Exit Score Bps */
             exit_score_bps?: number | null;
+            /** Funding Decay Exit Ratio */
+            funding_decay_exit_ratio?: number | null;
+            /** Liquidity Drain Exit Ratio */
+            liquidity_drain_exit_ratio?: number | null;
             /** Min Samples Per Symbol */
             min_samples_per_symbol?: number | null;
             /** Start */
@@ -299,6 +309,8 @@ export interface components {
             strategy_id: string;
             /** Symbols */
             symbols?: string[];
+            /** Time Stop Hold Multiplier */
+            time_stop_hold_multiplier?: number | null;
         };
         /** BacktestReplayResponse */
         BacktestReplayResponse: {
@@ -327,6 +339,8 @@ export interface components {
             api_host: string;
             /** Api Port */
             api_port: number;
+            /** Backtest Basis Reversal Exit */
+            backtest_basis_reversal_exit: boolean;
             /** Backtest Capture Enabled */
             backtest_capture_enabled: boolean;
             /** Backtest Db Path */
@@ -335,6 +349,8 @@ export interface components {
             backtest_entry_score_bps: number;
             /** Backtest Exit Score Bps */
             backtest_exit_score_bps: number;
+            /** Backtest Funding Decay Exit Ratio */
+            backtest_funding_decay_exit_ratio: number;
             /** Backtest Gate Max Drawdown Bps */
             backtest_gate_max_drawdown_bps: number;
             /** Backtest Gate Min Total Pnl Bps */
@@ -343,12 +359,16 @@ export interface components {
             backtest_gate_min_win_rate: number;
             /** Backtest Gate Require Lock For Execution */
             backtest_gate_require_lock_for_execution: boolean;
+            /** Backtest Liquidity Drain Exit Ratio */
+            backtest_liquidity_drain_exit_ratio: number;
             /** Backtest Min Samples Per Symbol */
             backtest_min_samples_per_symbol: number;
             /** Backtest Replay Cycle Hours */
             backtest_replay_cycle_hours: number;
             /** Backtest Strategy Lock Path */
             backtest_strategy_lock_path: string;
+            /** Backtest Time Stop Hold Multiplier */
+            backtest_time_stop_hold_multiplier: number;
             /** Basis Bonus Cap Bps */
             basis_bonus_cap_bps: number;
             /** Basis Divergence Threshold Bps */
