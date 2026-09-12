@@ -144,6 +144,26 @@ export interface paths {
         patch: operations["patch_config_config_patch"];
         trace?: never;
     };
+    "/correlation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Correlation
+         * @description Pairwise return correlation for the symbols in the last screener pass.
+         */
+        get: operations["get_correlation_correlation_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/execution/attempts": {
         parameters: {
             query?: never;
@@ -500,6 +520,14 @@ export interface components {
             binance_base_url: string;
             /** Bybit Base Url */
             bybit_base_url: string;
+            /** Correlation Bucket S */
+            correlation_bucket_s: number;
+            /** Correlation Min Samples */
+            correlation_min_samples: number;
+            /** Correlation Threshold */
+            correlation_threshold: number;
+            /** Correlation Window Hours */
+            correlation_window_hours: number;
             /** Default Order Size Usd */
             default_order_size_usd: number;
             /** Dydx Indexer Url */
@@ -576,6 +604,8 @@ export interface components {
             max_basis_divergence_hours: number;
             /** Max Basis Trend Bps Per Tick */
             max_basis_trend_bps_per_tick: number;
+            /** Max Correlated Positions */
+            max_correlated_positions: number;
             /** Max Entry Adl Level */
             max_entry_adl_level: number;
             /** Max Entry Slippage Bps */
@@ -635,6 +665,8 @@ export interface components {
             basis_expansion_penalty_bps_per_hour?: number | null;
             /** Basis Weight */
             basis_weight?: number | null;
+            /** Correlation Threshold */
+            correlation_threshold?: number | null;
             /** Default Order Size Usd */
             default_order_size_usd?: number | null;
             /** Expected Hold Hours */
@@ -643,6 +675,8 @@ export interface components {
             hold_window_instability_scale?: number | null;
             /** Max Basis Divergence Hours */
             max_basis_divergence_hours?: number | null;
+            /** Max Correlated Positions */
+            max_correlated_positions?: number | null;
             /** Max Entry Adl Level */
             max_entry_adl_level?: number | null;
             /** Max Entry Slippage Bps */
@@ -674,6 +708,40 @@ export interface components {
             require_isolated_margin?: boolean | null;
             /** Stale Data S */
             stale_data_s?: number | null;
+        };
+        /** CorrelationPairItem */
+        CorrelationPairItem: {
+            /** Above Threshold */
+            above_threshold: boolean;
+            /** Correlation */
+            correlation: number;
+            /** Samples */
+            samples: number;
+            /** Symbol A */
+            symbol_a: string;
+            /** Symbol B */
+            symbol_b: string;
+        };
+        /** CorrelationResponse */
+        CorrelationResponse: {
+            /** Bucket S */
+            bucket_s: number;
+            /** Count */
+            count: number;
+            /** Max Correlated Positions */
+            max_correlated_positions: number;
+            /** Min Samples */
+            min_samples: number;
+            /** Pairs */
+            pairs?: components["schemas"]["CorrelationPairItem"][];
+            /** Symbols */
+            symbols?: string[];
+            /** Threshold */
+            threshold: number;
+            /** Updated At */
+            updated_at?: string | null;
+            /** Window Hours */
+            window_hours: number;
         };
         /** ExecutionAttemptItem */
         ExecutionAttemptItem: {
@@ -952,6 +1020,8 @@ export interface components {
             basis_trend?: number | null;
             /** Combined Score */
             combined_score: number;
+            /** Correlated With */
+            correlated_with?: string[];
             /** Depth Quality */
             depth_quality?: ("A" | "B" | "C" | "D") | null;
             /** Depth Source By Exchange */
@@ -1035,7 +1105,7 @@ export interface components {
          * ReasonCode
          * @enum {string}
          */
-        ReasonCode: "persistence_insufficient" | "historical_win_rate_low" | "break_even_window" | "score_below_min" | "funding_flips" | "basis_limit" | "basis_trend_unstable" | "basis_divergence_hard" | "basis_divergence_window" | "funding_timing_asymmetry" | "funding_unstable" | "funding_trend_thin_edge" | "stale_data" | "real_depth_unavailable" | "depth_quality_below_min" | "real_fee_unavailable" | "margin_mode_unknown" | "adl_limit" | "margin_mode_cross" | "anti_churn_cooldown";
+        ReasonCode: "persistence_insufficient" | "historical_win_rate_low" | "break_even_window" | "score_below_min" | "funding_flips" | "basis_limit" | "basis_trend_unstable" | "basis_divergence_hard" | "basis_divergence_window" | "funding_timing_asymmetry" | "funding_unstable" | "funding_trend_thin_edge" | "stale_data" | "real_depth_unavailable" | "depth_quality_below_min" | "real_fee_unavailable" | "margin_mode_unknown" | "adl_limit" | "margin_mode_cross" | "anti_churn_cooldown" | "correlation_limit";
         /** ReasonItem */
         ReasonItem: {
             code: components["schemas"]["ReasonCode"];
@@ -1545,6 +1615,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_correlation_correlation_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CorrelationResponse"];
                 };
             };
         };

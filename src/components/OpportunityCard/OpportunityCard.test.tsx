@@ -98,4 +98,24 @@ describe('OpportunityCard', () => {
     const label = screen.getByText(/historical win rate/i);
     expect(label.nextElementSibling?.textContent).toBe('—');
   });
+
+  it('lists correlated symbols when the cluster cap recorded them', () => {
+    const item = makeItem();
+    item.correlated_with = ['MEME1', 'MEME2', 'MEME3'];
+
+    render(<OpportunityCard item={item} updatedAt={'2026-01-01T00:00:00Z'} now={new Date()} />);
+
+    fireEvent.click(screen.getByRole('button', { name: /more details/i }));
+
+    expect(screen.getByText(/correlated with/i)).toBeTruthy();
+    expect(screen.getByText('MEME1, MEME2, MEME3')).toBeTruthy();
+  });
+
+  it('omits the correlated row when there are no correlated symbols', () => {
+    render(<OpportunityCard item={makeItem()} updatedAt={'2026-01-01T00:00:00Z'} now={new Date()} />);
+
+    fireEvent.click(screen.getByRole('button', { name: /more details/i }));
+
+    expect(screen.queryByText(/correlated with/i)).toBeNull();
+  });
 });

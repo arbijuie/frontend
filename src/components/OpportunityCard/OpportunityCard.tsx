@@ -185,6 +185,12 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
               {item.persistence_hours != null ? `${item.persistence_hours.toFixed(1)}h` : "—"}
             </span>
           </div>
+          {item.correlated_with && item.correlated_with.length > 0 && (
+            <div className={styles.detailRow}>
+              <span>Correlated with</span>
+              <span>{item.correlated_with.join(", ")}</span>
+            </div>
+          )}
           <div className={styles.detailRow}>
             <span>Historical win rate</span>
             <span>

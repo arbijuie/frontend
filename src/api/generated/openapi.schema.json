@@ -689,6 +689,22 @@
             "title": "Bybit Base Url",
             "type": "string"
           },
+          "correlation_bucket_s": {
+            "title": "Correlation Bucket S",
+            "type": "number"
+          },
+          "correlation_min_samples": {
+            "title": "Correlation Min Samples",
+            "type": "integer"
+          },
+          "correlation_threshold": {
+            "title": "Correlation Threshold",
+            "type": "number"
+          },
+          "correlation_window_hours": {
+            "title": "Correlation Window Hours",
+            "type": "number"
+          },
           "default_order_size_usd": {
             "title": "Default Order Size Usd",
             "type": "number"
@@ -841,6 +857,10 @@
             "title": "Max Basis Trend Bps Per Tick",
             "type": "number"
           },
+          "max_correlated_positions": {
+            "title": "Max Correlated Positions",
+            "type": "integer"
+          },
           "max_entry_adl_level": {
             "title": "Max Entry Adl Level",
             "type": "integer"
@@ -975,6 +995,11 @@
           "max_entry_adl_level",
           "require_isolated_margin",
           "allow_unknown_margin_mode",
+          "correlation_threshold",
+          "max_correlated_positions",
+          "correlation_window_hours",
+          "correlation_bucket_s",
+          "correlation_min_samples",
           "loop_interval_s",
           "stale_data_s",
           "exec_enabled",
@@ -1106,6 +1131,17 @@
             ],
             "title": "Basis Weight"
           },
+          "correlation_threshold": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Correlation Threshold"
+          },
           "default_order_size_usd": {
             "anyOf": [
               {
@@ -1149,6 +1185,17 @@
               }
             ],
             "title": "Max Basis Divergence Hours"
+          },
+          "max_correlated_positions": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Correlated Positions"
           },
           "max_entry_adl_level": {
             "anyOf": [
@@ -1306,6 +1353,102 @@
           }
         },
         "title": "ConfigUpdateRequest",
+        "type": "object"
+      },
+      "CorrelationPairItem": {
+        "properties": {
+          "above_threshold": {
+            "title": "Above Threshold",
+            "type": "boolean"
+          },
+          "correlation": {
+            "title": "Correlation",
+            "type": "number"
+          },
+          "samples": {
+            "title": "Samples",
+            "type": "integer"
+          },
+          "symbol_a": {
+            "title": "Symbol A",
+            "type": "string"
+          },
+          "symbol_b": {
+            "title": "Symbol B",
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol_a",
+          "symbol_b",
+          "correlation",
+          "samples",
+          "above_threshold"
+        ],
+        "title": "CorrelationPairItem",
+        "type": "object"
+      },
+      "CorrelationResponse": {
+        "properties": {
+          "bucket_s": {
+            "title": "Bucket S",
+            "type": "number"
+          },
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "max_correlated_positions": {
+            "title": "Max Correlated Positions",
+            "type": "integer"
+          },
+          "min_samples": {
+            "title": "Min Samples",
+            "type": "integer"
+          },
+          "pairs": {
+            "items": {
+              "$ref": "#/components/schemas/CorrelationPairItem"
+            },
+            "title": "Pairs",
+            "type": "array"
+          },
+          "symbols": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Symbols",
+            "type": "array"
+          },
+          "threshold": {
+            "title": "Threshold",
+            "type": "number"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          },
+          "window_hours": {
+            "title": "Window Hours",
+            "type": "number"
+          }
+        },
+        "required": [
+          "threshold",
+          "max_correlated_positions",
+          "window_hours",
+          "bucket_s",
+          "min_samples",
+          "count"
+        ],
+        "title": "CorrelationResponse",
         "type": "object"
       },
       "ExecutionAttemptItem": {
@@ -2093,6 +2236,13 @@
             "title": "Combined Score",
             "type": "number"
           },
+          "correlated_with": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Correlated With",
+            "type": "array"
+          },
           "depth_quality": {
             "anyOf": [
               {
@@ -2392,7 +2542,8 @@
           "margin_mode_unknown",
           "adl_limit",
           "margin_mode_cross",
-          "anti_churn_cooldown"
+          "anti_churn_cooldown",
+          "correlation_limit"
         ],
         "title": "ReasonCode",
         "type": "string"
@@ -3167,6 +3318,25 @@
           }
         },
         "summary": "Patch Config"
+      }
+    },
+    "/correlation": {
+      "get": {
+        "description": "Pairwise return correlation for the symbols in the last screener pass.",
+        "operationId": "get_correlation_correlation_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CorrelationResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Correlation"
       }
     },
     "/execution/attempts": {
