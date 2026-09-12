@@ -63,6 +63,19 @@ const ReplayResultPanel = ({
           <div className={styles.metricValue}>{metrics.max_drawdown_bps.toFixed(1)} bps</div>
         </div>
       </div>
+
+      {metrics.exit_reasons && Object.keys(metrics.exit_reasons).length > 0 && (
+        <div className={styles.section}>
+          <div className={styles.sectionLabel}>Exit Reasons</div>
+          {Object.entries(metrics.exit_reasons).map(([reason, count]) => (
+            <div key={reason} className={styles.row}>
+              <span>{reason}</span>
+              <span>{count}</span>
+            </div>
+          ))}
+        </div>
+      )}
+
       {onCreateLock && (
         <button
           className={styles.createLockButton}

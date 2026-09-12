@@ -2,7 +2,7 @@ import styles from "./BacktestLockDetail.module.scss";
 import { useBacktestLock } from "../../hooks/useBacktest";
 import EmptyState from "../EmptyState/EmptyState";
 import { formatDateTime, signColor } from "../../lib/format";
-import { ShieldCheck, BarChart3 } from "lucide-react";
+import { ShieldCheck, BarChart3, ListTree } from "lucide-react";
 
 interface BacktestLockDetailProps {
   lockId: string | null;
@@ -107,6 +107,21 @@ const BacktestLockDetail = ({ lockId }: BacktestLockDetailProps) => {
           <span>{data.metrics.max_drawdown_bps.toFixed(1)} bps</span>
         </div>
       </div>
+
+      {data.metrics.exit_reasons && Object.keys(data.metrics.exit_reasons).length > 0 && (
+        <div className={styles.section}>
+          <h3 className={styles.sectionLabel}>
+            <ListTree size={14} />
+            Exit Reasons
+          </h3>
+          {Object.entries(data.metrics.exit_reasons).map(([reason, count]) => (
+            <div key={reason} className={styles.row}>
+              <span>{reason}</span>
+              <span>{count}</span>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
