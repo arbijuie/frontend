@@ -52,7 +52,9 @@
             "title": "Strategy Profile Id"
           }
         },
-        "required": ["passed"],
+        "required": [
+          "passed"
+        ],
         "title": "BacktestGateResponse",
         "type": "object"
       },
@@ -113,7 +115,9 @@
             "type": "array"
           }
         },
-        "required": ["count"],
+        "required": [
+          "count"
+        ],
         "title": "BacktestLockListResponse",
         "type": "object"
       },
@@ -184,6 +188,13 @@
             "title": "Entries",
             "type": "integer"
           },
+          "exit_reasons": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Exit Reasons",
+            "type": "object"
+          },
           "exits": {
             "title": "Exits",
             "type": "integer"
@@ -234,6 +245,17 @@
       },
       "BacktestReplayRequest": {
         "properties": {
+          "basis_reversal_exit": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Basis Reversal Exit"
+          },
           "cycle_hours": {
             "anyOf": [
               {
@@ -278,6 +300,28 @@
             ],
             "title": "Exit Score Bps"
           },
+          "funding_decay_exit_ratio": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Funding Decay Exit Ratio"
+          },
+          "liquidity_drain_exit_ratio": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Liquidity Drain Exit Ratio"
+          },
           "min_samples_per_symbol": {
             "anyOf": [
               {
@@ -311,6 +355,17 @@
             },
             "title": "Symbols",
             "type": "array"
+          },
+          "time_stop_hold_multiplier": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Time Stop Hold Multiplier"
           }
         },
         "title": "BacktestReplayRequest",
@@ -322,7 +377,9 @@
             "$ref": "#/components/schemas/BacktestMetricsItem"
           }
         },
-        "required": ["metrics"],
+        "required": [
+          "metrics"
+        ],
         "title": "BacktestReplayResponse",
         "type": "object"
       },
@@ -359,7 +416,10 @@
             "type": "integer"
           }
         },
-        "required": ["total_snapshots", "symbols_covered"],
+        "required": [
+          "total_snapshots",
+          "symbols_covered"
+        ],
         "title": "BacktestSummaryResponse",
         "type": "object"
       },
@@ -385,6 +445,10 @@
             "title": "Api Port",
             "type": "integer"
           },
+          "backtest_basis_reversal_exit": {
+            "title": "Backtest Basis Reversal Exit",
+            "type": "boolean"
+          },
           "backtest_capture_enabled": {
             "title": "Backtest Capture Enabled",
             "type": "boolean"
@@ -399,6 +463,10 @@
           },
           "backtest_exit_score_bps": {
             "title": "Backtest Exit Score Bps",
+            "type": "number"
+          },
+          "backtest_funding_decay_exit_ratio": {
+            "title": "Backtest Funding Decay Exit Ratio",
             "type": "number"
           },
           "backtest_gate_max_drawdown_bps": {
@@ -417,6 +485,10 @@
             "title": "Backtest Gate Require Lock For Execution",
             "type": "boolean"
           },
+          "backtest_liquidity_drain_exit_ratio": {
+            "title": "Backtest Liquidity Drain Exit Ratio",
+            "type": "number"
+          },
           "backtest_min_samples_per_symbol": {
             "title": "Backtest Min Samples Per Symbol",
             "type": "integer"
@@ -428,6 +500,10 @@
           "backtest_strategy_lock_path": {
             "title": "Backtest Strategy Lock Path",
             "type": "string"
+          },
+          "backtest_time_stop_hold_multiplier": {
+            "title": "Backtest Time Stop Hold Multiplier",
+            "type": "number"
           },
           "basis_bonus_cap_bps": {
             "title": "Basis Bonus Cap Bps",
@@ -468,6 +544,14 @@
           "exec_enabled": {
             "title": "Exec Enabled",
             "type": "boolean"
+          },
+          "exec_leg_retry_attempts": {
+            "title": "Exec Leg Retry Attempts",
+            "type": "integer"
+          },
+          "exec_leg_retry_interval_s": {
+            "title": "Exec Leg Retry Interval S",
+            "type": "number"
           },
           "exec_margin_alert_pct": {
             "title": "Exec Margin Alert Pct",
@@ -716,6 +800,8 @@
           "exec_enabled",
           "exec_dry_run",
           "exec_strategy_profile_id",
+          "exec_leg_retry_attempts",
+          "exec_leg_retry_interval_s",
           "exec_stop_on_consecutive_rollbacks",
           "exec_stop_on_api_errors_per_window",
           "exec_api_error_window_s",
@@ -734,6 +820,10 @@
           "backtest_exit_score_bps",
           "backtest_replay_cycle_hours",
           "backtest_min_samples_per_symbol",
+          "backtest_funding_decay_exit_ratio",
+          "backtest_basis_reversal_exit",
+          "backtest_liquidity_drain_exit_ratio",
+          "backtest_time_stop_hold_multiplier",
           "backtest_strategy_lock_path",
           "backtest_gate_require_lock_for_execution",
           "backtest_gate_min_win_rate",
@@ -987,7 +1077,12 @@
           "preset": {
             "anyOf": [
               {
-                "enum": ["conservative", "balanced", "aggressive", "exploratory"],
+                "enum": [
+                  "conservative",
+                  "balanced",
+                  "aggressive",
+                  "exploratory"
+                ],
                 "type": "string"
               },
               {
@@ -1022,6 +1117,324 @@
         "title": "ConfigUpdateRequest",
         "type": "object"
       },
+      "ExecutionAttemptItem": {
+        "properties": {
+          "attempt_id": {
+            "title": "Attempt Id",
+            "type": "string"
+          },
+          "consecutive_rollbacks": {
+            "title": "Consecutive Rollbacks",
+            "type": "integer"
+          },
+          "created_at": {
+            "title": "Created At",
+            "type": "string"
+          },
+          "dry_run": {
+            "title": "Dry Run",
+            "type": "boolean"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "events": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Events",
+            "type": "array"
+          },
+          "first_leg": {
+            "$ref": "#/components/schemas/ExecutionLegItem"
+          },
+          "long_exchange": {
+            "title": "Long Exchange",
+            "type": "string"
+          },
+          "quantity": {
+            "title": "Quantity",
+            "type": "string"
+          },
+          "residual_exposure": {
+            "title": "Residual Exposure",
+            "type": "boolean"
+          },
+          "rollback_attempts": {
+            "title": "Rollback Attempts",
+            "type": "integer"
+          },
+          "rollback_order": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ExecutionOrderItem"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "rollback_slippage_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rollback Slippage Bps"
+          },
+          "second_leg": {
+            "$ref": "#/components/schemas/ExecutionLegItem"
+          },
+          "second_leg_attempts": {
+            "title": "Second Leg Attempts",
+            "type": "integer"
+          },
+          "short_exchange": {
+            "title": "Short Exchange",
+            "type": "string"
+          },
+          "size_usd": {
+            "title": "Size Usd",
+            "type": "number"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "symbol": {
+            "title": "Symbol",
+            "type": "string"
+          }
+        },
+        "required": [
+          "attempt_id",
+          "created_at",
+          "symbol",
+          "long_exchange",
+          "short_exchange",
+          "quantity",
+          "size_usd",
+          "status",
+          "dry_run",
+          "first_leg",
+          "second_leg",
+          "second_leg_attempts",
+          "rollback_attempts",
+          "consecutive_rollbacks",
+          "residual_exposure"
+        ],
+        "title": "ExecutionAttemptItem",
+        "type": "object"
+      },
+      "ExecutionAttemptListResponse": {
+        "properties": {
+          "consecutive_rollbacks": {
+            "title": "Consecutive Rollbacks",
+            "type": "integer"
+          },
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "entries_stopped": {
+            "title": "Entries Stopped",
+            "type": "boolean"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ExecutionAttemptItem"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "count",
+          "consecutive_rollbacks",
+          "entries_stopped"
+        ],
+        "title": "ExecutionAttemptListResponse",
+        "type": "object"
+      },
+      "ExecutionLegItem": {
+        "properties": {
+          "attempts": {
+            "title": "Attempts",
+            "type": "integer"
+          },
+          "exchange": {
+            "title": "Exchange",
+            "type": "string"
+          },
+          "fill": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ExecutionOrderItem"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "intended_price": {
+            "title": "Intended Price",
+            "type": "string"
+          },
+          "quantity": {
+            "title": "Quantity",
+            "type": "string"
+          },
+          "side": {
+            "enum": [
+              "buy",
+              "sell"
+            ],
+            "title": "Side",
+            "type": "string"
+          },
+          "symbol": {
+            "title": "Symbol",
+            "type": "string"
+          }
+        },
+        "required": [
+          "exchange",
+          "symbol",
+          "side",
+          "quantity",
+          "intended_price",
+          "attempts"
+        ],
+        "title": "ExecutionLegItem",
+        "type": "object"
+      },
+      "ExecutionOpenRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "long_exchange": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Long Exchange"
+          },
+          "short_exchange": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Short Exchange"
+          },
+          "size_usd": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Size Usd"
+          },
+          "symbol": {
+            "title": "Symbol",
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol"
+        ],
+        "title": "ExecutionOpenRequest",
+        "type": "object"
+      },
+      "ExecutionOrderItem": {
+        "properties": {
+          "client_order_id": {
+            "title": "Client Order Id",
+            "type": "string"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "exchange": {
+            "title": "Exchange",
+            "type": "string"
+          },
+          "price": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Price"
+          },
+          "quantity": {
+            "title": "Quantity",
+            "type": "string"
+          },
+          "reduce_only": {
+            "default": false,
+            "title": "Reduce Only",
+            "type": "boolean"
+          },
+          "side": {
+            "enum": [
+              "buy",
+              "sell"
+            ],
+            "title": "Side",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "symbol": {
+            "title": "Symbol",
+            "type": "string"
+          }
+        },
+        "required": [
+          "client_order_id",
+          "exchange",
+          "symbol",
+          "side",
+          "quantity",
+          "status"
+        ],
+        "title": "ExecutionOrderItem",
+        "type": "object"
+      },
       "ExecutionPreflightCandidateItem": {
         "properties": {
           "combined_score": {
@@ -1044,7 +1457,11 @@
             "type": "string"
           },
           "status": {
-            "enum": ["ready", "watching", "blocked"],
+            "enum": [
+              "ready",
+              "watching",
+              "blocked"
+            ],
             "title": "Status",
             "type": "string"
           },
@@ -1053,7 +1470,13 @@
             "type": "string"
           }
         },
-        "required": ["symbol", "long_exchange", "short_exchange", "combined_score", "status"],
+        "required": [
+          "symbol",
+          "long_exchange",
+          "short_exchange",
+          "combined_score",
+          "status"
+        ],
         "title": "ExecutionPreflightCandidateItem",
         "type": "object"
       },
@@ -1068,12 +1491,19 @@
             "type": "string"
           },
           "severity": {
-            "enum": ["watching", "blocked"],
+            "enum": [
+              "watching",
+              "blocked"
+            ],
             "title": "Severity",
             "type": "string"
           }
         },
-        "required": ["code", "severity", "message"],
+        "required": [
+          "code",
+          "severity",
+          "message"
+        ],
         "title": "ExecutionPreflightCandidateReasonItem",
         "type": "object"
       },
@@ -1128,7 +1558,9 @@
             "title": "Strategy Profile Id"
           }
         },
-        "required": ["passed"],
+        "required": [
+          "passed"
+        ],
         "title": "ExecutionPreflightGateItem",
         "type": "object"
       },
@@ -1147,7 +1579,11 @@
             "type": "string"
           }
         },
-        "required": ["exec_enabled", "exec_dry_run", "strategy_profile_id"],
+        "required": [
+          "exec_enabled",
+          "exec_dry_run",
+          "strategy_profile_id"
+        ],
         "title": "ExecutionPreflightModeItem",
         "type": "object"
       },
@@ -1162,17 +1598,29 @@
             "type": "string"
           },
           "severity": {
-            "enum": ["watching", "blocked"],
+            "enum": [
+              "watching",
+              "blocked"
+            ],
             "title": "Severity",
             "type": "string"
           },
           "source": {
-            "enum": ["gate", "runtime", "candidate"],
+            "enum": [
+              "gate",
+              "runtime",
+              "candidate"
+            ],
             "title": "Source",
             "type": "string"
           }
         },
-        "required": ["code", "severity", "source", "message"],
+        "required": [
+          "code",
+          "severity",
+          "source",
+          "message"
+        ],
         "title": "ExecutionPreflightReasonItem",
         "type": "object"
       },
@@ -1200,7 +1648,11 @@
             "type": "string"
           },
           "decision": {
-            "enum": ["ready", "watching", "blocked"],
+            "enum": [
+              "ready",
+              "watching",
+              "blocked"
+            ],
             "title": "Decision",
             "type": "string"
           },
@@ -1239,12 +1691,29 @@
             "$ref": "#/components/schemas/ExecutionPreflightRuntimeItem"
           }
         },
-        "required": ["ready", "decision", "checked_at", "mode", "gate", "runtime"],
+        "required": [
+          "ready",
+          "decision",
+          "checked_at",
+          "mode",
+          "gate",
+          "runtime"
+        ],
         "title": "ExecutionPreflightResponse",
         "type": "object"
       },
       "ExecutionPreflightRuntimeItem": {
         "properties": {
+          "consecutive_rollbacks": {
+            "default": 0,
+            "title": "Consecutive Rollbacks",
+            "type": "integer"
+          },
+          "entries_stopped": {
+            "default": false,
+            "title": "Entries Stopped",
+            "type": "boolean"
+          },
           "exchange_last_ok": {
             "additionalProperties": {
               "anyOf": [
@@ -1279,7 +1748,11 @@
             "type": "integer"
           }
         },
-        "required": ["poll_count_success", "exchange_last_ok", "screener_ready_candidates"],
+        "required": [
+          "poll_count_success",
+          "exchange_last_ok",
+          "screener_ready_candidates"
+        ],
         "title": "ExecutionPreflightRuntimeItem",
         "type": "object"
       },
@@ -1323,12 +1796,18 @@
           },
           "trend": {
             "default": "stable",
-            "enum": ["rising", "falling", "stable"],
+            "enum": [
+              "rising",
+              "falling",
+              "stable"
+            ],
             "title": "Trend",
             "type": "string"
           }
         },
-        "required": ["expected_apr"],
+        "required": [
+          "expected_apr"
+        ],
         "title": "FundingForecastItem",
         "type": "object"
       },
@@ -1374,7 +1853,11 @@
             "title": "Updated At"
           }
         },
-        "required": ["count", "ready_count", "opportunities"],
+        "required": [
+          "count",
+          "ready_count",
+          "opportunities"
+        ],
         "title": "OpportunitiesResponse",
         "type": "object"
       },
@@ -1422,7 +1905,12 @@
           "depth_quality": {
             "anyOf": [
               {
-                "enum": ["A", "B", "C", "D"],
+                "enum": [
+                  "A",
+                  "B",
+                  "C",
+                  "D"
+                ],
                 "type": "string"
               },
               {
@@ -1433,7 +1921,10 @@
           },
           "depth_source_by_exchange": {
             "additionalProperties": {
-              "enum": ["real", "none"],
+              "enum": [
+                "real",
+                "none"
+              ],
               "type": "string"
             },
             "title": "Depth Source By Exchange",
@@ -1463,7 +1954,10 @@
           },
           "fee_source_by_exchange": {
             "additionalProperties": {
-              "enum": ["real", "config"],
+              "enum": [
+                "real",
+                "config"
+              ],
               "type": "string"
             },
             "title": "Fee Source By Exchange",
@@ -1511,7 +2005,11 @@
           "liquidity_tier": {
             "anyOf": [
               {
-                "enum": ["H", "M", "L"],
+                "enum": [
+                  "H",
+                  "M",
+                  "L"
+                ],
                 "type": "string"
               },
               {
@@ -1624,7 +2122,11 @@
             "type": "number"
           },
           "status": {
-            "enum": ["ready", "watching", "blocked"],
+            "enum": [
+              "ready",
+              "watching",
+              "blocked"
+            ],
             "title": "Status",
             "type": "string"
           },
@@ -1691,12 +2193,19 @@
             "type": "string"
           },
           "severity": {
-            "enum": ["watching", "blocked"],
+            "enum": [
+              "watching",
+              "blocked"
+            ],
             "title": "Severity",
             "type": "string"
           }
         },
-        "required": ["code", "message", "severity"],
+        "required": [
+          "code",
+          "message",
+          "severity"
+        ],
         "title": "ReasonItem",
         "type": "object"
       },
@@ -1859,6 +2368,49 @@
               }
             ],
             "title": "Execution Backtest Gate Reason"
+          },
+          "execution_consecutive_rollbacks": {
+            "default": 0,
+            "title": "Execution Consecutive Rollbacks",
+            "type": "integer"
+          },
+          "execution_entries_stopped": {
+            "default": false,
+            "title": "Execution Entries Stopped",
+            "type": "boolean"
+          },
+          "execution_last_attempt_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Execution Last Attempt Id"
+          },
+          "execution_last_attempt_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Execution Last Attempt Status"
+          },
+          "execution_last_rollback_slippage_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Execution Last Rollback Slippage Bps"
           },
           "execution_strategy_id": {
             "anyOf": [
@@ -2035,7 +2587,11 @@
             "type": "string"
           }
         },
-        "required": ["loc", "msg", "type"],
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
         "title": "ValidationError",
         "type": "object"
       },
@@ -2054,7 +2610,11 @@
             "type": "number"
           }
         },
-        "required": ["ticket", "expires_at", "ttl_s"],
+        "required": [
+          "ticket",
+          "expires_at",
+          "ttl_s"
+        ],
         "title": "WsAuthTicketResponse",
         "type": "object"
       }
@@ -2311,6 +2871,86 @@
           }
         },
         "summary": "Patch Config"
+      }
+    },
+    "/execution/attempts": {
+      "get": {
+        "operationId": "list_execution_attempts_execution_attempts_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExecutionAttemptListResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Execution Attempts"
+      }
+    },
+    "/execution/open": {
+      "post": {
+        "operationId": "open_two_leg_position_execution_open_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExecutionOpenRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExecutionAttemptItem"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Open Two Leg Position"
       }
     },
     "/execution/preflight": {

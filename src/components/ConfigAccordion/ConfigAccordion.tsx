@@ -139,6 +139,8 @@ const ConfigAccordion = ({ config }: ConfigAccordionProps) => {
       >
         <ConfigRow label="Execution Enabled" value={config.exec_enabled} />
         <ConfigRow label="Dry Run" value={config.exec_dry_run} />
+        <ConfigRow label="Leg Retry Attempts" value={config.exec_leg_retry_attempts} />
+        <ConfigRow label="Leg Retry Interval" value={config.exec_leg_retry_interval_s} unit="s" />
         <ConfigRow
           label="Stop on Consecutive Rollbacks"
           value={config.exec_stop_on_consecutive_rollbacks}
