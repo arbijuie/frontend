@@ -425,6 +425,13 @@
       },
       "ConfigResponse": {
         "properties": {
+          "active_exchanges": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Active Exchanges",
+            "type": "array"
+          },
           "allow_unknown_margin_mode": {
             "title": "Allow Unknown Margin Mode",
             "type": "boolean"
@@ -444,6 +451,10 @@
           "api_port": {
             "title": "Api Port",
             "type": "integer"
+          },
+          "aster_base_url": {
+            "title": "Aster Base Url",
+            "type": "string"
           },
           "backtest_basis_reversal_exit": {
             "title": "Backtest Basis Reversal Exit",
@@ -521,9 +532,21 @@
             "title": "Basis Weight",
             "type": "number"
           },
+          "binance_base_url": {
+            "title": "Binance Base Url",
+            "type": "string"
+          },
+          "bybit_base_url": {
+            "title": "Bybit Base Url",
+            "type": "string"
+          },
           "default_order_size_usd": {
             "title": "Default Order Size Usd",
             "type": "number"
+          },
+          "dydx_indexer_url": {
+            "title": "Dydx Indexer Url",
+            "type": "string"
           },
           "exec_adl_critical_quantile": {
             "title": "Exec Adl Critical Quantile",
@@ -596,6 +619,14 @@
           "expected_hold_hours": {
             "title": "Expected Hold Hours",
             "type": "number"
+          },
+          "extended_base_url": {
+            "title": "Extended Base Url",
+            "type": "string"
+          },
+          "extra_exchanges": {
+            "title": "Extra Exchanges",
+            "type": "string"
           },
           "funding_avg_long_hours": {
             "title": "Funding Avg Long Hours",
@@ -814,6 +845,12 @@
           "exec_adl_critical_quantile",
           "exec_recovery_cooldown_s",
           "exec_recovery_require_manual_ack",
+          "extra_exchanges",
+          "binance_base_url",
+          "aster_base_url",
+          "bybit_base_url",
+          "dydx_indexer_url",
+          "extended_base_url",
           "backtest_capture_enabled",
           "backtest_db_path",
           "backtest_entry_score_bps",
@@ -2321,6 +2358,34 @@
         "title": "StatusDropCounters",
         "type": "object"
       },
+      "StatusExchangeDiagnostics": {
+        "additionalProperties": false,
+        "description": "Per-venue cost-enrichment counters for the last screener pass.",
+        "properties": {
+          "book_fetch_error": {
+            "default": 0,
+            "title": "Book Fetch Error",
+            "type": "integer"
+          },
+          "missing_real_depth": {
+            "default": 0,
+            "title": "Missing Real Depth",
+            "type": "integer"
+          },
+          "missing_real_fee": {
+            "default": 0,
+            "title": "Missing Real Fee",
+            "type": "integer"
+          },
+          "strict_depth": {
+            "default": 0,
+            "title": "Strict Depth",
+            "type": "integer"
+          }
+        },
+        "title": "StatusExchangeDiagnostics",
+        "type": "object"
+      },
       "StatusReasonSeverityCounts": {
         "additionalProperties": false,
         "properties": {
@@ -2340,6 +2405,20 @@
       },
       "StatusResponse": {
         "properties": {
+          "active_exchanges": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Active Exchanges",
+            "type": "array"
+          },
+          "exchange_diagnostics": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/StatusExchangeDiagnostics"
+            },
+            "title": "Exchange Diagnostics",
+            "type": "object"
+          },
           "exchange_last_ok": {
             "additionalProperties": {
               "anyOf": [

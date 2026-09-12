@@ -363,6 +363,8 @@ export interface components {
         };
         /** ConfigResponse */
         ConfigResponse: {
+            /** Active Exchanges */
+            active_exchanges?: string[];
             /** Allow Unknown Margin Mode */
             allow_unknown_margin_mode: boolean;
             /** Anti Churn Cooldown S */
@@ -373,6 +375,8 @@ export interface components {
             api_host: string;
             /** Api Port */
             api_port: number;
+            /** Aster Base Url */
+            aster_base_url: string;
             /** Backtest Basis Reversal Exit */
             backtest_basis_reversal_exit: boolean;
             /** Backtest Capture Enabled */
@@ -411,8 +415,14 @@ export interface components {
             basis_expansion_penalty_bps_per_hour: number;
             /** Basis Weight */
             basis_weight: number;
+            /** Binance Base Url */
+            binance_base_url: string;
+            /** Bybit Base Url */
+            bybit_base_url: string;
             /** Default Order Size Usd */
             default_order_size_usd: number;
+            /** Dydx Indexer Url */
+            dydx_indexer_url: string;
             /** Exec Adl Critical Quantile */
             exec_adl_critical_quantile: number;
             /** Exec Adl Warn Quantile */
@@ -449,6 +459,10 @@ export interface components {
             exec_strategy_profile_id: string;
             /** Expected Hold Hours */
             expected_hold_hours: number;
+            /** Extended Base Url */
+            extended_base_url: string;
+            /** Extra Exchanges */
+            extra_exchanges: string;
             /** Funding Avg Long Hours */
             funding_avg_long_hours: number;
             /** Funding Avg Short Hours */
@@ -1056,6 +1070,32 @@ export interface components {
              */
             strict_depth_by_exchange_lighter: number;
         };
+        /**
+         * StatusExchangeDiagnostics
+         * @description Per-venue cost-enrichment counters for the last screener pass.
+         */
+        StatusExchangeDiagnostics: {
+            /**
+             * Book Fetch Error
+             * @default 0
+             */
+            book_fetch_error: number;
+            /**
+             * Missing Real Depth
+             * @default 0
+             */
+            missing_real_depth: number;
+            /**
+             * Missing Real Fee
+             * @default 0
+             */
+            missing_real_fee: number;
+            /**
+             * Strict Depth
+             * @default 0
+             */
+            strict_depth: number;
+        };
         /** StatusReasonSeverityCounts */
         StatusReasonSeverityCounts: {
             /**
@@ -1071,6 +1111,12 @@ export interface components {
         };
         /** StatusResponse */
         StatusResponse: {
+            /** Active Exchanges */
+            active_exchanges?: string[];
+            /** Exchange Diagnostics */
+            exchange_diagnostics?: {
+                [key: string]: components["schemas"]["StatusExchangeDiagnostics"];
+            };
             /** Exchange Last Ok */
             exchange_last_ok: {
                 [key: string]: boolean | null;

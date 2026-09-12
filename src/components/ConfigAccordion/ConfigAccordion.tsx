@@ -137,6 +137,11 @@ const ConfigAccordion = ({ config }: ConfigAccordionProps) => {
         isOpen={openSections.has("Execution Safety Contract")}
         onToggle={() => toggleSection("Execution Safety Contract")}
       >
+        <ConfigRow
+          label="Active Exchanges"
+          value={(config.active_exchanges ?? []).join(", ") || "—"}
+        />
+        <ConfigRow label="Extra Exchanges" value={config.extra_exchanges || "none"} />
         <ConfigRow label="Execution Enabled" value={config.exec_enabled} />
         <ConfigRow label="Dry Run" value={config.exec_dry_run} />
         <ConfigRow label="Leg Retry Attempts" value={config.exec_leg_retry_attempts} />
