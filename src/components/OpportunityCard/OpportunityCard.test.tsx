@@ -76,4 +76,26 @@ describe('OpportunityCard', () => {
     expect(screen.getByText(/basis divergence penalty/i)).toBeTruthy();
     expect(screen.getByText(/-1\.00/)).toBeTruthy();
   });
+
+  it('shows historical win rate with closed trade count when available', () => {
+    const item = makeItem();
+    item.historical_win_rate = 0.5;
+    item.historical_closed_trades = 20;
+
+    render(<OpportunityCard item={item} updatedAt={'2026-01-01T00:00:00Z'} now={new Date()} />);
+
+    fireEvent.click(screen.getByRole('button', { name: /more details/i }));
+
+    expect(screen.getByText(/historical win rate/i)).toBeTruthy();
+    expect(screen.getByText('50% (20 trades)')).toBeTruthy();
+  });
+
+  it('shows a placeholder when no historical win rate is known', () => {
+    render(<OpportunityCard item={makeItem()} updatedAt={'2026-01-01T00:00:00Z'} now={new Date()} />);
+
+    fireEvent.click(screen.getByRole('button', { name: /more details/i }));
+
+    const label = screen.getByText(/historical win rate/i);
+    expect(label.nextElementSibling?.textContent).toBe('—');
+  });
 });

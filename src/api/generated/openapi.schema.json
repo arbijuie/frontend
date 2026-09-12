@@ -58,6 +58,57 @@
         "title": "BacktestGateResponse",
         "type": "object"
       },
+      "BacktestHistoryResponse": {
+        "properties": {
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "gate_enabled": {
+            "title": "Gate Enabled",
+            "type": "boolean"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/BacktestPairHistoryItem"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "lookback_days": {
+            "title": "Lookback Days",
+            "type": "number"
+          },
+          "min_closed_trades": {
+            "title": "Min Closed Trades",
+            "type": "integer"
+          },
+          "min_win_rate": {
+            "title": "Min Win Rate",
+            "type": "number"
+          },
+          "refreshed_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Refreshed At"
+          }
+        },
+        "required": [
+          "gate_enabled",
+          "lookback_days",
+          "min_win_rate",
+          "min_closed_trades",
+          "count"
+        ],
+        "title": "BacktestHistoryResponse",
+        "type": "object"
+      },
       "BacktestLockListItem": {
         "properties": {
           "created_at": {
@@ -226,6 +277,11 @@
           "win_rate": {
             "title": "Win Rate",
             "type": "number"
+          },
+          "wins": {
+            "default": 0,
+            "title": "Wins",
+            "type": "integer"
           }
         },
         "required": [
@@ -241,6 +297,79 @@
           "strategy_id"
         ],
         "title": "BacktestMetricsItem",
+        "type": "object"
+      },
+      "BacktestPairHistoryItem": {
+        "properties": {
+          "closed_trades": {
+            "title": "Closed Trades",
+            "type": "integer"
+          },
+          "entries": {
+            "title": "Entries",
+            "type": "integer"
+          },
+          "gate_eligible": {
+            "title": "Gate Eligible",
+            "type": "boolean"
+          },
+          "gate_passed": {
+            "title": "Gate Passed",
+            "type": "boolean"
+          },
+          "long_exchange": {
+            "title": "Long Exchange",
+            "type": "string"
+          },
+          "samples": {
+            "title": "Samples",
+            "type": "integer"
+          },
+          "short_exchange": {
+            "title": "Short Exchange",
+            "type": "string"
+          },
+          "symbol": {
+            "title": "Symbol",
+            "type": "string"
+          },
+          "total_pnl_bps": {
+            "title": "Total Pnl Bps",
+            "type": "number"
+          },
+          "win_rate": {
+            "title": "Win Rate",
+            "type": "number"
+          },
+          "window_end": {
+            "title": "Window End",
+            "type": "string"
+          },
+          "window_start": {
+            "title": "Window Start",
+            "type": "string"
+          },
+          "wins": {
+            "title": "Wins",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "symbol",
+          "long_exchange",
+          "short_exchange",
+          "samples",
+          "entries",
+          "closed_trades",
+          "wins",
+          "win_rate",
+          "total_pnl_bps",
+          "window_start",
+          "window_end",
+          "gate_eligible",
+          "gate_passed"
+        ],
+        "title": "BacktestPairHistoryItem",
         "type": "object"
       },
       "BacktestReplayRequest": {
@@ -495,6 +624,26 @@
           "backtest_gate_require_lock_for_execution": {
             "title": "Backtest Gate Require Lock For Execution",
             "type": "boolean"
+          },
+          "backtest_history_gate_enabled": {
+            "title": "Backtest History Gate Enabled",
+            "type": "boolean"
+          },
+          "backtest_history_lookback_days": {
+            "title": "Backtest History Lookback Days",
+            "type": "number"
+          },
+          "backtest_history_min_closed_trades": {
+            "title": "Backtest History Min Closed Trades",
+            "type": "integer"
+          },
+          "backtest_history_min_win_rate": {
+            "title": "Backtest History Min Win Rate",
+            "type": "number"
+          },
+          "backtest_history_refresh_s": {
+            "title": "Backtest History Refresh S",
+            "type": "number"
           },
           "backtest_liquidity_drain_exit_ratio": {
             "title": "Backtest Liquidity Drain Exit Ratio",
@@ -866,6 +1015,11 @@
           "backtest_gate_min_win_rate",
           "backtest_gate_min_total_pnl_bps",
           "backtest_gate_max_drawdown_bps",
+          "backtest_history_gate_enabled",
+          "backtest_history_lookback_days",
+          "backtest_history_min_win_rate",
+          "backtest_history_min_closed_trades",
+          "backtest_history_refresh_s",
           "runbook_config_fields",
           "runbook_presets"
         ],
@@ -2028,6 +2182,28 @@
             "title": "Funding Timing Penalty Bps",
             "type": "number"
           },
+          "historical_closed_trades": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Historical Closed Trades"
+          },
+          "historical_win_rate": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Historical Win Rate"
+          },
           "hours_to_breakeven": {
             "anyOf": [
               {
@@ -2198,6 +2374,7 @@
       "ReasonCode": {
         "enum": [
           "persistence_insufficient",
+          "historical_win_rate_low",
           "break_even_window",
           "score_below_min",
           "funding_flips",
@@ -2411,6 +2588,27 @@
             },
             "title": "Active Exchanges",
             "type": "array"
+          },
+          "backtest_history_gate_enabled": {
+            "default": false,
+            "title": "Backtest History Gate Enabled",
+            "type": "boolean"
+          },
+          "backtest_history_pairs": {
+            "default": 0,
+            "title": "Backtest History Pairs",
+            "type": "integer"
+          },
+          "backtest_history_refreshed_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Backtest History Refreshed At"
           },
           "exchange_diagnostics": {
             "additionalProperties": {
@@ -2721,6 +2919,25 @@
           }
         },
         "summary": "Get Backtest Gate"
+      }
+    },
+    "/backtest/history": {
+      "get": {
+        "description": "Per-pair replayed outcomes feeding the historical win-rate entry gate.",
+        "operationId": "get_backtest_history_backtest_history_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BacktestHistoryResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Backtest History"
       }
     },
     "/backtest/lock": {

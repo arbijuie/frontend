@@ -92,6 +92,11 @@ function makeConfig(): ConfigResponse {
     backtest_gate_min_win_rate: 0.55,
     backtest_gate_min_total_pnl_bps: 0,
     backtest_gate_max_drawdown_bps: 50,
+    backtest_history_gate_enabled: false,
+    backtest_history_lookback_days: 90,
+    backtest_history_min_win_rate: 0.6,
+    backtest_history_min_closed_trades: 10,
+    backtest_history_refresh_s: 300,
     runbook_config_fields: ['min_score_bps'],
     runbook_presets: {
       balanced: {

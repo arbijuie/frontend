@@ -186,6 +186,14 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
             </span>
           </div>
           <div className={styles.detailRow}>
+            <span>Historical win rate</span>
+            <span>
+              {item.historical_win_rate != null
+                ? `${(item.historical_win_rate * 100).toFixed(0)}% (${item.historical_closed_trades ?? 0} trades)`
+                : "—"}
+            </span>
+          </div>
+          <div className={styles.detailRow}>
             <span>Timing penalty</span>
             <span>{item.funding_timing_penalty_bps.toFixed(1)} bps</span>
           </div>
