@@ -49,6 +49,8 @@ function makeStatus(overrides: Partial<StatusResponse> = {}): StatusResponse {
     },
 
     execution_backtest_gate_passed: true,
+    execution_consecutive_rollbacks: 0,
+    execution_entries_stopped: false,
 
     screener_raw_candidates: 10,
     screener_post_cost_candidates: 5,
@@ -57,7 +59,7 @@ function makeStatus(overrides: Partial<StatusResponse> = {}): StatusResponse {
     screener_drop_counters: makeDropCounters(),
 
     ...overrides,
-  };
+  } as StatusResponse;
 }
 
 describe('PipelineDiagnosticsHint', () => {
