@@ -545,6 +545,14 @@
             "title": "Exec Enabled",
             "type": "boolean"
           },
+          "exec_leg_retry_attempts": {
+            "title": "Exec Leg Retry Attempts",
+            "type": "integer"
+          },
+          "exec_leg_retry_interval_s": {
+            "title": "Exec Leg Retry Interval S",
+            "type": "number"
+          },
           "exec_margin_alert_pct": {
             "title": "Exec Margin Alert Pct",
             "type": "number"
@@ -792,6 +800,8 @@
           "exec_enabled",
           "exec_dry_run",
           "exec_strategy_profile_id",
+          "exec_leg_retry_attempts",
+          "exec_leg_retry_interval_s",
           "exec_stop_on_consecutive_rollbacks",
           "exec_stop_on_api_errors_per_window",
           "exec_api_error_window_s",
@@ -1107,6 +1117,324 @@
         "title": "ConfigUpdateRequest",
         "type": "object"
       },
+      "ExecutionAttemptItem": {
+        "properties": {
+          "attempt_id": {
+            "title": "Attempt Id",
+            "type": "string"
+          },
+          "consecutive_rollbacks": {
+            "title": "Consecutive Rollbacks",
+            "type": "integer"
+          },
+          "created_at": {
+            "title": "Created At",
+            "type": "string"
+          },
+          "dry_run": {
+            "title": "Dry Run",
+            "type": "boolean"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "events": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Events",
+            "type": "array"
+          },
+          "first_leg": {
+            "$ref": "#/components/schemas/ExecutionLegItem"
+          },
+          "long_exchange": {
+            "title": "Long Exchange",
+            "type": "string"
+          },
+          "quantity": {
+            "title": "Quantity",
+            "type": "string"
+          },
+          "residual_exposure": {
+            "title": "Residual Exposure",
+            "type": "boolean"
+          },
+          "rollback_attempts": {
+            "title": "Rollback Attempts",
+            "type": "integer"
+          },
+          "rollback_order": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ExecutionOrderItem"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "rollback_slippage_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rollback Slippage Bps"
+          },
+          "second_leg": {
+            "$ref": "#/components/schemas/ExecutionLegItem"
+          },
+          "second_leg_attempts": {
+            "title": "Second Leg Attempts",
+            "type": "integer"
+          },
+          "short_exchange": {
+            "title": "Short Exchange",
+            "type": "string"
+          },
+          "size_usd": {
+            "title": "Size Usd",
+            "type": "number"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "symbol": {
+            "title": "Symbol",
+            "type": "string"
+          }
+        },
+        "required": [
+          "attempt_id",
+          "created_at",
+          "symbol",
+          "long_exchange",
+          "short_exchange",
+          "quantity",
+          "size_usd",
+          "status",
+          "dry_run",
+          "first_leg",
+          "second_leg",
+          "second_leg_attempts",
+          "rollback_attempts",
+          "consecutive_rollbacks",
+          "residual_exposure"
+        ],
+        "title": "ExecutionAttemptItem",
+        "type": "object"
+      },
+      "ExecutionAttemptListResponse": {
+        "properties": {
+          "consecutive_rollbacks": {
+            "title": "Consecutive Rollbacks",
+            "type": "integer"
+          },
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "entries_stopped": {
+            "title": "Entries Stopped",
+            "type": "boolean"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ExecutionAttemptItem"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "count",
+          "consecutive_rollbacks",
+          "entries_stopped"
+        ],
+        "title": "ExecutionAttemptListResponse",
+        "type": "object"
+      },
+      "ExecutionLegItem": {
+        "properties": {
+          "attempts": {
+            "title": "Attempts",
+            "type": "integer"
+          },
+          "exchange": {
+            "title": "Exchange",
+            "type": "string"
+          },
+          "fill": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ExecutionOrderItem"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "intended_price": {
+            "title": "Intended Price",
+            "type": "string"
+          },
+          "quantity": {
+            "title": "Quantity",
+            "type": "string"
+          },
+          "side": {
+            "enum": [
+              "buy",
+              "sell"
+            ],
+            "title": "Side",
+            "type": "string"
+          },
+          "symbol": {
+            "title": "Symbol",
+            "type": "string"
+          }
+        },
+        "required": [
+          "exchange",
+          "symbol",
+          "side",
+          "quantity",
+          "intended_price",
+          "attempts"
+        ],
+        "title": "ExecutionLegItem",
+        "type": "object"
+      },
+      "ExecutionOpenRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "long_exchange": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Long Exchange"
+          },
+          "short_exchange": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Short Exchange"
+          },
+          "size_usd": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Size Usd"
+          },
+          "symbol": {
+            "title": "Symbol",
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol"
+        ],
+        "title": "ExecutionOpenRequest",
+        "type": "object"
+      },
+      "ExecutionOrderItem": {
+        "properties": {
+          "client_order_id": {
+            "title": "Client Order Id",
+            "type": "string"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "exchange": {
+            "title": "Exchange",
+            "type": "string"
+          },
+          "price": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Price"
+          },
+          "quantity": {
+            "title": "Quantity",
+            "type": "string"
+          },
+          "reduce_only": {
+            "default": false,
+            "title": "Reduce Only",
+            "type": "boolean"
+          },
+          "side": {
+            "enum": [
+              "buy",
+              "sell"
+            ],
+            "title": "Side",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "symbol": {
+            "title": "Symbol",
+            "type": "string"
+          }
+        },
+        "required": [
+          "client_order_id",
+          "exchange",
+          "symbol",
+          "side",
+          "quantity",
+          "status"
+        ],
+        "title": "ExecutionOrderItem",
+        "type": "object"
+      },
       "ExecutionPreflightCandidateItem": {
         "properties": {
           "combined_score": {
@@ -1376,6 +1704,16 @@
       },
       "ExecutionPreflightRuntimeItem": {
         "properties": {
+          "consecutive_rollbacks": {
+            "default": 0,
+            "title": "Consecutive Rollbacks",
+            "type": "integer"
+          },
+          "entries_stopped": {
+            "default": false,
+            "title": "Entries Stopped",
+            "type": "boolean"
+          },
           "exchange_last_ok": {
             "additionalProperties": {
               "anyOf": [
@@ -2031,6 +2369,49 @@
             ],
             "title": "Execution Backtest Gate Reason"
           },
+          "execution_consecutive_rollbacks": {
+            "default": 0,
+            "title": "Execution Consecutive Rollbacks",
+            "type": "integer"
+          },
+          "execution_entries_stopped": {
+            "default": false,
+            "title": "Execution Entries Stopped",
+            "type": "boolean"
+          },
+          "execution_last_attempt_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Execution Last Attempt Id"
+          },
+          "execution_last_attempt_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Execution Last Attempt Status"
+          },
+          "execution_last_rollback_slippage_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Execution Last Rollback Slippage Bps"
+          },
           "execution_strategy_id": {
             "anyOf": [
               {
@@ -2490,6 +2871,86 @@
           }
         },
         "summary": "Patch Config"
+      }
+    },
+    "/execution/attempts": {
+      "get": {
+        "operationId": "list_execution_attempts_execution_attempts_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExecutionAttemptListResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Execution Attempts"
+      }
+    },
+    "/execution/open": {
+      "post": {
+        "operationId": "open_two_leg_position_execution_open_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExecutionOpenRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExecutionAttemptItem"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Open Two Leg Position"
       }
     },
     "/execution/preflight": {

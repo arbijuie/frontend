@@ -124,6 +124,40 @@ export interface paths {
         patch: operations["patch_config_config_patch"];
         trace?: never;
     };
+    "/execution/attempts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Execution Attempts */
+        get: operations["list_execution_attempts_execution_attempts_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/execution/open": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Open Two Leg Position */
+        post: operations["open_two_leg_position_execution_open_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/execution/preflight": {
         parameters: {
             query?: never;
@@ -389,6 +423,10 @@ export interface components {
             exec_dry_run: boolean;
             /** Exec Enabled */
             exec_enabled: boolean;
+            /** Exec Leg Retry Attempts */
+            exec_leg_retry_attempts: number;
+            /** Exec Leg Retry Interval S */
+            exec_leg_retry_interval_s: number;
             /** Exec Margin Alert Pct */
             exec_margin_alert_pct: number;
             /** Exec Margin Force Close Pct */
@@ -542,6 +580,112 @@ export interface components {
             /** Stale Data S */
             stale_data_s?: number | null;
         };
+        /** ExecutionAttemptItem */
+        ExecutionAttemptItem: {
+            /** Attempt Id */
+            attempt_id: string;
+            /** Consecutive Rollbacks */
+            consecutive_rollbacks: number;
+            /** Created At */
+            created_at: string;
+            /** Dry Run */
+            dry_run: boolean;
+            /** Error */
+            error?: string | null;
+            /** Events */
+            events?: string[];
+            first_leg: components["schemas"]["ExecutionLegItem"];
+            /** Long Exchange */
+            long_exchange: string;
+            /** Quantity */
+            quantity: string;
+            /** Residual Exposure */
+            residual_exposure: boolean;
+            /** Rollback Attempts */
+            rollback_attempts: number;
+            rollback_order?: components["schemas"]["ExecutionOrderItem"] | null;
+            /** Rollback Slippage Bps */
+            rollback_slippage_bps?: number | null;
+            second_leg: components["schemas"]["ExecutionLegItem"];
+            /** Second Leg Attempts */
+            second_leg_attempts: number;
+            /** Short Exchange */
+            short_exchange: string;
+            /** Size Usd */
+            size_usd: number;
+            /** Status */
+            status: string;
+            /** Symbol */
+            symbol: string;
+        };
+        /** ExecutionAttemptListResponse */
+        ExecutionAttemptListResponse: {
+            /** Consecutive Rollbacks */
+            consecutive_rollbacks: number;
+            /** Count */
+            count: number;
+            /** Entries Stopped */
+            entries_stopped: boolean;
+            /** Items */
+            items?: components["schemas"]["ExecutionAttemptItem"][];
+        };
+        /** ExecutionLegItem */
+        ExecutionLegItem: {
+            /** Attempts */
+            attempts: number;
+            /** Exchange */
+            exchange: string;
+            fill?: components["schemas"]["ExecutionOrderItem"] | null;
+            /** Intended Price */
+            intended_price: string;
+            /** Quantity */
+            quantity: string;
+            /**
+             * Side
+             * @enum {string}
+             */
+            side: "buy" | "sell";
+            /** Symbol */
+            symbol: string;
+        };
+        /** ExecutionOpenRequest */
+        ExecutionOpenRequest: {
+            /** Long Exchange */
+            long_exchange?: string | null;
+            /** Short Exchange */
+            short_exchange?: string | null;
+            /** Size Usd */
+            size_usd?: number | null;
+            /** Symbol */
+            symbol: string;
+        };
+        /** ExecutionOrderItem */
+        ExecutionOrderItem: {
+            /** Client Order Id */
+            client_order_id: string;
+            /** Error */
+            error?: string | null;
+            /** Exchange */
+            exchange: string;
+            /** Price */
+            price?: string | null;
+            /** Quantity */
+            quantity: string;
+            /**
+             * Reduce Only
+             * @default false
+             */
+            reduce_only: boolean;
+            /**
+             * Side
+             * @enum {string}
+             */
+            side: "buy" | "sell";
+            /** Status */
+            status: string;
+            /** Symbol */
+            symbol: string;
+        };
         /** ExecutionPreflightCandidateItem */
         ExecutionPreflightCandidateItem: {
             /** Combined Score */
@@ -634,6 +778,16 @@ export interface components {
         };
         /** ExecutionPreflightRuntimeItem */
         ExecutionPreflightRuntimeItem: {
+            /**
+             * Consecutive Rollbacks
+             * @default 0
+             */
+            consecutive_rollbacks: number;
+            /**
+             * Entries Stopped
+             * @default false
+             */
+            entries_stopped: boolean;
             /** Exchange Last Ok */
             exchange_last_ok: {
                 [key: string]: boolean | null;
@@ -925,6 +1079,22 @@ export interface components {
             execution_backtest_gate_passed: boolean;
             /** Execution Backtest Gate Reason */
             execution_backtest_gate_reason?: string | null;
+            /**
+             * Execution Consecutive Rollbacks
+             * @default 0
+             */
+            execution_consecutive_rollbacks: number;
+            /**
+             * Execution Entries Stopped
+             * @default false
+             */
+            execution_entries_stopped: boolean;
+            /** Execution Last Attempt Id */
+            execution_last_attempt_id?: string | null;
+            /** Execution Last Attempt Status */
+            execution_last_attempt_status?: string | null;
+            /** Execution Last Rollback Slippage Bps */
+            execution_last_rollback_slippage_bps?: number | null;
             /** Execution Strategy Id */
             execution_strategy_id?: string | null;
             /** Execution Strategy Lock Id */
@@ -1203,6 +1373,70 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ConfigResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_execution_attempts_execution_attempts_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExecutionAttemptListResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    open_two_leg_position_execution_open_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExecutionOpenRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExecutionAttemptItem"];
                 };
             };
             /** @description Validation Error */

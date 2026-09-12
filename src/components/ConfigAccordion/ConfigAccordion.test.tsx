@@ -56,6 +56,8 @@ function makeConfig(): ConfigResponse {
     exec_enabled: false,
     exec_dry_run: true,
     exec_strategy_profile_id: 'baseline-v1',
+    exec_leg_retry_attempts: 2,
+    exec_leg_retry_interval_s: 1,
     exec_stop_on_consecutive_rollbacks: 3,
     exec_stop_on_api_errors_per_window: 5,
     exec_api_error_window_s: 600,
