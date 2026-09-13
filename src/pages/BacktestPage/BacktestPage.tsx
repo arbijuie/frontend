@@ -17,6 +17,7 @@ import BacktestLockDetail from "../../components/BacktestLockDetail/BacktestLock
 import FloatingRefreshButton from "../../components/FloatingRefreshButton/FloatingRefreshButton";
 import { ApiValidationError } from "../../lib/api-errors";
 import type { BacktestReplayRequest, BacktestMetrics } from "../../api/types";
+import { usePageTitle } from "../../hooks/usePageTitle";
 
 const TABS = [
   { key: "summary", label: "Summary" },
@@ -27,6 +28,7 @@ const TABS = [
 ];
 
 const BacktestPage = () => {
+  usePageTitle("Backtest");
   const {
     data: summary,
     error: summaryError,

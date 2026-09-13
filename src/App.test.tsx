@@ -13,6 +13,9 @@ vi.mock("./pages/ConfigPage/ConfigPage", () => ({
     throw new Error("config exploded");
   },
 }));
+vi.mock("./pages/BacktestPage/BacktestPage", () => ({
+  default: () => <h1>Backtest page mock</h1>,
+}));
 
 function renderAt(path: string) {
   return render(
@@ -26,17 +29,12 @@ describe("AppShell routing", () => {
   it.each([
     ["/", "Opportunities page mock"],
     ["/status", "Status page mock"],
-    ["/backtest", "Backtest"],
+    ["/backtest", "Backtest page mock"],
     ["/execution", "Execution"],
   ])("renders %s by direct URL", (path, heading) => {
     renderAt(path);
     expect(screen.getByRole("heading", { level: 1, name: heading })).toBeTruthy();
     expect(screen.getByRole("navigation", { name: "Primary" })).toBeTruthy();
-  });
-
-  it("sets the document title for placeholder sections", () => {
-    renderAt("/backtest");
-    expect(document.title).toBe("Backtest · Arbijuie");
   });
 
   it("renders a not-found page for unknown routes and keeps navigation available", () => {

@@ -48,6 +48,12 @@ const ReplayResultPanel = ({
           <div className={styles.metricLabel}>Closed Trades</div>
           <div className={styles.metricValue}>{metrics.closed_trades}</div>
         </div>
+        {metrics.wins != null && (
+          <div>
+            <div className={styles.metricLabel}>Wins</div>
+            <div className={styles.metricValue}>{metrics.wins}</div>
+          </div>
+        )}
         <div>
           <div className={styles.metricLabel}>Win Rate</div>
           <div className={styles.metricValue}>{(metrics.win_rate * 100).toFixed(1)}%</div>
