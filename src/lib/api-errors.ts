@@ -24,7 +24,10 @@ export async function parseApiError(res: Response): Promise<Error> {
         fieldErrors[field] = item.msg;
       }
       return new ApiValidationError("Validation failed", fieldErrors);
-    } catch {}
+    } catch {
+      // Response body isn't valid JSON or doesn't match the expected
+      // validation-error shape — fall back to the generic error below.
+    }
   }
   return new Error(`Request failed: ${res.status}`);
 }

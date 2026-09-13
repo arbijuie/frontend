@@ -53,7 +53,7 @@ Order reflects the operator workflow: find opportunities, check status, tune con
 | `/`          | Opportunities | Implemented                               |
 | `/status`    | Status        | Implemented                               |
 | `/config`    | Config        | Implemented                               |
-| `/backtest`  | Backtest      | Placeholder container (UI pending)        |
+| `/backtest`  | Backtest      | Implemented                               |
 | `/execution` | Execution     | Placeholder container (runtime read-only) |
 | `*`          | Not found     | Fallback page with link back to `/`       |
 
