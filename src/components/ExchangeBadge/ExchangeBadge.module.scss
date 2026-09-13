@@ -15,6 +15,31 @@
   color: v.$exchange-lighter-text;
 }
 
+.aster {
+  background: v.$exchange-aster-bg;
+  color: v.$exchange-aster-text;
+}
+
+.binance {
+  background: v.$exchange-binance-bg;
+  color: v.$exchange-binance-text;
+}
+
+.bybit {
+  background: v.$exchange-bybit-bg;
+  color: v.$exchange-bybit-text;
+}
+
+.dydx {
+  background: v.$exchange-dydx-bg;
+  color: v.$exchange-dydx-text;
+}
+
+.extended {
+  background: v.$exchange-extended-bg;
+  color: v.$exchange-extended-text;
+}
+
 .unknown {
   background: rgba(148, 163, 184, 0.15);
   color: v.$text-secondary;

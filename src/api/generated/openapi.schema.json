@@ -52,9 +52,7 @@
             "title": "Strategy Profile Id"
           }
         },
-        "required": [
-          "passed"
-        ],
+        "required": ["passed"],
         "title": "BacktestGateResponse",
         "type": "object"
       },
@@ -115,9 +113,7 @@
             "type": "array"
           }
         },
-        "required": [
-          "count"
-        ],
+        "required": ["count"],
         "title": "BacktestLockListResponse",
         "type": "object"
       },
@@ -377,9 +373,7 @@
             "$ref": "#/components/schemas/BacktestMetricsItem"
           }
         },
-        "required": [
-          "metrics"
-        ],
+        "required": ["metrics"],
         "title": "BacktestReplayResponse",
         "type": "object"
       },
@@ -416,15 +410,19 @@
             "type": "integer"
           }
         },
-        "required": [
-          "total_snapshots",
-          "symbols_covered"
-        ],
+        "required": ["total_snapshots", "symbols_covered"],
         "title": "BacktestSummaryResponse",
         "type": "object"
       },
       "ConfigResponse": {
         "properties": {
+          "active_exchanges": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Active Exchanges",
+            "type": "array"
+          },
           "allow_unknown_margin_mode": {
             "title": "Allow Unknown Margin Mode",
             "type": "boolean"
@@ -444,6 +442,10 @@
           "api_port": {
             "title": "Api Port",
             "type": "integer"
+          },
+          "aster_base_url": {
+            "title": "Aster Base Url",
+            "type": "string"
           },
           "backtest_basis_reversal_exit": {
             "title": "Backtest Basis Reversal Exit",
@@ -521,9 +523,21 @@
             "title": "Basis Weight",
             "type": "number"
           },
+          "binance_base_url": {
+            "title": "Binance Base Url",
+            "type": "string"
+          },
+          "bybit_base_url": {
+            "title": "Bybit Base Url",
+            "type": "string"
+          },
           "default_order_size_usd": {
             "title": "Default Order Size Usd",
             "type": "number"
+          },
+          "dydx_indexer_url": {
+            "title": "Dydx Indexer Url",
+            "type": "string"
           },
           "exec_adl_critical_quantile": {
             "title": "Exec Adl Critical Quantile",
@@ -596,6 +610,14 @@
           "expected_hold_hours": {
             "title": "Expected Hold Hours",
             "type": "number"
+          },
+          "extended_base_url": {
+            "title": "Extended Base Url",
+            "type": "string"
+          },
+          "extra_exchanges": {
+            "title": "Extra Exchanges",
+            "type": "string"
           },
           "funding_avg_long_hours": {
             "title": "Funding Avg Long Hours",
@@ -814,6 +836,12 @@
           "exec_adl_critical_quantile",
           "exec_recovery_cooldown_s",
           "exec_recovery_require_manual_ack",
+          "extra_exchanges",
+          "binance_base_url",
+          "aster_base_url",
+          "bybit_base_url",
+          "dydx_indexer_url",
+          "extended_base_url",
           "backtest_capture_enabled",
           "backtest_db_path",
           "backtest_entry_score_bps",
@@ -1077,12 +1105,7 @@
           "preset": {
             "anyOf": [
               {
-                "enum": [
-                  "conservative",
-                  "balanced",
-                  "aggressive",
-                  "exploratory"
-                ],
+                "enum": ["conservative", "balanced", "aggressive", "exploratory"],
                 "type": "string"
               },
               {
@@ -1259,11 +1282,7 @@
             "type": "array"
           }
         },
-        "required": [
-          "count",
-          "consecutive_rollbacks",
-          "entries_stopped"
-        ],
+        "required": ["count", "consecutive_rollbacks", "entries_stopped"],
         "title": "ExecutionAttemptListResponse",
         "type": "object"
       },
@@ -1296,10 +1315,7 @@
             "type": "string"
           },
           "side": {
-            "enum": [
-              "buy",
-              "sell"
-            ],
+            "enum": ["buy", "sell"],
             "title": "Side",
             "type": "string"
           },
@@ -1308,14 +1324,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "exchange",
-          "symbol",
-          "side",
-          "quantity",
-          "intended_price",
-          "attempts"
-        ],
+        "required": ["exchange", "symbol", "side", "quantity", "intended_price", "attempts"],
         "title": "ExecutionLegItem",
         "type": "object"
       },
@@ -1360,9 +1369,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "symbol"
-        ],
+        "required": ["symbol"],
         "title": "ExecutionOpenRequest",
         "type": "object"
       },
@@ -1408,10 +1415,7 @@
             "type": "boolean"
           },
           "side": {
-            "enum": [
-              "buy",
-              "sell"
-            ],
+            "enum": ["buy", "sell"],
             "title": "Side",
             "type": "string"
           },
@@ -1424,14 +1428,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "client_order_id",
-          "exchange",
-          "symbol",
-          "side",
-          "quantity",
-          "status"
-        ],
+        "required": ["client_order_id", "exchange", "symbol", "side", "quantity", "status"],
         "title": "ExecutionOrderItem",
         "type": "object"
       },
@@ -1457,11 +1454,7 @@
             "type": "string"
           },
           "status": {
-            "enum": [
-              "ready",
-              "watching",
-              "blocked"
-            ],
+            "enum": ["ready", "watching", "blocked"],
             "title": "Status",
             "type": "string"
           },
@@ -1470,13 +1463,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "symbol",
-          "long_exchange",
-          "short_exchange",
-          "combined_score",
-          "status"
-        ],
+        "required": ["symbol", "long_exchange", "short_exchange", "combined_score", "status"],
         "title": "ExecutionPreflightCandidateItem",
         "type": "object"
       },
@@ -1491,19 +1478,12 @@
             "type": "string"
           },
           "severity": {
-            "enum": [
-              "watching",
-              "blocked"
-            ],
+            "enum": ["watching", "blocked"],
             "title": "Severity",
             "type": "string"
           }
         },
-        "required": [
-          "code",
-          "severity",
-          "message"
-        ],
+        "required": ["code", "severity", "message"],
         "title": "ExecutionPreflightCandidateReasonItem",
         "type": "object"
       },
@@ -1558,9 +1538,7 @@
             "title": "Strategy Profile Id"
           }
         },
-        "required": [
-          "passed"
-        ],
+        "required": ["passed"],
         "title": "ExecutionPreflightGateItem",
         "type": "object"
       },
@@ -1579,11 +1557,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "exec_enabled",
-          "exec_dry_run",
-          "strategy_profile_id"
-        ],
+        "required": ["exec_enabled", "exec_dry_run", "strategy_profile_id"],
         "title": "ExecutionPreflightModeItem",
         "type": "object"
       },
@@ -1598,29 +1572,17 @@
             "type": "string"
           },
           "severity": {
-            "enum": [
-              "watching",
-              "blocked"
-            ],
+            "enum": ["watching", "blocked"],
             "title": "Severity",
             "type": "string"
           },
           "source": {
-            "enum": [
-              "gate",
-              "runtime",
-              "candidate"
-            ],
+            "enum": ["gate", "runtime", "candidate"],
             "title": "Source",
             "type": "string"
           }
         },
-        "required": [
-          "code",
-          "severity",
-          "source",
-          "message"
-        ],
+        "required": ["code", "severity", "source", "message"],
         "title": "ExecutionPreflightReasonItem",
         "type": "object"
       },
@@ -1648,11 +1610,7 @@
             "type": "string"
           },
           "decision": {
-            "enum": [
-              "ready",
-              "watching",
-              "blocked"
-            ],
+            "enum": ["ready", "watching", "blocked"],
             "title": "Decision",
             "type": "string"
           },
@@ -1691,14 +1649,7 @@
             "$ref": "#/components/schemas/ExecutionPreflightRuntimeItem"
           }
         },
-        "required": [
-          "ready",
-          "decision",
-          "checked_at",
-          "mode",
-          "gate",
-          "runtime"
-        ],
+        "required": ["ready", "decision", "checked_at", "mode", "gate", "runtime"],
         "title": "ExecutionPreflightResponse",
         "type": "object"
       },
@@ -1748,11 +1699,7 @@
             "type": "integer"
           }
         },
-        "required": [
-          "poll_count_success",
-          "exchange_last_ok",
-          "screener_ready_candidates"
-        ],
+        "required": ["poll_count_success", "exchange_last_ok", "screener_ready_candidates"],
         "title": "ExecutionPreflightRuntimeItem",
         "type": "object"
       },
@@ -1796,18 +1743,12 @@
           },
           "trend": {
             "default": "stable",
-            "enum": [
-              "rising",
-              "falling",
-              "stable"
-            ],
+            "enum": ["rising", "falling", "stable"],
             "title": "Trend",
             "type": "string"
           }
         },
-        "required": [
-          "expected_apr"
-        ],
+        "required": ["expected_apr"],
         "title": "FundingForecastItem",
         "type": "object"
       },
@@ -1853,11 +1794,7 @@
             "title": "Updated At"
           }
         },
-        "required": [
-          "count",
-          "ready_count",
-          "opportunities"
-        ],
+        "required": ["count", "ready_count", "opportunities"],
         "title": "OpportunitiesResponse",
         "type": "object"
       },
@@ -1905,12 +1842,7 @@
           "depth_quality": {
             "anyOf": [
               {
-                "enum": [
-                  "A",
-                  "B",
-                  "C",
-                  "D"
-                ],
+                "enum": ["A", "B", "C", "D"],
                 "type": "string"
               },
               {
@@ -1921,10 +1853,7 @@
           },
           "depth_source_by_exchange": {
             "additionalProperties": {
-              "enum": [
-                "real",
-                "none"
-              ],
+              "enum": ["real", "none"],
               "type": "string"
             },
             "title": "Depth Source By Exchange",
@@ -1954,10 +1883,7 @@
           },
           "fee_source_by_exchange": {
             "additionalProperties": {
-              "enum": [
-                "real",
-                "config"
-              ],
+              "enum": ["real", "config"],
               "type": "string"
             },
             "title": "Fee Source By Exchange",
@@ -2005,11 +1931,7 @@
           "liquidity_tier": {
             "anyOf": [
               {
-                "enum": [
-                  "H",
-                  "M",
-                  "L"
-                ],
+                "enum": ["H", "M", "L"],
                 "type": "string"
               },
               {
@@ -2122,11 +2044,7 @@
             "type": "number"
           },
           "status": {
-            "enum": [
-              "ready",
-              "watching",
-              "blocked"
-            ],
+            "enum": ["ready", "watching", "blocked"],
             "title": "Status",
             "type": "string"
           },
@@ -2193,19 +2111,12 @@
             "type": "string"
           },
           "severity": {
-            "enum": [
-              "watching",
-              "blocked"
-            ],
+            "enum": ["watching", "blocked"],
             "title": "Severity",
             "type": "string"
           }
         },
-        "required": [
-          "code",
-          "message",
-          "severity"
-        ],
+        "required": ["code", "message", "severity"],
         "title": "ReasonItem",
         "type": "object"
       },
@@ -2321,6 +2232,34 @@
         "title": "StatusDropCounters",
         "type": "object"
       },
+      "StatusExchangeDiagnostics": {
+        "additionalProperties": false,
+        "description": "Per-venue cost-enrichment counters for the last screener pass.",
+        "properties": {
+          "book_fetch_error": {
+            "default": 0,
+            "title": "Book Fetch Error",
+            "type": "integer"
+          },
+          "missing_real_depth": {
+            "default": 0,
+            "title": "Missing Real Depth",
+            "type": "integer"
+          },
+          "missing_real_fee": {
+            "default": 0,
+            "title": "Missing Real Fee",
+            "type": "integer"
+          },
+          "strict_depth": {
+            "default": 0,
+            "title": "Strict Depth",
+            "type": "integer"
+          }
+        },
+        "title": "StatusExchangeDiagnostics",
+        "type": "object"
+      },
       "StatusReasonSeverityCounts": {
         "additionalProperties": false,
         "properties": {
@@ -2340,6 +2279,20 @@
       },
       "StatusResponse": {
         "properties": {
+          "active_exchanges": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Active Exchanges",
+            "type": "array"
+          },
+          "exchange_diagnostics": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/StatusExchangeDiagnostics"
+            },
+            "title": "Exchange Diagnostics",
+            "type": "object"
+          },
           "exchange_last_ok": {
             "additionalProperties": {
               "anyOf": [
@@ -2587,11 +2540,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "loc",
-          "msg",
-          "type"
-        ],
+        "required": ["loc", "msg", "type"],
         "title": "ValidationError",
         "type": "object"
       },
@@ -2610,11 +2559,7 @@
             "type": "number"
           }
         },
-        "required": [
-          "ticket",
-          "expires_at",
-          "ttl_s"
-        ],
+        "required": ["ticket", "expires_at", "ttl_s"],
         "title": "WsAuthTicketResponse",
         "type": "object"
       }
