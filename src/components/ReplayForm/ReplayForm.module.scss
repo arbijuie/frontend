@@ -39,6 +39,14 @@
   font-size: 0.8125rem;
 }
 
+input[type="date"],
+input[type="datetime-local"] {
+  &::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+  }
+}
+
 .submitButton {
   background: v.$accent-purple;
   color: #fff;
