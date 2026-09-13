@@ -101,7 +101,11 @@ export default function OpportunitiesPage() {
         </>
       )}
 
-      <FloatingRefreshButton fetching={fetching} onClick={handleRefresh} />
+      <FloatingRefreshButton
+        fetching={fetching}
+        onClick={handleRefresh}
+        label="Refresh opportunities"
+      />
     </div>
   );
 }

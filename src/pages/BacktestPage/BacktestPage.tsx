@@ -161,7 +161,11 @@ const BacktestPage = () => {
 
       {activeTab === "lock-detail" && <BacktestLockDetail lockId={selectedLockId} />}
 
-      <FloatingRefreshButton fetching={summaryFetching} onClick={handleRefreshAll} />
+      <FloatingRefreshButton
+        fetching={summaryFetching}
+        onClick={handleRefreshAll}
+        label="Refresh backtest data"
+      />
     </div>
   );
 };
