@@ -52,7 +52,9 @@
             "title": "Strategy Profile Id"
           }
         },
-        "required": ["passed"],
+        "required": [
+          "passed"
+        ],
         "title": "BacktestGateResponse",
         "type": "object"
       },
@@ -164,7 +166,9 @@
             "type": "array"
           }
         },
-        "required": ["count"],
+        "required": [
+          "count"
+        ],
         "title": "BacktestLockListResponse",
         "type": "object"
       },
@@ -502,7 +506,9 @@
             "$ref": "#/components/schemas/BacktestMetricsItem"
           }
         },
-        "required": ["metrics"],
+        "required": [
+          "metrics"
+        ],
         "title": "BacktestReplayResponse",
         "type": "object"
       },
@@ -539,7 +545,10 @@
             "type": "integer"
           }
         },
-        "required": ["total_snapshots", "symbols_covered"],
+        "required": [
+          "total_snapshots",
+          "symbols_covered"
+        ],
         "title": "BacktestSummaryResponse",
         "type": "object"
       },
@@ -1306,7 +1315,12 @@
           "preset": {
             "anyOf": [
               {
-                "enum": ["conservative", "balanced", "aggressive", "exploratory"],
+                "enum": [
+                  "conservative",
+                  "balanced",
+                  "aggressive",
+                  "exploratory"
+                ],
                 "type": "string"
               },
               {
@@ -1579,7 +1593,11 @@
             "type": "array"
           }
         },
-        "required": ["count", "consecutive_rollbacks", "entries_stopped"],
+        "required": [
+          "count",
+          "consecutive_rollbacks",
+          "entries_stopped"
+        ],
         "title": "ExecutionAttemptListResponse",
         "type": "object"
       },
@@ -1612,7 +1630,10 @@
             "type": "string"
           },
           "side": {
-            "enum": ["buy", "sell"],
+            "enum": [
+              "buy",
+              "sell"
+            ],
             "title": "Side",
             "type": "string"
           },
@@ -1621,7 +1642,14 @@
             "type": "string"
           }
         },
-        "required": ["exchange", "symbol", "side", "quantity", "intended_price", "attempts"],
+        "required": [
+          "exchange",
+          "symbol",
+          "side",
+          "quantity",
+          "intended_price",
+          "attempts"
+        ],
         "title": "ExecutionLegItem",
         "type": "object"
       },
@@ -1666,7 +1694,9 @@
             "type": "string"
           }
         },
-        "required": ["symbol"],
+        "required": [
+          "symbol"
+        ],
         "title": "ExecutionOpenRequest",
         "type": "object"
       },
@@ -1712,7 +1742,10 @@
             "type": "boolean"
           },
           "side": {
-            "enum": ["buy", "sell"],
+            "enum": [
+              "buy",
+              "sell"
+            ],
             "title": "Side",
             "type": "string"
           },
@@ -1725,7 +1758,14 @@
             "type": "string"
           }
         },
-        "required": ["client_order_id", "exchange", "symbol", "side", "quantity", "status"],
+        "required": [
+          "client_order_id",
+          "exchange",
+          "symbol",
+          "side",
+          "quantity",
+          "status"
+        ],
         "title": "ExecutionOrderItem",
         "type": "object"
       },
@@ -1751,7 +1791,11 @@
             "type": "string"
           },
           "status": {
-            "enum": ["ready", "watching", "blocked"],
+            "enum": [
+              "ready",
+              "watching",
+              "blocked"
+            ],
             "title": "Status",
             "type": "string"
           },
@@ -1760,7 +1804,13 @@
             "type": "string"
           }
         },
-        "required": ["symbol", "long_exchange", "short_exchange", "combined_score", "status"],
+        "required": [
+          "symbol",
+          "long_exchange",
+          "short_exchange",
+          "combined_score",
+          "status"
+        ],
         "title": "ExecutionPreflightCandidateItem",
         "type": "object"
       },
@@ -1775,12 +1825,19 @@
             "type": "string"
           },
           "severity": {
-            "enum": ["watching", "blocked"],
+            "enum": [
+              "watching",
+              "blocked"
+            ],
             "title": "Severity",
             "type": "string"
           }
         },
-        "required": ["code", "severity", "message"],
+        "required": [
+          "code",
+          "severity",
+          "message"
+        ],
         "title": "ExecutionPreflightCandidateReasonItem",
         "type": "object"
       },
@@ -1835,7 +1892,9 @@
             "title": "Strategy Profile Id"
           }
         },
-        "required": ["passed"],
+        "required": [
+          "passed"
+        ],
         "title": "ExecutionPreflightGateItem",
         "type": "object"
       },
@@ -1854,7 +1913,11 @@
             "type": "string"
           }
         },
-        "required": ["exec_enabled", "exec_dry_run", "strategy_profile_id"],
+        "required": [
+          "exec_enabled",
+          "exec_dry_run",
+          "strategy_profile_id"
+        ],
         "title": "ExecutionPreflightModeItem",
         "type": "object"
       },
@@ -1869,17 +1932,29 @@
             "type": "string"
           },
           "severity": {
-            "enum": ["watching", "blocked"],
+            "enum": [
+              "watching",
+              "blocked"
+            ],
             "title": "Severity",
             "type": "string"
           },
           "source": {
-            "enum": ["gate", "runtime", "candidate"],
+            "enum": [
+              "gate",
+              "runtime",
+              "candidate"
+            ],
             "title": "Source",
             "type": "string"
           }
         },
-        "required": ["code", "severity", "source", "message"],
+        "required": [
+          "code",
+          "severity",
+          "source",
+          "message"
+        ],
         "title": "ExecutionPreflightReasonItem",
         "type": "object"
       },
@@ -1907,7 +1982,11 @@
             "type": "string"
           },
           "decision": {
-            "enum": ["ready", "watching", "blocked"],
+            "enum": [
+              "ready",
+              "watching",
+              "blocked"
+            ],
             "title": "Decision",
             "type": "string"
           },
@@ -1946,7 +2025,14 @@
             "$ref": "#/components/schemas/ExecutionPreflightRuntimeItem"
           }
         },
-        "required": ["ready", "decision", "checked_at", "mode", "gate", "runtime"],
+        "required": [
+          "ready",
+          "decision",
+          "checked_at",
+          "mode",
+          "gate",
+          "runtime"
+        ],
         "title": "ExecutionPreflightResponse",
         "type": "object"
       },
@@ -1996,7 +2082,11 @@
             "type": "integer"
           }
         },
-        "required": ["poll_count_success", "exchange_last_ok", "screener_ready_candidates"],
+        "required": [
+          "poll_count_success",
+          "exchange_last_ok",
+          "screener_ready_candidates"
+        ],
         "title": "ExecutionPreflightRuntimeItem",
         "type": "object"
       },
@@ -2040,12 +2130,18 @@
           },
           "trend": {
             "default": "stable",
-            "enum": ["rising", "falling", "stable"],
+            "enum": [
+              "rising",
+              "falling",
+              "stable"
+            ],
             "title": "Trend",
             "type": "string"
           }
         },
-        "required": ["expected_apr"],
+        "required": [
+          "expected_apr"
+        ],
         "title": "FundingForecastItem",
         "type": "object"
       },
@@ -2091,7 +2187,11 @@
             "title": "Updated At"
           }
         },
-        "required": ["count", "ready_count", "opportunities"],
+        "required": [
+          "count",
+          "ready_count",
+          "opportunities"
+        ],
         "title": "OpportunitiesResponse",
         "type": "object"
       },
@@ -2146,7 +2246,12 @@
           "depth_quality": {
             "anyOf": [
               {
-                "enum": ["A", "B", "C", "D"],
+                "enum": [
+                  "A",
+                  "B",
+                  "C",
+                  "D"
+                ],
                 "type": "string"
               },
               {
@@ -2157,7 +2262,10 @@
           },
           "depth_source_by_exchange": {
             "additionalProperties": {
-              "enum": ["real", "none"],
+              "enum": [
+                "real",
+                "none"
+              ],
               "type": "string"
             },
             "title": "Depth Source By Exchange",
@@ -2187,7 +2295,10 @@
           },
           "fee_source_by_exchange": {
             "additionalProperties": {
-              "enum": ["real", "config"],
+              "enum": [
+                "real",
+                "config"
+              ],
               "type": "string"
             },
             "title": "Fee Source By Exchange",
@@ -2257,7 +2368,11 @@
           "liquidity_tier": {
             "anyOf": [
               {
-                "enum": ["H", "M", "L"],
+                "enum": [
+                  "H",
+                  "M",
+                  "L"
+                ],
                 "type": "string"
               },
               {
@@ -2370,7 +2485,11 @@
             "type": "number"
           },
           "status": {
-            "enum": ["ready", "watching", "blocked"],
+            "enum": [
+              "ready",
+              "watching",
+              "blocked"
+            ],
             "title": "Status",
             "type": "string"
           },
@@ -2439,12 +2558,19 @@
             "type": "string"
           },
           "severity": {
-            "enum": ["watching", "blocked"],
+            "enum": [
+              "watching",
+              "blocked"
+            ],
             "title": "Severity",
             "type": "string"
           }
         },
-        "required": ["code", "message", "severity"],
+        "required": [
+          "code",
+          "message",
+          "severity"
+        ],
         "title": "ReasonItem",
         "type": "object"
       },
@@ -2889,7 +3015,11 @@
             "type": "string"
           }
         },
-        "required": ["loc", "msg", "type"],
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
         "title": "ValidationError",
         "type": "object"
       },
@@ -2908,7 +3038,11 @@
             "type": "number"
           }
         },
-        "required": ["ticket", "expires_at", "ttl_s"],
+        "required": [
+          "ticket",
+          "expires_at",
+          "ttl_s"
+        ],
         "title": "WsAuthTicketResponse",
         "type": "object"
       }

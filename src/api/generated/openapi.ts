@@ -4,1817 +4,1796 @@
  */
 
 export interface paths {
-  "/backtest/gate": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/backtest/gate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Backtest Gate */
+        get: operations["get_backtest_gate_backtest_gate_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Get Backtest Gate */
-    get: operations["get_backtest_gate_backtest_gate_get"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/backtest/history": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/backtest/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Backtest History
+         * @description Per-pair replayed outcomes feeding the historical win-rate entry gate.
+         */
+        get: operations["get_backtest_history_backtest_history_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * Get Backtest History
-     * @description Per-pair replayed outcomes feeding the historical win-rate entry gate.
-     */
-    get: operations["get_backtest_history_backtest_history_get"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/backtest/lock": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/backtest/lock": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Lock Backtest Strategy */
+        post: operations["lock_backtest_strategy_backtest_lock_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /** Lock Backtest Strategy */
-    post: operations["lock_backtest_strategy_backtest_lock_post"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/backtest/locks": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/backtest/locks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Backtest Locks */
+        get: operations["list_backtest_locks_backtest_locks_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** List Backtest Locks */
-    get: operations["list_backtest_locks_backtest_locks_get"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/backtest/locks/{lock_id}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/backtest/locks/{lock_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Backtest Lock By Id */
+        get: operations["get_backtest_lock_by_id_backtest_locks__lock_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Get Backtest Lock By Id */
-    get: operations["get_backtest_lock_by_id_backtest_locks__lock_id__get"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/backtest/replay": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/backtest/replay": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Run Backtest Replay */
+        post: operations["run_backtest_replay_backtest_replay_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /** Run Backtest Replay */
-    post: operations["run_backtest_replay_backtest_replay_post"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/backtest/summary": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/backtest/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Backtest Summary */
+        get: operations["get_backtest_summary_backtest_summary_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Get Backtest Summary */
-    get: operations["get_backtest_summary_backtest_summary_get"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/config": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/config": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Config */
+        get: operations["get_config_config_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Patch Config */
+        patch: operations["patch_config_config_patch"];
+        trace?: never;
     };
-    /** Get Config */
-    get: operations["get_config_config_get"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    /** Patch Config */
-    patch: operations["patch_config_config_patch"];
-    trace?: never;
-  };
-  "/correlation": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/correlation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Correlation
+         * @description Pairwise return correlation for the symbols in the last screener pass.
+         */
+        get: operations["get_correlation_correlation_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * Get Correlation
-     * @description Pairwise return correlation for the symbols in the last screener pass.
-     */
-    get: operations["get_correlation_correlation_get"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/execution/attempts": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/execution/attempts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Execution Attempts */
+        get: operations["list_execution_attempts_execution_attempts_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** List Execution Attempts */
-    get: operations["list_execution_attempts_execution_attempts_get"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/execution/open": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/execution/open": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Open Two Leg Position */
+        post: operations["open_two_leg_position_execution_open_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /** Open Two Leg Position */
-    post: operations["open_two_leg_position_execution_open_post"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/execution/preflight": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/execution/preflight": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Execution Preflight */
+        get: operations["get_execution_preflight_execution_preflight_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Get Execution Preflight */
-    get: operations["get_execution_preflight_execution_preflight_get"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/opportunities": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/opportunities": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Opportunities */
+        get: operations["get_opportunities_opportunities_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Get Opportunities */
-    get: operations["get_opportunities_opportunities_get"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/status": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Status */
+        get: operations["get_status_status_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Get Status */
-    get: operations["get_status_status_get"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/ws/auth-ticket": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/ws/auth-ticket": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Issue Ws Auth Ticket */
+        post: operations["issue_ws_auth_ticket_ws_auth_ticket_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /** Issue Ws Auth Ticket */
-    post: operations["issue_ws_auth_ticket_ws_auth_ticket_post"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
-  schemas: {
-    /** BacktestGateResponse */
-    BacktestGateResponse: {
-      /** Lock Id */
-      lock_id?: string | null;
-      /** Passed */
-      passed: boolean;
-      /** Reason */
-      reason?: string | null;
-      /** Strategy Id */
-      strategy_id?: string | null;
-      /** Strategy Profile Id */
-      strategy_profile_id?: string | null;
-    };
-    /** BacktestHistoryResponse */
-    BacktestHistoryResponse: {
-      /** Count */
-      count: number;
-      /** Gate Enabled */
-      gate_enabled: boolean;
-      /** Items */
-      items?: components["schemas"]["BacktestPairHistoryItem"][];
-      /** Lookback Days */
-      lookback_days: number;
-      /** Min Closed Trades */
-      min_closed_trades: number;
-      /** Min Win Rate */
-      min_win_rate: number;
-      /** Refreshed At */
-      refreshed_at?: string | null;
-    };
-    /** BacktestLockListItem */
-    BacktestLockListItem: {
-      /** Created At */
-      created_at: string;
-      /** Gate Passed */
-      gate_passed: boolean;
-      /** Lock Id */
-      lock_id: string;
-      /** Max Drawdown Bps */
-      max_drawdown_bps: number;
-      /** Strategy Id */
-      strategy_id: string;
-      /** Strategy Profile Id */
-      strategy_profile_id: string;
-      /** Total Pnl Bps */
-      total_pnl_bps: number;
-    };
-    /** BacktestLockListResponse */
-    BacktestLockListResponse: {
-      /** Count */
-      count: number;
-      /** Items */
-      items?: components["schemas"]["BacktestLockListItem"][];
-    };
-    /** BacktestLockResponse */
-    BacktestLockResponse: {
-      /** Created At */
-      created_at: string;
-      /** Gate Passed */
-      gate_passed: boolean;
-      /** Lock Id */
-      lock_id: string;
-      /** Max Drawdown Bps */
-      max_drawdown_bps: number;
-      metrics: components["schemas"]["BacktestMetricsItem"];
-      /** Min Total Pnl Bps */
-      min_total_pnl_bps: number;
-      /** Min Win Rate */
-      min_win_rate: number;
-      /** Schema Version */
-      schema_version: number;
-      /** Strategy Id */
-      strategy_id: string;
-      /** Strategy Profile Id */
-      strategy_profile_id: string;
-    };
-    /** BacktestMetricsItem */
-    BacktestMetricsItem: {
-      /** Closed Trades */
-      closed_trades: number;
-      /** Entries */
-      entries: number;
-      /** Exit Reasons */
-      exit_reasons?: {
-        [key: string]: number;
-      };
-      /** Exits */
-      exits: number;
-      /** Max Drawdown Bps */
-      max_drawdown_bps: number;
-      /** Median Trade Pnl Bps */
-      median_trade_pnl_bps: number;
-      /** Strategy Id */
-      strategy_id: string;
-      /** Symbols Covered */
-      symbols_covered: number;
-      /** Total Pnl Bps */
-      total_pnl_bps: number;
-      /** Total Samples */
-      total_samples: number;
-      /** Win Rate */
-      win_rate: number;
-      /**
-       * Wins
-       * @default 0
-       */
-      wins: number;
-    };
-    /** BacktestPairHistoryItem */
-    BacktestPairHistoryItem: {
-      /** Closed Trades */
-      closed_trades: number;
-      /** Entries */
-      entries: number;
-      /** Gate Eligible */
-      gate_eligible: boolean;
-      /** Gate Passed */
-      gate_passed: boolean;
-      /** Long Exchange */
-      long_exchange: string;
-      /** Samples */
-      samples: number;
-      /** Short Exchange */
-      short_exchange: string;
-      /** Symbol */
-      symbol: string;
-      /** Total Pnl Bps */
-      total_pnl_bps: number;
-      /** Win Rate */
-      win_rate: number;
-      /** Window End */
-      window_end: string;
-      /** Window Start */
-      window_start: string;
-      /** Wins */
-      wins: number;
-    };
-    /** BacktestReplayRequest */
-    BacktestReplayRequest: {
-      /** Basis Reversal Exit */
-      basis_reversal_exit?: boolean | null;
-      /** Cycle Hours */
-      cycle_hours?: number | null;
-      /** End */
-      end?: string | null;
-      /** Entry Score Bps */
-      entry_score_bps?: number | null;
-      /** Exit Score Bps */
-      exit_score_bps?: number | null;
-      /** Funding Decay Exit Ratio */
-      funding_decay_exit_ratio?: number | null;
-      /** Liquidity Drain Exit Ratio */
-      liquidity_drain_exit_ratio?: number | null;
-      /** Min Samples Per Symbol */
-      min_samples_per_symbol?: number | null;
-      /** Start */
-      start?: string | null;
-      /**
-       * Strategy Id
-       * @default baseline-v1
-       */
-      strategy_id: string;
-      /** Symbols */
-      symbols?: string[];
-      /** Time Stop Hold Multiplier */
-      time_stop_hold_multiplier?: number | null;
-    };
-    /** BacktestReplayResponse */
-    BacktestReplayResponse: {
-      metrics: components["schemas"]["BacktestMetricsItem"];
-    };
-    /** BacktestSummaryResponse */
-    BacktestSummaryResponse: {
-      /** First Snapshot At */
-      first_snapshot_at?: string | null;
-      /** Last Snapshot At */
-      last_snapshot_at?: string | null;
-      /** Symbols Covered */
-      symbols_covered: number;
-      /** Total Snapshots */
-      total_snapshots: number;
-    };
-    /** ConfigResponse */
-    ConfigResponse: {
-      /** Active Exchanges */
-      active_exchanges?: string[];
-      /** Allow Unknown Margin Mode */
-      allow_unknown_margin_mode: boolean;
-      /** Anti Churn Cooldown S */
-      anti_churn_cooldown_s: number;
-      /** Anti Churn Score Multiplier */
-      anti_churn_score_multiplier: number;
-      /** Api Host */
-      api_host: string;
-      /** Api Port */
-      api_port: number;
-      /** Aster Base Url */
-      aster_base_url: string;
-      /** Backtest Basis Reversal Exit */
-      backtest_basis_reversal_exit: boolean;
-      /** Backtest Capture Enabled */
-      backtest_capture_enabled: boolean;
-      /** Backtest Db Path */
-      backtest_db_path: string;
-      /** Backtest Entry Score Bps */
-      backtest_entry_score_bps: number;
-      /** Backtest Exit Score Bps */
-      backtest_exit_score_bps: number;
-      /** Backtest Funding Decay Exit Ratio */
-      backtest_funding_decay_exit_ratio: number;
-      /** Backtest Gate Max Drawdown Bps */
-      backtest_gate_max_drawdown_bps: number;
-      /** Backtest Gate Min Total Pnl Bps */
-      backtest_gate_min_total_pnl_bps: number;
-      /** Backtest Gate Min Win Rate */
-      backtest_gate_min_win_rate: number;
-      /** Backtest Gate Require Lock For Execution */
-      backtest_gate_require_lock_for_execution: boolean;
-      /** Backtest History Gate Enabled */
-      backtest_history_gate_enabled: boolean;
-      /** Backtest History Lookback Days */
-      backtest_history_lookback_days: number;
-      /** Backtest History Min Closed Trades */
-      backtest_history_min_closed_trades: number;
-      /** Backtest History Min Win Rate */
-      backtest_history_min_win_rate: number;
-      /** Backtest History Refresh S */
-      backtest_history_refresh_s: number;
-      /** Backtest Liquidity Drain Exit Ratio */
-      backtest_liquidity_drain_exit_ratio: number;
-      /** Backtest Min Samples Per Symbol */
-      backtest_min_samples_per_symbol: number;
-      /** Backtest Replay Cycle Hours */
-      backtest_replay_cycle_hours: number;
-      /** Backtest Strategy Lock Path */
-      backtest_strategy_lock_path: string;
-      /** Backtest Time Stop Hold Multiplier */
-      backtest_time_stop_hold_multiplier: number;
-      /** Basis Bonus Cap Bps */
-      basis_bonus_cap_bps: number;
-      /** Basis Divergence Threshold Bps */
-      basis_divergence_threshold_bps: number;
-      /** Basis Expansion Penalty Bps Per Hour */
-      basis_expansion_penalty_bps_per_hour: number;
-      /** Basis Weight */
-      basis_weight: number;
-      /** Binance Base Url */
-      binance_base_url: string;
-      /** Bybit Base Url */
-      bybit_base_url: string;
-      /** Correlation Bucket S */
-      correlation_bucket_s: number;
-      /** Correlation Min Samples */
-      correlation_min_samples: number;
-      /** Correlation Threshold */
-      correlation_threshold: number;
-      /** Correlation Window Hours */
-      correlation_window_hours: number;
-      /** Default Order Size Usd */
-      default_order_size_usd: number;
-      /** Dydx Indexer Url */
-      dydx_indexer_url: string;
-      /** Exec Adl Critical Quantile */
-      exec_adl_critical_quantile: number;
-      /** Exec Adl Warn Quantile */
-      exec_adl_warn_quantile: number;
-      /** Exec Api Error Window S */
-      exec_api_error_window_s: number;
-      /** Exec Dry Run */
-      exec_dry_run: boolean;
-      /** Exec Enabled */
-      exec_enabled: boolean;
-      /** Exec Leg Retry Attempts */
-      exec_leg_retry_attempts: number;
-      /** Exec Leg Retry Interval S */
-      exec_leg_retry_interval_s: number;
-      /** Exec Margin Alert Pct */
-      exec_margin_alert_pct: number;
-      /** Exec Margin Force Close Pct */
-      exec_margin_force_close_pct: number;
-      /** Exec Recovery Cooldown S */
-      exec_recovery_cooldown_s: number;
-      /** Exec Recovery Require Manual Ack */
-      exec_recovery_require_manual_ack: boolean;
-      /** Exec Slippage Sample Size */
-      exec_slippage_sample_size: number;
-      /** Exec Stop On Api Errors Per Window */
-      exec_stop_on_api_errors_per_window: number;
-      /** Exec Stop On Consecutive Rollbacks */
-      exec_stop_on_consecutive_rollbacks: number;
-      /** Exec Stop On Median Slippage Bps */
-      exec_stop_on_median_slippage_bps: number;
-      /** Exec Stop On Stale Data S */
-      exec_stop_on_stale_data_s: number;
-      /** Exec Strategy Profile Id */
-      exec_strategy_profile_id: string;
-      /** Expected Hold Hours */
-      expected_hold_hours: number;
-      /** Extended Base Url */
-      extended_base_url: string;
-      /** Extra Exchanges */
-      extra_exchanges: string;
-      /** Funding Avg Long Hours */
-      funding_avg_long_hours: number;
-      /** Funding Avg Short Hours */
-      funding_avg_short_hours: number;
-      /** Funding Ema Span Hours */
-      funding_ema_span_hours: number;
-      /** Funding Instability Min Std Apr */
-      funding_instability_min_std_apr: number;
-      /** Funding Instability Multiplier */
-      funding_instability_multiplier: number;
-      /** Funding Instability Threshold */
-      funding_instability_threshold: number;
-      /** Hl Maker Fee Per Side */
-      hl_maker_fee_per_side: number;
-      /** Hl Taker Fee Per Side */
-      hl_taker_fee_per_side: number;
-      /** Hold Window Instability Scale */
-      hold_window_instability_scale: number;
-      /** Lighter Maker Fee Per Side */
-      lighter_maker_fee_per_side: number;
-      /** Lighter Taker Fee Per Side */
-      lighter_taker_fee_per_side: number;
-      /** Liquidity Weight */
-      liquidity_weight: number;
-      /** Loop Interval S */
-      loop_interval_s: number;
-      /** Max Basis Bps */
-      max_basis_bps: number;
-      /** Max Basis Divergence Hours */
-      max_basis_divergence_hours: number;
-      /** Max Basis Trend Bps Per Tick */
-      max_basis_trend_bps_per_tick: number;
-      /** Max Correlated Positions */
-      max_correlated_positions: number;
-      /** Max Entry Adl Level */
-      max_entry_adl_level: number;
-      /** Max Entry Slippage Bps */
-      max_entry_slippage_bps: number;
-      /** Max Funding Timing Asymmetry Hours */
-      max_funding_timing_asymmetry_hours: number;
-      /** Max Position Pct */
-      max_position_pct: number;
-      /** Max Reasonable Apr */
-      max_reasonable_apr: number;
-      /** Max Volume Fraction */
-      max_volume_fraction: number;
-      /** Min Depth Quality */
-      min_depth_quality: string;
-      /** Min Open Interest */
-      min_open_interest: number;
-      /** Min Persistence Hours */
-      min_persistence_hours: number;
-      /** Min Score Bps */
-      min_score_bps: number;
-      /** Min Volume 24H */
-      min_volume_24h: number;
-      /** Portfolio Usd */
-      portfolio_usd: number;
-      /** Require Isolated Margin */
-      require_isolated_margin: boolean;
-      /** Runbook Config Fields */
-      runbook_config_fields: string[];
-      /** Runbook Presets */
-      runbook_presets: {
-        [key: string]: {
-          [key: string]: number | boolean;
+    schemas: {
+        /** BacktestGateResponse */
+        BacktestGateResponse: {
+            /** Lock Id */
+            lock_id?: string | null;
+            /** Passed */
+            passed: boolean;
+            /** Reason */
+            reason?: string | null;
+            /** Strategy Id */
+            strategy_id?: string | null;
+            /** Strategy Profile Id */
+            strategy_profile_id?: string | null;
         };
-      };
-      /** Stale Data S */
-      stale_data_s: number;
-      /** Taker Fee Per Side By Exchange */
-      taker_fee_per_side_by_exchange: {
-        [key: string]: number;
-      };
-      /** Timing Penalty Bps Per Hour */
-      timing_penalty_bps_per_hour: number;
+        /** BacktestHistoryResponse */
+        BacktestHistoryResponse: {
+            /** Count */
+            count: number;
+            /** Gate Enabled */
+            gate_enabled: boolean;
+            /** Items */
+            items?: components["schemas"]["BacktestPairHistoryItem"][];
+            /** Lookback Days */
+            lookback_days: number;
+            /** Min Closed Trades */
+            min_closed_trades: number;
+            /** Min Win Rate */
+            min_win_rate: number;
+            /** Refreshed At */
+            refreshed_at?: string | null;
+        };
+        /** BacktestLockListItem */
+        BacktestLockListItem: {
+            /** Created At */
+            created_at: string;
+            /** Gate Passed */
+            gate_passed: boolean;
+            /** Lock Id */
+            lock_id: string;
+            /** Max Drawdown Bps */
+            max_drawdown_bps: number;
+            /** Strategy Id */
+            strategy_id: string;
+            /** Strategy Profile Id */
+            strategy_profile_id: string;
+            /** Total Pnl Bps */
+            total_pnl_bps: number;
+        };
+        /** BacktestLockListResponse */
+        BacktestLockListResponse: {
+            /** Count */
+            count: number;
+            /** Items */
+            items?: components["schemas"]["BacktestLockListItem"][];
+        };
+        /** BacktestLockResponse */
+        BacktestLockResponse: {
+            /** Created At */
+            created_at: string;
+            /** Gate Passed */
+            gate_passed: boolean;
+            /** Lock Id */
+            lock_id: string;
+            /** Max Drawdown Bps */
+            max_drawdown_bps: number;
+            metrics: components["schemas"]["BacktestMetricsItem"];
+            /** Min Total Pnl Bps */
+            min_total_pnl_bps: number;
+            /** Min Win Rate */
+            min_win_rate: number;
+            /** Schema Version */
+            schema_version: number;
+            /** Strategy Id */
+            strategy_id: string;
+            /** Strategy Profile Id */
+            strategy_profile_id: string;
+        };
+        /** BacktestMetricsItem */
+        BacktestMetricsItem: {
+            /** Closed Trades */
+            closed_trades: number;
+            /** Entries */
+            entries: number;
+            /** Exit Reasons */
+            exit_reasons?: {
+                [key: string]: number;
+            };
+            /** Exits */
+            exits: number;
+            /** Max Drawdown Bps */
+            max_drawdown_bps: number;
+            /** Median Trade Pnl Bps */
+            median_trade_pnl_bps: number;
+            /** Strategy Id */
+            strategy_id: string;
+            /** Symbols Covered */
+            symbols_covered: number;
+            /** Total Pnl Bps */
+            total_pnl_bps: number;
+            /** Total Samples */
+            total_samples: number;
+            /** Win Rate */
+            win_rate: number;
+            /**
+             * Wins
+             * @default 0
+             */
+            wins: number;
+        };
+        /** BacktestPairHistoryItem */
+        BacktestPairHistoryItem: {
+            /** Closed Trades */
+            closed_trades: number;
+            /** Entries */
+            entries: number;
+            /** Gate Eligible */
+            gate_eligible: boolean;
+            /** Gate Passed */
+            gate_passed: boolean;
+            /** Long Exchange */
+            long_exchange: string;
+            /** Samples */
+            samples: number;
+            /** Short Exchange */
+            short_exchange: string;
+            /** Symbol */
+            symbol: string;
+            /** Total Pnl Bps */
+            total_pnl_bps: number;
+            /** Win Rate */
+            win_rate: number;
+            /** Window End */
+            window_end: string;
+            /** Window Start */
+            window_start: string;
+            /** Wins */
+            wins: number;
+        };
+        /** BacktestReplayRequest */
+        BacktestReplayRequest: {
+            /** Basis Reversal Exit */
+            basis_reversal_exit?: boolean | null;
+            /** Cycle Hours */
+            cycle_hours?: number | null;
+            /** End */
+            end?: string | null;
+            /** Entry Score Bps */
+            entry_score_bps?: number | null;
+            /** Exit Score Bps */
+            exit_score_bps?: number | null;
+            /** Funding Decay Exit Ratio */
+            funding_decay_exit_ratio?: number | null;
+            /** Liquidity Drain Exit Ratio */
+            liquidity_drain_exit_ratio?: number | null;
+            /** Min Samples Per Symbol */
+            min_samples_per_symbol?: number | null;
+            /** Start */
+            start?: string | null;
+            /**
+             * Strategy Id
+             * @default baseline-v1
+             */
+            strategy_id: string;
+            /** Symbols */
+            symbols?: string[];
+            /** Time Stop Hold Multiplier */
+            time_stop_hold_multiplier?: number | null;
+        };
+        /** BacktestReplayResponse */
+        BacktestReplayResponse: {
+            metrics: components["schemas"]["BacktestMetricsItem"];
+        };
+        /** BacktestSummaryResponse */
+        BacktestSummaryResponse: {
+            /** First Snapshot At */
+            first_snapshot_at?: string | null;
+            /** Last Snapshot At */
+            last_snapshot_at?: string | null;
+            /** Symbols Covered */
+            symbols_covered: number;
+            /** Total Snapshots */
+            total_snapshots: number;
+        };
+        /** ConfigResponse */
+        ConfigResponse: {
+            /** Active Exchanges */
+            active_exchanges?: string[];
+            /** Allow Unknown Margin Mode */
+            allow_unknown_margin_mode: boolean;
+            /** Anti Churn Cooldown S */
+            anti_churn_cooldown_s: number;
+            /** Anti Churn Score Multiplier */
+            anti_churn_score_multiplier: number;
+            /** Api Host */
+            api_host: string;
+            /** Api Port */
+            api_port: number;
+            /** Aster Base Url */
+            aster_base_url: string;
+            /** Backtest Basis Reversal Exit */
+            backtest_basis_reversal_exit: boolean;
+            /** Backtest Capture Enabled */
+            backtest_capture_enabled: boolean;
+            /** Backtest Db Path */
+            backtest_db_path: string;
+            /** Backtest Entry Score Bps */
+            backtest_entry_score_bps: number;
+            /** Backtest Exit Score Bps */
+            backtest_exit_score_bps: number;
+            /** Backtest Funding Decay Exit Ratio */
+            backtest_funding_decay_exit_ratio: number;
+            /** Backtest Gate Max Drawdown Bps */
+            backtest_gate_max_drawdown_bps: number;
+            /** Backtest Gate Min Total Pnl Bps */
+            backtest_gate_min_total_pnl_bps: number;
+            /** Backtest Gate Min Win Rate */
+            backtest_gate_min_win_rate: number;
+            /** Backtest Gate Require Lock For Execution */
+            backtest_gate_require_lock_for_execution: boolean;
+            /** Backtest History Gate Enabled */
+            backtest_history_gate_enabled: boolean;
+            /** Backtest History Lookback Days */
+            backtest_history_lookback_days: number;
+            /** Backtest History Min Closed Trades */
+            backtest_history_min_closed_trades: number;
+            /** Backtest History Min Win Rate */
+            backtest_history_min_win_rate: number;
+            /** Backtest History Refresh S */
+            backtest_history_refresh_s: number;
+            /** Backtest Liquidity Drain Exit Ratio */
+            backtest_liquidity_drain_exit_ratio: number;
+            /** Backtest Min Samples Per Symbol */
+            backtest_min_samples_per_symbol: number;
+            /** Backtest Replay Cycle Hours */
+            backtest_replay_cycle_hours: number;
+            /** Backtest Strategy Lock Path */
+            backtest_strategy_lock_path: string;
+            /** Backtest Time Stop Hold Multiplier */
+            backtest_time_stop_hold_multiplier: number;
+            /** Basis Bonus Cap Bps */
+            basis_bonus_cap_bps: number;
+            /** Basis Divergence Threshold Bps */
+            basis_divergence_threshold_bps: number;
+            /** Basis Expansion Penalty Bps Per Hour */
+            basis_expansion_penalty_bps_per_hour: number;
+            /** Basis Weight */
+            basis_weight: number;
+            /** Binance Base Url */
+            binance_base_url: string;
+            /** Bybit Base Url */
+            bybit_base_url: string;
+            /** Correlation Bucket S */
+            correlation_bucket_s: number;
+            /** Correlation Min Samples */
+            correlation_min_samples: number;
+            /** Correlation Threshold */
+            correlation_threshold: number;
+            /** Correlation Window Hours */
+            correlation_window_hours: number;
+            /** Default Order Size Usd */
+            default_order_size_usd: number;
+            /** Dydx Indexer Url */
+            dydx_indexer_url: string;
+            /** Exec Adl Critical Quantile */
+            exec_adl_critical_quantile: number;
+            /** Exec Adl Warn Quantile */
+            exec_adl_warn_quantile: number;
+            /** Exec Api Error Window S */
+            exec_api_error_window_s: number;
+            /** Exec Dry Run */
+            exec_dry_run: boolean;
+            /** Exec Enabled */
+            exec_enabled: boolean;
+            /** Exec Leg Retry Attempts */
+            exec_leg_retry_attempts: number;
+            /** Exec Leg Retry Interval S */
+            exec_leg_retry_interval_s: number;
+            /** Exec Margin Alert Pct */
+            exec_margin_alert_pct: number;
+            /** Exec Margin Force Close Pct */
+            exec_margin_force_close_pct: number;
+            /** Exec Recovery Cooldown S */
+            exec_recovery_cooldown_s: number;
+            /** Exec Recovery Require Manual Ack */
+            exec_recovery_require_manual_ack: boolean;
+            /** Exec Slippage Sample Size */
+            exec_slippage_sample_size: number;
+            /** Exec Stop On Api Errors Per Window */
+            exec_stop_on_api_errors_per_window: number;
+            /** Exec Stop On Consecutive Rollbacks */
+            exec_stop_on_consecutive_rollbacks: number;
+            /** Exec Stop On Median Slippage Bps */
+            exec_stop_on_median_slippage_bps: number;
+            /** Exec Stop On Stale Data S */
+            exec_stop_on_stale_data_s: number;
+            /** Exec Strategy Profile Id */
+            exec_strategy_profile_id: string;
+            /** Expected Hold Hours */
+            expected_hold_hours: number;
+            /** Extended Base Url */
+            extended_base_url: string;
+            /** Extra Exchanges */
+            extra_exchanges: string;
+            /** Funding Avg Long Hours */
+            funding_avg_long_hours: number;
+            /** Funding Avg Short Hours */
+            funding_avg_short_hours: number;
+            /** Funding Ema Span Hours */
+            funding_ema_span_hours: number;
+            /** Funding Instability Min Std Apr */
+            funding_instability_min_std_apr: number;
+            /** Funding Instability Multiplier */
+            funding_instability_multiplier: number;
+            /** Funding Instability Threshold */
+            funding_instability_threshold: number;
+            /** Hl Maker Fee Per Side */
+            hl_maker_fee_per_side: number;
+            /** Hl Taker Fee Per Side */
+            hl_taker_fee_per_side: number;
+            /** Hold Window Instability Scale */
+            hold_window_instability_scale: number;
+            /** Lighter Maker Fee Per Side */
+            lighter_maker_fee_per_side: number;
+            /** Lighter Taker Fee Per Side */
+            lighter_taker_fee_per_side: number;
+            /** Liquidity Weight */
+            liquidity_weight: number;
+            /** Loop Interval S */
+            loop_interval_s: number;
+            /** Max Basis Bps */
+            max_basis_bps: number;
+            /** Max Basis Divergence Hours */
+            max_basis_divergence_hours: number;
+            /** Max Basis Trend Bps Per Tick */
+            max_basis_trend_bps_per_tick: number;
+            /** Max Correlated Positions */
+            max_correlated_positions: number;
+            /** Max Entry Adl Level */
+            max_entry_adl_level: number;
+            /** Max Entry Slippage Bps */
+            max_entry_slippage_bps: number;
+            /** Max Funding Timing Asymmetry Hours */
+            max_funding_timing_asymmetry_hours: number;
+            /** Max Position Pct */
+            max_position_pct: number;
+            /** Max Reasonable Apr */
+            max_reasonable_apr: number;
+            /** Max Volume Fraction */
+            max_volume_fraction: number;
+            /** Min Depth Quality */
+            min_depth_quality: string;
+            /** Min Open Interest */
+            min_open_interest: number;
+            /** Min Persistence Hours */
+            min_persistence_hours: number;
+            /** Min Score Bps */
+            min_score_bps: number;
+            /** Min Volume 24H */
+            min_volume_24h: number;
+            /** Portfolio Usd */
+            portfolio_usd: number;
+            /** Require Isolated Margin */
+            require_isolated_margin: boolean;
+            /** Runbook Config Fields */
+            runbook_config_fields: string[];
+            /** Runbook Presets */
+            runbook_presets: {
+                [key: string]: {
+                    [key: string]: number | boolean;
+                };
+            };
+            /** Stale Data S */
+            stale_data_s: number;
+            /** Taker Fee Per Side By Exchange */
+            taker_fee_per_side_by_exchange: {
+                [key: string]: number;
+            };
+            /** Timing Penalty Bps Per Hour */
+            timing_penalty_bps_per_hour: number;
+        };
+        /** ConfigUpdateRequest */
+        ConfigUpdateRequest: {
+            /** Allow Unknown Margin Mode */
+            allow_unknown_margin_mode?: boolean | null;
+            /** Anti Churn Cooldown S */
+            anti_churn_cooldown_s?: number | null;
+            /** Anti Churn Score Multiplier */
+            anti_churn_score_multiplier?: number | null;
+            /** Basis Bonus Cap Bps */
+            basis_bonus_cap_bps?: number | null;
+            /** Basis Divergence Threshold Bps */
+            basis_divergence_threshold_bps?: number | null;
+            /** Basis Expansion Penalty Bps Per Hour */
+            basis_expansion_penalty_bps_per_hour?: number | null;
+            /** Basis Weight */
+            basis_weight?: number | null;
+            /** Correlation Threshold */
+            correlation_threshold?: number | null;
+            /** Default Order Size Usd */
+            default_order_size_usd?: number | null;
+            /** Expected Hold Hours */
+            expected_hold_hours?: number | null;
+            /** Hold Window Instability Scale */
+            hold_window_instability_scale?: number | null;
+            /** Max Basis Divergence Hours */
+            max_basis_divergence_hours?: number | null;
+            /** Max Correlated Positions */
+            max_correlated_positions?: number | null;
+            /** Max Entry Adl Level */
+            max_entry_adl_level?: number | null;
+            /** Max Entry Slippage Bps */
+            max_entry_slippage_bps?: number | null;
+            /** Max Position Pct */
+            max_position_pct?: number | null;
+            /** Max Reasonable Apr */
+            max_reasonable_apr?: number | null;
+            /** Max Volume Fraction */
+            max_volume_fraction?: number | null;
+            /** Min Open Interest */
+            min_open_interest?: number | null;
+            /** Min Persistence Hours */
+            min_persistence_hours?: number | null;
+            /** Min Score Bps */
+            min_score_bps?: number | null;
+            /** Min Volume 24H */
+            min_volume_24h?: number | null;
+            /**
+             * Persist
+             * @default true
+             */
+            persist: boolean;
+            /** Portfolio Usd */
+            portfolio_usd?: number | null;
+            /** Preset */
+            preset?: ("conservative" | "balanced" | "aggressive" | "exploratory") | null;
+            /** Require Isolated Margin */
+            require_isolated_margin?: boolean | null;
+            /** Stale Data S */
+            stale_data_s?: number | null;
+        };
+        /** CorrelationPairItem */
+        CorrelationPairItem: {
+            /** Above Threshold */
+            above_threshold: boolean;
+            /** Correlation */
+            correlation: number;
+            /** Samples */
+            samples: number;
+            /** Symbol A */
+            symbol_a: string;
+            /** Symbol B */
+            symbol_b: string;
+        };
+        /** CorrelationResponse */
+        CorrelationResponse: {
+            /** Bucket S */
+            bucket_s: number;
+            /** Count */
+            count: number;
+            /** Max Correlated Positions */
+            max_correlated_positions: number;
+            /** Min Samples */
+            min_samples: number;
+            /** Pairs */
+            pairs?: components["schemas"]["CorrelationPairItem"][];
+            /** Symbols */
+            symbols?: string[];
+            /** Threshold */
+            threshold: number;
+            /** Updated At */
+            updated_at?: string | null;
+            /** Window Hours */
+            window_hours: number;
+        };
+        /** ExecutionAttemptItem */
+        ExecutionAttemptItem: {
+            /** Attempt Id */
+            attempt_id: string;
+            /** Consecutive Rollbacks */
+            consecutive_rollbacks: number;
+            /** Created At */
+            created_at: string;
+            /** Dry Run */
+            dry_run: boolean;
+            /** Error */
+            error?: string | null;
+            /** Events */
+            events?: string[];
+            first_leg: components["schemas"]["ExecutionLegItem"];
+            /** Long Exchange */
+            long_exchange: string;
+            /** Quantity */
+            quantity: string;
+            /** Residual Exposure */
+            residual_exposure: boolean;
+            /** Rollback Attempts */
+            rollback_attempts: number;
+            rollback_order?: components["schemas"]["ExecutionOrderItem"] | null;
+            /** Rollback Slippage Bps */
+            rollback_slippage_bps?: number | null;
+            second_leg: components["schemas"]["ExecutionLegItem"];
+            /** Second Leg Attempts */
+            second_leg_attempts: number;
+            /** Short Exchange */
+            short_exchange: string;
+            /** Size Usd */
+            size_usd: number;
+            /** Status */
+            status: string;
+            /** Symbol */
+            symbol: string;
+        };
+        /** ExecutionAttemptListResponse */
+        ExecutionAttemptListResponse: {
+            /** Consecutive Rollbacks */
+            consecutive_rollbacks: number;
+            /** Count */
+            count: number;
+            /** Entries Stopped */
+            entries_stopped: boolean;
+            /** Items */
+            items?: components["schemas"]["ExecutionAttemptItem"][];
+        };
+        /** ExecutionLegItem */
+        ExecutionLegItem: {
+            /** Attempts */
+            attempts: number;
+            /** Exchange */
+            exchange: string;
+            fill?: components["schemas"]["ExecutionOrderItem"] | null;
+            /** Intended Price */
+            intended_price: string;
+            /** Quantity */
+            quantity: string;
+            /**
+             * Side
+             * @enum {string}
+             */
+            side: "buy" | "sell";
+            /** Symbol */
+            symbol: string;
+        };
+        /** ExecutionOpenRequest */
+        ExecutionOpenRequest: {
+            /** Long Exchange */
+            long_exchange?: string | null;
+            /** Short Exchange */
+            short_exchange?: string | null;
+            /** Size Usd */
+            size_usd?: number | null;
+            /** Symbol */
+            symbol: string;
+        };
+        /** ExecutionOrderItem */
+        ExecutionOrderItem: {
+            /** Client Order Id */
+            client_order_id: string;
+            /** Error */
+            error?: string | null;
+            /** Exchange */
+            exchange: string;
+            /** Price */
+            price?: string | null;
+            /** Quantity */
+            quantity: string;
+            /**
+             * Reduce Only
+             * @default false
+             */
+            reduce_only: boolean;
+            /**
+             * Side
+             * @enum {string}
+             */
+            side: "buy" | "sell";
+            /** Status */
+            status: string;
+            /** Symbol */
+            symbol: string;
+        };
+        /** ExecutionPreflightCandidateItem */
+        ExecutionPreflightCandidateItem: {
+            /** Combined Score */
+            combined_score: number;
+            /** Long Exchange */
+            long_exchange: string;
+            /** Reasons */
+            reasons?: components["schemas"]["ExecutionPreflightCandidateReasonItem"][];
+            /** Short Exchange */
+            short_exchange: string;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "ready" | "watching" | "blocked";
+            /** Symbol */
+            symbol: string;
+        };
+        /** ExecutionPreflightCandidateReasonItem */
+        ExecutionPreflightCandidateReasonItem: {
+            /** Code */
+            code: string;
+            /** Message */
+            message: string;
+            /**
+             * Severity
+             * @enum {string}
+             */
+            severity: "watching" | "blocked";
+        };
+        /** ExecutionPreflightGateItem */
+        ExecutionPreflightGateItem: {
+            /** Lock Id */
+            lock_id?: string | null;
+            /** Passed */
+            passed: boolean;
+            /** Reason */
+            reason?: string | null;
+            /** Strategy Id */
+            strategy_id?: string | null;
+            /** Strategy Profile Id */
+            strategy_profile_id?: string | null;
+        };
+        /** ExecutionPreflightModeItem */
+        ExecutionPreflightModeItem: {
+            /** Exec Dry Run */
+            exec_dry_run: boolean;
+            /** Exec Enabled */
+            exec_enabled: boolean;
+            /** Strategy Profile Id */
+            strategy_profile_id: string;
+        };
+        /** ExecutionPreflightReasonItem */
+        ExecutionPreflightReasonItem: {
+            /** Code */
+            code: string;
+            /** Message */
+            message: string;
+            /**
+             * Severity
+             * @enum {string}
+             */
+            severity: "watching" | "blocked";
+            /**
+             * Source
+             * @enum {string}
+             */
+            source: "gate" | "runtime" | "candidate";
+        };
+        /** ExecutionPreflightResponse */
+        ExecutionPreflightResponse: {
+            /** Blockers */
+            blockers?: components["schemas"]["ExecutionPreflightReasonItem"][];
+            candidate?: components["schemas"]["ExecutionPreflightCandidateItem"] | null;
+            /** Checked At */
+            checked_at: string;
+            /**
+             * Decision
+             * @enum {string}
+             */
+            decision: "ready" | "watching" | "blocked";
+            gate: components["schemas"]["ExecutionPreflightGateItem"];
+            /** Lock Detail Url */
+            lock_detail_url?: string | null;
+            lock_metrics?: components["schemas"]["BacktestMetricsItem"] | null;
+            mode: components["schemas"]["ExecutionPreflightModeItem"];
+            /** Ready */
+            ready: boolean;
+            runtime: components["schemas"]["ExecutionPreflightRuntimeItem"];
+        };
+        /** ExecutionPreflightRuntimeItem */
+        ExecutionPreflightRuntimeItem: {
+            /**
+             * Consecutive Rollbacks
+             * @default 0
+             */
+            consecutive_rollbacks: number;
+            /**
+             * Entries Stopped
+             * @default false
+             */
+            entries_stopped: boolean;
+            /** Exchange Last Ok */
+            exchange_last_ok: {
+                [key: string]: boolean | null;
+            };
+            /** Last Updated At */
+            last_updated_at?: string | null;
+            /** Poll Count Success */
+            poll_count_success: number;
+            /** Screener Ready Candidates */
+            screener_ready_candidates: number;
+        };
+        /** FundingForecastItem */
+        FundingForecastItem: {
+            /** Avg 24H Apr */
+            avg_24h_apr?: number | null;
+            /** Avg 72H Apr */
+            avg_72h_apr?: number | null;
+            /** Expected Apr */
+            expected_apr: number;
+            /**
+             * Is Unstable
+             * @default false
+             */
+            is_unstable: boolean;
+            /**
+             * Std Apr
+             * @default 0
+             */
+            std_apr: number;
+            /**
+             * Trend
+             * @default stable
+             * @enum {string}
+             */
+            trend: "rising" | "falling" | "stable";
+        };
+        /** HTTPValidationError */
+        HTTPValidationError: {
+            /** Detail */
+            detail?: components["schemas"]["ValidationError"][];
+        };
+        /** OpportunitiesResponse */
+        OpportunitiesResponse: {
+            /** Count */
+            count: number;
+            /** Opportunities */
+            opportunities: components["schemas"]["OpportunityItem"][];
+            /** Ready Count */
+            ready_count: number;
+            /** Updated At */
+            updated_at?: string | null;
+        };
+        /** OpportunityItem */
+        OpportunityItem: {
+            /** Basis Bonus Bps */
+            basis_bonus_bps: number;
+            /** Basis Bps */
+            basis_bps: number;
+            /** Basis Divergence Hours */
+            basis_divergence_hours?: number | null;
+            /**
+             * Basis Expansion Penalty Bps
+             * @default 0
+             */
+            basis_expansion_penalty_bps: number;
+            /** Basis Trend */
+            basis_trend?: number | null;
+            /** Combined Score */
+            combined_score: number;
+            /** Correlated With */
+            correlated_with?: string[];
+            /** Depth Quality */
+            depth_quality?: ("A" | "B" | "C" | "D") | null;
+            /** Depth Source By Exchange */
+            depth_source_by_exchange?: {
+                [key: string]: "real" | "none";
+            };
+            /** Effective Hold Hours */
+            effective_hold_hours?: number | null;
+            /** Effective Taker Fee By Exchange */
+            effective_taker_fee_by_exchange?: {
+                [key: string]: number;
+            };
+            /** Fee Impact Bps */
+            fee_impact_bps: number;
+            /** Fee Source By Exchange */
+            fee_source_by_exchange?: {
+                [key: string]: "real" | "config";
+            };
+            /** Funding Diff Apr */
+            funding_diff_apr: number;
+            /** Funding Edge Bps */
+            funding_edge_bps: number;
+            /**
+             * Funding Instability Multiplier
+             * @default 1
+             */
+            funding_instability_multiplier: number;
+            /** Funding Timing Asymmetry Hours */
+            funding_timing_asymmetry_hours?: number | null;
+            /** Funding Timing Penalty Bps */
+            funding_timing_penalty_bps: number;
+            /** Historical Closed Trades */
+            historical_closed_trades?: number | null;
+            /** Historical Win Rate */
+            historical_win_rate?: number | null;
+            /** Hours To Breakeven */
+            hours_to_breakeven?: number | null;
+            /** Liquidity Tier */
+            liquidity_tier?: ("H" | "M" | "L") | null;
+            /** Long Exchange */
+            long_exchange: string;
+            long_forecast?: components["schemas"]["FundingForecastItem"] | null;
+            /** Long Hours To Next Funding */
+            long_hours_to_next_funding?: number | null;
+            /** Long Rate Apr */
+            long_rate_apr: number;
+            /** Min Profitable Hours */
+            min_profitable_hours?: number | null;
+            /** Persistence Hours */
+            persistence_hours?: number | null;
+            /** Reasons */
+            reasons?: components["schemas"]["ReasonItem"][];
+            /** Recommended Size Usd */
+            recommended_size_usd?: number | null;
+            /** Short Exchange */
+            short_exchange: string;
+            short_forecast?: components["schemas"]["FundingForecastItem"] | null;
+            /** Short Hours To Next Funding */
+            short_hours_to_next_funding?: number | null;
+            /** Short Rate Apr */
+            short_rate_apr: number;
+            /**
+             * Slippage Impact Bps
+             * @default 0
+             */
+            slippage_impact_bps: number;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "ready" | "watching" | "blocked";
+            /** Symbol */
+            symbol: string;
+            /**
+             * Total Cost Bps
+             * @default 0
+             */
+            total_cost_bps: number;
+        };
+        /**
+         * ReasonCode
+         * @enum {string}
+         */
+        ReasonCode: "persistence_insufficient" | "historical_win_rate_low" | "break_even_window" | "score_below_min" | "funding_flips" | "basis_limit" | "basis_trend_unstable" | "basis_divergence_hard" | "basis_divergence_window" | "funding_timing_asymmetry" | "funding_unstable" | "funding_trend_thin_edge" | "stale_data" | "real_depth_unavailable" | "depth_quality_below_min" | "real_fee_unavailable" | "margin_mode_unknown" | "adl_limit" | "margin_mode_cross" | "anti_churn_cooldown" | "correlation_limit";
+        /** ReasonItem */
+        ReasonItem: {
+            code: components["schemas"]["ReasonCode"];
+            /** Message */
+            message: string;
+            /**
+             * Severity
+             * @enum {string}
+             */
+            severity: "watching" | "blocked";
+        };
+        /** StatusDropCounters */
+        StatusDropCounters: {
+            /**
+             * Adaptive Hold Applied
+             * @default 0
+             */
+            adaptive_hold_applied: number;
+            /**
+             * Apr Cap
+             * @default 0
+             */
+            apr_cap: number;
+            /**
+             * Basis Bonus Capped
+             * @default 0
+             */
+            basis_bonus_capped: number;
+            /**
+             * Basis Divergence Penalty
+             * @default 0
+             */
+            basis_divergence_penalty: number;
+            /**
+             * Basis Gate
+             * @default 0
+             */
+            basis_gate: number;
+            /**
+             * L2 Book Fetch Error Hyperliquid
+             * @default 0
+             */
+            l2_book_fetch_error_hyperliquid: number;
+            /**
+             * Min Open Interest
+             * @default 0
+             */
+            min_open_interest: number;
+            /**
+             * Min Score
+             * @default 0
+             */
+            min_score: number;
+            /**
+             * Min Volume
+             * @default 0
+             */
+            min_volume: number;
+            /**
+             * Missing Real Depth
+             * @default 0
+             */
+            missing_real_depth: number;
+            /**
+             * Missing Real Depth Hyperliquid
+             * @default 0
+             */
+            missing_real_depth_hyperliquid: number;
+            /**
+             * Missing Real Depth Lighter
+             * @default 0
+             */
+            missing_real_depth_lighter: number;
+            /**
+             * Missing Real Fee
+             * @default 0
+             */
+            missing_real_fee: number;
+            /**
+             * Missing Real Fee Hyperliquid
+             * @default 0
+             */
+            missing_real_fee_hyperliquid: number;
+            /**
+             * Missing Real Fee Lighter
+             * @default 0
+             */
+            missing_real_fee_lighter: number;
+            /**
+             * Non Positive Funding Edge
+             * @default 0
+             */
+            non_positive_funding_edge: number;
+            /**
+             * Persistence
+             * @default 0
+             */
+            persistence: number;
+            /**
+             * Stale
+             * @default 0
+             */
+            stale: number;
+            /**
+             * Strict Depth
+             * @default 0
+             */
+            strict_depth: number;
+            /**
+             * Strict Depth By Exchange Hyperliquid
+             * @default 0
+             */
+            strict_depth_by_exchange_hyperliquid: number;
+            /**
+             * Strict Depth By Exchange Lighter
+             * @default 0
+             */
+            strict_depth_by_exchange_lighter: number;
+        };
+        /**
+         * StatusExchangeDiagnostics
+         * @description Per-venue cost-enrichment counters for the last screener pass.
+         */
+        StatusExchangeDiagnostics: {
+            /**
+             * Book Fetch Error
+             * @default 0
+             */
+            book_fetch_error: number;
+            /**
+             * Missing Real Depth
+             * @default 0
+             */
+            missing_real_depth: number;
+            /**
+             * Missing Real Fee
+             * @default 0
+             */
+            missing_real_fee: number;
+            /**
+             * Strict Depth
+             * @default 0
+             */
+            strict_depth: number;
+        };
+        /** StatusReasonSeverityCounts */
+        StatusReasonSeverityCounts: {
+            /**
+             * Blocked
+             * @default 0
+             */
+            blocked: number;
+            /**
+             * Watching
+             * @default 0
+             */
+            watching: number;
+        };
+        /** StatusResponse */
+        StatusResponse: {
+            /** Active Exchanges */
+            active_exchanges?: string[];
+            /**
+             * Backtest History Gate Enabled
+             * @default false
+             */
+            backtest_history_gate_enabled: boolean;
+            /**
+             * Backtest History Pairs
+             * @default 0
+             */
+            backtest_history_pairs: number;
+            /** Backtest History Refreshed At */
+            backtest_history_refreshed_at?: string | null;
+            /** Exchange Diagnostics */
+            exchange_diagnostics?: {
+                [key: string]: components["schemas"]["StatusExchangeDiagnostics"];
+            };
+            /** Exchange Last Ok */
+            exchange_last_ok: {
+                [key: string]: boolean | null;
+            };
+            /** Execution Backtest Gate Passed */
+            execution_backtest_gate_passed: boolean;
+            /** Execution Backtest Gate Reason */
+            execution_backtest_gate_reason?: string | null;
+            /**
+             * Execution Consecutive Rollbacks
+             * @default 0
+             */
+            execution_consecutive_rollbacks: number;
+            /**
+             * Execution Entries Stopped
+             * @default false
+             */
+            execution_entries_stopped: boolean;
+            /** Execution Last Attempt Id */
+            execution_last_attempt_id?: string | null;
+            /** Execution Last Attempt Status */
+            execution_last_attempt_status?: string | null;
+            /** Execution Last Rollback Slippage Bps */
+            execution_last_rollback_slippage_bps?: number | null;
+            /** Execution Strategy Id */
+            execution_strategy_id?: string | null;
+            /** Execution Strategy Lock Id */
+            execution_strategy_lock_id?: string | null;
+            /** Execution Strategy Profile Id */
+            execution_strategy_profile_id?: string | null;
+            /** Last Poll Duration Ms */
+            last_poll_duration_ms?: number | null;
+            /** Last Poll Finished At */
+            last_poll_finished_at?: string | null;
+            /** Last Poll Started At */
+            last_poll_started_at?: string | null;
+            /** Last Updated At */
+            last_updated_at?: string | null;
+            /** Poll Count Failed */
+            poll_count_failed: number;
+            /** Poll Count Success */
+            poll_count_success: number;
+            /** Poll Count Total */
+            poll_count_total: number;
+            screener_drop_counters?: components["schemas"]["StatusDropCounters"];
+            /** Screener Post Cost Candidates */
+            screener_post_cost_candidates: number;
+            /** Screener Raw Candidates */
+            screener_raw_candidates: number;
+            /** Screener Ready Candidates */
+            screener_ready_candidates: number;
+            /** Screener Reason Code Counts */
+            screener_reason_code_counts?: {
+                [key: string]: number;
+            };
+            screener_reason_severity_counts?: components["schemas"]["StatusReasonSeverityCounts"];
+            /** Screener Validated Candidates */
+            screener_validated_candidates: number;
+            /** Started At */
+            started_at: string;
+            /** Uptime S */
+            uptime_s: number;
+        };
+        /** ValidationError */
+        ValidationError: {
+            /** Context */
+            ctx?: Record<string, never>;
+            /** Input */
+            input?: unknown;
+            /** Location */
+            loc: (string | number)[];
+            /** Message */
+            msg: string;
+            /** Error Type */
+            type: string;
+        };
+        /** WsAuthTicketResponse */
+        WsAuthTicketResponse: {
+            /** Expires At */
+            expires_at: string;
+            /** Ticket */
+            ticket: string;
+            /** Ttl S */
+            ttl_s: number;
+        };
     };
-    /** ConfigUpdateRequest */
-    ConfigUpdateRequest: {
-      /** Allow Unknown Margin Mode */
-      allow_unknown_margin_mode?: boolean | null;
-      /** Anti Churn Cooldown S */
-      anti_churn_cooldown_s?: number | null;
-      /** Anti Churn Score Multiplier */
-      anti_churn_score_multiplier?: number | null;
-      /** Basis Bonus Cap Bps */
-      basis_bonus_cap_bps?: number | null;
-      /** Basis Divergence Threshold Bps */
-      basis_divergence_threshold_bps?: number | null;
-      /** Basis Expansion Penalty Bps Per Hour */
-      basis_expansion_penalty_bps_per_hour?: number | null;
-      /** Basis Weight */
-      basis_weight?: number | null;
-      /** Correlation Threshold */
-      correlation_threshold?: number | null;
-      /** Default Order Size Usd */
-      default_order_size_usd?: number | null;
-      /** Expected Hold Hours */
-      expected_hold_hours?: number | null;
-      /** Hold Window Instability Scale */
-      hold_window_instability_scale?: number | null;
-      /** Max Basis Divergence Hours */
-      max_basis_divergence_hours?: number | null;
-      /** Max Correlated Positions */
-      max_correlated_positions?: number | null;
-      /** Max Entry Adl Level */
-      max_entry_adl_level?: number | null;
-      /** Max Entry Slippage Bps */
-      max_entry_slippage_bps?: number | null;
-      /** Max Position Pct */
-      max_position_pct?: number | null;
-      /** Max Reasonable Apr */
-      max_reasonable_apr?: number | null;
-      /** Max Volume Fraction */
-      max_volume_fraction?: number | null;
-      /** Min Open Interest */
-      min_open_interest?: number | null;
-      /** Min Persistence Hours */
-      min_persistence_hours?: number | null;
-      /** Min Score Bps */
-      min_score_bps?: number | null;
-      /** Min Volume 24H */
-      min_volume_24h?: number | null;
-      /**
-       * Persist
-       * @default true
-       */
-      persist: boolean;
-      /** Portfolio Usd */
-      portfolio_usd?: number | null;
-      /** Preset */
-      preset?: ("conservative" | "balanced" | "aggressive" | "exploratory") | null;
-      /** Require Isolated Margin */
-      require_isolated_margin?: boolean | null;
-      /** Stale Data S */
-      stale_data_s?: number | null;
-    };
-    /** CorrelationPairItem */
-    CorrelationPairItem: {
-      /** Above Threshold */
-      above_threshold: boolean;
-      /** Correlation */
-      correlation: number;
-      /** Samples */
-      samples: number;
-      /** Symbol A */
-      symbol_a: string;
-      /** Symbol B */
-      symbol_b: string;
-    };
-    /** CorrelationResponse */
-    CorrelationResponse: {
-      /** Bucket S */
-      bucket_s: number;
-      /** Count */
-      count: number;
-      /** Max Correlated Positions */
-      max_correlated_positions: number;
-      /** Min Samples */
-      min_samples: number;
-      /** Pairs */
-      pairs?: components["schemas"]["CorrelationPairItem"][];
-      /** Symbols */
-      symbols?: string[];
-      /** Threshold */
-      threshold: number;
-      /** Updated At */
-      updated_at?: string | null;
-      /** Window Hours */
-      window_hours: number;
-    };
-    /** ExecutionAttemptItem */
-    ExecutionAttemptItem: {
-      /** Attempt Id */
-      attempt_id: string;
-      /** Consecutive Rollbacks */
-      consecutive_rollbacks: number;
-      /** Created At */
-      created_at: string;
-      /** Dry Run */
-      dry_run: boolean;
-      /** Error */
-      error?: string | null;
-      /** Events */
-      events?: string[];
-      first_leg: components["schemas"]["ExecutionLegItem"];
-      /** Long Exchange */
-      long_exchange: string;
-      /** Quantity */
-      quantity: string;
-      /** Residual Exposure */
-      residual_exposure: boolean;
-      /** Rollback Attempts */
-      rollback_attempts: number;
-      rollback_order?: components["schemas"]["ExecutionOrderItem"] | null;
-      /** Rollback Slippage Bps */
-      rollback_slippage_bps?: number | null;
-      second_leg: components["schemas"]["ExecutionLegItem"];
-      /** Second Leg Attempts */
-      second_leg_attempts: number;
-      /** Short Exchange */
-      short_exchange: string;
-      /** Size Usd */
-      size_usd: number;
-      /** Status */
-      status: string;
-      /** Symbol */
-      symbol: string;
-    };
-    /** ExecutionAttemptListResponse */
-    ExecutionAttemptListResponse: {
-      /** Consecutive Rollbacks */
-      consecutive_rollbacks: number;
-      /** Count */
-      count: number;
-      /** Entries Stopped */
-      entries_stopped: boolean;
-      /** Items */
-      items?: components["schemas"]["ExecutionAttemptItem"][];
-    };
-    /** ExecutionLegItem */
-    ExecutionLegItem: {
-      /** Attempts */
-      attempts: number;
-      /** Exchange */
-      exchange: string;
-      fill?: components["schemas"]["ExecutionOrderItem"] | null;
-      /** Intended Price */
-      intended_price: string;
-      /** Quantity */
-      quantity: string;
-      /**
-       * Side
-       * @enum {string}
-       */
-      side: "buy" | "sell";
-      /** Symbol */
-      symbol: string;
-    };
-    /** ExecutionOpenRequest */
-    ExecutionOpenRequest: {
-      /** Long Exchange */
-      long_exchange?: string | null;
-      /** Short Exchange */
-      short_exchange?: string | null;
-      /** Size Usd */
-      size_usd?: number | null;
-      /** Symbol */
-      symbol: string;
-    };
-    /** ExecutionOrderItem */
-    ExecutionOrderItem: {
-      /** Client Order Id */
-      client_order_id: string;
-      /** Error */
-      error?: string | null;
-      /** Exchange */
-      exchange: string;
-      /** Price */
-      price?: string | null;
-      /** Quantity */
-      quantity: string;
-      /**
-       * Reduce Only
-       * @default false
-       */
-      reduce_only: boolean;
-      /**
-       * Side
-       * @enum {string}
-       */
-      side: "buy" | "sell";
-      /** Status */
-      status: string;
-      /** Symbol */
-      symbol: string;
-    };
-    /** ExecutionPreflightCandidateItem */
-    ExecutionPreflightCandidateItem: {
-      /** Combined Score */
-      combined_score: number;
-      /** Long Exchange */
-      long_exchange: string;
-      /** Reasons */
-      reasons?: components["schemas"]["ExecutionPreflightCandidateReasonItem"][];
-      /** Short Exchange */
-      short_exchange: string;
-      /**
-       * Status
-       * @enum {string}
-       */
-      status: "ready" | "watching" | "blocked";
-      /** Symbol */
-      symbol: string;
-    };
-    /** ExecutionPreflightCandidateReasonItem */
-    ExecutionPreflightCandidateReasonItem: {
-      /** Code */
-      code: string;
-      /** Message */
-      message: string;
-      /**
-       * Severity
-       * @enum {string}
-       */
-      severity: "watching" | "blocked";
-    };
-    /** ExecutionPreflightGateItem */
-    ExecutionPreflightGateItem: {
-      /** Lock Id */
-      lock_id?: string | null;
-      /** Passed */
-      passed: boolean;
-      /** Reason */
-      reason?: string | null;
-      /** Strategy Id */
-      strategy_id?: string | null;
-      /** Strategy Profile Id */
-      strategy_profile_id?: string | null;
-    };
-    /** ExecutionPreflightModeItem */
-    ExecutionPreflightModeItem: {
-      /** Exec Dry Run */
-      exec_dry_run: boolean;
-      /** Exec Enabled */
-      exec_enabled: boolean;
-      /** Strategy Profile Id */
-      strategy_profile_id: string;
-    };
-    /** ExecutionPreflightReasonItem */
-    ExecutionPreflightReasonItem: {
-      /** Code */
-      code: string;
-      /** Message */
-      message: string;
-      /**
-       * Severity
-       * @enum {string}
-       */
-      severity: "watching" | "blocked";
-      /**
-       * Source
-       * @enum {string}
-       */
-      source: "gate" | "runtime" | "candidate";
-    };
-    /** ExecutionPreflightResponse */
-    ExecutionPreflightResponse: {
-      /** Blockers */
-      blockers?: components["schemas"]["ExecutionPreflightReasonItem"][];
-      candidate?: components["schemas"]["ExecutionPreflightCandidateItem"] | null;
-      /** Checked At */
-      checked_at: string;
-      /**
-       * Decision
-       * @enum {string}
-       */
-      decision: "ready" | "watching" | "blocked";
-      gate: components["schemas"]["ExecutionPreflightGateItem"];
-      /** Lock Detail Url */
-      lock_detail_url?: string | null;
-      lock_metrics?: components["schemas"]["BacktestMetricsItem"] | null;
-      mode: components["schemas"]["ExecutionPreflightModeItem"];
-      /** Ready */
-      ready: boolean;
-      runtime: components["schemas"]["ExecutionPreflightRuntimeItem"];
-    };
-    /** ExecutionPreflightRuntimeItem */
-    ExecutionPreflightRuntimeItem: {
-      /**
-       * Consecutive Rollbacks
-       * @default 0
-       */
-      consecutive_rollbacks: number;
-      /**
-       * Entries Stopped
-       * @default false
-       */
-      entries_stopped: boolean;
-      /** Exchange Last Ok */
-      exchange_last_ok: {
-        [key: string]: boolean | null;
-      };
-      /** Last Updated At */
-      last_updated_at?: string | null;
-      /** Poll Count Success */
-      poll_count_success: number;
-      /** Screener Ready Candidates */
-      screener_ready_candidates: number;
-    };
-    /** FundingForecastItem */
-    FundingForecastItem: {
-      /** Avg 24H Apr */
-      avg_24h_apr?: number | null;
-      /** Avg 72H Apr */
-      avg_72h_apr?: number | null;
-      /** Expected Apr */
-      expected_apr: number;
-      /**
-       * Is Unstable
-       * @default false
-       */
-      is_unstable: boolean;
-      /**
-       * Std Apr
-       * @default 0
-       */
-      std_apr: number;
-      /**
-       * Trend
-       * @default stable
-       * @enum {string}
-       */
-      trend: "rising" | "falling" | "stable";
-    };
-    /** HTTPValidationError */
-    HTTPValidationError: {
-      /** Detail */
-      detail?: components["schemas"]["ValidationError"][];
-    };
-    /** OpportunitiesResponse */
-    OpportunitiesResponse: {
-      /** Count */
-      count: number;
-      /** Opportunities */
-      opportunities: components["schemas"]["OpportunityItem"][];
-      /** Ready Count */
-      ready_count: number;
-      /** Updated At */
-      updated_at?: string | null;
-    };
-    /** OpportunityItem */
-    OpportunityItem: {
-      /** Basis Bonus Bps */
-      basis_bonus_bps: number;
-      /** Basis Bps */
-      basis_bps: number;
-      /** Basis Divergence Hours */
-      basis_divergence_hours?: number | null;
-      /**
-       * Basis Expansion Penalty Bps
-       * @default 0
-       */
-      basis_expansion_penalty_bps: number;
-      /** Basis Trend */
-      basis_trend?: number | null;
-      /** Combined Score */
-      combined_score: number;
-      /** Correlated With */
-      correlated_with?: string[];
-      /** Depth Quality */
-      depth_quality?: ("A" | "B" | "C" | "D") | null;
-      /** Depth Source By Exchange */
-      depth_source_by_exchange?: {
-        [key: string]: "real" | "none";
-      };
-      /** Effective Hold Hours */
-      effective_hold_hours?: number | null;
-      /** Effective Taker Fee By Exchange */
-      effective_taker_fee_by_exchange?: {
-        [key: string]: number;
-      };
-      /** Fee Impact Bps */
-      fee_impact_bps: number;
-      /** Fee Source By Exchange */
-      fee_source_by_exchange?: {
-        [key: string]: "real" | "config";
-      };
-      /** Funding Diff Apr */
-      funding_diff_apr: number;
-      /** Funding Edge Bps */
-      funding_edge_bps: number;
-      /**
-       * Funding Instability Multiplier
-       * @default 1
-       */
-      funding_instability_multiplier: number;
-      /** Funding Timing Asymmetry Hours */
-      funding_timing_asymmetry_hours?: number | null;
-      /** Funding Timing Penalty Bps */
-      funding_timing_penalty_bps: number;
-      /** Historical Closed Trades */
-      historical_closed_trades?: number | null;
-      /** Historical Win Rate */
-      historical_win_rate?: number | null;
-      /** Hours To Breakeven */
-      hours_to_breakeven?: number | null;
-      /** Liquidity Tier */
-      liquidity_tier?: ("H" | "M" | "L") | null;
-      /** Long Exchange */
-      long_exchange: string;
-      long_forecast?: components["schemas"]["FundingForecastItem"] | null;
-      /** Long Hours To Next Funding */
-      long_hours_to_next_funding?: number | null;
-      /** Long Rate Apr */
-      long_rate_apr: number;
-      /** Min Profitable Hours */
-      min_profitable_hours?: number | null;
-      /** Persistence Hours */
-      persistence_hours?: number | null;
-      /** Reasons */
-      reasons?: components["schemas"]["ReasonItem"][];
-      /** Recommended Size Usd */
-      recommended_size_usd?: number | null;
-      /** Short Exchange */
-      short_exchange: string;
-      short_forecast?: components["schemas"]["FundingForecastItem"] | null;
-      /** Short Hours To Next Funding */
-      short_hours_to_next_funding?: number | null;
-      /** Short Rate Apr */
-      short_rate_apr: number;
-      /**
-       * Slippage Impact Bps
-       * @default 0
-       */
-      slippage_impact_bps: number;
-      /**
-       * Status
-       * @enum {string}
-       */
-      status: "ready" | "watching" | "blocked";
-      /** Symbol */
-      symbol: string;
-      /**
-       * Total Cost Bps
-       * @default 0
-       */
-      total_cost_bps: number;
-    };
-    /**
-     * ReasonCode
-     * @enum {string}
-     */
-    ReasonCode:
-      | "persistence_insufficient"
-      | "historical_win_rate_low"
-      | "break_even_window"
-      | "score_below_min"
-      | "funding_flips"
-      | "basis_limit"
-      | "basis_trend_unstable"
-      | "basis_divergence_hard"
-      | "basis_divergence_window"
-      | "funding_timing_asymmetry"
-      | "funding_unstable"
-      | "funding_trend_thin_edge"
-      | "stale_data"
-      | "real_depth_unavailable"
-      | "depth_quality_below_min"
-      | "real_fee_unavailable"
-      | "margin_mode_unknown"
-      | "adl_limit"
-      | "margin_mode_cross"
-      | "anti_churn_cooldown"
-      | "correlation_limit";
-    /** ReasonItem */
-    ReasonItem: {
-      code: components["schemas"]["ReasonCode"];
-      /** Message */
-      message: string;
-      /**
-       * Severity
-       * @enum {string}
-       */
-      severity: "watching" | "blocked";
-    };
-    /** StatusDropCounters */
-    StatusDropCounters: {
-      /**
-       * Adaptive Hold Applied
-       * @default 0
-       */
-      adaptive_hold_applied: number;
-      /**
-       * Apr Cap
-       * @default 0
-       */
-      apr_cap: number;
-      /**
-       * Basis Bonus Capped
-       * @default 0
-       */
-      basis_bonus_capped: number;
-      /**
-       * Basis Divergence Penalty
-       * @default 0
-       */
-      basis_divergence_penalty: number;
-      /**
-       * Basis Gate
-       * @default 0
-       */
-      basis_gate: number;
-      /**
-       * L2 Book Fetch Error Hyperliquid
-       * @default 0
-       */
-      l2_book_fetch_error_hyperliquid: number;
-      /**
-       * Min Open Interest
-       * @default 0
-       */
-      min_open_interest: number;
-      /**
-       * Min Score
-       * @default 0
-       */
-      min_score: number;
-      /**
-       * Min Volume
-       * @default 0
-       */
-      min_volume: number;
-      /**
-       * Missing Real Depth
-       * @default 0
-       */
-      missing_real_depth: number;
-      /**
-       * Missing Real Depth Hyperliquid
-       * @default 0
-       */
-      missing_real_depth_hyperliquid: number;
-      /**
-       * Missing Real Depth Lighter
-       * @default 0
-       */
-      missing_real_depth_lighter: number;
-      /**
-       * Missing Real Fee
-       * @default 0
-       */
-      missing_real_fee: number;
-      /**
-       * Missing Real Fee Hyperliquid
-       * @default 0
-       */
-      missing_real_fee_hyperliquid: number;
-      /**
-       * Missing Real Fee Lighter
-       * @default 0
-       */
-      missing_real_fee_lighter: number;
-      /**
-       * Non Positive Funding Edge
-       * @default 0
-       */
-      non_positive_funding_edge: number;
-      /**
-       * Persistence
-       * @default 0
-       */
-      persistence: number;
-      /**
-       * Stale
-       * @default 0
-       */
-      stale: number;
-      /**
-       * Strict Depth
-       * @default 0
-       */
-      strict_depth: number;
-      /**
-       * Strict Depth By Exchange Hyperliquid
-       * @default 0
-       */
-      strict_depth_by_exchange_hyperliquid: number;
-      /**
-       * Strict Depth By Exchange Lighter
-       * @default 0
-       */
-      strict_depth_by_exchange_lighter: number;
-    };
-    /**
-     * StatusExchangeDiagnostics
-     * @description Per-venue cost-enrichment counters for the last screener pass.
-     */
-    StatusExchangeDiagnostics: {
-      /**
-       * Book Fetch Error
-       * @default 0
-       */
-      book_fetch_error: number;
-      /**
-       * Missing Real Depth
-       * @default 0
-       */
-      missing_real_depth: number;
-      /**
-       * Missing Real Fee
-       * @default 0
-       */
-      missing_real_fee: number;
-      /**
-       * Strict Depth
-       * @default 0
-       */
-      strict_depth: number;
-    };
-    /** StatusReasonSeverityCounts */
-    StatusReasonSeverityCounts: {
-      /**
-       * Blocked
-       * @default 0
-       */
-      blocked: number;
-      /**
-       * Watching
-       * @default 0
-       */
-      watching: number;
-    };
-    /** StatusResponse */
-    StatusResponse: {
-      /** Active Exchanges */
-      active_exchanges?: string[];
-      /**
-       * Backtest History Gate Enabled
-       * @default false
-       */
-      backtest_history_gate_enabled: boolean;
-      /**
-       * Backtest History Pairs
-       * @default 0
-       */
-      backtest_history_pairs: number;
-      /** Backtest History Refreshed At */
-      backtest_history_refreshed_at?: string | null;
-      /** Exchange Diagnostics */
-      exchange_diagnostics?: {
-        [key: string]: components["schemas"]["StatusExchangeDiagnostics"];
-      };
-      /** Exchange Last Ok */
-      exchange_last_ok: {
-        [key: string]: boolean | null;
-      };
-      /** Execution Backtest Gate Passed */
-      execution_backtest_gate_passed: boolean;
-      /** Execution Backtest Gate Reason */
-      execution_backtest_gate_reason?: string | null;
-      /**
-       * Execution Consecutive Rollbacks
-       * @default 0
-       */
-      execution_consecutive_rollbacks: number;
-      /**
-       * Execution Entries Stopped
-       * @default false
-       */
-      execution_entries_stopped: boolean;
-      /** Execution Last Attempt Id */
-      execution_last_attempt_id?: string | null;
-      /** Execution Last Attempt Status */
-      execution_last_attempt_status?: string | null;
-      /** Execution Last Rollback Slippage Bps */
-      execution_last_rollback_slippage_bps?: number | null;
-      /** Execution Strategy Id */
-      execution_strategy_id?: string | null;
-      /** Execution Strategy Lock Id */
-      execution_strategy_lock_id?: string | null;
-      /** Execution Strategy Profile Id */
-      execution_strategy_profile_id?: string | null;
-      /** Last Poll Duration Ms */
-      last_poll_duration_ms?: number | null;
-      /** Last Poll Finished At */
-      last_poll_finished_at?: string | null;
-      /** Last Poll Started At */
-      last_poll_started_at?: string | null;
-      /** Last Updated At */
-      last_updated_at?: string | null;
-      /** Poll Count Failed */
-      poll_count_failed: number;
-      /** Poll Count Success */
-      poll_count_success: number;
-      /** Poll Count Total */
-      poll_count_total: number;
-      screener_drop_counters?: components["schemas"]["StatusDropCounters"];
-      /** Screener Post Cost Candidates */
-      screener_post_cost_candidates: number;
-      /** Screener Raw Candidates */
-      screener_raw_candidates: number;
-      /** Screener Ready Candidates */
-      screener_ready_candidates: number;
-      /** Screener Reason Code Counts */
-      screener_reason_code_counts?: {
-        [key: string]: number;
-      };
-      screener_reason_severity_counts?: components["schemas"]["StatusReasonSeverityCounts"];
-      /** Screener Validated Candidates */
-      screener_validated_candidates: number;
-      /** Started At */
-      started_at: string;
-      /** Uptime S */
-      uptime_s: number;
-    };
-    /** ValidationError */
-    ValidationError: {
-      /** Context */
-      ctx?: Record<string, never>;
-      /** Input */
-      input?: unknown;
-      /** Location */
-      loc: (string | number)[];
-      /** Message */
-      msg: string;
-      /** Error Type */
-      type: string;
-    };
-    /** WsAuthTicketResponse */
-    WsAuthTicketResponse: {
-      /** Expires At */
-      expires_at: string;
-      /** Ticket */
-      ticket: string;
-      /** Ttl S */
-      ttl_s: number;
-    };
-  };
-  responses: never;
-  parameters: never;
-  requestBodies: never;
-  headers: never;
-  pathItems: never;
+    responses: never;
+    parameters: never;
+    requestBodies: never;
+    headers: never;
+    pathItems: never;
 }
 export type $defs = Record<string, never>;
 export interface operations {
-  get_backtest_gate_backtest_gate_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    get_backtest_gate_backtest_gate_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BacktestGateResponse"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    get_backtest_history_backtest_history_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["BacktestGateResponse"];
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BacktestHistoryResponse"];
+                };
+            };
         };
-      };
     };
-  };
-  get_backtest_history_backtest_history_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    lock_backtest_strategy_backtest_lock_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BacktestReplayRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BacktestLockResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    list_backtest_locks_backtest_locks_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["BacktestHistoryResponse"];
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BacktestLockListResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
         };
-      };
     };
-  };
-  lock_backtest_strategy_backtest_lock_post: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    get_backtest_lock_by_id_backtest_locks__lock_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lock_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BacktestLockResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
     };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["BacktestReplayRequest"];
-      };
+    run_backtest_replay_backtest_replay_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BacktestReplayRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BacktestReplayResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
     };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    get_backtest_summary_backtest_summary_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["BacktestLockResponse"];
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BacktestSummaryResponse"];
+                };
+            };
         };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
     };
-  };
-  list_backtest_locks_backtest_locks_get: {
-    parameters: {
-      query?: {
-        limit?: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
+    get_config_config_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConfigResponse"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    patch_config_config_patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["BacktestLockListResponse"];
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConfigUpdateRequest"];
+            };
         };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConfigResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
         };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
     };
-  };
-  get_backtest_lock_by_id_backtest_locks__lock_id__get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        lock_id: string;
-      };
-      cookie?: never;
+    get_correlation_correlation_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CorrelationResponse"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    list_execution_attempts_execution_attempts_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["BacktestLockResponse"];
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExecutionAttemptListResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
         };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
     };
-  };
-  run_backtest_replay_backtest_replay_post: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    open_two_leg_position_execution_open_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExecutionOpenRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExecutionAttemptItem"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
     };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["BacktestReplayRequest"];
-      };
+    get_execution_preflight_execution_preflight_get: {
+        parameters: {
+            query?: {
+                symbol?: string | null;
+                include_candidate?: boolean;
+                include_lock_metrics?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExecutionPreflightResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
     };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    get_opportunities_opportunities_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["BacktestReplayResponse"];
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OpportunitiesResponse"];
+                };
+            };
         };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
     };
-  };
-  get_backtest_summary_backtest_summary_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    get_status_status_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StatusResponse"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    issue_ws_auth_ticket_ws_auth_ticket_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["BacktestSummaryResponse"];
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WsAuthTicketResponse"];
+                };
+            };
         };
-      };
     };
-  };
-  get_config_config_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ConfigResponse"];
-        };
-      };
-    };
-  };
-  patch_config_config_patch: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["ConfigUpdateRequest"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ConfigResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  get_correlation_correlation_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["CorrelationResponse"];
-        };
-      };
-    };
-  };
-  list_execution_attempts_execution_attempts_get: {
-    parameters: {
-      query?: {
-        limit?: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ExecutionAttemptListResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  open_two_leg_position_execution_open_post: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["ExecutionOpenRequest"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ExecutionAttemptItem"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  get_execution_preflight_execution_preflight_get: {
-    parameters: {
-      query?: {
-        symbol?: string | null;
-        include_candidate?: boolean;
-        include_lock_metrics?: boolean;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ExecutionPreflightResponse"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  get_opportunities_opportunities_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["OpportunitiesResponse"];
-        };
-      };
-    };
-  };
-  get_status_status_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["StatusResponse"];
-        };
-      };
-    };
-  };
-  issue_ws_auth_ticket_ws_auth_ticket_post: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["WsAuthTicketResponse"];
-        };
-      };
-    };
-  };
 }

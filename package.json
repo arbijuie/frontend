@@ -9,6 +9,17 @@
     "trailingComma": "es5",
     "printWidth": 100
   },
+  "pnpm": {
+    "supportedArchitectures": {
+      "os": [
+        "current",
+        "linux"
+      ],
+      "cpu": [
+        "x64"
+      ]
+    }
+  },
   "scripts": {
     "dev": "vite --config config/vite.config.ts",
     "build": "tsc -b tsconfig.json && vite build --config config/vite.config.ts",
