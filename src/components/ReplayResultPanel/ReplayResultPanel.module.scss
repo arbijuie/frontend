@@ -6,6 +6,14 @@
   margin-bottom: 1rem;
 }
 
+.usedParams {
+  font-size: 0.75rem;
+  color: v.$text-muted;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 0.0625rem solid v.$border-color;
+}
+
 .grid {
   display: grid;
   grid-template-columns: 1fr 1fr;

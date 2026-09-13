@@ -1,9 +1,10 @@
 import styles from "./ReplayResultPanel.module.scss";
-import type { BacktestMetrics } from "../../api/types";
+import type { BacktestMetrics, BacktestReplayRequest } from "../../api/types";
 import { signColor } from "../../lib/format";
 
 interface ReplayResultPanelProps {
   metrics: BacktestMetrics;
+  usedRequest?: BacktestReplayRequest | null;
   onCreateLock?: () => void;
   creatingLock?: boolean;
   lockCreated?: boolean;
@@ -11,12 +12,19 @@ interface ReplayResultPanelProps {
 
 const ReplayResultPanel = ({
   metrics,
+  usedRequest,
   onCreateLock,
   creatingLock,
   lockCreated,
 }: ReplayResultPanelProps) => {
   return (
     <div className={styles.panel}>
+      {usedRequest && (
+        <div className={styles.usedParams}>
+          Symbols: {usedRequest.symbols?.length ? usedRequest.symbols.join(", ") : "All"}
+          {usedRequest.start && ` · from ${new Date(usedRequest.start).toLocaleDateString()}`}
+        </div>
+      )}
       <div className={styles.grid}>
         <div>
           <div className={styles.metricLabel}>Strategy ID</div>

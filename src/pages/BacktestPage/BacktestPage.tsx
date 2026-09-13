@@ -138,6 +138,7 @@ const BacktestPage = () => {
           {lastResult && (
             <ReplayResultPanel
               metrics={lastResult}
+              usedRequest={lastRequest}
               onCreateLock={handleCreateLock}
               creatingLock={createLock.isPending}
               lockCreated={lockCreatedForResult}
