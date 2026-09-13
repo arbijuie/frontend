@@ -115,6 +115,11 @@ const ConfigAccordion = ({ config }: ConfigAccordionProps) => {
         <ConfigRow label="Max Entry ADL Level" value={config.max_entry_adl_level} unit="/5" />
         <ConfigRow label="Require Isolated Margin" value={config.require_isolated_margin} />
         <ConfigRow label="Allow Unknown Margin Mode" value={config.allow_unknown_margin_mode} />
+        <ConfigRow label="Correlation Threshold" value={config.correlation_threshold} />
+        <ConfigRow label="Max Correlated Positions" value={config.max_correlated_positions} />
+        <ConfigRow label="Correlation Window" value={config.correlation_window_hours} unit="h" />
+        <ConfigRow label="Correlation Bucket" value={config.correlation_bucket_s} unit="s" />
+        <ConfigRow label="Correlation Min Samples" value={config.correlation_min_samples} />
       </ConfigSection>
 
       <ConfigSection

@@ -185,6 +185,20 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
               {item.persistence_hours != null ? `${item.persistence_hours.toFixed(1)}h` : "—"}
             </span>
           </div>
+          {item.correlated_with && item.correlated_with.length > 0 && (
+            <div className={styles.detailRow}>
+              <span>Correlated with</span>
+              <span>{item.correlated_with.join(", ")}</span>
+            </div>
+          )}
+          <div className={styles.detailRow}>
+            <span>Historical win rate</span>
+            <span>
+              {item.historical_win_rate != null
+                ? `${(item.historical_win_rate * 100).toFixed(0)}% (${item.historical_closed_trades ?? 0} trades)`
+                : "—"}
+            </span>
+          </div>
           <div className={styles.detailRow}>
             <span>Timing penalty</span>
             <span>{item.funding_timing_penalty_bps.toFixed(1)} bps</span>

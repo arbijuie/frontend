@@ -72,6 +72,11 @@ function makeConfig(): ConfigResponse {
     max_entry_adl_level: 3,
     require_isolated_margin: true,
     allow_unknown_margin_mode: false,
+    correlation_threshold: 0.7,
+    max_correlated_positions: 3,
+    correlation_window_hours: 24,
+    correlation_bucket_s: 300,
+    correlation_min_samples: 30,
     loop_interval_s: 30,
     stale_data_s: 35,
     exec_enabled: false,
@@ -113,6 +118,11 @@ function makeConfig(): ConfigResponse {
     backtest_gate_min_win_rate: 0.55,
     backtest_gate_min_total_pnl_bps: 0,
     backtest_gate_max_drawdown_bps: 50,
+    backtest_history_gate_enabled: false,
+    backtest_history_lookback_days: 90,
+    backtest_history_min_win_rate: 0.6,
+    backtest_history_min_closed_trades: 10,
+    backtest_history_refresh_s: 300,
     runbook_config_fields: ["min_score_bps"],
     runbook_presets: {
       balanced: {

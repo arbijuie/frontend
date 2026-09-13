@@ -21,6 +21,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/backtest/history": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Get Backtest History
+     * @description Per-pair replayed outcomes feeding the historical win-rate entry gate.
+     */
+    get: operations["get_backtest_history_backtest_history_get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/backtest/lock": {
     parameters: {
       query?: never;
@@ -122,6 +142,26 @@ export interface paths {
     head?: never;
     /** Patch Config */
     patch: operations["patch_config_config_patch"];
+    trace?: never;
+  };
+  "/correlation": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Get Correlation
+     * @description Pairwise return correlation for the symbols in the last screener pass.
+     */
+    get: operations["get_correlation_correlation_get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
     trace?: never;
   };
   "/execution/attempts": {
@@ -243,6 +283,23 @@ export interface components {
       /** Strategy Profile Id */
       strategy_profile_id?: string | null;
     };
+    /** BacktestHistoryResponse */
+    BacktestHistoryResponse: {
+      /** Count */
+      count: number;
+      /** Gate Enabled */
+      gate_enabled: boolean;
+      /** Items */
+      items?: components["schemas"]["BacktestPairHistoryItem"][];
+      /** Lookback Days */
+      lookback_days: number;
+      /** Min Closed Trades */
+      min_closed_trades: number;
+      /** Min Win Rate */
+      min_win_rate: number;
+      /** Refreshed At */
+      refreshed_at?: string | null;
+    };
     /** BacktestLockListItem */
     BacktestLockListItem: {
       /** Created At */
@@ -315,6 +372,40 @@ export interface components {
       total_samples: number;
       /** Win Rate */
       win_rate: number;
+      /**
+       * Wins
+       * @default 0
+       */
+      wins: number;
+    };
+    /** BacktestPairHistoryItem */
+    BacktestPairHistoryItem: {
+      /** Closed Trades */
+      closed_trades: number;
+      /** Entries */
+      entries: number;
+      /** Gate Eligible */
+      gate_eligible: boolean;
+      /** Gate Passed */
+      gate_passed: boolean;
+      /** Long Exchange */
+      long_exchange: string;
+      /** Samples */
+      samples: number;
+      /** Short Exchange */
+      short_exchange: string;
+      /** Symbol */
+      symbol: string;
+      /** Total Pnl Bps */
+      total_pnl_bps: number;
+      /** Win Rate */
+      win_rate: number;
+      /** Window End */
+      window_end: string;
+      /** Window Start */
+      window_start: string;
+      /** Wins */
+      wins: number;
     };
     /** BacktestReplayRequest */
     BacktestReplayRequest: {
@@ -397,6 +488,16 @@ export interface components {
       backtest_gate_min_win_rate: number;
       /** Backtest Gate Require Lock For Execution */
       backtest_gate_require_lock_for_execution: boolean;
+      /** Backtest History Gate Enabled */
+      backtest_history_gate_enabled: boolean;
+      /** Backtest History Lookback Days */
+      backtest_history_lookback_days: number;
+      /** Backtest History Min Closed Trades */
+      backtest_history_min_closed_trades: number;
+      /** Backtest History Min Win Rate */
+      backtest_history_min_win_rate: number;
+      /** Backtest History Refresh S */
+      backtest_history_refresh_s: number;
       /** Backtest Liquidity Drain Exit Ratio */
       backtest_liquidity_drain_exit_ratio: number;
       /** Backtest Min Samples Per Symbol */
@@ -419,6 +520,14 @@ export interface components {
       binance_base_url: string;
       /** Bybit Base Url */
       bybit_base_url: string;
+      /** Correlation Bucket S */
+      correlation_bucket_s: number;
+      /** Correlation Min Samples */
+      correlation_min_samples: number;
+      /** Correlation Threshold */
+      correlation_threshold: number;
+      /** Correlation Window Hours */
+      correlation_window_hours: number;
       /** Default Order Size Usd */
       default_order_size_usd: number;
       /** Dydx Indexer Url */
@@ -495,6 +604,8 @@ export interface components {
       max_basis_divergence_hours: number;
       /** Max Basis Trend Bps Per Tick */
       max_basis_trend_bps_per_tick: number;
+      /** Max Correlated Positions */
+      max_correlated_positions: number;
       /** Max Entry Adl Level */
       max_entry_adl_level: number;
       /** Max Entry Slippage Bps */
@@ -554,6 +665,8 @@ export interface components {
       basis_expansion_penalty_bps_per_hour?: number | null;
       /** Basis Weight */
       basis_weight?: number | null;
+      /** Correlation Threshold */
+      correlation_threshold?: number | null;
       /** Default Order Size Usd */
       default_order_size_usd?: number | null;
       /** Expected Hold Hours */
@@ -562,6 +675,8 @@ export interface components {
       hold_window_instability_scale?: number | null;
       /** Max Basis Divergence Hours */
       max_basis_divergence_hours?: number | null;
+      /** Max Correlated Positions */
+      max_correlated_positions?: number | null;
       /** Max Entry Adl Level */
       max_entry_adl_level?: number | null;
       /** Max Entry Slippage Bps */
@@ -593,6 +708,40 @@ export interface components {
       require_isolated_margin?: boolean | null;
       /** Stale Data S */
       stale_data_s?: number | null;
+    };
+    /** CorrelationPairItem */
+    CorrelationPairItem: {
+      /** Above Threshold */
+      above_threshold: boolean;
+      /** Correlation */
+      correlation: number;
+      /** Samples */
+      samples: number;
+      /** Symbol A */
+      symbol_a: string;
+      /** Symbol B */
+      symbol_b: string;
+    };
+    /** CorrelationResponse */
+    CorrelationResponse: {
+      /** Bucket S */
+      bucket_s: number;
+      /** Count */
+      count: number;
+      /** Max Correlated Positions */
+      max_correlated_positions: number;
+      /** Min Samples */
+      min_samples: number;
+      /** Pairs */
+      pairs?: components["schemas"]["CorrelationPairItem"][];
+      /** Symbols */
+      symbols?: string[];
+      /** Threshold */
+      threshold: number;
+      /** Updated At */
+      updated_at?: string | null;
+      /** Window Hours */
+      window_hours: number;
     };
     /** ExecutionAttemptItem */
     ExecutionAttemptItem: {
@@ -871,6 +1020,8 @@ export interface components {
       basis_trend?: number | null;
       /** Combined Score */
       combined_score: number;
+      /** Correlated With */
+      correlated_with?: string[];
       /** Depth Quality */
       depth_quality?: ("A" | "B" | "C" | "D") | null;
       /** Depth Source By Exchange */
@@ -902,6 +1053,10 @@ export interface components {
       funding_timing_asymmetry_hours?: number | null;
       /** Funding Timing Penalty Bps */
       funding_timing_penalty_bps: number;
+      /** Historical Closed Trades */
+      historical_closed_trades?: number | null;
+      /** Historical Win Rate */
+      historical_win_rate?: number | null;
       /** Hours To Breakeven */
       hours_to_breakeven?: number | null;
       /** Liquidity Tier */
@@ -952,6 +1107,7 @@ export interface components {
      */
     ReasonCode:
       | "persistence_insufficient"
+      | "historical_win_rate_low"
       | "break_even_window"
       | "score_below_min"
       | "funding_flips"
@@ -969,7 +1125,8 @@ export interface components {
       | "margin_mode_unknown"
       | "adl_limit"
       | "margin_mode_cross"
-      | "anti_churn_cooldown";
+      | "anti_churn_cooldown"
+      | "correlation_limit";
     /** ReasonItem */
     ReasonItem: {
       code: components["schemas"]["ReasonCode"];
@@ -1132,6 +1289,18 @@ export interface components {
     StatusResponse: {
       /** Active Exchanges */
       active_exchanges?: string[];
+      /**
+       * Backtest History Gate Enabled
+       * @default false
+       */
+      backtest_history_gate_enabled: boolean;
+      /**
+       * Backtest History Pairs
+       * @default 0
+       */
+      backtest_history_pairs: number;
+      /** Backtest History Refreshed At */
+      backtest_history_refreshed_at?: string | null;
       /** Exchange Diagnostics */
       exchange_diagnostics?: {
         [key: string]: components["schemas"]["StatusExchangeDiagnostics"];
@@ -1246,6 +1415,26 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["BacktestGateResponse"];
+        };
+      };
+    };
+  };
+  get_backtest_history_backtest_history_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["BacktestHistoryResponse"];
         };
       };
     };
@@ -1447,6 +1636,26 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  get_correlation_correlation_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CorrelationResponse"];
         };
       };
     };
