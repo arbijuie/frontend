@@ -10,6 +10,10 @@ import {
   useCreateBacktestLock,
 } from "../../hooks/useBacktest";
 
+beforeAll(() => {
+  Element.prototype.scrollIntoView = vi.fn();
+});
+
 vi.mock("../../hooks/useBacktest", () => ({
   useBacktestSummary: vi.fn(),
   useBacktestGate: vi.fn(),
@@ -18,10 +22,6 @@ vi.mock("../../hooks/useBacktest", () => ({
   useRunBacktestReplay: vi.fn(),
   useCreateBacktestLock: vi.fn(),
 }));
-
-beforeAll(() => {
-  Element.prototype.scrollIntoView = vi.fn();
-});
 
 const mockedUseBacktestSummary = vi.mocked(useBacktestSummary);
 const mockedUseBacktestGate = vi.mocked(useBacktestGate);
@@ -163,7 +163,7 @@ describe("BacktestPage", () => {
     createLockMutateAsync.mockResolvedValue(mockLock);
 
     renderBacktestPage();
-    fireEvent.click(screen.getByRole("button", { name: /^replay$/i }));
+    fireEvent.click(screen.getByRole("tab", { name: /^replay$/i }));
 
     fireEvent.change(screen.getByLabelText(/symbols/i), { target: { value: "AERO" } });
     fireEvent.click(screen.getByRole("button", { name: /run replay/i }));
@@ -181,7 +181,7 @@ describe("BacktestPage", () => {
     runReplayMutateAsync.mockResolvedValue({ metrics: mockMetrics });
 
     renderBacktestPage();
-    fireEvent.click(screen.getByRole("button", { name: /^replay$/i }));
+    fireEvent.click(screen.getByRole("tab", { name: /^replay$/i }));
     fireEvent.click(screen.getByRole("button", { name: /run replay/i }));
 
     await waitFor(() => expect(runReplayMutateAsync).toHaveBeenCalled());
@@ -196,7 +196,7 @@ describe("BacktestPage", () => {
     );
 
     renderBacktestPage();
-    fireEvent.click(screen.getByRole("button", { name: /^replay$/i }));
+    fireEvent.click(screen.getByRole("tab", { name: /^replay$/i }));
     fireEvent.click(screen.getByRole("button", { name: /run replay/i }));
 
     expect(await screen.findByText("end must be after start")).not.toBeNull();
@@ -207,7 +207,7 @@ describe("BacktestPage", () => {
     createLockMutateAsync.mockResolvedValue(mockLock);
 
     renderBacktestPage();
-    fireEvent.click(screen.getByRole("button", { name: /^replay$/i }));
+    fireEvent.click(screen.getByRole("tab", { name: /^replay$/i }));
     fireEvent.click(screen.getByRole("button", { name: /run replay/i }));
     await waitFor(() => expect(runReplayMutateAsync).toHaveBeenCalled());
 
@@ -222,7 +222,7 @@ describe("BacktestPage", () => {
 
   it("selecting a lock switches to the Detail tab with matching data", async () => {
     renderBacktestPage();
-    fireEvent.click(screen.getByRole("button", { name: /^locks$/i }));
+    fireEvent.click(screen.getByRole("tab", { name: /^locks$/i }));
     fireEvent.click(await screen.findByRole("button", { name: /view details/i }));
 
     expect(await screen.findByText(mockLock.lock_id, { exact: false })).not.toBeNull();
@@ -230,16 +230,17 @@ describe("BacktestPage", () => {
 
   it("Detail tab shows an empty state before any lock is selected", () => {
     renderBacktestPage();
-    fireEvent.click(screen.getByRole("button", { name: /^detail$/i }));
+    fireEvent.click(screen.getByRole("tab", { name: /^detail$/i }));
 
     expect(screen.getByText(/no lock selected/i)).not.toBeNull();
   });
 
-  it("refresh button re-fetches summary and gate", () => {
+  it("refresh button re-fetches summary and gate", async () => {
     renderBacktestPage();
     fireEvent.click(screen.getByRole("button", { name: /refresh backtest data/i }));
 
     expect(refetchSummary).toHaveBeenCalled();
     expect(refetchGate).toHaveBeenCalled();
+    expect(await screen.findByText(/last refreshed/i)).not.toBeNull();
   });
 });

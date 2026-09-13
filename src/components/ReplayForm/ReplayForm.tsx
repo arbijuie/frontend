@@ -8,6 +8,13 @@ interface ReplayFormProps {
   fieldErrors?: Record<string, string>;
 }
 
+function parseDateOrNull(value: string): string | null {
+  if (!value) return null;
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return null;
+  return parsed.toISOString();
+}
+
 const ReplayForm = ({ onSubmit, submitting, fieldErrors }: ReplayFormProps) => {
   const [symbols, setSymbols] = useState("");
   const [start, setStart] = useState("");
@@ -17,18 +24,42 @@ const ReplayForm = ({ onSubmit, submitting, fieldErrors }: ReplayFormProps) => {
   const [exitScoreBps, setExitScoreBps] = useState("");
   const [minSamples, setMinSamples] = useState("");
   const [strategyId, setStrategyId] = useState("baseline-v1");
+  const [localErrors, setLocalErrors] = useState<Record<string, string>>({});
 
   const handleSubmit = (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    const nextLocalErrors: Record<string, string> = {};
     const request: BacktestReplayRequest = { strategy_id: strategyId || "baseline-v1" };
+
     if (symbols.trim()) {
       request.symbols = symbols
         .split(",")
         .map((s) => s.trim())
         .filter(Boolean);
     }
-    if (start) request.start = new Date(start).toISOString();
-    if (end) request.end = new Date(end).toISOString();
+
+    if (start) {
+      const parsedStart = parseDateOrNull(start);
+      if (parsedStart === null) {
+        nextLocalErrors.start = "Enter a valid start date/time.";
+      } else {
+        request.start = parsedStart;
+      }
+    }
+
+    if (end) {
+      const parsedEnd = parseDateOrNull(end);
+      if (parsedEnd === null) {
+        nextLocalErrors.end = "Enter a valid end date/time.";
+      } else {
+        request.end = parsedEnd;
+      }
+    }
+
+    setLocalErrors(nextLocalErrors);
+    if (Object.keys(nextLocalErrors).length > 0) return;
+
     if (cycleHours) request.cycle_hours = Number(cycleHours);
     if (entryScoreBps) request.entry_score_bps = Number(entryScoreBps);
     if (exitScoreBps) request.exit_score_bps = Number(exitScoreBps);
@@ -58,7 +89,9 @@ const ReplayForm = ({ onSubmit, submitting, fieldErrors }: ReplayFormProps) => {
           value={start}
           onChange={(e) => setStart(e.target.value)}
         />
-        {fieldErrors?.start && <span className={styles.fieldError}>{fieldErrors.start}</span>}
+        {(localErrors.start || fieldErrors?.start) && (
+          <span className={styles.fieldError}>{localErrors.start || fieldErrors?.start}</span>
+        )}
       </label>
       <label className={styles.field}>
         <span className={styles.label}>End</span>
@@ -68,7 +101,9 @@ const ReplayForm = ({ onSubmit, submitting, fieldErrors }: ReplayFormProps) => {
           value={end}
           onChange={(e) => setEnd(e.target.value)}
         />
-        {fieldErrors?.end && <span className={styles.fieldError}>{fieldErrors.end}</span>}
+        {(localErrors.end || fieldErrors?.end) && (
+          <span className={styles.fieldError}>{localErrors.end || fieldErrors?.end}</span>
+        )}
       </label>
 
       <div className={styles.row}>

@@ -20,13 +20,15 @@ const Tabs = ({ tabs, activeKey, onChange }: TabsProps) => {
   }, [activeKey]);
 
   return (
-    <div className={styles.tabs}>
+    <div className={styles.tabs} role="tablist">
       {tabs.map((tab) => (
         <button
           key={tab.key}
           ref={tab.key === activeKey ? activeRef : undefined}
           className={`${styles.tab} ${activeKey === tab.key ? styles.active : ""}`}
           onClick={() => onChange(tab.key)}
+          role="tab"
+          aria-selected={activeKey === tab.key}
         >
           {tab.label}
         </button>

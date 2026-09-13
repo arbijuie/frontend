@@ -86,6 +86,12 @@ const BacktestLockDetail = ({ lockId }: BacktestLockDetailProps) => {
           <span>Closed Trades</span>
           <span>{data.metrics.closed_trades}</span>
         </div>
+        {data.metrics.wins != null && (
+          <div className={styles.row}>
+            <span>Wins</span>
+            <span>{data.metrics.wins}</span>
+          </div>
+        )}
         <div className={styles.row}>
           <span>Win Rate</span>
           <span>{(data.metrics.win_rate * 100).toFixed(1)}%</span>

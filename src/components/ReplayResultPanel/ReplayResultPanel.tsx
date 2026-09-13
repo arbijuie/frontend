@@ -23,6 +23,7 @@ const ReplayResultPanel = ({
         <div className={styles.usedParams}>
           Symbols: {usedRequest.symbols?.length ? usedRequest.symbols.join(", ") : "All"}
           {usedRequest.start && ` · from ${new Date(usedRequest.start).toLocaleDateString()}`}
+          {usedRequest.end && ` · to ${new Date(usedRequest.end).toLocaleDateString()}`}
         </div>
       )}
       <div className={styles.grid}>
