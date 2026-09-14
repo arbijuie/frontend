@@ -16,6 +16,7 @@
         "linux"
       ],
       "cpu": [
+        "current",
         "x64"
       ]
     }
