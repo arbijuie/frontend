@@ -31,8 +31,8 @@
     "types:check": "corepack pnpm run types:generate && git diff --exit-code -- src/api/generated/openapi.schema.json src/api/generated/openapi.ts",
     "preview": "vite preview --config config/vite.config.ts",
     "prepare": "cd .. && husky scripts/git-hooks",
-    "audit:ci": "pnpm audit --audit-level high",
-    "check": "pnpm lint && pnpm test && pnpm build && pnpm audit:ci"
+    "audit:ci": "corepack pnpm audit --audit-level high",
+    "check": "corepack pnpm run lint && corepack pnpm run test && corepack pnpm run build && corepack pnpm run audit:ci"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.102.8",

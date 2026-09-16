@@ -94,7 +94,7 @@ describe("StatusPage", () => {
 
   it("shows default recovery result when continuity is missing", () => {
     mockedUseStatus.mockReturnValue({
-      data: makeStatus({ snapshot_continuity: null }),
+      data: makeStatus({ snapshot_continuity: undefined }),
       error: null,
       loading: false,
       fetching: false,
