@@ -16,7 +16,7 @@ interface SummaryItem {
   key: string;
   label: string;
   count: number;
-  kind: "drop" | "reason" | "severity";
+  kind: "drop" | "reason";
 }
 
 const DROP_METRICS: Array<{ key: string; label: string }> = [
@@ -158,20 +158,10 @@ const DeepPipelineDiagnostics = ({ status }: DeepPipelineDiagnosticsProps) => {
         });
       }
     }
-    for (const item of severityMetrics) {
-      if (item.count > 0) {
-        summaryItems.push({
-          key: `severity:${item.key}`,
-          label: `${item.label} reasons`,
-          count: item.count,
-          kind: "severity",
-        });
-      }
-    }
     return sortByCountDesc(summaryItems).slice(0, 3);
-  }, [reasonMetrics, severityMetrics, sortedDropMetrics]);
+  }, [reasonMetrics, sortedDropMetrics]);
 
-  const totalSignals = totalDrops + reasonTotal + severityTotal;
+  const totalSignals = totalDrops + reasonTotal;
   const diagnosticsState =
     totalSignals === 0 ? "empty" : totalSignals < 10 ? "low" : totalSignals > 120 ? "high" : "normal";
 
@@ -225,7 +215,9 @@ const DeepPipelineDiagnostics = ({ status }: DeepPipelineDiagnosticsProps) => {
               </li>
             ))}
           </ul>
-          <p className={styles.legend}>Severity share uses reason count denominator in the current cycle.</p>
+          <p className={styles.legend}>
+            Severity share denominator: total severity events in this cycle ({severityTotal}).
+          </p>
         </section>
       </div>
 

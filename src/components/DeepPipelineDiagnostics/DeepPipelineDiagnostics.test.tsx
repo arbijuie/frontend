@@ -135,6 +135,51 @@ describe("DeepPipelineDiagnostics", () => {
     expect(screen.getByText(/high-volume cycle detected/i)).toBeTruthy();
   });
 
+  it("treats boundary totals as normal state", () => {
+    render(
+      <DeepPipelineDiagnostics
+        status={makeStatus({
+          screener_drop_counters: {
+            ...makeDropCounters(),
+            min_score: 6,
+          },
+          screener_reason_code_counts: {
+            score_below_min: 4,
+          },
+          screener_reason_severity_counts: {
+            blocked: 1,
+            watching: 3,
+          },
+        })}
+      />
+    );
+
+    expect(screen.getByText(/diagnostics stable/i)).toBeTruthy();
+  });
+
+  it("does not include severity aggregates in top blockers", () => {
+    render(
+      <DeepPipelineDiagnostics
+        status={makeStatus({
+          screener_drop_counters: {
+            ...makeDropCounters(),
+            strict_depth: 1,
+          },
+          screener_reason_code_counts: {
+            real_depth_unavailable: 2,
+          },
+          screener_reason_severity_counts: {
+            blocked: 900,
+            watching: 700,
+          },
+        })}
+      />
+    );
+
+    expect(screen.queryByText(/blocked reasons/i)).toBeNull();
+    expect(screen.queryByText(/watching reasons/i)).toBeNull();
+  });
+
   it("renders exchange split and top blockers with counts", () => {
     render(
       <DeepPipelineDiagnostics
