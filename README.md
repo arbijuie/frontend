@@ -51,11 +51,18 @@ Order reflects the operator workflow: find opportunities, check status, tune con
 | Route        | Section       | Status                                    |
 | ------------ | ------------- | ----------------------------------------- |
 | `/`          | Opportunities | Implemented                               |
-| `/status`    | Status        | Implemented                               |
+| `/status`    | Status        | Implemented (includes Deep Pipeline Diagnostics) |
 | `/config`    | Config        | Implemented                               |
 | `/backtest`  | Backtest      | Implemented                               |
 | `/execution` | Execution     | Placeholder container (runtime read-only) |
 | `*`          | Not found     | Fallback page with link back to `/`       |
+
+The Status page includes a Deep Pipeline Diagnostics section with:
+
+- Drop-counter heatmap
+- Top 3 blockers summary
+- Reason-code and severity distributions
+- Unified exchange split table for source-quality counters
 
 Adding a section:
 

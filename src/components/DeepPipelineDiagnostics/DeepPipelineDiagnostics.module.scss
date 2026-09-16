@@ -1,0 +1,170 @@
+.panel {
+  margin-bottom: 1rem;
+}
+
+.stateBar {
+  border: 1px solid v.$border-color;
+  border-radius: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  margin-bottom: 0.75rem;
+  color: v.$text-secondary;
+  font-size: 0.8rem;
+  background: v.$bg-card;
+
+  &[data-level="low"] {
+    border-color: rgba(251, 191, 36, 0.35);
+    background: rgba(251, 191, 36, 0.1);
+  }
+
+  &[data-level="high"] {
+    border-color: rgba(251, 191, 36, 0.55);
+    background: rgba(251, 191, 36, 0.16);
+  }
+
+  &[data-level="empty"] {
+    border-style: dashed;
+    color: v.$text-muted;
+  }
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+@media (min-width: 700px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.card {
+  border: 1px solid v.$border-color;
+  border-radius: 0.75rem;
+  background: v.$bg-card;
+  padding: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.title {
+  margin: 0 0 0.55rem;
+  font-size: 0.9rem;
+  color: v.$text-primary;
+}
+
+.titleRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.row,
+.summaryItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.75rem;
+  font-size: 0.82rem;
+}
+
+.label,
+.summaryLabel,
+.heatLabel {
+  color: v.$text-secondary;
+  text-transform: capitalize;
+}
+
+.value,
+.summaryMeta,
+.heatValue {
+  color: v.$text-primary;
+  font-variant-numeric: tabular-nums;
+}
+
+.empty {
+  margin: 0;
+  color: v.$text-muted;
+  font-size: 0.82rem;
+}
+
+.legend {
+  margin: 0.55rem 0 0;
+  color: v.$text-muted;
+  font-size: 0.74rem;
+}
+
+.heatmap {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.35rem;
+}
+
+.heatRow {
+  border: 1px solid color-mix(in srgb, v.$border-color 72%, #38bdf8 28%);
+  border-radius: 0.45rem;
+  padding: 0.35rem 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
+.toggleButton {
+  border: 1px solid v.$border-color;
+  background: v.$bg-card;
+  color: v.$text-secondary;
+  border-radius: 999px;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.72rem;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid rgba(56, 189, 248, 0.7);
+    outline-offset: 1px;
+  }
+}
+
+.tableWrap {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  min-width: 32rem;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+
+  th,
+  td {
+    text-align: right;
+    padding: 0.35rem 0.4rem;
+    border-bottom: 1px solid v.$border-color;
+    font-variant-numeric: tabular-nums;
+  }
+
+  th:first-child,
+  td:first-child {
+    text-align: left;
+  }
+
+  th {
+    color: v.$text-muted;
+    font-weight: 600;
+    font-size: 0.72rem;
+  }
+
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+}

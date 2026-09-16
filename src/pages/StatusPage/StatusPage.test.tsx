@@ -45,6 +45,10 @@ vi.mock("../../components/WsFeedReliabilityList/WsFeedReliabilityList", () => ({
   default: () => <div>WS reliability mock</div>,
 }));
 
+vi.mock("../../components/DeepPipelineDiagnostics/DeepPipelineDiagnostics", () => ({
+  default: () => <div>Deep diagnostics mock</div>,
+}));
+
 const mockedUseStatus = vi.mocked(useStatus);
 const mockedUseConfig = vi.mocked(useConfig);
 const mockedUseNow = vi.mocked(useNow);
@@ -88,6 +92,8 @@ describe("StatusPage", () => {
   it("renders Recovery Health section when status is loaded", () => {
     render(<StatusPage />);
 
+    expect(screen.getByRole("heading", { level: 2, name: "Pipeline Diagnostics" })).toBeTruthy();
+    expect(screen.getByText("Deep diagnostics mock")).toBeTruthy();
     expect(screen.getByRole("heading", { level: 2, name: "Recovery Health" })).toBeTruthy();
     expect(screen.getByText("Startup Recovery")).toBeTruthy();
   });
