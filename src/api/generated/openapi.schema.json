@@ -709,6 +709,26 @@
             "title": "Default Order Size Usd",
             "type": "number"
           },
+          "durable_snapshots_db_path": {
+            "title": "Durable Snapshots Db Path",
+            "type": "string"
+          },
+          "durable_snapshots_enabled": {
+            "title": "Durable Snapshots Enabled",
+            "type": "boolean"
+          },
+          "durable_snapshots_prune_interval_s": {
+            "title": "Durable Snapshots Prune Interval S",
+            "type": "number"
+          },
+          "durable_snapshots_recover_on_startup": {
+            "title": "Durable Snapshots Recover On Startup",
+            "type": "boolean"
+          },
+          "durable_snapshots_retention_days": {
+            "title": "Durable Snapshots Retention Days",
+            "type": "number"
+          },
           "dydx_indexer_url": {
             "title": "Dydx Indexer Url",
             "type": "string"
@@ -1027,6 +1047,11 @@
           "extended_base_url",
           "backtest_capture_enabled",
           "backtest_db_path",
+          "durable_snapshots_enabled",
+          "durable_snapshots_db_path",
+          "durable_snapshots_retention_days",
+          "durable_snapshots_prune_interval_s",
+          "durable_snapshots_recover_on_startup",
           "backtest_entry_score_bps",
           "backtest_exit_score_bps",
           "backtest_replay_cycle_hours",
@@ -3113,6 +3138,9 @@
             "title": "Screener Validated Candidates",
             "type": "integer"
           },
+          "snapshot_continuity": {
+            "$ref": "#/components/schemas/StatusSnapshotContinuity"
+          },
           "started_at": {
             "title": "Started At",
             "type": "string"
@@ -3136,6 +3164,85 @@
           "execution_backtest_gate_passed"
         ],
         "title": "StatusResponse",
+        "type": "object"
+      },
+      "StatusSnapshotContinuity": {
+        "additionalProperties": false,
+        "properties": {
+          "enabled": {
+            "default": false,
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "exchanges_covered": {
+            "default": 0,
+            "title": "Exchanges Covered",
+            "type": "integer"
+          },
+          "gap_count": {
+            "default": 0,
+            "title": "Gap Count",
+            "type": "integer"
+          },
+          "largest_gap_s": {
+            "default": 0.0,
+            "title": "Largest Gap S",
+            "type": "number"
+          },
+          "last_pruned_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Pruned At"
+          },
+          "last_recovered_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Recovered At"
+          },
+          "recover_on_startup": {
+            "default": false,
+            "title": "Recover On Startup",
+            "type": "boolean"
+          },
+          "recovery_warning": {
+            "default": false,
+            "title": "Recovery Warning",
+            "type": "boolean"
+          },
+          "retention_days": {
+            "default": 0.0,
+            "title": "Retention Days",
+            "type": "number"
+          },
+          "rows_total": {
+            "default": 0,
+            "title": "Rows Total",
+            "type": "integer"
+          },
+          "symbols_covered": {
+            "default": 0,
+            "title": "Symbols Covered",
+            "type": "integer"
+          },
+          "write_failures": {
+            "default": 0,
+            "title": "Write Failures",
+            "type": "integer"
+          }
+        },
+        "title": "StatusSnapshotContinuity",
         "type": "object"
       },
       "ValidationError": {

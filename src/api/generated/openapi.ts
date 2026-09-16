@@ -547,6 +547,16 @@ export interface components {
             correlation_window_hours: number;
             /** Default Order Size Usd */
             default_order_size_usd: number;
+            /** Durable Snapshots Db Path */
+            durable_snapshots_db_path: string;
+            /** Durable Snapshots Enabled */
+            durable_snapshots_enabled: boolean;
+            /** Durable Snapshots Prune Interval S */
+            durable_snapshots_prune_interval_s: number;
+            /** Durable Snapshots Recover On Startup */
+            durable_snapshots_recover_on_startup: boolean;
+            /** Durable Snapshots Retention Days */
+            durable_snapshots_retention_days: number;
             /** Dydx Indexer Url */
             dydx_indexer_url: string;
             /** Exec Adl Critical Quantile */
@@ -1404,10 +1414,68 @@ export interface components {
             screener_reason_severity_counts?: components["schemas"]["StatusReasonSeverityCounts"];
             /** Screener Validated Candidates */
             screener_validated_candidates: number;
+            snapshot_continuity?: components["schemas"]["StatusSnapshotContinuity"];
             /** Started At */
             started_at: string;
             /** Uptime S */
             uptime_s: number;
+        };
+        /** StatusSnapshotContinuity */
+        StatusSnapshotContinuity: {
+            /**
+             * Enabled
+             * @default false
+             */
+            enabled: boolean;
+            /**
+             * Exchanges Covered
+             * @default 0
+             */
+            exchanges_covered: number;
+            /**
+             * Gap Count
+             * @default 0
+             */
+            gap_count: number;
+            /**
+             * Largest Gap S
+             * @default 0
+             */
+            largest_gap_s: number;
+            /** Last Pruned At */
+            last_pruned_at?: string | null;
+            /** Last Recovered At */
+            last_recovered_at?: string | null;
+            /**
+             * Recover On Startup
+             * @default false
+             */
+            recover_on_startup: boolean;
+            /**
+             * Recovery Warning
+             * @default false
+             */
+            recovery_warning: boolean;
+            /**
+             * Retention Days
+             * @default 0
+             */
+            retention_days: number;
+            /**
+             * Rows Total
+             * @default 0
+             */
+            rows_total: number;
+            /**
+             * Symbols Covered
+             * @default 0
+             */
+            symbols_covered: number;
+            /**
+             * Write Failures
+             * @default 0
+             */
+            write_failures: number;
         };
         /** ValidationError */
         ValidationError: {
