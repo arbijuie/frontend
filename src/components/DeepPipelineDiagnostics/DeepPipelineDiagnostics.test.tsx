@@ -18,6 +18,7 @@ function makeDropCounters(): NonNullable<StatusResponse["screener_drop_counters"
     strict_depth: 0,
     strict_depth_by_exchange_hyperliquid: 0,
     strict_depth_by_exchange_lighter: 0,
+    l2_book_fetch_error: 0,
     l2_book_fetch_error_hyperliquid: 0,
     missing_real_depth: 0,
     missing_real_depth_hyperliquid: 0,
