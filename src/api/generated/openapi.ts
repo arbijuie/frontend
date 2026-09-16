@@ -1419,6 +1419,10 @@ export interface components {
             started_at: string;
             /** Uptime S */
             uptime_s: number;
+            /** Ws Feed Diagnostics */
+            ws_feed_diagnostics?: {
+                [key: string]: components["schemas"]["StatusWsFeedDiagnostics"];
+            };
         };
         /** StatusSnapshotContinuity */
         StatusSnapshotContinuity: {
@@ -1476,6 +1480,45 @@ export interface components {
              * @default 0
              */
             write_failures: number;
+        };
+        /** StatusWsFeedDiagnostics */
+        StatusWsFeedDiagnostics: {
+            /** Connected */
+            connected?: boolean | null;
+            /** Healthy */
+            healthy?: boolean | null;
+            /** Last Message Age S */
+            last_message_age_s?: number | null;
+            /** Last Reconnect At */
+            last_reconnect_at?: string | null;
+            /** Last Reconnect Delay S */
+            last_reconnect_delay_s?: number | null;
+            /**
+             * Reconnect Attempt
+             * @default 0
+             */
+            reconnect_attempt: number;
+            /**
+             * Reconnect Storm Level
+             * @default n/a
+             * @enum {string}
+             */
+            reconnect_storm_level: "ok" | "warn" | "critical" | "n/a";
+            /**
+             * Reconnect Total
+             * @default 0
+             */
+            reconnect_total: number;
+            /**
+             * Reconnect Window S
+             * @default 0
+             */
+            reconnect_window_s: number;
+            /**
+             * Reconnects In Window
+             * @default 0
+             */
+            reconnects_in_window: number;
         };
         /** ValidationError */
         ValidationError: {

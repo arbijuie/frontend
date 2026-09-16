@@ -3148,6 +3148,13 @@
           "uptime_s": {
             "title": "Uptime S",
             "type": "number"
+          },
+          "ws_feed_diagnostics": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/StatusWsFeedDiagnostics"
+            },
+            "title": "Ws Feed Diagnostics",
+            "type": "object"
           }
         },
         "required": [
@@ -3243,6 +3250,99 @@
           }
         },
         "title": "StatusSnapshotContinuity",
+        "type": "object"
+      },
+      "StatusWsFeedDiagnostics": {
+        "additionalProperties": false,
+        "properties": {
+          "connected": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Connected"
+          },
+          "healthy": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Healthy"
+          },
+          "last_message_age_s": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Message Age S"
+          },
+          "last_reconnect_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Reconnect At"
+          },
+          "last_reconnect_delay_s": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Reconnect Delay S"
+          },
+          "reconnect_attempt": {
+            "default": 0,
+            "title": "Reconnect Attempt",
+            "type": "integer"
+          },
+          "reconnect_storm_level": {
+            "default": "n/a",
+            "enum": [
+              "ok",
+              "warn",
+              "critical",
+              "n/a"
+            ],
+            "title": "Reconnect Storm Level",
+            "type": "string"
+          },
+          "reconnect_total": {
+            "default": 0,
+            "title": "Reconnect Total",
+            "type": "integer"
+          },
+          "reconnect_window_s": {
+            "default": 0.0,
+            "title": "Reconnect Window S",
+            "type": "number"
+          },
+          "reconnects_in_window": {
+            "default": 0,
+            "title": "Reconnects In Window",
+            "type": "integer"
+          }
+        },
+        "title": "StatusWsFeedDiagnostics",
         "type": "object"
       },
       "ValidationError": {

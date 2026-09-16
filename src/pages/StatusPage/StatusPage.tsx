@@ -7,6 +7,7 @@ import ExchangeHealthList from "../../components/ExchangeHealthList/ExchangeHeal
 import FloatingRefreshButton from "../../components/FloatingRefreshButton/FloatingRefreshButton";
 import RuntimeKnobsCard from "../../components/RuntimeKnobsCard/RuntimeKnobsCard";
 import PipelineDiagnosticsHint from "../../components/PipelineDiagnosticsHint/PipelineDiagnosticsHint";
+import WsFeedReliabilityList from "../../components/WsFeedReliabilityList/WsFeedReliabilityList";
 import { useNow } from "../../hooks/useNow";
 import { useTransientFlag } from "../../hooks/useTransientFlag";
 import { getLiveUptimeSeconds } from "../../lib/format";
@@ -65,6 +66,8 @@ const StatusPage = () => {
           <StatusStatCards status={data} liveUptimeSeconds={liveUptimeSeconds} />
           <h2 className={styles.sectionTitle}>Details</h2>
           <StatusDetailsList status={data} />
+          <h2 className={styles.sectionTitle}>WS Feed Reliability</h2>
+          <WsFeedReliabilityList status={data} />
           <h2 className={styles.sectionTitle}>Exchange Health</h2>
           <ExchangeHealthList exchangeStatus={data.exchange_last_ok} />
         </>
