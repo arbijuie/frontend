@@ -1,19 +1,21 @@
-import styles from '../../pages/OpportunitiesPage/OpportunitiesPage.module.scss';
-import { useRef } from 'react';
-import { useStatus } from '../../hooks/useStatus';
-import StatusStatCards from '../../components/StatusStatCards/StatusStatCards';
-import StatusDetailsList from '../../components/StatusDetailsList/StatusDetailsList';
-import ExchangeHealthList from '../../components/ExchangeHealthList/ExchangeHealthList';
-import FloatingRefreshButton from '../../components/FloatingRefreshButton/FloatingRefreshButton';
-import RuntimeKnobsCard from '../../components/RuntimeKnobsCard/RuntimeKnobsCard';
-import PipelineDiagnosticsHint from '../../components/PipelineDiagnosticsHint/PipelineDiagnosticsHint';
-import { useNow } from '../../hooks/useNow';
-import { useTransientFlag } from '../../hooks/useTransientFlag';
-import { getLiveUptimeSeconds } from '../../lib/format';
-import { useConfig } from '../../hooks/useConfig';
-import { POLL_INTERVAL_MS } from '../../api/config';
+import styles from "../../pages/OpportunitiesPage/OpportunitiesPage.module.scss";
+import { useRef } from "react";
+import { useStatus } from "../../hooks/useStatus";
+import StatusStatCards from "../../components/StatusStatCards/StatusStatCards";
+import StatusDetailsList from "../../components/StatusDetailsList/StatusDetailsList";
+import ExchangeHealthList from "../../components/ExchangeHealthList/ExchangeHealthList";
+import FloatingRefreshButton from "../../components/FloatingRefreshButton/FloatingRefreshButton";
+import RuntimeKnobsCard from "../../components/RuntimeKnobsCard/RuntimeKnobsCard";
+import PipelineDiagnosticsHint from "../../components/PipelineDiagnosticsHint/PipelineDiagnosticsHint";
+import { useNow } from "../../hooks/useNow";
+import { useTransientFlag } from "../../hooks/useTransientFlag";
+import { getLiveUptimeSeconds } from "../../lib/format";
+import { useConfig } from "../../hooks/useConfig";
+import { POLL_INTERVAL_MS } from "../../api/config";
+import { usePageTitle } from "../../hooks/usePageTitle";
 
 const StatusPage = () => {
+  usePageTitle("Status");
   const { data, error, loading, fetching, refetch, fetchedAt } = useStatus();
   const { data: config } = useConfig({
     staleTime: 0,
@@ -68,7 +70,7 @@ const StatusPage = () => {
         </>
       )}
 
-      <FloatingRefreshButton fetching={fetching} onClick={handleRefresh} />
+      <FloatingRefreshButton fetching={fetching} onClick={handleRefresh} label="Refresh status" />
     </div>
   );
 };

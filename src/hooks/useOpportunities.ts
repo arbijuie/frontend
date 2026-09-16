@@ -1,10 +1,10 @@
-import { useQuery } from '@tanstack/react-query';
-import { fetchOpportunities } from '../api/opportunities';
-import { POLL_INTERVAL_MS } from '../api/config';
+import { useQuery } from "@tanstack/react-query";
+import { fetchOpportunities } from "../api/opportunities";
+import { POLL_INTERVAL_MS } from "../api/config";
 
 export function useOpportunities() {
   const query = useQuery({
-    queryKey: ['opportunities'],
+    queryKey: ["opportunities"],
     queryFn: fetchOpportunities,
     refetchInterval: POLL_INTERVAL_MS,
   });

@@ -1,5 +1,5 @@
-import { API_URL, authHeaders } from './config';
-import type { OpportunitiesResponse } from './types';
+import { API_URL, authHeaders } from "./config";
+import type { OpportunitiesResponse } from "./types";
 
 export async function fetchOpportunities(): Promise<OpportunitiesResponse> {
   const res = await fetch(`${API_URL}/opportunities`, { headers: authHeaders() });

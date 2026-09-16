@@ -1,15 +1,15 @@
-import styles from './StatsGrid.module.scss';
-import type { OpportunityItem } from '../../api/types';
-import StatCard from '../StatCard/StatCard';
+import styles from "./StatsGrid.module.scss";
+import type { OpportunityItem } from "../../api/types";
+import StatCard from "../StatCard/StatCard";
 
 interface StatsGridProps {
   items: OpportunityItem[];
 }
 
 const StatsGrid = ({ items }: StatsGridProps) => {
-  const ready = items.filter((i) => i.status === 'ready').length;
-  const watching = items.filter((i) => i.status === 'watching').length;
-  const blocked = items.filter((i) => i.status === 'blocked').length;
+  const ready = items.filter((i) => i.status === "ready").length;
+  const watching = items.filter((i) => i.status === "watching").length;
+  const blocked = items.filter((i) => i.status === "blocked").length;
 
   return (
     <div className={styles.grid}>

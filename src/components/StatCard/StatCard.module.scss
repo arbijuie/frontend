@@ -12,18 +12,21 @@
 }
 
 .value {
-  font-size: 1.375rem;
+  font-size: 1rem;
   font-weight: 700;
 
   &.green {
     color: v.$green;
   }
+
   &.yellow {
     color: v.$yellow;
   }
+
   &.red {
     color: v.$red;
   }
+
   &.purple {
     color: v.$accent-purple;
   }

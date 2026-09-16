@@ -58,6 +58,57 @@
         "title": "BacktestGateResponse",
         "type": "object"
       },
+      "BacktestHistoryResponse": {
+        "properties": {
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "gate_enabled": {
+            "title": "Gate Enabled",
+            "type": "boolean"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/BacktestPairHistoryItem"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "lookback_days": {
+            "title": "Lookback Days",
+            "type": "number"
+          },
+          "min_closed_trades": {
+            "title": "Min Closed Trades",
+            "type": "integer"
+          },
+          "min_win_rate": {
+            "title": "Min Win Rate",
+            "type": "number"
+          },
+          "refreshed_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Refreshed At"
+          }
+        },
+        "required": [
+          "gate_enabled",
+          "lookback_days",
+          "min_win_rate",
+          "min_closed_trades",
+          "count"
+        ],
+        "title": "BacktestHistoryResponse",
+        "type": "object"
+      },
       "BacktestLockListItem": {
         "properties": {
           "created_at": {
@@ -188,6 +239,13 @@
             "title": "Entries",
             "type": "integer"
           },
+          "exit_reasons": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Exit Reasons",
+            "type": "object"
+          },
           "exits": {
             "title": "Exits",
             "type": "integer"
@@ -219,6 +277,11 @@
           "win_rate": {
             "title": "Win Rate",
             "type": "number"
+          },
+          "wins": {
+            "default": 0,
+            "title": "Wins",
+            "type": "integer"
           }
         },
         "required": [
@@ -236,8 +299,92 @@
         "title": "BacktestMetricsItem",
         "type": "object"
       },
+      "BacktestPairHistoryItem": {
+        "properties": {
+          "closed_trades": {
+            "title": "Closed Trades",
+            "type": "integer"
+          },
+          "entries": {
+            "title": "Entries",
+            "type": "integer"
+          },
+          "gate_eligible": {
+            "title": "Gate Eligible",
+            "type": "boolean"
+          },
+          "gate_passed": {
+            "title": "Gate Passed",
+            "type": "boolean"
+          },
+          "long_exchange": {
+            "title": "Long Exchange",
+            "type": "string"
+          },
+          "samples": {
+            "title": "Samples",
+            "type": "integer"
+          },
+          "short_exchange": {
+            "title": "Short Exchange",
+            "type": "string"
+          },
+          "symbol": {
+            "title": "Symbol",
+            "type": "string"
+          },
+          "total_pnl_bps": {
+            "title": "Total Pnl Bps",
+            "type": "number"
+          },
+          "win_rate": {
+            "title": "Win Rate",
+            "type": "number"
+          },
+          "window_end": {
+            "title": "Window End",
+            "type": "string"
+          },
+          "window_start": {
+            "title": "Window Start",
+            "type": "string"
+          },
+          "wins": {
+            "title": "Wins",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "symbol",
+          "long_exchange",
+          "short_exchange",
+          "samples",
+          "entries",
+          "closed_trades",
+          "wins",
+          "win_rate",
+          "total_pnl_bps",
+          "window_start",
+          "window_end",
+          "gate_eligible",
+          "gate_passed"
+        ],
+        "title": "BacktestPairHistoryItem",
+        "type": "object"
+      },
       "BacktestReplayRequest": {
         "properties": {
+          "basis_reversal_exit": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Basis Reversal Exit"
+          },
           "cycle_hours": {
             "anyOf": [
               {
@@ -282,6 +429,28 @@
             ],
             "title": "Exit Score Bps"
           },
+          "funding_decay_exit_ratio": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Funding Decay Exit Ratio"
+          },
+          "liquidity_drain_exit_ratio": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Liquidity Drain Exit Ratio"
+          },
           "min_samples_per_symbol": {
             "anyOf": [
               {
@@ -315,6 +484,17 @@
             },
             "title": "Symbols",
             "type": "array"
+          },
+          "time_stop_hold_multiplier": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Time Stop Hold Multiplier"
           }
         },
         "title": "BacktestReplayRequest",
@@ -374,6 +554,13 @@
       },
       "ConfigResponse": {
         "properties": {
+          "active_exchanges": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Active Exchanges",
+            "type": "array"
+          },
           "allow_unknown_margin_mode": {
             "title": "Allow Unknown Margin Mode",
             "type": "boolean"
@@ -394,6 +581,14 @@
             "title": "Api Port",
             "type": "integer"
           },
+          "aster_base_url": {
+            "title": "Aster Base Url",
+            "type": "string"
+          },
+          "backtest_basis_reversal_exit": {
+            "title": "Backtest Basis Reversal Exit",
+            "type": "boolean"
+          },
           "backtest_capture_enabled": {
             "title": "Backtest Capture Enabled",
             "type": "boolean"
@@ -408,6 +603,10 @@
           },
           "backtest_exit_score_bps": {
             "title": "Backtest Exit Score Bps",
+            "type": "number"
+          },
+          "backtest_funding_decay_exit_ratio": {
+            "title": "Backtest Funding Decay Exit Ratio",
             "type": "number"
           },
           "backtest_gate_max_drawdown_bps": {
@@ -426,6 +625,30 @@
             "title": "Backtest Gate Require Lock For Execution",
             "type": "boolean"
           },
+          "backtest_history_gate_enabled": {
+            "title": "Backtest History Gate Enabled",
+            "type": "boolean"
+          },
+          "backtest_history_lookback_days": {
+            "title": "Backtest History Lookback Days",
+            "type": "number"
+          },
+          "backtest_history_min_closed_trades": {
+            "title": "Backtest History Min Closed Trades",
+            "type": "integer"
+          },
+          "backtest_history_min_win_rate": {
+            "title": "Backtest History Min Win Rate",
+            "type": "number"
+          },
+          "backtest_history_refresh_s": {
+            "title": "Backtest History Refresh S",
+            "type": "number"
+          },
+          "backtest_liquidity_drain_exit_ratio": {
+            "title": "Backtest Liquidity Drain Exit Ratio",
+            "type": "number"
+          },
           "backtest_min_samples_per_symbol": {
             "title": "Backtest Min Samples Per Symbol",
             "type": "integer"
@@ -437,6 +660,10 @@
           "backtest_strategy_lock_path": {
             "title": "Backtest Strategy Lock Path",
             "type": "string"
+          },
+          "backtest_time_stop_hold_multiplier": {
+            "title": "Backtest Time Stop Hold Multiplier",
+            "type": "number"
           },
           "basis_bonus_cap_bps": {
             "title": "Basis Bonus Cap Bps",
@@ -454,9 +681,37 @@
             "title": "Basis Weight",
             "type": "number"
           },
+          "binance_base_url": {
+            "title": "Binance Base Url",
+            "type": "string"
+          },
+          "bybit_base_url": {
+            "title": "Bybit Base Url",
+            "type": "string"
+          },
+          "correlation_bucket_s": {
+            "title": "Correlation Bucket S",
+            "type": "number"
+          },
+          "correlation_min_samples": {
+            "title": "Correlation Min Samples",
+            "type": "integer"
+          },
+          "correlation_threshold": {
+            "title": "Correlation Threshold",
+            "type": "number"
+          },
+          "correlation_window_hours": {
+            "title": "Correlation Window Hours",
+            "type": "number"
+          },
           "default_order_size_usd": {
             "title": "Default Order Size Usd",
             "type": "number"
+          },
+          "dydx_indexer_url": {
+            "title": "Dydx Indexer Url",
+            "type": "string"
           },
           "exec_adl_critical_quantile": {
             "title": "Exec Adl Critical Quantile",
@@ -477,6 +732,14 @@
           "exec_enabled": {
             "title": "Exec Enabled",
             "type": "boolean"
+          },
+          "exec_leg_retry_attempts": {
+            "title": "Exec Leg Retry Attempts",
+            "type": "integer"
+          },
+          "exec_leg_retry_interval_s": {
+            "title": "Exec Leg Retry Interval S",
+            "type": "number"
           },
           "exec_margin_alert_pct": {
             "title": "Exec Margin Alert Pct",
@@ -521,6 +784,14 @@
           "expected_hold_hours": {
             "title": "Expected Hold Hours",
             "type": "number"
+          },
+          "extended_base_url": {
+            "title": "Extended Base Url",
+            "type": "string"
+          },
+          "extra_exchanges": {
+            "title": "Extra Exchanges",
+            "type": "string"
           },
           "funding_avg_long_hours": {
             "title": "Funding Avg Long Hours",
@@ -585,6 +856,10 @@
           "max_basis_trend_bps_per_tick": {
             "title": "Max Basis Trend Bps Per Tick",
             "type": "number"
+          },
+          "max_correlated_positions": {
+            "title": "Max Correlated Positions",
+            "type": "integer"
           },
           "max_entry_adl_level": {
             "title": "Max Entry Adl Level",
@@ -720,11 +995,18 @@
           "max_entry_adl_level",
           "require_isolated_margin",
           "allow_unknown_margin_mode",
+          "correlation_threshold",
+          "max_correlated_positions",
+          "correlation_window_hours",
+          "correlation_bucket_s",
+          "correlation_min_samples",
           "loop_interval_s",
           "stale_data_s",
           "exec_enabled",
           "exec_dry_run",
           "exec_strategy_profile_id",
+          "exec_leg_retry_attempts",
+          "exec_leg_retry_interval_s",
           "exec_stop_on_consecutive_rollbacks",
           "exec_stop_on_api_errors_per_window",
           "exec_api_error_window_s",
@@ -737,17 +1019,32 @@
           "exec_adl_critical_quantile",
           "exec_recovery_cooldown_s",
           "exec_recovery_require_manual_ack",
+          "extra_exchanges",
+          "binance_base_url",
+          "aster_base_url",
+          "bybit_base_url",
+          "dydx_indexer_url",
+          "extended_base_url",
           "backtest_capture_enabled",
           "backtest_db_path",
           "backtest_entry_score_bps",
           "backtest_exit_score_bps",
           "backtest_replay_cycle_hours",
           "backtest_min_samples_per_symbol",
+          "backtest_funding_decay_exit_ratio",
+          "backtest_basis_reversal_exit",
+          "backtest_liquidity_drain_exit_ratio",
+          "backtest_time_stop_hold_multiplier",
           "backtest_strategy_lock_path",
           "backtest_gate_require_lock_for_execution",
           "backtest_gate_min_win_rate",
           "backtest_gate_min_total_pnl_bps",
           "backtest_gate_max_drawdown_bps",
+          "backtest_history_gate_enabled",
+          "backtest_history_lookback_days",
+          "backtest_history_min_win_rate",
+          "backtest_history_min_closed_trades",
+          "backtest_history_refresh_s",
           "runbook_config_fields",
           "runbook_presets"
         ],
@@ -834,6 +1131,17 @@
             ],
             "title": "Basis Weight"
           },
+          "correlation_threshold": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Correlation Threshold"
+          },
           "default_order_size_usd": {
             "anyOf": [
               {
@@ -877,6 +1185,17 @@
               }
             ],
             "title": "Max Basis Divergence Hours"
+          },
+          "max_correlated_positions": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Correlated Positions"
           },
           "max_entry_adl_level": {
             "anyOf": [
@@ -1034,6 +1353,420 @@
           }
         },
         "title": "ConfigUpdateRequest",
+        "type": "object"
+      },
+      "CorrelationPairItem": {
+        "properties": {
+          "above_threshold": {
+            "title": "Above Threshold",
+            "type": "boolean"
+          },
+          "correlation": {
+            "title": "Correlation",
+            "type": "number"
+          },
+          "samples": {
+            "title": "Samples",
+            "type": "integer"
+          },
+          "symbol_a": {
+            "title": "Symbol A",
+            "type": "string"
+          },
+          "symbol_b": {
+            "title": "Symbol B",
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol_a",
+          "symbol_b",
+          "correlation",
+          "samples",
+          "above_threshold"
+        ],
+        "title": "CorrelationPairItem",
+        "type": "object"
+      },
+      "CorrelationResponse": {
+        "properties": {
+          "bucket_s": {
+            "title": "Bucket S",
+            "type": "number"
+          },
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "max_correlated_positions": {
+            "title": "Max Correlated Positions",
+            "type": "integer"
+          },
+          "min_samples": {
+            "title": "Min Samples",
+            "type": "integer"
+          },
+          "pairs": {
+            "items": {
+              "$ref": "#/components/schemas/CorrelationPairItem"
+            },
+            "title": "Pairs",
+            "type": "array"
+          },
+          "symbols": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Symbols",
+            "type": "array"
+          },
+          "threshold": {
+            "title": "Threshold",
+            "type": "number"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          },
+          "window_hours": {
+            "title": "Window Hours",
+            "type": "number"
+          }
+        },
+        "required": [
+          "threshold",
+          "max_correlated_positions",
+          "window_hours",
+          "bucket_s",
+          "min_samples",
+          "count"
+        ],
+        "title": "CorrelationResponse",
+        "type": "object"
+      },
+      "ExecutionAttemptItem": {
+        "properties": {
+          "attempt_id": {
+            "title": "Attempt Id",
+            "type": "string"
+          },
+          "consecutive_rollbacks": {
+            "title": "Consecutive Rollbacks",
+            "type": "integer"
+          },
+          "created_at": {
+            "title": "Created At",
+            "type": "string"
+          },
+          "dry_run": {
+            "title": "Dry Run",
+            "type": "boolean"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "events": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Events",
+            "type": "array"
+          },
+          "first_leg": {
+            "$ref": "#/components/schemas/ExecutionLegItem"
+          },
+          "long_exchange": {
+            "title": "Long Exchange",
+            "type": "string"
+          },
+          "quantity": {
+            "title": "Quantity",
+            "type": "string"
+          },
+          "residual_exposure": {
+            "title": "Residual Exposure",
+            "type": "boolean"
+          },
+          "rollback_attempts": {
+            "title": "Rollback Attempts",
+            "type": "integer"
+          },
+          "rollback_order": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ExecutionOrderItem"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "rollback_slippage_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rollback Slippage Bps"
+          },
+          "second_leg": {
+            "$ref": "#/components/schemas/ExecutionLegItem"
+          },
+          "second_leg_attempts": {
+            "title": "Second Leg Attempts",
+            "type": "integer"
+          },
+          "short_exchange": {
+            "title": "Short Exchange",
+            "type": "string"
+          },
+          "size_usd": {
+            "title": "Size Usd",
+            "type": "number"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "symbol": {
+            "title": "Symbol",
+            "type": "string"
+          }
+        },
+        "required": [
+          "attempt_id",
+          "created_at",
+          "symbol",
+          "long_exchange",
+          "short_exchange",
+          "quantity",
+          "size_usd",
+          "status",
+          "dry_run",
+          "first_leg",
+          "second_leg",
+          "second_leg_attempts",
+          "rollback_attempts",
+          "consecutive_rollbacks",
+          "residual_exposure"
+        ],
+        "title": "ExecutionAttemptItem",
+        "type": "object"
+      },
+      "ExecutionAttemptListResponse": {
+        "properties": {
+          "consecutive_rollbacks": {
+            "title": "Consecutive Rollbacks",
+            "type": "integer"
+          },
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "entries_stopped": {
+            "title": "Entries Stopped",
+            "type": "boolean"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ExecutionAttemptItem"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "count",
+          "consecutive_rollbacks",
+          "entries_stopped"
+        ],
+        "title": "ExecutionAttemptListResponse",
+        "type": "object"
+      },
+      "ExecutionLegItem": {
+        "properties": {
+          "attempts": {
+            "title": "Attempts",
+            "type": "integer"
+          },
+          "exchange": {
+            "title": "Exchange",
+            "type": "string"
+          },
+          "fill": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ExecutionOrderItem"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "intended_price": {
+            "title": "Intended Price",
+            "type": "string"
+          },
+          "quantity": {
+            "title": "Quantity",
+            "type": "string"
+          },
+          "side": {
+            "enum": [
+              "buy",
+              "sell"
+            ],
+            "title": "Side",
+            "type": "string"
+          },
+          "symbol": {
+            "title": "Symbol",
+            "type": "string"
+          }
+        },
+        "required": [
+          "exchange",
+          "symbol",
+          "side",
+          "quantity",
+          "intended_price",
+          "attempts"
+        ],
+        "title": "ExecutionLegItem",
+        "type": "object"
+      },
+      "ExecutionOpenRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "long_exchange": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Long Exchange"
+          },
+          "short_exchange": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Short Exchange"
+          },
+          "size_usd": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Size Usd"
+          },
+          "symbol": {
+            "title": "Symbol",
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol"
+        ],
+        "title": "ExecutionOpenRequest",
+        "type": "object"
+      },
+      "ExecutionOrderItem": {
+        "properties": {
+          "client_order_id": {
+            "title": "Client Order Id",
+            "type": "string"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "exchange": {
+            "title": "Exchange",
+            "type": "string"
+          },
+          "price": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Price"
+          },
+          "quantity": {
+            "title": "Quantity",
+            "type": "string"
+          },
+          "reduce_only": {
+            "default": false,
+            "title": "Reduce Only",
+            "type": "boolean"
+          },
+          "side": {
+            "enum": [
+              "buy",
+              "sell"
+            ],
+            "title": "Side",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "symbol": {
+            "title": "Symbol",
+            "type": "string"
+          }
+        },
+        "required": [
+          "client_order_id",
+          "exchange",
+          "symbol",
+          "side",
+          "quantity",
+          "status"
+        ],
+        "title": "ExecutionOrderItem",
         "type": "object"
       },
       "ExecutionPreflightCandidateItem": {
@@ -1305,6 +2038,16 @@
       },
       "ExecutionPreflightRuntimeItem": {
         "properties": {
+          "consecutive_rollbacks": {
+            "default": 0,
+            "title": "Consecutive Rollbacks",
+            "type": "integer"
+          },
+          "entries_stopped": {
+            "default": false,
+            "title": "Entries Stopped",
+            "type": "boolean"
+          },
           "exchange_last_ok": {
             "additionalProperties": {
               "anyOf": [
@@ -1493,6 +2236,13 @@
             "title": "Combined Score",
             "type": "number"
           },
+          "correlated_with": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Correlated With",
+            "type": "array"
+          },
           "depth_quality": {
             "anyOf": [
               {
@@ -1581,6 +2331,28 @@
           "funding_timing_penalty_bps": {
             "title": "Funding Timing Penalty Bps",
             "type": "number"
+          },
+          "historical_closed_trades": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Historical Closed Trades"
+          },
+          "historical_win_rate": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Historical Win Rate"
           },
           "hours_to_breakeven": {
             "anyOf": [
@@ -1752,6 +2524,7 @@
       "ReasonCode": {
         "enum": [
           "persistence_insufficient",
+          "historical_win_rate_low",
           "break_even_window",
           "score_below_min",
           "funding_flips",
@@ -1769,7 +2542,8 @@
           "margin_mode_unknown",
           "adl_limit",
           "margin_mode_cross",
-          "anti_churn_cooldown"
+          "anti_churn_cooldown",
+          "correlation_limit"
         ],
         "title": "ReasonCode",
         "type": "string"
@@ -1912,6 +2686,34 @@
         "title": "StatusDropCounters",
         "type": "object"
       },
+      "StatusExchangeDiagnostics": {
+        "additionalProperties": false,
+        "description": "Per-venue cost-enrichment counters for the last screener pass.",
+        "properties": {
+          "book_fetch_error": {
+            "default": 0,
+            "title": "Book Fetch Error",
+            "type": "integer"
+          },
+          "missing_real_depth": {
+            "default": 0,
+            "title": "Missing Real Depth",
+            "type": "integer"
+          },
+          "missing_real_fee": {
+            "default": 0,
+            "title": "Missing Real Fee",
+            "type": "integer"
+          },
+          "strict_depth": {
+            "default": 0,
+            "title": "Strict Depth",
+            "type": "integer"
+          }
+        },
+        "title": "StatusExchangeDiagnostics",
+        "type": "object"
+      },
       "StatusReasonSeverityCounts": {
         "additionalProperties": false,
         "properties": {
@@ -1931,6 +2733,41 @@
       },
       "StatusResponse": {
         "properties": {
+          "active_exchanges": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Active Exchanges",
+            "type": "array"
+          },
+          "backtest_history_gate_enabled": {
+            "default": false,
+            "title": "Backtest History Gate Enabled",
+            "type": "boolean"
+          },
+          "backtest_history_pairs": {
+            "default": 0,
+            "title": "Backtest History Pairs",
+            "type": "integer"
+          },
+          "backtest_history_refreshed_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Backtest History Refreshed At"
+          },
+          "exchange_diagnostics": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/StatusExchangeDiagnostics"
+            },
+            "title": "Exchange Diagnostics",
+            "type": "object"
+          },
           "exchange_last_ok": {
             "additionalProperties": {
               "anyOf": [
@@ -1959,6 +2796,49 @@
               }
             ],
             "title": "Execution Backtest Gate Reason"
+          },
+          "execution_consecutive_rollbacks": {
+            "default": 0,
+            "title": "Execution Consecutive Rollbacks",
+            "type": "integer"
+          },
+          "execution_entries_stopped": {
+            "default": false,
+            "title": "Execution Entries Stopped",
+            "type": "boolean"
+          },
+          "execution_last_attempt_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Execution Last Attempt Id"
+          },
+          "execution_last_attempt_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Execution Last Attempt Status"
+          },
+          "execution_last_rollback_slippage_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Execution Last Rollback Slippage Bps"
           },
           "execution_strategy_id": {
             "anyOf": [
@@ -2192,6 +3072,25 @@
         "summary": "Get Backtest Gate"
       }
     },
+    "/backtest/history": {
+      "get": {
+        "description": "Per-pair replayed outcomes feeding the historical win-rate entry gate.",
+        "operationId": "get_backtest_history_backtest_history_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BacktestHistoryResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Backtest History"
+      }
+    },
     "/backtest/lock": {
       "post": {
         "operationId": "lock_backtest_strategy_backtest_lock_post",
@@ -2419,6 +3318,105 @@
           }
         },
         "summary": "Patch Config"
+      }
+    },
+    "/correlation": {
+      "get": {
+        "description": "Pairwise return correlation for the symbols in the last screener pass.",
+        "operationId": "get_correlation_correlation_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CorrelationResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Correlation"
+      }
+    },
+    "/execution/attempts": {
+      "get": {
+        "operationId": "list_execution_attempts_execution_attempts_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExecutionAttemptListResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Execution Attempts"
+      }
+    },
+    "/execution/open": {
+      "post": {
+        "operationId": "open_two_leg_position_execution_open_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExecutionOpenRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExecutionAttemptItem"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Open Two Leg Position"
       }
     },
     "/execution/preflight": {

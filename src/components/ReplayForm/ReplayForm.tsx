@@ -1,0 +1,184 @@
+import styles from "./ReplayForm.module.scss";
+import { useState, type SubmitEvent } from "react";
+import type { BacktestReplayRequest } from "../../api/types";
+
+interface ReplayFormProps {
+  onSubmit: (request: BacktestReplayRequest) => void;
+  submitting: boolean;
+  fieldErrors?: Record<string, string>;
+}
+
+function parseDateOrNull(value: string): string | null {
+  if (!value) return null;
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return null;
+  return parsed.toISOString();
+}
+
+const ReplayForm = ({ onSubmit, submitting, fieldErrors }: ReplayFormProps) => {
+  const [symbols, setSymbols] = useState("");
+  const [start, setStart] = useState("");
+  const [end, setEnd] = useState("");
+  const [cycleHours, setCycleHours] = useState("");
+  const [entryScoreBps, setEntryScoreBps] = useState("");
+  const [exitScoreBps, setExitScoreBps] = useState("");
+  const [minSamples, setMinSamples] = useState("");
+  const [strategyId, setStrategyId] = useState("baseline-v1");
+  const [localErrors, setLocalErrors] = useState<Record<string, string>>({});
+
+  const handleSubmit = (e: SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const nextLocalErrors: Record<string, string> = {};
+    const request: BacktestReplayRequest = { strategy_id: strategyId || "baseline-v1" };
+
+    if (symbols.trim()) {
+      request.symbols = symbols
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean);
+    }
+
+    if (start) {
+      const parsedStart = parseDateOrNull(start);
+      if (parsedStart === null) {
+        nextLocalErrors.start = "Enter a valid start date/time.";
+      } else {
+        request.start = parsedStart;
+      }
+    }
+
+    if (end) {
+      const parsedEnd = parseDateOrNull(end);
+      if (parsedEnd === null) {
+        nextLocalErrors.end = "Enter a valid end date/time.";
+      } else {
+        request.end = parsedEnd;
+      }
+    }
+
+    setLocalErrors(nextLocalErrors);
+    if (Object.keys(nextLocalErrors).length > 0) return;
+
+    if (cycleHours) request.cycle_hours = Number(cycleHours);
+    if (entryScoreBps) request.entry_score_bps = Number(entryScoreBps);
+    if (exitScoreBps) request.exit_score_bps = Number(exitScoreBps);
+    if (minSamples) request.min_samples_per_symbol = Number(minSamples);
+    onSubmit(request);
+  };
+
+  return (
+    <form className={styles.form} onSubmit={handleSubmit}>
+      <label className={styles.field}>
+        <span className={styles.label}>Symbols (comma-separated, blank = all)</span>
+        <input
+          className={styles.input}
+          type="text"
+          value={symbols}
+          onChange={(e) => setSymbols(e.target.value)}
+          placeholder="AERO, KAITO"
+        />
+        {fieldErrors?.symbols && <span className={styles.fieldError}>{fieldErrors.symbols}</span>}
+      </label>
+
+      <label className={styles.field}>
+        <span className={styles.label}>Start</span>
+        <input
+          className={styles.input}
+          type="datetime-local"
+          value={start}
+          onChange={(e) => setStart(e.target.value)}
+        />
+        {(localErrors.start || fieldErrors?.start) && (
+          <span className={styles.fieldError}>{localErrors.start || fieldErrors?.start}</span>
+        )}
+      </label>
+      <label className={styles.field}>
+        <span className={styles.label}>End</span>
+        <input
+          className={styles.input}
+          type="datetime-local"
+          value={end}
+          onChange={(e) => setEnd(e.target.value)}
+        />
+        {(localErrors.end || fieldErrors?.end) && (
+          <span className={styles.fieldError}>{localErrors.end || fieldErrors?.end}</span>
+        )}
+      </label>
+
+      <div className={styles.row}>
+        <label className={styles.field}>
+          <span className={styles.label}>Entry Score (bps)</span>
+          <input
+            className={styles.input}
+            type="number"
+            step="any"
+            value={entryScoreBps}
+            onChange={(e) => setEntryScoreBps(e.target.value)}
+          />
+          {fieldErrors?.entry_score_bps && (
+            <span className={styles.fieldError}>{fieldErrors.entry_score_bps}</span>
+          )}
+        </label>
+        <label className={styles.field}>
+          <span className={styles.label}>Exit Score (bps)</span>
+          <input
+            className={styles.input}
+            type="number"
+            step="any"
+            value={exitScoreBps}
+            onChange={(e) => setExitScoreBps(e.target.value)}
+          />
+          {fieldErrors?.exit_score_bps && (
+            <span className={styles.fieldError}>{fieldErrors.exit_score_bps}</span>
+          )}
+        </label>
+      </div>
+      <div className={styles.row}>
+        <label className={styles.field}>
+          <span className={styles.label}>Cycle Hours</span>
+          <input
+            className={styles.input}
+            type="number"
+            step="any"
+            value={cycleHours}
+            onChange={(e) => setCycleHours(e.target.value)}
+          />
+          {fieldErrors?.cycle_hours && (
+            <span className={styles.fieldError}>{fieldErrors.cycle_hours}</span>
+          )}
+        </label>
+        <label className={styles.field}>
+          <span className={styles.label}>Min Samples / Symbol</span>
+          <input
+            className={styles.input}
+            type="number"
+            step="1"
+            value={minSamples}
+            onChange={(e) => setMinSamples(e.target.value)}
+          />
+          {fieldErrors?.min_samples_per_symbol && (
+            <span className={styles.fieldError}>{fieldErrors.min_samples_per_symbol}</span>
+          )}
+        </label>
+      </div>
+      <label className={styles.field}>
+        <span className={styles.label}>Strategy ID</span>
+        <input
+          className={styles.input}
+          type="text"
+          value={strategyId}
+          onChange={(e) => setStrategyId(e.target.value)}
+        />
+        {fieldErrors?.strategy_id && (
+          <span className={styles.fieldError}>{fieldErrors.strategy_id}</span>
+        )}
+      </label>
+      <button className={styles.submitButton} type="submit" disabled={submitting}>
+        {submitting ? "Running..." : "Run Replay"}
+      </button>
+    </form>
+  );
+};
+
+export default ReplayForm;

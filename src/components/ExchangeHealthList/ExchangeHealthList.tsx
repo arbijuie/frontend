@@ -1,8 +1,8 @@
-import styles from './ExchangeHealthList.module.scss';
-import type { StatusResponse } from '../../api/types';
+import styles from "./ExchangeHealthList.module.scss";
+import type { StatusResponse } from "../../api/types";
 
 interface ExchangeHealthListProps {
-  exchangeStatus: StatusResponse['exchange_last_ok'];
+  exchangeStatus: StatusResponse["exchange_last_ok"];
 }
 
 const ExchangeHealthList = ({ exchangeStatus }: ExchangeHealthListProps) => {
@@ -24,7 +24,7 @@ const ExchangeHealthList = ({ exchangeStatus }: ExchangeHealthListProps) => {
               }`}
             />
             <span className={styles.healthLabel}>
-              {isOk === true ? 'ok' : isOk === false ? 'down' : 'unknown'}
+              {isOk === true ? "ok" : isOk === false ? "down" : "unknown"}
             </span>
           </span>
         </div>

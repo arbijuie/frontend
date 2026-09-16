@@ -25,9 +25,18 @@ export type ConfigUpdateRequest = _ConfigUpdateRequest;
 export type StatusResponse = ApiSchemas["StatusResponse"];
 export type WsAuthTicketResponse = ApiSchemas["WsAuthTicketResponse"];
 
+export type BacktestSummaryResponse = components["schemas"]["BacktestSummaryResponse"];
+export type BacktestReplayRequest = components["schemas"]["BacktestReplayRequest"];
+export type BacktestReplayResponse = components["schemas"]["BacktestReplayResponse"];
+export type BacktestMetrics = components["schemas"]["BacktestMetricsItem"];
+export type BacktestLock = components["schemas"]["BacktestLockResponse"];
+export type BacktestLockListItem = components["schemas"]["BacktestLockListItem"];
+export type BacktestLockListResponse = components["schemas"]["BacktestLockListResponse"];
+export type BacktestGateResponse = components["schemas"]["BacktestGateResponse"];
+
 export const TEST_HYPERLIQUID_TAKER_FEE = 0.035;
 export const TEST_LIGHTER_TAKER_FEE = 0.001;
 export const TEST_TAKER_FEE_BY_EXCHANGE: Record<string, number> = {
-	hyperliquid: TEST_HYPERLIQUID_TAKER_FEE,
-	lighter: TEST_LIGHTER_TAKER_FEE,
+  hyperliquid: TEST_HYPERLIQUID_TAKER_FEE,
+  lighter: TEST_LIGHTER_TAKER_FEE,
 };

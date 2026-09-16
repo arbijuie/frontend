@@ -1,16 +1,16 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from "@testing-library/react";
 
-import ConfigAccordion from './ConfigAccordion';
+import ConfigAccordion from "./ConfigAccordion";
 import {
   type ConfigResponse,
   TEST_HYPERLIQUID_TAKER_FEE,
   TEST_LIGHTER_TAKER_FEE,
   TEST_TAKER_FEE_BY_EXCHANGE,
-} from '../../api/types';
+} from "../../api/types";
 
 function makeConfig(): ConfigResponse {
   return {
-    api_host: '127.0.0.1',
+    api_host: "127.0.0.1",
     api_port: 8000,
     min_score_bps: 5,
     min_volume_24h: 100000,
@@ -25,7 +25,7 @@ function makeConfig(): ConfigResponse {
     taker_fee_per_side_by_exchange: TEST_TAKER_FEE_BY_EXCHANGE,
     default_order_size_usd: 1000,
     max_entry_slippage_bps: 10,
-    min_depth_quality: 'B',
+    min_depth_quality: "B",
     portfolio_usd: 0,
     max_position_pct: 0.2,
     max_volume_fraction: 0.01,
@@ -51,11 +51,18 @@ function makeConfig(): ConfigResponse {
     max_entry_adl_level: 3,
     require_isolated_margin: true,
     allow_unknown_margin_mode: false,
+    correlation_threshold: 0.7,
+    max_correlated_positions: 3,
+    correlation_window_hours: 24,
+    correlation_bucket_s: 300,
+    correlation_min_samples: 30,
     loop_interval_s: 30,
     stale_data_s: 35,
     exec_enabled: false,
     exec_dry_run: true,
-    exec_strategy_profile_id: 'baseline-v1',
+    exec_strategy_profile_id: "baseline-v1",
+    exec_leg_retry_attempts: 2,
+    exec_leg_retry_interval_s: 1,
     exec_stop_on_consecutive_rollbacks: 3,
     exec_stop_on_api_errors_per_window: 5,
     exec_api_error_window_s: 600,
@@ -68,18 +75,34 @@ function makeConfig(): ConfigResponse {
     exec_adl_critical_quantile: 4,
     exec_recovery_cooldown_s: 900,
     exec_recovery_require_manual_ack: true,
+    extra_exchanges: "",
+    active_exchanges: ["hyperliquid", "lighter"],
+    binance_base_url: "https://fapi.binance.com",
+    aster_base_url: "https://fapi.asterdex.com",
+    bybit_base_url: "https://api.bybit.com",
+    dydx_indexer_url: "https://indexer.dydx.trade",
+    extended_base_url: "https://api.starknet.extended.exchange",
     backtest_capture_enabled: false,
-    backtest_db_path: 'data/backtest.sqlite3',
+    backtest_db_path: "data/backtest.sqlite3",
     backtest_entry_score_bps: 10,
     backtest_exit_score_bps: 3,
     backtest_replay_cycle_hours: 1,
     backtest_min_samples_per_symbol: 24,
-    backtest_strategy_lock_path: 'data/backtest_strategy_lock.json',
+    backtest_funding_decay_exit_ratio: 0.5,
+    backtest_basis_reversal_exit: true,
+    backtest_liquidity_drain_exit_ratio: 0.7,
+    backtest_time_stop_hold_multiplier: 2,
+    backtest_strategy_lock_path: "data/backtest_strategy_lock.json",
     backtest_gate_require_lock_for_execution: true,
     backtest_gate_min_win_rate: 0.55,
     backtest_gate_min_total_pnl_bps: 0,
     backtest_gate_max_drawdown_bps: 50,
-    runbook_config_fields: ['min_score_bps'],
+    backtest_history_gate_enabled: false,
+    backtest_history_lookback_days: 90,
+    backtest_history_min_win_rate: 0.6,
+    backtest_history_min_closed_trades: 10,
+    backtest_history_refresh_s: 300,
+    runbook_config_fields: ["min_score_bps"],
     runbook_presets: {
       balanced: {
         min_score_bps: 8,
@@ -88,11 +111,20 @@ function makeConfig(): ConfigResponse {
   };
 }
 
-describe('ConfigAccordion', () => {
-  it('shows canonical fee fields and hides legacy alias labels', () => {
+describe("ConfigAccordion", () => {
+  it("shows correlation cap fields", () => {
     render(<ConfigAccordion config={makeConfig()} />);
 
-    fireEvent.click(screen.getByRole('button', { name: /fees/i }));
+    fireEvent.click(screen.getByRole("button", { name: /scoring model/i }));
+
+    expect(screen.getByText("Correlation Threshold")).toBeTruthy();
+    expect(screen.getByText("Max Correlated Positions")).toBeTruthy();
+  });
+
+  it("shows canonical fee fields and hides legacy alias labels", () => {
+    render(<ConfigAccordion config={makeConfig()} />);
+
+    fireEvent.click(screen.getByRole("button", { name: /fees/i }));
 
     expect(screen.getByText(/hyperliquid taker fee/i)).toBeTruthy();
     expect(screen.getByText(/hyperliquid maker fee/i)).toBeTruthy();

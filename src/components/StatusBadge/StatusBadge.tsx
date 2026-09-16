@@ -1,10 +1,10 @@
-import styles from './StatusBadge.module.scss';
-import type { OpportunityStatus } from '../../api/types';
+import styles from "./StatusBadge.module.scss";
+import type { OpportunityStatus } from "../../api/types";
 
 const STATUS_LABELS: Record<OpportunityStatus, string> = {
-  ready: 'Ready',
-  watching: 'Watching',
-  blocked: 'Blocked',
+  ready: "Ready",
+  watching: "Watching",
+  blocked: "Blocked",
 };
 
 const StatusBadge = ({ status }: { status: OpportunityStatus }) => {

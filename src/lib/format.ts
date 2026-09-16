@@ -1,8 +1,8 @@
-export type SignClass = 'positive' | 'negative' | 'neutral';
+export type SignClass = "positive" | "negative" | "neutral";
 
 export function signColor(value: number | null): SignClass {
-  if (value == null || value === 0) return 'neutral';
-  return value > 0 ? 'positive' : 'negative';
+  if (value == null || value === 0) return "neutral";
+  return value > 0 ? "positive" : "negative";
 }
 
 export function getFundingTargetTime(snapshotTime: string, hoursFromSnapshot: number): Date {
@@ -12,7 +12,7 @@ export function getFundingTargetTime(snapshotTime: string, hoursFromSnapshot: nu
 
 export function formatCountdown(target: Date, now: Date): { text: string; urgent: boolean } {
   const diffMs = target.getTime() - now.getTime();
-  if (diffMs <= 0) return { text: 'now', urgent: true };
+  if (diffMs <= 0) return { text: "now", urgent: true };
 
   const totalSeconds = Math.floor(diffMs / 1000);
   const h = Math.floor(totalSeconds / 3600);
@@ -21,7 +21,7 @@ export function formatCountdown(target: Date, now: Date): { text: string; urgent
   const urgent = diffMs < 5 * 60 * 1000;
 
   if (h === 0 && m < 10) {
-    return { text: `${m}:${String(s).padStart(2, '0')}`, urgent };
+    return { text: `${m}:${String(s).padStart(2, "0")}`, urgent };
   }
   if (h > 0) return { text: `${h}h ${m}m`, urgent: false };
   return { text: `${m}m`, urgent };
@@ -38,11 +38,11 @@ export function formatUptime(seconds: number): string {
   if (days > 0) parts.push(`${days}d`);
   if (hours > 0 || days > 0) parts.push(`${hours}h`);
   parts.push(`${minutes}m`);
-  return parts.join(' ');
+  return parts.join(" ");
 }
 
-export function formatDateTime(iso: string | null): string {
-  if (!iso) return '—';
+export function formatDateTime(iso: string | null | undefined): string {
+  if (!iso) return "—";
   return new Date(iso).toLocaleString();
 }
 

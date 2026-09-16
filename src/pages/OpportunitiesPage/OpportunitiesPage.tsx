@@ -1,20 +1,22 @@
-import styles from './OpportunitiesPage.module.scss';
-import { useRef } from 'react';
-import { useOpportunities } from '../../hooks/useOpportunities';
-import { useStatus } from '../../hooks/useStatus';
-import { useConfig } from '../../hooks/useConfig';
-import OpportunitiesList from '../../components/OpportunitiesList/OpportunitiesList';
-import StatsGrid from '../../components/StatsGrid/StatsGrid';
-import OpportunityCardSkeleton from '../../components/OpportunityCardSkeleton/OpportunityCardSkeleton';
-import EmptyState from '../../components/EmptyState/EmptyState';
-import FloatingRefreshButton from '../../components/FloatingRefreshButton/FloatingRefreshButton';
-import RuntimeKnobsCard from '../../components/RuntimeKnobsCard/RuntimeKnobsCard';
-import PipelineDiagnosticsHint from '../../components/PipelineDiagnosticsHint/PipelineDiagnosticsHint';
-import { useNow } from '../../hooks/useNow';
-import { useTransientFlag } from '../../hooks/useTransientFlag';
-import { POLL_INTERVAL_MS } from '../../api/config';
+import styles from "./OpportunitiesPage.module.scss";
+import { useRef } from "react";
+import { useOpportunities } from "../../hooks/useOpportunities";
+import { useStatus } from "../../hooks/useStatus";
+import { useConfig } from "../../hooks/useConfig";
+import OpportunitiesList from "../../components/OpportunitiesList/OpportunitiesList";
+import StatsGrid from "../../components/StatsGrid/StatsGrid";
+import OpportunityCardSkeleton from "../../components/OpportunityCardSkeleton/OpportunityCardSkeleton";
+import EmptyState from "../../components/EmptyState/EmptyState";
+import FloatingRefreshButton from "../../components/FloatingRefreshButton/FloatingRefreshButton";
+import RuntimeKnobsCard from "../../components/RuntimeKnobsCard/RuntimeKnobsCard";
+import PipelineDiagnosticsHint from "../../components/PipelineDiagnosticsHint/PipelineDiagnosticsHint";
+import { useNow } from "../../hooks/useNow";
+import { useTransientFlag } from "../../hooks/useTransientFlag";
+import { POLL_INTERVAL_MS } from "../../api/config";
+import { usePageTitle } from "../../hooks/usePageTitle";
 
 export default function OpportunitiesPage() {
+  usePageTitle("Opportunities");
   const { data, error, loading, fetching, refetch } = useOpportunities();
   const { data: status } = useStatus();
   const { data: config } = useConfig({
@@ -50,10 +52,10 @@ export default function OpportunitiesPage() {
             )}
           </div>
           <div className={styles.summaryRow}>
-            <span className={styles.summaryPill}>count: {data?.count ?? '—'}</span>
-            <span className={styles.summaryPill}>ready: {data?.ready_count ?? '—'}</span>
-            <span className={styles.summaryPill}>raw: {rawCandidates ?? '—'}</span>
-            <span className={styles.summaryPill}>post-cost: {postCostCandidates ?? '—'}</span>
+            <span className={styles.summaryPill}>count: {data?.count ?? "—"}</span>
+            <span className={styles.summaryPill}>ready: {data?.ready_count ?? "—"}</span>
+            <span className={styles.summaryPill}>raw: {rawCandidates ?? "—"}</span>
+            <span className={styles.summaryPill}>post-cost: {postCostCandidates ?? "—"}</span>
           </div>
         </div>
       </div>
@@ -66,7 +68,7 @@ export default function OpportunitiesPage() {
 
       {error && (
         <div className={styles.errorBox}>
-          Error: {error}{' '}
+          Error: {error}{" "}
           <button onClick={() => refetch()} aria-label="Retry loading opportunities">
             Retry
           </button>
@@ -91,11 +93,19 @@ export default function OpportunitiesPage() {
       {data && data.opportunities.length > 0 && (
         <>
           <StatsGrid items={data.opportunities} />
-          <OpportunitiesList items={data.opportunities} updatedAt={data.updated_at ?? null} now={now} />
+          <OpportunitiesList
+            items={data.opportunities}
+            updatedAt={data.updated_at ?? null}
+            now={now}
+          />
         </>
       )}
 
-      <FloatingRefreshButton fetching={fetching} onClick={handleRefresh} />
+      <FloatingRefreshButton
+        fetching={fetching}
+        onClick={handleRefresh}
+        label="Refresh opportunities"
+      />
     </div>
   );
 }

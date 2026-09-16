@@ -1,16 +1,10 @@
 import styles from "./Nav.module.scss";
 import { NavLink } from "react-router-dom";
-import { LineChart, Activity, Settings } from "lucide-react";
-
-const NAV_ITEMS = [
-  { to: "/", label: "Opportunities", icon: LineChart },
-  { to: "/status", label: "Status", icon: Activity },
-  { to: "/config", label: "Config", icon: Settings },
-];
+import { NAV_ITEMS } from "../../lib/navigation";
 
 const Nav = () => {
   return (
-    <nav className={styles.nav}>
+    <nav className={styles.nav} aria-label="Primary">
       {NAV_ITEMS.map(({ to, label, icon: Icon }) => (
         <NavLink
           key={to}
@@ -18,7 +12,7 @@ const Nav = () => {
           end={to === "/"}
           className={({ isActive }) => `${styles.item} ${isActive ? styles.active : ""}`}
         >
-          <Icon className={styles.icon} />
+          <Icon className={styles.icon} aria-hidden="true" />
           <span className={styles.label}>{label}</span>
         </NavLink>
       ))}

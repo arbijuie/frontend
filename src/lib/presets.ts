@@ -57,20 +57,22 @@ function nearlyEqual(a: number, b: number): boolean {
 }
 
 export function findMatchingPreset(config: ConfigResponse, presets: Preset[]): Preset | null {
-  return presets.find((preset) => {
-    return config.runbook_config_fields.every((key) => {
-      const configValue = config[key as keyof ConfigResponse];
-      const presetValue = preset.values[key];
-      if (presetValue === undefined) {
+  return (
+    presets.find((preset) => {
+      return config.runbook_config_fields.every((key) => {
+        const configValue = config[key as keyof ConfigResponse];
+        const presetValue = preset.values[key];
+        if (presetValue === undefined) {
+          return false;
+        }
+        if (typeof configValue === "number" && typeof presetValue === "number") {
+          return nearlyEqual(configValue, presetValue);
+        }
+        if (typeof configValue === "boolean" && typeof presetValue === "boolean") {
+          return configValue === presetValue;
+        }
         return false;
-      }
-      if (typeof configValue === "number" && typeof presetValue === "number") {
-        return nearlyEqual(configValue, presetValue);
-      }
-      if (typeof configValue === "boolean" && typeof presetValue === "boolean") {
-        return configValue === presetValue;
-      }
-      return false;
-    });
-  }) ?? null;
+      });
+    }) ?? null
+  );
 }

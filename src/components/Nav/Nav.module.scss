@@ -14,26 +14,65 @@
 }
 
 .item {
+  flex: 1 1 0;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.125rem;
   color: v.$text-muted;
   text-decoration: none;
-  padding: 0.5rem 0;
+  padding: 0.5rem 0.25rem;
   border-bottom: 0.125rem solid transparent;
+  outline: none;
+
+  &:hover {
+    color: v.$text-secondary;
+  }
+
+  &:focus-visible {
+    color: v.$text-primary;
+    box-shadow: 0 0 0 0.125rem v.$accent-purple;
+    border-radius: 0.25rem;
+  }
 }
 
 .active {
   color: v.$accent-purple;
   border-bottom-color: v.$accent-purple;
+
+  &:hover {
+    color: v.$accent-purple;
+  }
 }
 
 .icon {
   width: 1.25rem;
   height: 1.25rem;
+  flex-shrink: 0;
 }
 
 .label {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-size: 0.6875rem;
+}
+
+@media (max-width: 480px) {
+  .item {
+    padding: 0.5rem 0;
+  }
+
+  .label {
+    font-size: 0.625rem;
+    letter-spacing: -0.01em;
+  }
+}
+
+@media (max-width: 340px) {
+  .label {
+    font-size: 0.5625rem;
+  }
 }

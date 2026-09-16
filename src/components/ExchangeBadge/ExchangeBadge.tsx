@@ -1,12 +1,21 @@
-import styles from './ExchangeBadge.module.scss';
+import styles from "./ExchangeBadge.module.scss";
 
-type ExchangeKey = 'hyperliquid' | 'lighter' | 'unknown';
+const KNOWN_EXCHANGES = [
+  "hyperliquid",
+  "lighter",
+  "aster",
+  "binance",
+  "bybit",
+  "dydx",
+  "extended",
+] as const;
+
+type ExchangeKey = (typeof KNOWN_EXCHANGES)[number] | "unknown";
 
 function resolveExchangeKey(exchange: string): ExchangeKey {
   const normalized = exchange.toLowerCase();
-  if (normalized === 'hyperliquid') return 'hyperliquid';
-  if (normalized === 'lighter') return 'lighter';
-  return 'unknown';
+  const match = KNOWN_EXCHANGES.find((key) => key === normalized);
+  return match ?? "unknown";
 }
 
 const ExchangeBadge = ({ exchange }: { exchange: string }) => {

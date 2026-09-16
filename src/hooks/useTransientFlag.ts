@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export function useTransientFlag(durationMs = 2000) {
   const [flag, setFlag] = useState(false);

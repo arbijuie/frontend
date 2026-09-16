@@ -7,6 +7,7 @@ import PresetComparison from "../../components/PresetComparison/PresetComparison
 import ConfigAccordion from "../../components/ConfigAccordion/ConfigAccordion";
 import { type EditableConfigField } from "../../lib/presets";
 import type { ConfigResponse, ConfigUpdateRequest } from "../../api/types";
+import { usePageTitle } from "../../hooks/usePageTitle";
 
 const FIELD_LABELS: Record<string, string> = {
   min_score_bps: "Min Score (bps)",
@@ -48,6 +49,7 @@ function numericConfigValue(config: ConfigResponse, field: string): number {
 }
 
 const ConfigPage = () => {
+  usePageTitle("Config");
   const { data, error, loading, fetching, refetch } = useConfig();
   const updateConfig = useUpdateConfig();
   const [overrides, setOverrides] = useState<Partial<Record<EditableConfigField, string>>>({});
@@ -204,9 +206,7 @@ const ConfigPage = () => {
                   onClick={onSaveDraft}
                   disabled={updateConfig.isPending}
                 >
-                  {updateConfig.isPending
-                    ? "Saving..."
-                    : `Save (${changedFields.length})`}
+                  {updateConfig.isPending ? "Saving..." : `Save (${changedFields.length})`}
                 </button>
                 <button
                   type="button"

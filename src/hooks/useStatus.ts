@@ -1,10 +1,10 @@
-import { useQuery } from '@tanstack/react-query';
-import { fetchStatus } from '../api/status';
-import { POLL_INTERVAL_MS } from '../api/config';
+import { useQuery } from "@tanstack/react-query";
+import { fetchStatus } from "../api/status";
+import { POLL_INTERVAL_MS } from "../api/config";
 
 export function useStatus() {
   const query = useQuery({
-    queryKey: ['status'],
+    queryKey: ["status"],
     queryFn: fetchStatus,
     refetchInterval: POLL_INTERVAL_MS,
   });

@@ -1,5 +1,5 @@
-import type { StatusResponse } from '../../api/types';
-import styles from './PipelineDiagnosticsHint.module.scss';
+import type { StatusResponse } from "../../api/types";
+import styles from "./PipelineDiagnosticsHint.module.scss";
 
 interface PipelineDiagnosticsHintProps {
   status: StatusResponse;
@@ -47,7 +47,7 @@ const PipelineDiagnosticsHint = ({ status }: PipelineDiagnosticsHintProps) => {
       return (
         <div className={styles.infoBox}>
           <span className={`${styles.badge} ${styles.infoBadge}`}>info</span>
-          No raw candidates in this cycle. Main drops: min volume {minVolumeDrops}, min score{' '}
+          No raw candidates in this cycle. Main drops: min volume {minVolumeDrops}, min score{" "}
           {minScoreDrops}.
         </div>
       );
@@ -65,7 +65,7 @@ const PipelineDiagnosticsHint = ({ status }: PipelineDiagnosticsHintProps) => {
       return (
         <div className={styles.warnBox}>
           <span className={`${styles.badge} ${styles.warnBadge}`}>warn</span>
-          Strict depth checks are suppressing readiness ({strictDepth} drops: Hyperliquid{' '}
+          Strict depth checks are suppressing readiness ({strictDepth} drops: Hyperliquid{" "}
           {strictDepthHyperliquid}, Lighter {strictDepthLighter}).
           {hyperliquidL2Errors > 0 && ` Hyperliquid l2Book fetch errors: ${hyperliquidL2Errors}.`}
         </div>
@@ -75,7 +75,7 @@ const PipelineDiagnosticsHint = ({ status }: PipelineDiagnosticsHintProps) => {
       return (
         <div className={styles.infoBox}>
           <span className={`${styles.badge} ${styles.infoBadge}`}>info</span>
-          Candidates are present but not ready due to real-source gaps: missing real depth{' '}
+          Candidates are present but not ready due to real-source gaps: missing real depth{" "}
           {missingRealDepth}, missing real fee {missingRealFee}.
         </div>
       );
@@ -84,8 +84,8 @@ const PipelineDiagnosticsHint = ({ status }: PipelineDiagnosticsHintProps) => {
       return (
         <div className={styles.infoBox}>
           <span className={`${styles.badge} ${styles.infoBadge}`}>info</span>
-          Candidates are present but none are ready yet. Risk dampeners active: basis bonus capped{' '}
-          {basisBonusCapped}, adaptive hold applied {adaptiveHoldApplied}, basis divergence penalty{' '}
+          Candidates are present but none are ready yet. Risk dampeners active: basis bonus capped{" "}
+          {basisBonusCapped}, adaptive hold applied {adaptiveHoldApplied}, basis divergence penalty{" "}
           {basisDivergencePenalty}.
         </div>
       );
