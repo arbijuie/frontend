@@ -104,7 +104,7 @@ const PipelineDiagnosticsHint = ({ status }: PipelineDiagnosticsHintProps) => {
       return (
         <div className={styles.warnBox}>
           <span className={`${styles.badge} ${styles.warnBadge}`}>warn</span>
-          Correlation concentration is blocking readiness: largest cluster{" "}
+          Correlation concentration is blocking preflight decision: largest cluster{" "}
           {concentration.largest_cluster_size}/{concentration.ready_count} ({" "}
           {concentration.largest_cluster_ratio.toFixed(2)}).
         </div>

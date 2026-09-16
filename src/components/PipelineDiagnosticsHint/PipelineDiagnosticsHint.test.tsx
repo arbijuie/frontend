@@ -150,6 +150,44 @@ describe("PipelineDiagnosticsHint", () => {
     expect(screen.getByText(/ready opportunities are currently available/i)).toBeTruthy();
   });
 
+  it("shows warn when correlation concentration blocks preflight decision", () => {
+    render(
+      <PipelineDiagnosticsHint
+        status={makeStatus({
+          screener_ready_candidates: 2,
+          correlation_concentration: {
+            level: "blocked",
+            ready_count: 2,
+            largest_cluster_size: 2,
+            largest_cluster_ratio: 1,
+            largest_cluster_symbols: ["BTC", "ETH"],
+          },
+        })}
+      />
+    );
+
+    expect(screen.getByText(/blocking preflight decision/i)).toBeTruthy();
+  });
+
+  it("shows info when correlation concentration is elevated", () => {
+    render(
+      <PipelineDiagnosticsHint
+        status={makeStatus({
+          screener_ready_candidates: 2,
+          correlation_concentration: {
+            level: "watching",
+            ready_count: 2,
+            largest_cluster_size: 2,
+            largest_cluster_ratio: 1,
+            largest_cluster_symbols: ["BTC", "ETH"],
+          },
+        })}
+      />
+    );
+
+    expect(screen.getByText(/concentration is elevated/i)).toBeTruthy();
+  });
+
   it("shows info when candidates are validated but none are ready", () => {
     render(
       <PipelineDiagnosticsHint
