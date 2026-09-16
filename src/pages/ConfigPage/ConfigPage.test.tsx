@@ -123,6 +123,7 @@ function makeConfig(): ConfigResponse {
     durable_snapshots_retention_days: 7,
     durable_snapshots_prune_interval_s: 300,
     durable_snapshots_recover_on_startup: true,
+    durable_snapshots_recover_max_rows: 100000,
     backtest_history_gate_enabled: false,
     backtest_history_lookback_days: 90,
     backtest_history_min_win_rate: 0.6,

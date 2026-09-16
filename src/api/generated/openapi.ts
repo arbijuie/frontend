@@ -553,6 +553,8 @@ export interface components {
             durable_snapshots_enabled: boolean;
             /** Durable Snapshots Prune Interval S */
             durable_snapshots_prune_interval_s: number;
+            /** Durable Snapshots Recover Max Rows */
+            durable_snapshots_recover_max_rows: number;
             /** Durable Snapshots Recover On Startup */
             durable_snapshots_recover_on_startup: boolean;
             /** Durable Snapshots Retention Days */
@@ -1164,6 +1166,13 @@ export interface components {
             last_pruned_rows: number;
             /** Last Recovered At */
             last_recovered_at?: string | null;
+            /** Last Recovery Duration Ms */
+            last_recovery_duration_ms?: number | null;
+            /**
+             * Last Recovery Scanned Rows
+             * @default 0
+             */
+            last_recovery_scanned_rows: number;
             /** Last Write At */
             last_write_at?: string | null;
             /** Last Write Error */
@@ -1176,6 +1185,22 @@ export interface components {
             recovered_rows: number;
             /** Recovered Symbols */
             recovered_symbols: number;
+            /**
+             * Recovery Attempted
+             * @default false
+             */
+            recovery_attempted: boolean;
+            /**
+             * Recovery Max Rows
+             * @default 0
+             */
+            recovery_max_rows: number;
+            /**
+             * Recovery Result
+             * @default not_attempted
+             * @enum {string}
+             */
+            recovery_result: "not_attempted" | "completed" | "failed" | "recovery_skipped_missing_schema" | "recovery_skipped_incompatible_schema";
             /** Retention Days */
             retention_days: number;
             /** Rows Total */
@@ -1450,11 +1475,34 @@ export interface components {
             last_pruned_at?: string | null;
             /** Last Recovered At */
             last_recovered_at?: string | null;
+            /** Last Recovery Duration Ms */
+            last_recovery_duration_ms?: number | null;
+            /**
+             * Last Recovery Scanned Rows
+             * @default 0
+             */
+            last_recovery_scanned_rows: number;
             /**
              * Recover On Startup
              * @default false
              */
             recover_on_startup: boolean;
+            /**
+             * Recovery Attempted
+             * @default false
+             */
+            recovery_attempted: boolean;
+            /**
+             * Recovery Max Rows
+             * @default 0
+             */
+            recovery_max_rows: number;
+            /**
+             * Recovery Result
+             * @default not_attempted
+             * @enum {string}
+             */
+            recovery_result: "not_attempted" | "completed" | "failed" | "recovery_skipped_missing_schema" | "recovery_skipped_incompatible_schema";
             /**
              * Recovery Warning
              * @default false

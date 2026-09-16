@@ -721,6 +721,10 @@
             "title": "Durable Snapshots Prune Interval S",
             "type": "number"
           },
+          "durable_snapshots_recover_max_rows": {
+            "title": "Durable Snapshots Recover Max Rows",
+            "type": "integer"
+          },
           "durable_snapshots_recover_on_startup": {
             "title": "Durable Snapshots Recover On Startup",
             "type": "boolean"
@@ -1052,6 +1056,7 @@
           "durable_snapshots_retention_days",
           "durable_snapshots_prune_interval_s",
           "durable_snapshots_recover_on_startup",
+          "durable_snapshots_recover_max_rows",
           "backtest_entry_score_bps",
           "backtest_exit_score_bps",
           "backtest_replay_cycle_hours",
@@ -2651,6 +2656,22 @@
             ],
             "title": "Last Recovered At"
           },
+          "last_recovery_duration_ms": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Recovery Duration Ms"
+          },
+          "last_recovery_scanned_rows": {
+            "default": 0,
+            "title": "Last Recovery Scanned Rows",
+            "type": "integer"
+          },
           "last_write_at": {
             "anyOf": [
               {
@@ -2695,6 +2716,28 @@
           "recovered_symbols": {
             "title": "Recovered Symbols",
             "type": "integer"
+          },
+          "recovery_attempted": {
+            "default": false,
+            "title": "Recovery Attempted",
+            "type": "boolean"
+          },
+          "recovery_max_rows": {
+            "default": 0,
+            "title": "Recovery Max Rows",
+            "type": "integer"
+          },
+          "recovery_result": {
+            "default": "not_attempted",
+            "enum": [
+              "not_attempted",
+              "completed",
+              "failed",
+              "recovery_skipped_missing_schema",
+              "recovery_skipped_incompatible_schema"
+            ],
+            "title": "Recovery Result",
+            "type": "string"
           },
           "retention_days": {
             "title": "Retention Days",
@@ -3218,10 +3261,48 @@
             ],
             "title": "Last Recovered At"
           },
+          "last_recovery_duration_ms": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Recovery Duration Ms"
+          },
+          "last_recovery_scanned_rows": {
+            "default": 0,
+            "title": "Last Recovery Scanned Rows",
+            "type": "integer"
+          },
           "recover_on_startup": {
             "default": false,
             "title": "Recover On Startup",
             "type": "boolean"
+          },
+          "recovery_attempted": {
+            "default": false,
+            "title": "Recovery Attempted",
+            "type": "boolean"
+          },
+          "recovery_max_rows": {
+            "default": 0,
+            "title": "Recovery Max Rows",
+            "type": "integer"
+          },
+          "recovery_result": {
+            "default": "not_attempted",
+            "enum": [
+              "not_attempted",
+              "completed",
+              "failed",
+              "recovery_skipped_missing_schema",
+              "recovery_skipped_incompatible_schema"
+            ],
+            "title": "Recovery Result",
+            "type": "string"
           },
           "recovery_warning": {
             "default": false,
