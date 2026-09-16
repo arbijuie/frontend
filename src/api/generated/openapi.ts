@@ -919,17 +919,22 @@ export interface components {
              * @default 0
              */
             correlated_ready_count: number;
-            /** Long Exchange */
-            long_exchange: string;
+            /** Legs */
+            legs?: components["schemas"]["LegItem"][];
             /** Reasons */
             reasons?: components["schemas"]["ExecutionPreflightCandidateReasonItem"][];
-            /** Short Exchange */
-            short_exchange: string;
             /**
              * Status
              * @enum {string}
              */
             status: "ready" | "watching" | "blocked";
+            /** Strategy Profile Id */
+            strategy_profile_id: string;
+            /**
+             * Strategy Type
+             * @enum {string}
+             */
+            strategy_type: "funding_arbitrage" | "basis_convergence" | "cash_and_carry";
             /** Symbol */
             symbol: string;
         };
@@ -1059,6 +1064,43 @@ export interface components {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
         };
+        /** LegItem */
+        LegItem: {
+            /** Borrow Rate */
+            borrow_rate?: number | null;
+            /** Fee Maker */
+            fee_maker?: number | null;
+            /** Fee Taker */
+            fee_taker?: number | null;
+            /** Funding Rate */
+            funding_rate?: number | null;
+            /** Index Price */
+            index_price?: string | null;
+            /**
+             * Instrument Kind
+             * @enum {string}
+             */
+            instrument_kind: "perp" | "spot" | "future";
+            /** Margin Mode */
+            margin_mode?: ("isolated" | "cross" | "unknown") | null;
+            /** Mark Price */
+            mark_price?: string | null;
+            /** Normalized Symbol */
+            normalized_symbol: string;
+            /** Quote Asset */
+            quote_asset?: string | null;
+            /** Settlement Ccy */
+            settlement_ccy?: string | null;
+            /**
+             * Side
+             * @enum {string}
+             */
+            side: "long" | "short";
+            /** Venue */
+            venue: string;
+            /** Venue Native Symbol */
+            venue_native_symbol?: string | null;
+        };
         /** OpportunitiesResponse */
         OpportunitiesResponse: {
             /** Count */
@@ -1126,10 +1168,10 @@ export interface components {
             historical_win_rate?: number | null;
             /** Hours To Breakeven */
             hours_to_breakeven?: number | null;
+            /** Legs */
+            legs?: components["schemas"]["LegItem"][];
             /** Liquidity Tier */
             liquidity_tier?: ("H" | "M" | "L") | null;
-            /** Long Exchange */
-            long_exchange: string;
             long_forecast?: components["schemas"]["FundingForecastItem"] | null;
             /** Long Hours To Next Funding */
             long_hours_to_next_funding?: number | null;
@@ -1143,8 +1185,6 @@ export interface components {
             reasons?: components["schemas"]["ReasonItem"][];
             /** Recommended Size Usd */
             recommended_size_usd?: number | null;
-            /** Short Exchange */
-            short_exchange: string;
             short_forecast?: components["schemas"]["FundingForecastItem"] | null;
             /** Short Hours To Next Funding */
             short_hours_to_next_funding?: number | null;
@@ -1160,6 +1200,13 @@ export interface components {
              * @enum {string}
              */
             status: "ready" | "watching" | "blocked";
+            /** Strategy Profile Id */
+            strategy_profile_id: string;
+            /**
+             * Strategy Type
+             * @enum {string}
+             */
+            strategy_type: "funding_arbitrage" | "basis_convergence" | "cash_and_carry";
             /** Symbol */
             symbol: string;
             /**

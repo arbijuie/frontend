@@ -1864,9 +1864,12 @@
             "title": "Correlated Ready Count",
             "type": "integer"
           },
-          "long_exchange": {
-            "title": "Long Exchange",
-            "type": "string"
+          "legs": {
+            "items": {
+              "$ref": "#/components/schemas/LegItem"
+            },
+            "title": "Legs",
+            "type": "array"
           },
           "reasons": {
             "items": {
@@ -1874,10 +1877,6 @@
             },
             "title": "Reasons",
             "type": "array"
-          },
-          "short_exchange": {
-            "title": "Short Exchange",
-            "type": "string"
           },
           "status": {
             "enum": [
@@ -1888,6 +1887,19 @@
             "title": "Status",
             "type": "string"
           },
+          "strategy_profile_id": {
+            "title": "Strategy Profile Id",
+            "type": "string"
+          },
+          "strategy_type": {
+            "enum": [
+              "funding_arbitrage",
+              "basis_convergence",
+              "cash_and_carry"
+            ],
+            "title": "Strategy Type",
+            "type": "string"
+          },
           "symbol": {
             "title": "Symbol",
             "type": "string"
@@ -1895,8 +1907,8 @@
         },
         "required": [
           "symbol",
-          "long_exchange",
-          "short_exchange",
+          "strategy_type",
+          "strategy_profile_id",
           "combined_score",
           "status"
         ],
@@ -2250,6 +2262,158 @@
         "title": "HTTPValidationError",
         "type": "object"
       },
+      "LegItem": {
+        "properties": {
+          "borrow_rate": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Borrow Rate"
+          },
+          "fee_maker": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fee Maker"
+          },
+          "fee_taker": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fee Taker"
+          },
+          "funding_rate": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Funding Rate"
+          },
+          "index_price": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Index Price"
+          },
+          "instrument_kind": {
+            "enum": [
+              "perp",
+              "spot",
+              "future"
+            ],
+            "title": "Instrument Kind",
+            "type": "string"
+          },
+          "margin_mode": {
+            "anyOf": [
+              {
+                "enum": [
+                  "isolated",
+                  "cross",
+                  "unknown"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Margin Mode"
+          },
+          "mark_price": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mark Price"
+          },
+          "normalized_symbol": {
+            "title": "Normalized Symbol",
+            "type": "string"
+          },
+          "quote_asset": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Quote Asset"
+          },
+          "settlement_ccy": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Settlement Ccy"
+          },
+          "side": {
+            "enum": [
+              "long",
+              "short"
+            ],
+            "title": "Side",
+            "type": "string"
+          },
+          "venue": {
+            "title": "Venue",
+            "type": "string"
+          },
+          "venue_native_symbol": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Venue Native Symbol"
+          }
+        },
+        "required": [
+          "instrument_kind",
+          "venue",
+          "normalized_symbol",
+          "side"
+        ],
+        "title": "LegItem",
+        "type": "object"
+      },
       "OpportunitiesResponse": {
         "properties": {
           "count": {
@@ -2457,6 +2621,13 @@
             ],
             "title": "Hours To Breakeven"
           },
+          "legs": {
+            "items": {
+              "$ref": "#/components/schemas/LegItem"
+            },
+            "title": "Legs",
+            "type": "array"
+          },
           "liquidity_tier": {
             "anyOf": [
               {
@@ -2472,10 +2643,6 @@
               }
             ],
             "title": "Liquidity Tier"
-          },
-          "long_exchange": {
-            "title": "Long Exchange",
-            "type": "string"
           },
           "long_forecast": {
             "anyOf": [
@@ -2542,10 +2709,6 @@
             ],
             "title": "Recommended Size Usd"
           },
-          "short_exchange": {
-            "title": "Short Exchange",
-            "type": "string"
-          },
           "short_forecast": {
             "anyOf": [
               {
@@ -2585,6 +2748,19 @@
             "title": "Status",
             "type": "string"
           },
+          "strategy_profile_id": {
+            "title": "Strategy Profile Id",
+            "type": "string"
+          },
+          "strategy_type": {
+            "enum": [
+              "funding_arbitrage",
+              "basis_convergence",
+              "cash_and_carry"
+            ],
+            "title": "Strategy Type",
+            "type": "string"
+          },
           "symbol": {
             "title": "Symbol",
             "type": "string"
@@ -2597,8 +2773,8 @@
         },
         "required": [
           "symbol",
-          "long_exchange",
-          "short_exchange",
+          "strategy_type",
+          "strategy_profile_id",
           "long_rate_apr",
           "short_rate_apr",
           "funding_diff_apr",

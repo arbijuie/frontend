@@ -139,14 +139,18 @@ const OpportunitiesList = ({ items, updatedAt, now }: OpportunitiesListProps) =>
       {sorted.length === 0 ? (
         <EmptyState title={emptyMessage.title} description={emptyMessage.description} />
       ) : (
-        sorted.map((item) => (
-          <OpportunityCard
-            key={`${item.symbol}-${item.long_exchange}-${item.short_exchange}`}
-            item={item}
-            updatedAt={updatedAt}
-            now={now}
-          />
-        ))
+        sorted.map((item) => {
+          const longVenue = item.legs?.find((leg) => leg.side === "long")?.venue ?? "unknown";
+          const shortVenue = item.legs?.find((leg) => leg.side === "short")?.venue ?? "unknown";
+          return (
+            <OpportunityCard
+              key={`${item.symbol}-${longVenue}-${shortVenue}`}
+              item={item}
+              updatedAt={updatedAt}
+              now={now}
+            />
+          );
+        })
       )}
     </div>
   );
