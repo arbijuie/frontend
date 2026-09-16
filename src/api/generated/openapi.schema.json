@@ -2574,6 +2574,161 @@
         "title": "ReasonItem",
         "type": "object"
       },
+      "SnapshotContinuityResponse": {
+        "properties": {
+          "distinct_timestamps": {
+            "title": "Distinct Timestamps",
+            "type": "integer"
+          },
+          "exchanges_covered": {
+            "title": "Exchanges Covered",
+            "type": "integer"
+          },
+          "expected_interval_s": {
+            "title": "Expected Interval S",
+            "type": "number"
+          },
+          "gap_count": {
+            "title": "Gap Count",
+            "type": "integer"
+          },
+          "generated_at": {
+            "title": "Generated At",
+            "type": "string"
+          },
+          "largest_gap_s": {
+            "title": "Largest Gap S",
+            "type": "number"
+          },
+          "last_pruned_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Pruned At"
+          },
+          "last_pruned_rows": {
+            "title": "Last Pruned Rows",
+            "type": "integer"
+          },
+          "last_recovered_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Recovered At"
+          },
+          "last_write_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Write At"
+          },
+          "last_write_error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Write Error"
+          },
+          "oldest_retained_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Oldest Retained At"
+          },
+          "pruned_rows_total": {
+            "title": "Pruned Rows Total",
+            "type": "integer"
+          },
+          "recovered_rows": {
+            "title": "Recovered Rows",
+            "type": "integer"
+          },
+          "recovered_symbols": {
+            "title": "Recovered Symbols",
+            "type": "integer"
+          },
+          "retention_days": {
+            "title": "Retention Days",
+            "type": "number"
+          },
+          "rows_total": {
+            "title": "Rows Total",
+            "type": "integer"
+          },
+          "symbols_covered": {
+            "title": "Symbols Covered",
+            "type": "integer"
+          },
+          "window_end_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Window End At"
+          },
+          "window_start_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Window Start At"
+          },
+          "write_failures": {
+            "title": "Write Failures",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "generated_at",
+          "expected_interval_s",
+          "retention_days",
+          "rows_total",
+          "symbols_covered",
+          "exchanges_covered",
+          "distinct_timestamps",
+          "gap_count",
+          "largest_gap_s",
+          "write_failures",
+          "pruned_rows_total",
+          "last_pruned_rows",
+          "recovered_rows",
+          "recovered_symbols"
+        ],
+        "title": "SnapshotContinuityResponse",
+        "type": "object"
+      },
       "StatusDropCounters": {
         "additionalProperties": false,
         "properties": {
@@ -3501,6 +3656,24 @@
           }
         },
         "summary": "Get Opportunities"
+      }
+    },
+    "/snapshots/continuity": {
+      "get": {
+        "operationId": "get_snapshots_continuity_snapshots_continuity_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SnapshotContinuityResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Snapshots Continuity"
       }
     },
     "/status": {

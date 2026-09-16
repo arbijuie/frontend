@@ -232,6 +232,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/snapshots/continuity": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Snapshots Continuity */
+        get: operations["get_snapshots_continuity_snapshots_continuity_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/status": {
         parameters: {
             query?: never;
@@ -1117,6 +1134,51 @@ export interface components {
              */
             severity: "watching" | "blocked";
         };
+        /** SnapshotContinuityResponse */
+        SnapshotContinuityResponse: {
+            /** Distinct Timestamps */
+            distinct_timestamps: number;
+            /** Exchanges Covered */
+            exchanges_covered: number;
+            /** Expected Interval S */
+            expected_interval_s: number;
+            /** Gap Count */
+            gap_count: number;
+            /** Generated At */
+            generated_at: string;
+            /** Largest Gap S */
+            largest_gap_s: number;
+            /** Last Pruned At */
+            last_pruned_at?: string | null;
+            /** Last Pruned Rows */
+            last_pruned_rows: number;
+            /** Last Recovered At */
+            last_recovered_at?: string | null;
+            /** Last Write At */
+            last_write_at?: string | null;
+            /** Last Write Error */
+            last_write_error?: string | null;
+            /** Oldest Retained At */
+            oldest_retained_at?: string | null;
+            /** Pruned Rows Total */
+            pruned_rows_total: number;
+            /** Recovered Rows */
+            recovered_rows: number;
+            /** Recovered Symbols */
+            recovered_symbols: number;
+            /** Retention Days */
+            retention_days: number;
+            /** Rows Total */
+            rows_total: number;
+            /** Symbols Covered */
+            symbols_covered: number;
+            /** Window End At */
+            window_end_at?: string | null;
+            /** Window Start At */
+            window_start_at?: string | null;
+            /** Write Failures */
+            write_failures: number;
+        };
         /** StatusDropCounters */
         StatusDropCounters: {
             /**
@@ -1752,6 +1814,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["OpportunitiesResponse"];
+                };
+            };
+        };
+    };
+    get_snapshots_continuity_snapshots_continuity_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SnapshotContinuityResponse"];
                 };
             };
         };
