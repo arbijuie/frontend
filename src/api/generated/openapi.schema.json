@@ -693,6 +693,18 @@
             "title": "Correlation Bucket S",
             "type": "number"
           },
+          "correlation_concentration_block_ratio": {
+            "title": "Correlation Concentration Block Ratio",
+            "type": "number"
+          },
+          "correlation_concentration_min_ready_candidates": {
+            "title": "Correlation Concentration Min Ready Candidates",
+            "type": "integer"
+          },
+          "correlation_concentration_watch_ratio": {
+            "title": "Correlation Concentration Watch Ratio",
+            "type": "number"
+          },
           "correlation_min_samples": {
             "title": "Correlation Min Samples",
             "type": "integer"
@@ -1024,6 +1036,9 @@
           "correlation_window_hours",
           "correlation_bucket_s",
           "correlation_min_samples",
+          "correlation_concentration_watch_ratio",
+          "correlation_concentration_block_ratio",
+          "correlation_concentration_min_ready_candidates",
           "loop_interval_s",
           "stale_data_s",
           "exec_enabled",
@@ -1383,6 +1398,45 @@
           }
         },
         "title": "ConfigUpdateRequest",
+        "type": "object"
+      },
+      "CorrelationConcentrationItem": {
+        "additionalProperties": false,
+        "properties": {
+          "largest_cluster_ratio": {
+            "default": 0.0,
+            "title": "Largest Cluster Ratio",
+            "type": "number"
+          },
+          "largest_cluster_size": {
+            "default": 0,
+            "title": "Largest Cluster Size",
+            "type": "integer"
+          },
+          "largest_cluster_symbols": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Largest Cluster Symbols",
+            "type": "array"
+          },
+          "level": {
+            "default": "ok",
+            "enum": [
+              "ok",
+              "watching",
+              "blocked"
+            ],
+            "title": "Level",
+            "type": "string"
+          },
+          "ready_count": {
+            "default": 0,
+            "title": "Ready Count",
+            "type": "integer"
+          }
+        },
+        "title": "CorrelationConcentrationItem",
         "type": "object"
       },
       "CorrelationPairItem": {
@@ -1805,6 +1859,11 @@
             "title": "Combined Score",
             "type": "number"
           },
+          "correlated_ready_count": {
+            "default": 0,
+            "title": "Correlated Ready Count",
+            "type": "integer"
+          },
           "long_exchange": {
             "title": "Long Exchange",
             "type": "string"
@@ -2072,6 +2131,9 @@
             "default": 0,
             "title": "Consecutive Rollbacks",
             "type": "integer"
+          },
+          "correlation_concentration": {
+            "$ref": "#/components/schemas/CorrelationConcentrationItem"
           },
           "entries_stopped": {
             "default": false,
@@ -2983,6 +3045,9 @@
               }
             ],
             "title": "Backtest History Refreshed At"
+          },
+          "correlation_concentration": {
+            "$ref": "#/components/schemas/CorrelationConcentrationItem"
           },
           "exchange_diagnostics": {
             "additionalProperties": {

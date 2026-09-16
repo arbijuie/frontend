@@ -539,6 +539,12 @@ export interface components {
             bybit_base_url: string;
             /** Correlation Bucket S */
             correlation_bucket_s: number;
+            /** Correlation Concentration Block Ratio */
+            correlation_concentration_block_ratio: number;
+            /** Correlation Concentration Min Ready Candidates */
+            correlation_concentration_min_ready_candidates: number;
+            /** Correlation Concentration Watch Ratio */
+            correlation_concentration_watch_ratio: number;
             /** Correlation Min Samples */
             correlation_min_samples: number;
             /** Correlation Threshold */
@@ -738,6 +744,32 @@ export interface components {
             /** Stale Data S */
             stale_data_s?: number | null;
         };
+        /** CorrelationConcentrationItem */
+        CorrelationConcentrationItem: {
+            /**
+             * Largest Cluster Ratio
+             * @default 0
+             */
+            largest_cluster_ratio: number;
+            /**
+             * Largest Cluster Size
+             * @default 0
+             */
+            largest_cluster_size: number;
+            /** Largest Cluster Symbols */
+            largest_cluster_symbols?: string[];
+            /**
+             * Level
+             * @default ok
+             * @enum {string}
+             */
+            level: "ok" | "watching" | "blocked";
+            /**
+             * Ready Count
+             * @default 0
+             */
+            ready_count: number;
+        };
         /** CorrelationPairItem */
         CorrelationPairItem: {
             /** Above Threshold */
@@ -882,6 +914,11 @@ export interface components {
         ExecutionPreflightCandidateItem: {
             /** Combined Score */
             combined_score: number;
+            /**
+             * Correlated Ready Count
+             * @default 0
+             */
+            correlated_ready_count: number;
             /** Long Exchange */
             long_exchange: string;
             /** Reasons */
@@ -975,6 +1012,7 @@ export interface components {
              * @default 0
              */
             consecutive_rollbacks: number;
+            correlation_concentration?: components["schemas"]["CorrelationConcentrationItem"];
             /**
              * Entries Stopped
              * @default false
@@ -1377,6 +1415,7 @@ export interface components {
             backtest_history_pairs: number;
             /** Backtest History Refreshed At */
             backtest_history_refreshed_at?: string | null;
+            correlation_concentration?: components["schemas"]["CorrelationConcentrationItem"];
             /** Exchange Diagnostics */
             exchange_diagnostics?: {
                 [key: string]: components["schemas"]["StatusExchangeDiagnostics"];

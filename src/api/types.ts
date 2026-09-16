@@ -22,30 +22,10 @@ export type ConfigResponse = ApiSchemas["ConfigResponse"];
 export type ConfigPresetName = Exclude<NonNullable<_ConfigUpdateRequest["preset"]>, null>;
 export type ConfigUpdateRequest = _ConfigUpdateRequest;
 
-export type StatusResponse = ApiSchemas["StatusResponse"] & {
-  correlation_concentration?: CorrelationConcentrationView;
-};
+export type StatusResponse = ApiSchemas["StatusResponse"];
 export type WsAuthTicketResponse = ApiSchemas["WsAuthTicketResponse"];
 export type CorrelationResponse = ApiSchemas["CorrelationResponse"];
-
-export interface CorrelationConcentrationView {
-  level: "ok" | "watching" | "blocked";
-  ready_count: number;
-  largest_cluster_size: number;
-  largest_cluster_ratio: number;
-  largest_cluster_symbols: string[];
-}
-
-type _ExecutionPreflightResponse = ApiSchemas["ExecutionPreflightResponse"];
-type _ExecutionPreflightRuntime = ApiSchemas["ExecutionPreflightRuntimeItem"];
-type _ExecutionPreflightCandidate = ApiSchemas["ExecutionPreflightCandidateItem"];
-
-export type ExecutionPreflightResponse = Omit<_ExecutionPreflightResponse, "runtime" | "candidate"> & {
-  runtime: _ExecutionPreflightRuntime & {
-    correlation_concentration?: CorrelationConcentrationView;
-  };
-  candidate?: (_ExecutionPreflightCandidate & { correlated_ready_count?: number }) | null;
-};
+export type ExecutionPreflightResponse = ApiSchemas["ExecutionPreflightResponse"];
 
 export type BacktestSummaryResponse = components["schemas"]["BacktestSummaryResponse"];
 export type BacktestReplayRequest = components["schemas"]["BacktestReplayRequest"];
