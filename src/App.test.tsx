@@ -16,6 +16,9 @@ vi.mock("./pages/ConfigPage/ConfigPage", () => ({
 vi.mock("./pages/BacktestPage/BacktestPage", () => ({
   default: () => <h1>Backtest page mock</h1>,
 }));
+vi.mock("./pages/ExecutionPage/ExecutionPage", () => ({
+  default: () => <h1>Execution</h1>,
+}));
 
 function renderAt(path: string) {
   return render(

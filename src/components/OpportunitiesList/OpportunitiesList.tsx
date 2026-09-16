@@ -6,9 +6,10 @@ import StatusFilterTabs, { type StatusFilter } from "../StatusFilterTabs/StatusF
 import SymbolSearch from "../SymbolSearch/SymbolSearch";
 import EmptyState from "../EmptyState/EmptyState";
 
-type SortKey = "combined_score" | "funding_diff_apr" | "hours_to_breakeven";
+type SortKey = "priority" | "combined_score" | "funding_diff_apr" | "hours_to_breakeven";
 
 const SORT_OPTIONS: { key: SortKey; label: string }[] = [
+  { key: "priority", label: "Priority" },
   { key: "combined_score", label: "Score" },
   { key: "funding_diff_apr", label: "Funding APR" },
   { key: "hours_to_breakeven", label: "Breakeven" },
@@ -22,6 +23,19 @@ const STATUS_LABELS: Record<Exclude<StatusFilter, "all">, string> = {
 
 function sortItems(items: OpportunityItem[], sortKey: SortKey): OpportunityItem[] {
   return [...items].sort((a, b) => {
+    if (sortKey === "priority") {
+      const statusOrder = { ready: 0, watching: 1, blocked: 2 };
+      const statusDelta = statusOrder[a.status] - statusOrder[b.status];
+      if (statusDelta !== 0) {
+        return statusDelta;
+      }
+      const correlatedA = a.correlated_with?.length ?? 0;
+      const correlatedB = b.correlated_with?.length ?? 0;
+      if (a.status === "ready" && correlatedA !== correlatedB) {
+        return correlatedA - correlatedB;
+      }
+      return (b.combined_score ?? 0) - (a.combined_score ?? 0);
+    }
     if (sortKey === "hours_to_breakeven") {
       if (a.hours_to_breakeven == null) return 1;
       if (b.hours_to_breakeven == null) return -1;
@@ -62,7 +76,7 @@ interface OpportunitiesListProps {
   now: Date;
 }
 const OpportunitiesList = ({ items, updatedAt, now }: OpportunitiesListProps) => {
-  const [sortKey, setSortKey] = useState<SortKey>("combined_score");
+  const [sortKey, setSortKey] = useState<SortKey>("priority");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [search, setSearch] = useState("");
 
