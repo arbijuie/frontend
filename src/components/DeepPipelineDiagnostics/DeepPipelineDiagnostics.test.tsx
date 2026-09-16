@@ -71,6 +71,29 @@ describe("DeepPipelineDiagnostics", () => {
     expect(screen.getByText(/no dominant blockers/i)).toBeTruthy();
   });
 
+  it("renders low-volume guidance when cycle counts are sparse", () => {
+    render(
+      <DeepPipelineDiagnostics
+        status={makeStatus({
+          screener_drop_counters: {
+            ...makeDropCounters(),
+            stale: 1,
+            min_score: 1,
+          },
+          screener_reason_code_counts: {
+            score_below_min: 2,
+          },
+          screener_reason_severity_counts: {
+            blocked: 0,
+            watching: 2,
+          },
+        })}
+      />
+    );
+
+    expect(screen.getByText(/low-volume cycle/i)).toBeTruthy();
+  });
+
   it("shows Top 8 reasons by default and reveals all on toggle", () => {
     const reasons: Record<string, number> = {};
     for (let i = 1; i <= 11; i += 1) {
@@ -92,6 +115,24 @@ describe("DeepPipelineDiagnostics", () => {
     fireEvent.click(screen.getByRole("button", { name: /show all/i }));
 
     expect(screen.getByText("reason 11")).toBeTruthy();
+  });
+
+  it("renders high-volume guidance when diagnostic cardinality is large", () => {
+    const reasons: Record<string, number> = {};
+    for (let i = 1; i <= 14; i += 1) {
+      reasons[`reason_${i}`] = 20 - i;
+    }
+
+    render(
+      <DeepPipelineDiagnostics
+        status={makeStatus({
+          screener_reason_code_counts: reasons,
+          screener_reason_severity_counts: { blocked: 20, watching: 20 },
+        })}
+      />
+    );
+
+    expect(screen.getByText(/high-volume cycle detected/i)).toBeTruthy();
   });
 
   it("renders exchange split and top blockers with counts", () => {
