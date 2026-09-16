@@ -135,7 +135,7 @@ function makeConfig(): ConfigResponse {
         min_score_bps: 8,
       },
     },
-  };
+  } as unknown as ConfigResponse;
 }
 
 describe("ConfigPage", () => {
