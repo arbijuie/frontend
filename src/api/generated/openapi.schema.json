@@ -1773,6 +1773,22 @@
             ],
             "title": "Size Usd"
           },
+          "strategy_type": {
+            "anyOf": [
+              {
+                "enum": [
+                  "funding_arbitrage",
+                  "basis_convergence",
+                  "cash_and_carry"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Strategy Type"
+          },
           "symbol": {
             "title": "Symbol",
             "type": "string"
@@ -3061,6 +3077,11 @@
           "basis_gate": {
             "default": 0,
             "title": "Basis Gate",
+            "type": "integer"
+          },
+          "l2_book_fetch_error": {
+            "default": 0,
+            "title": "L2 Book Fetch Error",
             "type": "integer"
           },
           "l2_book_fetch_error_hyperliquid": {

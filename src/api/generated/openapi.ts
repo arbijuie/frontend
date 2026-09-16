@@ -880,6 +880,8 @@ export interface components {
             short_exchange?: string | null;
             /** Size Usd */
             size_usd?: number | null;
+            /** Strategy Type */
+            strategy_type?: ("funding_arbitrage" | "basis_convergence" | "cash_and_carry") | null;
             /** Symbol */
             symbol: string;
         };
@@ -1326,6 +1328,11 @@ export interface components {
              * @default 0
              */
             basis_gate: number;
+            /**
+             * L2 Book Fetch Error
+             * @default 0
+             */
+            l2_book_fetch_error: number;
             /**
              * L2 Book Fetch Error Hyperliquid
              * @default 0
