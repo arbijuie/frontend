@@ -48,14 +48,14 @@ Primary navigation is the fixed bottom bar rendered by `src/components/Nav/Nav.t
 Sections, their order, and their icons come from one registry: `src/lib/navigation.ts`.
 Order reflects the operator workflow: find opportunities, check status, tune config, validate via backtest, execute.
 
-| Route        | Section       | Status                                    |
-| ------------ | ------------- | ----------------------------------------- |
-| `/`          | Opportunities | Implemented                               |
-| `/status`    | Status        | Implemented (includes Deep Pipeline Diagnostics) |
-| `/config`    | Config        | Implemented                               |
-| `/backtest`  | Backtest      | Implemented                               |
-| `/execution` | Execution     | Placeholder container (runtime read-only) |
-| `*`          | Not found     | Fallback page with link back to `/`       |
+| Route                  | Section       | Status                                             |
+| ---------------------- | ------------- | -------------------------------------------------- |
+| `/`                    | Opportunities | Implemented                                        |
+| `/status`              | Status        | Implemented (includes Deep Pipeline Diagnostics)   |
+| `/config`              | Config        | Implemented                                        |
+| `/backtest`            | Backtest      | Implemented                                        |
+| `/execution/preflight` | Preflight     | Implemented (readiness center for execution gate)  |
+| `*`                    | Not found     | Fallback page with link back to `/`                |
 
 The Status page includes a Deep Pipeline Diagnostics section with:
 
@@ -83,6 +83,7 @@ Behavior contributors can rely on:
 ```bash
 pnpm lint
 pnpm test
+pnpm test:e2e
 pnpm build
 pnpm audit:ci   # dependency audit, high severity and above (same gate as CI)
 pnpm types:check

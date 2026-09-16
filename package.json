@@ -26,6 +26,7 @@
     "build": "tsc -b tsconfig.json && vite build --config config/vite.config.ts",
     "lint": "eslint -c config/eslint.config.js .",
     "test": "vitest run --config config/vitest.config.ts",
+    "test:e2e": "playwright test --config playwright.config.ts",
     "test:coverage": "vitest run --config config/vitest.config.ts --coverage",
     "types:generate": "python ../scripts/export_openapi_schema.py --output src/api/generated/openapi.schema.json && openapi-typescript src/api/generated/openapi.schema.json -o src/api/generated/openapi.ts",
     "types:check": "corepack pnpm run types:generate && git diff --exit-code -- src/api/generated/openapi.schema.json src/api/generated/openapi.ts",
@@ -43,6 +44,7 @@
     "react-router-dom": "^7.18.3"
   },
   "devDependencies": {
+    "@playwright/test": "^1.56.1",
     "@eslint/js": "^10.0.1",
     "@testing-library/react": "^16.3.0",
     "@types/node": "^26.5.1",

@@ -19,7 +19,7 @@ export const NAV_ITEMS: readonly NavItem[] = [
   { to: "/status", label: "Status", icon: Activity },
   { to: "/config", label: "Config", icon: Settings },
   { to: "/backtest", label: "Backtest", icon: FlaskConical },
-  { to: "/execution", label: "Execution", icon: Play },
+  { to: "/execution/preflight", label: "Preflight", icon: Play },
 ];
 
 export const APP_NAME = "Arbijuie";

@@ -16,8 +16,8 @@ vi.mock("./pages/ConfigPage/ConfigPage", () => ({
 vi.mock("./pages/BacktestPage/BacktestPage", () => ({
   default: () => <h1>Backtest page mock</h1>,
 }));
-vi.mock("./pages/ExecutionPage/ExecutionPage", () => ({
-  default: () => <h1>Execution</h1>,
+vi.mock("./pages/ExecutionPreflightPage/ExecutionPreflightPage", () => ({
+  default: () => <h1>Execution Preflight</h1>,
 }));
 
 function renderAt(path: string) {
@@ -33,7 +33,7 @@ describe("AppShell routing", () => {
     ["/", "Opportunities page mock"],
     ["/status", "Status page mock"],
     ["/backtest", "Backtest page mock"],
-    ["/execution", "Execution"],
+    ["/execution/preflight", "Execution Preflight"],
   ])("renders %s by direct URL", (path, heading) => {
     renderAt(path);
     expect(screen.getByRole("heading", { level: 1, name: heading })).toBeTruthy();
@@ -48,6 +48,12 @@ describe("AppShell routing", () => {
       "/"
     );
     expect(screen.getByRole("navigation", { name: "Primary" })).toBeTruthy();
+  });
+
+  it("renders not-found for legacy execution route", () => {
+    renderAt("/execution");
+    expect(screen.getByRole("heading", { level: 1, name: "Page not found" })).toBeTruthy();
+    expect(screen.getByText('No section matches "/execution"')).toBeTruthy();
   });
 
   it("contains a page render error inside the route boundary", () => {

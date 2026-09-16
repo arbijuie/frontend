@@ -12,8 +12,8 @@ const decisionLabel: Record<"ready" | "watching" | "blocked", string> = {
   blocked: "BLOCKED",
 };
 
-const ExecutionPage = () => {
-  usePageTitle("Execution");
+const ExecutionPreflightPage = () => {
+  usePageTitle("Execution preflight");
   const {
     data: preflight,
     error: preflightError,
@@ -40,7 +40,10 @@ const ExecutionPage = () => {
 
   return (
     <div className={styles.page}>
-      <PageHeader title="Execution" subtitle="Readiness, preflight checks, and execution state" />
+      <PageHeader
+        title="Execution Preflight"
+        subtitle="Readiness, preflight checks, and execution state"
+      />
 
       <div className={styles.summaryRow}>
         <span className={styles.summaryPill}>Decision priority: blocked &gt; watching &gt; ready</span>
@@ -66,7 +69,9 @@ const ExecutionPage = () => {
       {preflight && (
         <>
           <div className={styles.summaryRow}>
-            <span className={styles.summaryPill}>final decision: {decisionLabel[preflight.decision]}</span>
+            <span className={styles.summaryPill}>
+              final decision: {decisionLabel[preflight.decision]}
+            </span>
             <span className={styles.summaryPill}>ready: {String(preflight.ready)}</span>
             <span className={styles.summaryPill}>
               runtime ready candidates: {preflight.runtime.screener_ready_candidates}
@@ -160,4 +165,4 @@ const ExecutionPage = () => {
   );
 };
 
-export default ExecutionPage;
+export default ExecutionPreflightPage;

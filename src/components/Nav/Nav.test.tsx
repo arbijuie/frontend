@@ -22,14 +22,14 @@ describe("Nav", () => {
       "Status",
       "Config",
       "Backtest",
-      "Execution",
+      "Preflight",
     ]);
     expect(links.map((link) => link.getAttribute("href"))).toEqual([
       "/",
       "/status",
       "/config",
       "/backtest",
-      "/execution",
+      "/execution/preflight",
     ]);
     expect(new Set(NAV_ITEMS.map((item) => item.to)).size).toBe(NAV_ITEMS.length);
   });
