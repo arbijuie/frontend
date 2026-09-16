@@ -83,10 +83,17 @@ Behavior contributors can rely on:
 ```bash
 pnpm lint
 pnpm test
+pnpm test:e2e:install
 pnpm test:e2e
 pnpm build
 pnpm audit:ci   # dependency audit, high severity and above (same gate as CI)
 pnpm types:check
+```
+
+If Chromium download is blocked in your environment, run E2E using a locally installed browser channel:
+
+```bash
+PW_BROWSER_CHANNEL=msedge pnpm test:e2e
 ```
 
 `pnpm check` runs lint, test, build and the audit in one go. `pnpm install` also

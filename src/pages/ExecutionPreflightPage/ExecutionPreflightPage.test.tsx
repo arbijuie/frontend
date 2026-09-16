@@ -281,4 +281,48 @@ describe("ExecutionPreflightPage", () => {
       screen.getByText("[blocked] runtime::stale_runtime_snapshot - Latest screener snapshot is stale.")
     ).toBeTruthy();
   });
+
+  it.each([
+    {
+      severity: "watching",
+      source: "gate",
+      code: "execution_disabled",
+      message: "Execution mode is disabled by configuration.",
+      expected: "[watching] gate::execution_disabled - Execution mode is disabled by configuration.",
+    },
+    {
+      severity: "blocked",
+      source: "candidate",
+      code: "symbol_not_found",
+      message: "No validated candidate found for symbol ETH.",
+      expected: "[blocked] candidate::symbol_not_found - No validated candidate found for symbol ETH.",
+    },
+    {
+      severity: "blocked",
+      source: "runtime",
+      code: "stale_runtime_snapshot",
+      message: "Latest screener snapshot is stale.",
+      expected: "[blocked] runtime::stale_runtime_snapshot - Latest screener snapshot is stale.",
+    },
+  ] as const)(
+    "blockers snapshot row for $severity/$source",
+    ({ severity, source, code, message, expected }) => {
+      mockedUseExecutionPreflight.mockReturnValue({
+        data: makePreflight({
+          blockers: [{ severity, source, code, message }],
+        }),
+        error: null,
+        loading: false,
+        fetching: false,
+        refetch: vi.fn(),
+      });
+
+      render(<ExecutionPreflightPage />);
+
+      expect(screen.getByRole("heading", { level: 2, name: "Blockers" })).toBeTruthy();
+      expect(screen.getByText(expected).textContent).toMatchSnapshot(
+        `${severity}-${source}-${code}`
+      );
+    }
+  );
 });

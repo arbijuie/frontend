@@ -1,5 +1,9 @@
 import { defineConfig, devices } from "@playwright/test";
 
+const browserChannel = process.env.PW_BROWSER_CHANNEL;
+
+const channelOverride = browserChannel ? { channel: browserChannel } : {};
+
 export default defineConfig({
   testDir: "./e2e",
   timeout: 30_000,
@@ -21,12 +25,12 @@ export default defineConfig({
   },
   projects: [
     {
-      name: "edge-desktop",
-      use: { ...devices["Desktop Edge"], channel: "msedge" },
+      name: "chromium-desktop",
+      use: { ...devices["Desktop Chrome"], ...channelOverride },
     },
     {
-      name: "edge-mobile",
-      use: { ...devices["Pixel 7"], channel: "msedge" },
+      name: "chromium-mobile",
+      use: { ...devices["Pixel 7"], ...channelOverride },
     },
   ],
 });

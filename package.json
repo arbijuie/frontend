@@ -25,6 +25,7 @@
     "dev": "vite --config config/vite.config.ts",
     "build": "tsc -b tsconfig.json && vite build --config config/vite.config.ts",
     "lint": "eslint -c config/eslint.config.js .",
+    "test:e2e:install": "playwright install chromium",
     "test": "vitest run --config config/vitest.config.ts",
     "test:e2e": "playwright test --config playwright.config.ts",
     "test:coverage": "vitest run --config config/vitest.config.ts --coverage",
