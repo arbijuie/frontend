@@ -4,3 +4,5 @@ export const POLL_INTERVAL_MS = 32_000;
 
 export const authHeaders = (): HeadersInit =>
   API_TOKEN ? { Authorization: `Bearer ${API_TOKEN}` } : {};
+
+export const WS_URL_OVERRIDE = import.meta.env.VITE_ARB_WS_URL as string | undefined;

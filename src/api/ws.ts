@@ -1,4 +1,4 @@
-import { API_URL, authHeaders } from "./config";
+import { API_URL, WS_URL_OVERRIDE, authHeaders } from "./config";
 import type { WsAuthTicketResponse } from "./types";
 
 export async function fetchWsAuthTicket(): Promise<WsAuthTicketResponse> {
@@ -13,5 +13,8 @@ export async function fetchWsAuthTicket(): Promise<WsAuthTicketResponse> {
 }
 
 export function getWsUrl(): string {
+  if (WS_URL_OVERRIDE) {
+    return WS_URL_OVERRIDE;
+  }
   return `${API_URL.replace(/^http/, "ws")}/ws/opportunities`;
 }
