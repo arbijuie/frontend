@@ -11,6 +11,7 @@ function makeDropCounters(): NonNullable<StatusResponse["screener_drop_counters"
     apr_cap: 0,
     non_positive_funding_edge: 0,
     basis_gate: 0,
+    basis_entry_gate: 0,
     min_score: 0,
     basis_bonus_capped: 0,
     adaptive_hold_applied: 0,
