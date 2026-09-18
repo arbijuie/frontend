@@ -61,10 +61,11 @@ interface BacktestLockListProps {
 const BacktestLockList = ({ onSelectLock }: BacktestLockListProps) => {
   const { data, error, loading } = useBacktestLocks();
   const [sortKey, setSortKey] = useState<SortKey>(loadSortKey);
+  const sortedLocks = useMemo(() => sortLocks(data?.items ?? [], sortKey), [data?.items, sortKey]);
 
   if (loading) return <div>Loading locks...</div>;
   if (error) return <div>Error: {error}</div>;
-  if (!data || !data.items || data.items.length === 0) {
+  if (!data?.items || data.items.length === 0) {
     return (
       <EmptyState
         title="No strategy locks yet"
@@ -72,8 +73,6 @@ const BacktestLockList = ({ onSelectLock }: BacktestLockListProps) => {
       />
     );
   }
-
-  const sortedLocks = useMemo(() => sortLocks(data.items ?? [], sortKey), [data.items, sortKey]);
 
   return (
     <div>
