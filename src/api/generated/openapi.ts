@@ -1392,6 +1392,11 @@ export interface components {
              */
             basis_divergence_penalty: number;
             /**
+             * Basis Entry Gate
+             * @default 0
+             */
+            basis_entry_gate: number;
+            /**
              * Basis Gate
              * @default 0
              */

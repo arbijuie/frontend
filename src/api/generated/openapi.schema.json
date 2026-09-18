@@ -3214,6 +3214,11 @@
             "title": "Basis Divergence Penalty",
             "type": "integer"
           },
+          "basis_entry_gate": {
+            "default": 0,
+            "title": "Basis Entry Gate",
+            "type": "integer"
+          },
           "basis_gate": {
             "default": 0,
             "title": "Basis Gate",
