@@ -319,8 +319,33 @@ export interface components {
         };
         /** BacktestLockListItem */
         BacktestLockListItem: {
+            /**
+             * Basis Carry Pnl Bps
+             * @default 0
+             */
+            basis_carry_pnl_bps: number;
             /** Created At */
             created_at: string;
+            /**
+             * Entries
+             * @default 0
+             */
+            entries: number;
+            /**
+             * Entry Cost Bps
+             * @default 0
+             */
+            entry_cost_bps: number;
+            /**
+             * Exits
+             * @default 0
+             */
+            exits: number;
+            /**
+             * Funding Carry Pnl Bps
+             * @default 0
+             */
+            funding_carry_pnl_bps: number;
             /** Gate Passed */
             gate_passed: boolean;
             /** Lock Id */
@@ -365,16 +390,39 @@ export interface components {
         };
         /** BacktestMetricsItem */
         BacktestMetricsItem: {
+            /**
+             * Basis Carry Pnl Bps
+             * @default 0
+             */
+            basis_carry_pnl_bps: number;
             /** Closed Trades */
             closed_trades: number;
             /** Entries */
             entries: number;
+            /** Entries By Strategy Type */
+            entries_by_strategy_type?: {
+                [key: string]: number;
+            };
+            /**
+             * Entry Cost Bps
+             * @default 0
+             */
+            entry_cost_bps: number;
             /** Exit Reasons */
             exit_reasons?: {
                 [key: string]: number;
             };
             /** Exits */
             exits: number;
+            /** Exits By Strategy Type */
+            exits_by_strategy_type?: {
+                [key: string]: number;
+            };
+            /**
+             * Funding Carry Pnl Bps
+             * @default 0
+             */
+            funding_carry_pnl_bps: number;
             /** Max Drawdown Bps */
             max_drawdown_bps: number;
             /** Median Trade Pnl Bps */
@@ -426,6 +474,10 @@ export interface components {
         };
         /** BacktestReplayRequest */
         BacktestReplayRequest: {
+            /** Basis Exit Bps */
+            basis_exit_bps?: number | null;
+            /** Basis Max Hold Multiplier */
+            basis_max_hold_multiplier?: number | null;
             /** Basis Reversal Exit */
             basis_reversal_exit?: boolean | null;
             /** Cycle Hours */
@@ -529,8 +581,16 @@ export interface components {
             basis_bonus_cap_bps: number;
             /** Basis Divergence Threshold Bps */
             basis_divergence_threshold_bps: number;
+            /** Basis Entry Bps */
+            basis_entry_bps: number;
+            /** Basis Exit Bps */
+            basis_exit_bps: number;
             /** Basis Expansion Penalty Bps Per Hour */
             basis_expansion_penalty_bps_per_hour: number;
+            /** Basis Funding Penalty Weight */
+            basis_funding_penalty_weight: number;
+            /** Basis Max Hold Multiplier */
+            basis_max_hold_multiplier: number;
             /** Basis Weight */
             basis_weight: number;
             /** Binance Base Url */
@@ -696,8 +756,16 @@ export interface components {
             basis_bonus_cap_bps?: number | null;
             /** Basis Divergence Threshold Bps */
             basis_divergence_threshold_bps?: number | null;
+            /** Basis Entry Bps */
+            basis_entry_bps?: number | null;
+            /** Basis Exit Bps */
+            basis_exit_bps?: number | null;
             /** Basis Expansion Penalty Bps Per Hour */
             basis_expansion_penalty_bps_per_hour?: number | null;
+            /** Basis Funding Penalty Weight */
+            basis_funding_penalty_weight?: number | null;
+            /** Basis Max Hold Multiplier */
+            basis_max_hold_multiplier?: number | null;
             /** Basis Weight */
             basis_weight?: number | null;
             /** Correlation Threshold */
@@ -880,6 +948,8 @@ export interface components {
             short_exchange?: string | null;
             /** Size Usd */
             size_usd?: number | null;
+            /** Strategy Type */
+            strategy_type?: ("funding_arbitrage" | "basis_convergence" | "cash_and_carry") | null;
             /** Symbol */
             symbol: string;
         };
@@ -919,17 +989,22 @@ export interface components {
              * @default 0
              */
             correlated_ready_count: number;
-            /** Long Exchange */
-            long_exchange: string;
+            /** Legs */
+            legs?: components["schemas"]["LegItem"][];
             /** Reasons */
             reasons?: components["schemas"]["ExecutionPreflightCandidateReasonItem"][];
-            /** Short Exchange */
-            short_exchange: string;
             /**
              * Status
              * @enum {string}
              */
             status: "ready" | "watching" | "blocked";
+            /** Strategy Profile Id */
+            strategy_profile_id: string;
+            /**
+             * Strategy Type
+             * @enum {string}
+             */
+            strategy_type: "funding_arbitrage" | "basis_convergence" | "cash_and_carry";
             /** Symbol */
             symbol: string;
         };
@@ -1059,6 +1134,43 @@ export interface components {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
         };
+        /** LegItem */
+        LegItem: {
+            /** Borrow Rate */
+            borrow_rate?: number | null;
+            /** Fee Maker */
+            fee_maker?: number | null;
+            /** Fee Taker */
+            fee_taker?: number | null;
+            /** Funding Rate */
+            funding_rate?: number | null;
+            /** Index Price */
+            index_price?: string | null;
+            /**
+             * Instrument Kind
+             * @enum {string}
+             */
+            instrument_kind: "perp" | "spot" | "future";
+            /** Margin Mode */
+            margin_mode?: ("isolated" | "cross" | "unknown") | null;
+            /** Mark Price */
+            mark_price?: string | null;
+            /** Normalized Symbol */
+            normalized_symbol: string;
+            /** Quote Asset */
+            quote_asset?: string | null;
+            /** Settlement Ccy */
+            settlement_ccy?: string | null;
+            /**
+             * Side
+             * @enum {string}
+             */
+            side: "long" | "short";
+            /** Venue */
+            venue: string;
+            /** Venue Native Symbol */
+            venue_native_symbol?: string | null;
+        };
         /** OpportunitiesResponse */
         OpportunitiesResponse: {
             /** Count */
@@ -1126,10 +1238,10 @@ export interface components {
             historical_win_rate?: number | null;
             /** Hours To Breakeven */
             hours_to_breakeven?: number | null;
+            /** Legs */
+            legs?: components["schemas"]["LegItem"][];
             /** Liquidity Tier */
             liquidity_tier?: ("H" | "M" | "L") | null;
-            /** Long Exchange */
-            long_exchange: string;
             long_forecast?: components["schemas"]["FundingForecastItem"] | null;
             /** Long Hours To Next Funding */
             long_hours_to_next_funding?: number | null;
@@ -1143,8 +1255,6 @@ export interface components {
             reasons?: components["schemas"]["ReasonItem"][];
             /** Recommended Size Usd */
             recommended_size_usd?: number | null;
-            /** Short Exchange */
-            short_exchange: string;
             short_forecast?: components["schemas"]["FundingForecastItem"] | null;
             /** Short Hours To Next Funding */
             short_hours_to_next_funding?: number | null;
@@ -1160,6 +1270,13 @@ export interface components {
              * @enum {string}
              */
             status: "ready" | "watching" | "blocked";
+            /** Strategy Profile Id */
+            strategy_profile_id: string;
+            /**
+             * Strategy Type
+             * @enum {string}
+             */
+            strategy_type: "funding_arbitrage" | "basis_convergence" | "cash_and_carry";
             /** Symbol */
             symbol: string;
             /**
@@ -1275,10 +1392,20 @@ export interface components {
              */
             basis_divergence_penalty: number;
             /**
+             * Basis Entry Gate
+             * @default 0
+             */
+            basis_entry_gate: number;
+            /**
              * Basis Gate
              * @default 0
              */
             basis_gate: number;
+            /**
+             * L2 Book Fetch Error
+             * @default 0
+             */
+            l2_book_fetch_error: number;
             /**
              * L2 Book Fetch Error Hyperliquid
              * @default 0

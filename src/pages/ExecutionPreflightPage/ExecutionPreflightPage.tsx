@@ -37,6 +37,8 @@ const ExecutionPreflightPage = () => {
   const aboveThreshold = correlation?.pairs?.filter((pair) => pair.above_threshold).length ?? 0;
   const blockers = preflight?.blockers ?? [];
   const candidateReasons = preflight?.candidate?.reasons ?? [];
+  const candidateLongVenue = preflight?.candidate?.legs?.find((leg) => leg.side === "long")?.venue;
+  const candidateShortVenue = preflight?.candidate?.legs?.find((leg) => leg.side === "short")?.venue;
 
   return (
     <div className={styles.page}>
@@ -125,9 +127,7 @@ const ExecutionPreflightPage = () => {
           ) : (
             <ul>
               <li>symbol: {preflight.candidate.symbol}</li>
-              <li>
-                route: {preflight.candidate.long_exchange} / {preflight.candidate.short_exchange}
-              </li>
+              <li>route: {candidateLongVenue ?? "-"} / {candidateShortVenue ?? "-"}</li>
               <li>combined_score: {preflight.candidate.combined_score.toFixed(2)}</li>
               <li>status: {preflight.candidate.status}</li>
               <li>

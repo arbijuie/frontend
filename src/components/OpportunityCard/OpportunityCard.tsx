@@ -27,6 +27,10 @@ function formatSigned(value: number, fractionDigits = 2): string {
 
 const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
   const [expanded, setExpanded] = useState(false);
+  const longLeg = item.legs?.find((leg) => leg.side === "long");
+  const shortLeg = item.legs?.find((leg) => leg.side === "short");
+  const longVenue = longLeg?.venue ?? "unknown";
+  const shortVenue = shortLeg?.venue ?? "unknown";
   const scoreFromComponents =
     item.funding_edge_bps +
     item.basis_bonus_bps -
@@ -50,9 +54,9 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
         <StatusBadge status={item.status} />
       </div>
       <div className={styles.route}>
-        <ExchangeBadge exchange={item.long_exchange} />
+        <ExchangeBadge exchange={longVenue} />
         <span className={styles.arrow}>→</span>
-        <ExchangeBadge exchange={item.short_exchange} />
+        <ExchangeBadge exchange={shortVenue} />
       </div>
       <div className={styles.metrics}>
         <div>

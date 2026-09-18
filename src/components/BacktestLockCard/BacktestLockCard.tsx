@@ -32,6 +32,18 @@ const BacktestLockCard = ({ lock, onSelect }: BacktestLockCardProps) => {
           <div className={styles.metricLabel}>Max Drawdown (achieved)</div>
           <div className={styles.metricValue}>{lock.max_drawdown_bps.toFixed(1)} bps</div>
         </div>
+        <div>
+          <div className={styles.metricLabel}>Carry (funding / basis)</div>
+          <div className={styles.metricValue}>
+            {lock.funding_carry_pnl_bps.toFixed(1)} / {lock.basis_carry_pnl_bps.toFixed(1)} bps
+          </div>
+        </div>
+        <div>
+          <div className={styles.metricLabel}>Entry Costs / Trades</div>
+          <div className={styles.metricValue}>
+            -{lock.entry_cost_bps.toFixed(1)} bps · {lock.entries}/{lock.exits}
+          </div>
+        </div>
       </div>
       <button className={styles.viewButton} onClick={() => onSelect(lock.lock_id)}>
         View details

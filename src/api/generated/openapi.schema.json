@@ -111,9 +111,34 @@
       },
       "BacktestLockListItem": {
         "properties": {
+          "basis_carry_pnl_bps": {
+            "default": 0.0,
+            "title": "Basis Carry Pnl Bps",
+            "type": "number"
+          },
           "created_at": {
             "title": "Created At",
             "type": "string"
+          },
+          "entries": {
+            "default": 0,
+            "title": "Entries",
+            "type": "integer"
+          },
+          "entry_cost_bps": {
+            "default": 0.0,
+            "title": "Entry Cost Bps",
+            "type": "number"
+          },
+          "exits": {
+            "default": 0,
+            "title": "Exits",
+            "type": "integer"
+          },
+          "funding_carry_pnl_bps": {
+            "default": 0.0,
+            "title": "Funding Carry Pnl Bps",
+            "type": "number"
           },
           "gate_passed": {
             "title": "Gate Passed",
@@ -231,6 +256,11 @@
       },
       "BacktestMetricsItem": {
         "properties": {
+          "basis_carry_pnl_bps": {
+            "default": 0.0,
+            "title": "Basis Carry Pnl Bps",
+            "type": "number"
+          },
           "closed_trades": {
             "title": "Closed Trades",
             "type": "integer"
@@ -238,6 +268,18 @@
           "entries": {
             "title": "Entries",
             "type": "integer"
+          },
+          "entries_by_strategy_type": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Entries By Strategy Type",
+            "type": "object"
+          },
+          "entry_cost_bps": {
+            "default": 0.0,
+            "title": "Entry Cost Bps",
+            "type": "number"
           },
           "exit_reasons": {
             "additionalProperties": {
@@ -249,6 +291,18 @@
           "exits": {
             "title": "Exits",
             "type": "integer"
+          },
+          "exits_by_strategy_type": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Exits By Strategy Type",
+            "type": "object"
+          },
+          "funding_carry_pnl_bps": {
+            "default": 0.0,
+            "title": "Funding Carry Pnl Bps",
+            "type": "number"
           },
           "max_drawdown_bps": {
             "title": "Max Drawdown Bps",
@@ -374,6 +428,28 @@
       },
       "BacktestReplayRequest": {
         "properties": {
+          "basis_exit_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Basis Exit Bps"
+          },
+          "basis_max_hold_multiplier": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Basis Max Hold Multiplier"
+          },
           "basis_reversal_exit": {
             "anyOf": [
               {
@@ -673,8 +749,24 @@
             "title": "Basis Divergence Threshold Bps",
             "type": "number"
           },
+          "basis_entry_bps": {
+            "title": "Basis Entry Bps",
+            "type": "number"
+          },
+          "basis_exit_bps": {
+            "title": "Basis Exit Bps",
+            "type": "number"
+          },
           "basis_expansion_penalty_bps_per_hour": {
             "title": "Basis Expansion Penalty Bps Per Hour",
+            "type": "number"
+          },
+          "basis_funding_penalty_weight": {
+            "title": "Basis Funding Penalty Weight",
+            "type": "number"
+          },
+          "basis_max_hold_multiplier": {
+            "title": "Basis Max Hold Multiplier",
             "type": "number"
           },
           "basis_weight": {
@@ -1011,6 +1103,10 @@
           "max_volume_fraction",
           "expected_hold_hours",
           "basis_weight",
+          "basis_entry_bps",
+          "basis_exit_bps",
+          "basis_max_hold_multiplier",
+          "basis_funding_penalty_weight",
           "basis_bonus_cap_bps",
           "basis_divergence_threshold_bps",
           "max_basis_divergence_hours",
@@ -1154,6 +1250,28 @@
             ],
             "title": "Basis Divergence Threshold Bps"
           },
+          "basis_entry_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Basis Entry Bps"
+          },
+          "basis_exit_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Basis Exit Bps"
+          },
           "basis_expansion_penalty_bps_per_hour": {
             "anyOf": [
               {
@@ -1164,6 +1282,28 @@
               }
             ],
             "title": "Basis Expansion Penalty Bps Per Hour"
+          },
+          "basis_funding_penalty_weight": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Basis Funding Penalty Weight"
+          },
+          "basis_max_hold_multiplier": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Basis Max Hold Multiplier"
           },
           "basis_weight": {
             "anyOf": [
@@ -1773,6 +1913,22 @@
             ],
             "title": "Size Usd"
           },
+          "strategy_type": {
+            "anyOf": [
+              {
+                "enum": [
+                  "funding_arbitrage",
+                  "basis_convergence",
+                  "cash_and_carry"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Strategy Type"
+          },
           "symbol": {
             "title": "Symbol",
             "type": "string"
@@ -1864,9 +2020,12 @@
             "title": "Correlated Ready Count",
             "type": "integer"
           },
-          "long_exchange": {
-            "title": "Long Exchange",
-            "type": "string"
+          "legs": {
+            "items": {
+              "$ref": "#/components/schemas/LegItem"
+            },
+            "title": "Legs",
+            "type": "array"
           },
           "reasons": {
             "items": {
@@ -1874,10 +2033,6 @@
             },
             "title": "Reasons",
             "type": "array"
-          },
-          "short_exchange": {
-            "title": "Short Exchange",
-            "type": "string"
           },
           "status": {
             "enum": [
@@ -1888,6 +2043,19 @@
             "title": "Status",
             "type": "string"
           },
+          "strategy_profile_id": {
+            "title": "Strategy Profile Id",
+            "type": "string"
+          },
+          "strategy_type": {
+            "enum": [
+              "funding_arbitrage",
+              "basis_convergence",
+              "cash_and_carry"
+            ],
+            "title": "Strategy Type",
+            "type": "string"
+          },
           "symbol": {
             "title": "Symbol",
             "type": "string"
@@ -1895,8 +2063,8 @@
         },
         "required": [
           "symbol",
-          "long_exchange",
-          "short_exchange",
+          "strategy_type",
+          "strategy_profile_id",
           "combined_score",
           "status"
         ],
@@ -2250,6 +2418,158 @@
         "title": "HTTPValidationError",
         "type": "object"
       },
+      "LegItem": {
+        "properties": {
+          "borrow_rate": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Borrow Rate"
+          },
+          "fee_maker": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fee Maker"
+          },
+          "fee_taker": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fee Taker"
+          },
+          "funding_rate": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Funding Rate"
+          },
+          "index_price": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Index Price"
+          },
+          "instrument_kind": {
+            "enum": [
+              "perp",
+              "spot",
+              "future"
+            ],
+            "title": "Instrument Kind",
+            "type": "string"
+          },
+          "margin_mode": {
+            "anyOf": [
+              {
+                "enum": [
+                  "isolated",
+                  "cross",
+                  "unknown"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Margin Mode"
+          },
+          "mark_price": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mark Price"
+          },
+          "normalized_symbol": {
+            "title": "Normalized Symbol",
+            "type": "string"
+          },
+          "quote_asset": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Quote Asset"
+          },
+          "settlement_ccy": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Settlement Ccy"
+          },
+          "side": {
+            "enum": [
+              "long",
+              "short"
+            ],
+            "title": "Side",
+            "type": "string"
+          },
+          "venue": {
+            "title": "Venue",
+            "type": "string"
+          },
+          "venue_native_symbol": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Venue Native Symbol"
+          }
+        },
+        "required": [
+          "instrument_kind",
+          "venue",
+          "normalized_symbol",
+          "side"
+        ],
+        "title": "LegItem",
+        "type": "object"
+      },
       "OpportunitiesResponse": {
         "properties": {
           "count": {
@@ -2457,6 +2777,13 @@
             ],
             "title": "Hours To Breakeven"
           },
+          "legs": {
+            "items": {
+              "$ref": "#/components/schemas/LegItem"
+            },
+            "title": "Legs",
+            "type": "array"
+          },
           "liquidity_tier": {
             "anyOf": [
               {
@@ -2472,10 +2799,6 @@
               }
             ],
             "title": "Liquidity Tier"
-          },
-          "long_exchange": {
-            "title": "Long Exchange",
-            "type": "string"
           },
           "long_forecast": {
             "anyOf": [
@@ -2542,10 +2865,6 @@
             ],
             "title": "Recommended Size Usd"
           },
-          "short_exchange": {
-            "title": "Short Exchange",
-            "type": "string"
-          },
           "short_forecast": {
             "anyOf": [
               {
@@ -2585,6 +2904,19 @@
             "title": "Status",
             "type": "string"
           },
+          "strategy_profile_id": {
+            "title": "Strategy Profile Id",
+            "type": "string"
+          },
+          "strategy_type": {
+            "enum": [
+              "funding_arbitrage",
+              "basis_convergence",
+              "cash_and_carry"
+            ],
+            "title": "Strategy Type",
+            "type": "string"
+          },
           "symbol": {
             "title": "Symbol",
             "type": "string"
@@ -2597,8 +2929,8 @@
         },
         "required": [
           "symbol",
-          "long_exchange",
-          "short_exchange",
+          "strategy_type",
+          "strategy_profile_id",
           "long_rate_apr",
           "short_rate_apr",
           "funding_diff_apr",
@@ -2882,9 +3214,19 @@
             "title": "Basis Divergence Penalty",
             "type": "integer"
           },
+          "basis_entry_gate": {
+            "default": 0,
+            "title": "Basis Entry Gate",
+            "type": "integer"
+          },
           "basis_gate": {
             "default": 0,
             "title": "Basis Gate",
+            "type": "integer"
+          },
+          "l2_book_fetch_error": {
+            "default": 0,
+            "title": "L2 Book Fetch Error",
             "type": "integer"
           },
           "l2_book_fetch_error_hyperliquid": {
