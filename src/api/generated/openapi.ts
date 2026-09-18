@@ -426,6 +426,10 @@ export interface components {
         };
         /** BacktestReplayRequest */
         BacktestReplayRequest: {
+            /** Basis Exit Bps */
+            basis_exit_bps?: number | null;
+            /** Basis Max Hold Multiplier */
+            basis_max_hold_multiplier?: number | null;
             /** Basis Reversal Exit */
             basis_reversal_exit?: boolean | null;
             /** Cycle Hours */
@@ -529,8 +533,16 @@ export interface components {
             basis_bonus_cap_bps: number;
             /** Basis Divergence Threshold Bps */
             basis_divergence_threshold_bps: number;
+            /** Basis Entry Bps */
+            basis_entry_bps: number;
+            /** Basis Exit Bps */
+            basis_exit_bps: number;
             /** Basis Expansion Penalty Bps Per Hour */
             basis_expansion_penalty_bps_per_hour: number;
+            /** Basis Funding Penalty Weight */
+            basis_funding_penalty_weight: number;
+            /** Basis Max Hold Multiplier */
+            basis_max_hold_multiplier: number;
             /** Basis Weight */
             basis_weight: number;
             /** Binance Base Url */
@@ -696,8 +708,16 @@ export interface components {
             basis_bonus_cap_bps?: number | null;
             /** Basis Divergence Threshold Bps */
             basis_divergence_threshold_bps?: number | null;
+            /** Basis Entry Bps */
+            basis_entry_bps?: number | null;
+            /** Basis Exit Bps */
+            basis_exit_bps?: number | null;
             /** Basis Expansion Penalty Bps Per Hour */
             basis_expansion_penalty_bps_per_hour?: number | null;
+            /** Basis Funding Penalty Weight */
+            basis_funding_penalty_weight?: number | null;
+            /** Basis Max Hold Multiplier */
+            basis_max_hold_multiplier?: number | null;
             /** Basis Weight */
             basis_weight?: number | null;
             /** Correlation Threshold */

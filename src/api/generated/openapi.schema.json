@@ -374,6 +374,28 @@
       },
       "BacktestReplayRequest": {
         "properties": {
+          "basis_exit_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Basis Exit Bps"
+          },
+          "basis_max_hold_multiplier": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Basis Max Hold Multiplier"
+          },
           "basis_reversal_exit": {
             "anyOf": [
               {
@@ -673,8 +695,24 @@
             "title": "Basis Divergence Threshold Bps",
             "type": "number"
           },
+          "basis_entry_bps": {
+            "title": "Basis Entry Bps",
+            "type": "number"
+          },
+          "basis_exit_bps": {
+            "title": "Basis Exit Bps",
+            "type": "number"
+          },
           "basis_expansion_penalty_bps_per_hour": {
             "title": "Basis Expansion Penalty Bps Per Hour",
+            "type": "number"
+          },
+          "basis_funding_penalty_weight": {
+            "title": "Basis Funding Penalty Weight",
+            "type": "number"
+          },
+          "basis_max_hold_multiplier": {
+            "title": "Basis Max Hold Multiplier",
             "type": "number"
           },
           "basis_weight": {
@@ -1011,6 +1049,10 @@
           "max_volume_fraction",
           "expected_hold_hours",
           "basis_weight",
+          "basis_entry_bps",
+          "basis_exit_bps",
+          "basis_max_hold_multiplier",
+          "basis_funding_penalty_weight",
           "basis_bonus_cap_bps",
           "basis_divergence_threshold_bps",
           "max_basis_divergence_hours",
@@ -1154,6 +1196,28 @@
             ],
             "title": "Basis Divergence Threshold Bps"
           },
+          "basis_entry_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Basis Entry Bps"
+          },
+          "basis_exit_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Basis Exit Bps"
+          },
           "basis_expansion_penalty_bps_per_hour": {
             "anyOf": [
               {
@@ -1164,6 +1228,28 @@
               }
             ],
             "title": "Basis Expansion Penalty Bps Per Hour"
+          },
+          "basis_funding_penalty_weight": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Basis Funding Penalty Weight"
+          },
+          "basis_max_hold_multiplier": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Basis Max Hold Multiplier"
           },
           "basis_weight": {
             "anyOf": [
