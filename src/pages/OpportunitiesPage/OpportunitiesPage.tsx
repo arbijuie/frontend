@@ -14,10 +14,20 @@ import { useNow } from "../../hooks/useNow";
 import { useTransientFlag } from "../../hooks/useTransientFlag";
 import { POLL_INTERVAL_MS } from "../../api/config";
 import { usePageTitle } from "../../hooks/usePageTitle";
+import TransportIndicator from "../../components/TransportIndicator/TransportIndicator";
 
 export default function OpportunitiesPage() {
   usePageTitle("Opportunities");
-  const { data, error, loading, fetching, refetch } = useOpportunities();
+  const {
+    data,
+    error,
+    loading,
+    fetching,
+    refetch,
+    transportState,
+    reconnectAttempt,
+    retryConnection,
+  } = useOpportunities();
   const { data: status } = useStatus();
   const { data: config } = useConfig({
     staleTime: 0,
@@ -45,10 +55,15 @@ export default function OpportunitiesPage() {
         <div>
           <h1 className={styles.title}>Opportunities</h1>
           <div className={styles.liveRow}>
-            <span className={styles.liveDot} />
-            live
+            <TransportIndicator
+              state={transportState}
+              reconnectAttempt={reconnectAttempt}
+              onRetry={retryConnection}
+            />
             {data?.updated_at && (
-              <span>· updated {new Date(data.updated_at).toLocaleTimeString()}</span>
+              <div className={styles.hint}>
+                updated {new Date(data.updated_at).toLocaleTimeString()}
+              </div>
             )}
           </div>
           <div className={styles.summaryRow}>
