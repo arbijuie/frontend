@@ -7,6 +7,8 @@ import type { OpportunitiesResponse } from "../api/types";
 
 export type TransportState = "connecting" | "connected" | "reconnecting" | "polling-fallback";
 
+const STALL_TIMEOUT_MS = 60000;
+
 export function useOpportunitiesSocket() {
   const queryClient = useQueryClient();
   const [transportState, setTransportState] = useState<TransportState>("connecting");
@@ -14,7 +16,24 @@ export function useOpportunitiesSocket() {
   const wsRef = useRef<WebSocket | null>(null);
   const attemptRef = useRef(0);
   const reconnectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const stallTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const stoppedRef = useRef(false);
+
+  const clearStallTimer = () => {
+    if (stallTimerRef.current) {
+      clearTimeout(stallTimerRef.current);
+      stallTimerRef.current = null;
+    }
+  };
+
+  const armStallTimer = (ws: WebSocket) => {
+    clearStallTimer();
+    stallTimerRef.current = setTimeout(() => {
+      if (wsRef.current === ws) {
+        ws.close();
+      }
+    }, STALL_TIMEOUT_MS);
+  };
 
   const scheduleReconnect = () => {
     attemptRef.current += 1;
@@ -50,9 +69,12 @@ export function useOpportunitiesSocket() {
         attemptRef.current = 0;
         setReconnectAttempt(0);
         setTransportState("connected");
+        armStallTimer(ws);
       };
 
       ws.onmessage = (event) => {
+        armStallTimer(ws);
+
         try {
           const frame: OpportunitiesResponse = JSON.parse(event.data);
           const cached = queryClient.getQueryData<OpportunitiesResponse>(["opportunities"]);
@@ -65,6 +87,7 @@ export function useOpportunitiesSocket() {
 
       ws.onclose = () => {
         wsRef.current = null;
+        clearStallTimer();
         if (!stoppedRef.current) {
           scheduleReconnect();
         }
@@ -94,6 +117,7 @@ export function useOpportunitiesSocket() {
       if (reconnectTimerRef.current) {
         clearTimeout(reconnectTimerRef.current);
       }
+      clearStallTimer();
     };
   }, []);
 
