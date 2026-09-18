@@ -10,6 +10,8 @@ interface BacktestLockDetailProps {
 
 const BacktestLockDetail = ({ lockId }: BacktestLockDetailProps) => {
   const { data, error, loading } = useBacktestLock(lockId);
+  const entriesByStrategy = Object.entries(data?.metrics.entries_by_strategy_type ?? {});
+  const exitsByStrategy = Object.entries(data?.metrics.exits_by_strategy_type ?? {});
 
   if (!lockId) {
     return (
@@ -123,6 +125,50 @@ const BacktestLockDetail = ({ lockId }: BacktestLockDetailProps) => {
           {Object.entries(data.metrics.exit_reasons).map(([reason, count]) => (
             <div key={reason} className={styles.row}>
               <span>{reason}</span>
+              <span>{count}</span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div className={styles.section}>
+        <h3 className={styles.sectionLabel}>
+          <BarChart3 size={14} />
+          PnL Diagnostics
+        </h3>
+        <div className={styles.row}>
+          <span>Funding Carry</span>
+          <span className={styles[signColor(data.metrics.funding_carry_pnl_bps)]}>
+            {data.metrics.funding_carry_pnl_bps.toFixed(1)} bps
+          </span>
+        </div>
+        <div className={styles.row}>
+          <span>Basis Carry</span>
+          <span className={styles[signColor(data.metrics.basis_carry_pnl_bps)]}>
+            {data.metrics.basis_carry_pnl_bps.toFixed(1)} bps
+          </span>
+        </div>
+        <div className={styles.row}>
+          <span>Entry Costs</span>
+          <span className={styles.negative}>-{data.metrics.entry_cost_bps.toFixed(1)} bps</span>
+        </div>
+      </div>
+
+      {(entriesByStrategy.length > 0 || exitsByStrategy.length > 0) && (
+        <div className={styles.section}>
+          <h3 className={styles.sectionLabel}>
+            <ListTree size={14} />
+            Strategy Type Breakdown
+          </h3>
+          {entriesByStrategy.map(([strategyType, count]) => (
+            <div key={`entries-${strategyType}`} className={styles.row}>
+              <span>{strategyType} entries</span>
+              <span>{count}</span>
+            </div>
+          ))}
+          {exitsByStrategy.map(([strategyType, count]) => (
+            <div key={`exits-${strategyType}`} className={styles.row}>
+              <span>{strategyType} exits</span>
               <span>{count}</span>
             </div>
           ))}

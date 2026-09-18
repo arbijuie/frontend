@@ -319,8 +319,33 @@ export interface components {
         };
         /** BacktestLockListItem */
         BacktestLockListItem: {
+            /**
+             * Basis Carry Pnl Bps
+             * @default 0
+             */
+            basis_carry_pnl_bps: number;
             /** Created At */
             created_at: string;
+            /**
+             * Entries
+             * @default 0
+             */
+            entries: number;
+            /**
+             * Entry Cost Bps
+             * @default 0
+             */
+            entry_cost_bps: number;
+            /**
+             * Exits
+             * @default 0
+             */
+            exits: number;
+            /**
+             * Funding Carry Pnl Bps
+             * @default 0
+             */
+            funding_carry_pnl_bps: number;
             /** Gate Passed */
             gate_passed: boolean;
             /** Lock Id */
@@ -365,16 +390,39 @@ export interface components {
         };
         /** BacktestMetricsItem */
         BacktestMetricsItem: {
+            /**
+             * Basis Carry Pnl Bps
+             * @default 0
+             */
+            basis_carry_pnl_bps: number;
             /** Closed Trades */
             closed_trades: number;
             /** Entries */
             entries: number;
+            /** Entries By Strategy Type */
+            entries_by_strategy_type?: {
+                [key: string]: number;
+            };
+            /**
+             * Entry Cost Bps
+             * @default 0
+             */
+            entry_cost_bps: number;
             /** Exit Reasons */
             exit_reasons?: {
                 [key: string]: number;
             };
             /** Exits */
             exits: number;
+            /** Exits By Strategy Type */
+            exits_by_strategy_type?: {
+                [key: string]: number;
+            };
+            /**
+             * Funding Carry Pnl Bps
+             * @default 0
+             */
+            funding_carry_pnl_bps: number;
             /** Max Drawdown Bps */
             max_drawdown_bps: number;
             /** Median Trade Pnl Bps */

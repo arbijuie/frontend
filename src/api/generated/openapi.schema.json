@@ -111,9 +111,34 @@
       },
       "BacktestLockListItem": {
         "properties": {
+          "basis_carry_pnl_bps": {
+            "default": 0.0,
+            "title": "Basis Carry Pnl Bps",
+            "type": "number"
+          },
           "created_at": {
             "title": "Created At",
             "type": "string"
+          },
+          "entries": {
+            "default": 0,
+            "title": "Entries",
+            "type": "integer"
+          },
+          "entry_cost_bps": {
+            "default": 0.0,
+            "title": "Entry Cost Bps",
+            "type": "number"
+          },
+          "exits": {
+            "default": 0,
+            "title": "Exits",
+            "type": "integer"
+          },
+          "funding_carry_pnl_bps": {
+            "default": 0.0,
+            "title": "Funding Carry Pnl Bps",
+            "type": "number"
           },
           "gate_passed": {
             "title": "Gate Passed",
@@ -231,6 +256,11 @@
       },
       "BacktestMetricsItem": {
         "properties": {
+          "basis_carry_pnl_bps": {
+            "default": 0.0,
+            "title": "Basis Carry Pnl Bps",
+            "type": "number"
+          },
           "closed_trades": {
             "title": "Closed Trades",
             "type": "integer"
@@ -238,6 +268,18 @@
           "entries": {
             "title": "Entries",
             "type": "integer"
+          },
+          "entries_by_strategy_type": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Entries By Strategy Type",
+            "type": "object"
+          },
+          "entry_cost_bps": {
+            "default": 0.0,
+            "title": "Entry Cost Bps",
+            "type": "number"
           },
           "exit_reasons": {
             "additionalProperties": {
@@ -249,6 +291,18 @@
           "exits": {
             "title": "Exits",
             "type": "integer"
+          },
+          "exits_by_strategy_type": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Exits By Strategy Type",
+            "type": "object"
+          },
+          "funding_carry_pnl_bps": {
+            "default": 0.0,
+            "title": "Funding Carry Pnl Bps",
+            "type": "number"
           },
           "max_drawdown_bps": {
             "title": "Max Drawdown Bps",
