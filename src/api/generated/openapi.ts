@@ -595,8 +595,12 @@ export interface components {
             basis_weight: number;
             /** Binance Base Url */
             binance_base_url: string;
+            /** Borrow Rate Apr */
+            borrow_rate_apr: number;
             /** Bybit Base Url */
             bybit_base_url: string;
+            /** Cash And Carry Entry Bps */
+            cash_and_carry_entry_bps: number;
             /** Correlation Bucket S */
             correlation_bucket_s: number;
             /** Correlation Concentration Block Ratio */
@@ -685,6 +689,8 @@ export interface components {
             hl_taker_fee_per_side: number;
             /** Hold Window Instability Scale */
             hold_window_instability_scale: number;
+            /** Lending Yield Apr */
+            lending_yield_apr: number;
             /** Lighter Maker Fee Per Side */
             lighter_maker_fee_per_side: number;
             /** Lighter Taker Fee Per Side */
@@ -768,6 +774,10 @@ export interface components {
             basis_max_hold_multiplier?: number | null;
             /** Basis Weight */
             basis_weight?: number | null;
+            /** Borrow Rate Apr */
+            borrow_rate_apr?: number | null;
+            /** Cash And Carry Entry Bps */
+            cash_and_carry_entry_bps?: number | null;
             /** Correlation Threshold */
             correlation_threshold?: number | null;
             /** Default Order Size Usd */
@@ -776,6 +786,8 @@ export interface components {
             expected_hold_hours?: number | null;
             /** Hold Window Instability Scale */
             hold_window_instability_scale?: number | null;
+            /** Lending Yield Apr */
+            lending_yield_apr?: number | null;
             /** Max Basis Divergence Hours */
             max_basis_divergence_hours?: number | null;
             /** Max Correlated Positions */
@@ -1401,6 +1413,16 @@ export interface components {
              * @default 0
              */
             basis_gate: number;
+            /**
+             * Cash And Carry Entry Gate
+             * @default 0
+             */
+            cash_and_carry_entry_gate: number;
+            /**
+             * Cash And Carry Funding Gate
+             * @default 0
+             */
+            cash_and_carry_funding_gate: number;
             /**
              * L2 Book Fetch Error
              * @default 0
