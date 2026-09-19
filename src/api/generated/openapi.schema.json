@@ -777,9 +777,17 @@
             "title": "Binance Base Url",
             "type": "string"
           },
+          "borrow_rate_apr": {
+            "title": "Borrow Rate Apr",
+            "type": "number"
+          },
           "bybit_base_url": {
             "title": "Bybit Base Url",
             "type": "string"
+          },
+          "cash_and_carry_entry_bps": {
+            "title": "Cash And Carry Entry Bps",
+            "type": "number"
           },
           "correlation_bucket_s": {
             "title": "Correlation Bucket S",
@@ -973,6 +981,10 @@
             "title": "Hold Window Instability Scale",
             "type": "number"
           },
+          "lending_yield_apr": {
+            "title": "Lending Yield Apr",
+            "type": "number"
+          },
           "lighter_maker_fee_per_side": {
             "title": "Lighter Maker Fee Per Side",
             "type": "number"
@@ -1127,6 +1139,9 @@
           "basis_divergence_threshold_bps",
           "max_basis_divergence_hours",
           "basis_expansion_penalty_bps_per_hour",
+          "cash_and_carry_entry_bps",
+          "borrow_rate_apr",
+          "lending_yield_apr",
           "hold_window_instability_scale",
           "liquidity_weight",
           "timing_penalty_bps_per_hour",
@@ -1336,6 +1351,28 @@
             ],
             "title": "Basis Weight"
           },
+          "borrow_rate_apr": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Borrow Rate Apr"
+          },
+          "cash_and_carry_entry_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cash And Carry Entry Bps"
+          },
           "correlation_threshold": {
             "anyOf": [
               {
@@ -1379,6 +1416,17 @@
               }
             ],
             "title": "Hold Window Instability Scale"
+          },
+          "lending_yield_apr": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lending Yield Apr"
           },
           "max_basis_divergence_hours": {
             "anyOf": [
@@ -3298,6 +3346,16 @@
           "basis_gate": {
             "default": 0,
             "title": "Basis Gate",
+            "type": "integer"
+          },
+          "cash_and_carry_entry_gate": {
+            "default": 0,
+            "title": "Cash And Carry Entry Gate",
+            "type": "integer"
+          },
+          "cash_and_carry_funding_gate": {
+            "default": 0,
+            "title": "Cash And Carry Funding Gate",
             "type": "integer"
           },
           "l2_book_fetch_error": {
