@@ -885,6 +885,22 @@
             "title": "Exec Margin Force Close Pct",
             "type": "number"
           },
+          "exec_max_unhedged_duration_s": {
+            "title": "Exec Max Unhedged Duration S",
+            "type": "number"
+          },
+          "exec_min_partial_fill_pct": {
+            "title": "Exec Min Partial Fill Pct",
+            "type": "number"
+          },
+          "exec_partial_fill_poll_s": {
+            "title": "Exec Partial Fill Poll S",
+            "type": "number"
+          },
+          "exec_partial_fill_timeout_s": {
+            "title": "Exec Partial Fill Timeout S",
+            "type": "number"
+          },
           "exec_recovery_cooldown_s": {
             "title": "Exec Recovery Cooldown S",
             "type": "number"
@@ -1158,6 +1174,10 @@
           "exec_leg_retry_attempts",
           "exec_leg_retry_interval_s",
           "exec_stop_on_consecutive_rollbacks",
+          "exec_partial_fill_timeout_s",
+          "exec_partial_fill_poll_s",
+          "exec_max_unhedged_duration_s",
+          "exec_min_partial_fill_pct",
           "exec_stop_on_api_errors_per_window",
           "exec_api_error_window_s",
           "exec_stop_on_median_slippage_bps",
@@ -1759,12 +1779,22 @@
             "title": "Events",
             "type": "array"
           },
+          "filled_quantity": {
+            "default": "0",
+            "title": "Filled Quantity",
+            "type": "string"
+          },
           "first_leg": {
             "$ref": "#/components/schemas/ExecutionLegItem"
           },
           "long_exchange": {
             "title": "Long Exchange",
             "type": "string"
+          },
+          "partial_fill": {
+            "default": false,
+            "title": "Partial Fill",
+            "type": "boolean"
           },
           "quantity": {
             "title": "Quantity",
@@ -1773,6 +1803,21 @@
           "residual_exposure": {
             "title": "Residual Exposure",
             "type": "boolean"
+          },
+          "residual_trim_order": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ExecutionOrderItem"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "residual_trim_quantity": {
+            "default": "0",
+            "title": "Residual Trim Quantity",
+            "type": "string"
           },
           "rollback_attempts": {
             "title": "Rollback Attempts",
@@ -1821,6 +1866,11 @@
           "symbol": {
             "title": "Symbol",
             "type": "string"
+          },
+          "unhedged_timeout": {
+            "default": false,
+            "title": "Unhedged Timeout",
+            "type": "boolean"
           }
         },
         "required": [
@@ -1892,6 +1942,11 @@
                 "type": "null"
               }
             ]
+          },
+          "filled_quantity": {
+            "default": "0",
+            "title": "Filled Quantity",
+            "type": "string"
           },
           "intended_price": {
             "title": "Intended Price",
@@ -1990,6 +2045,17 @@
       },
       "ExecutionOrderItem": {
         "properties": {
+          "average_fill_price": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Average Fill Price"
+          },
           "client_order_id": {
             "title": "Client Order Id",
             "type": "string"
@@ -2007,6 +2073,11 @@
           },
           "exchange": {
             "title": "Exchange",
+            "type": "string"
+          },
+          "filled_quantity": {
+            "default": "0",
+            "title": "Filled Quantity",
             "type": "string"
           },
           "price": {
@@ -2028,6 +2099,11 @@
             "default": false,
             "title": "Reduce Only",
             "type": "boolean"
+          },
+          "remaining_quantity": {
+            "default": "0",
+            "title": "Remaining Quantity",
+            "type": "string"
           },
           "side": {
             "enum": [

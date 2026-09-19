@@ -649,6 +649,14 @@ export interface components {
             exec_margin_alert_pct: number;
             /** Exec Margin Force Close Pct */
             exec_margin_force_close_pct: number;
+            /** Exec Max Unhedged Duration S */
+            exec_max_unhedged_duration_s: number;
+            /** Exec Min Partial Fill Pct */
+            exec_min_partial_fill_pct: number;
+            /** Exec Partial Fill Poll S */
+            exec_partial_fill_poll_s: number;
+            /** Exec Partial Fill Timeout S */
+            exec_partial_fill_timeout_s: number;
             /** Exec Recovery Cooldown S */
             exec_recovery_cooldown_s: number;
             /** Exec Recovery Require Manual Ack */
@@ -898,13 +906,29 @@ export interface components {
             error?: string | null;
             /** Events */
             events?: string[];
+            /**
+             * Filled Quantity
+             * @default 0
+             */
+            filled_quantity: string;
             first_leg: components["schemas"]["ExecutionLegItem"];
             /** Long Exchange */
             long_exchange: string;
+            /**
+             * Partial Fill
+             * @default false
+             */
+            partial_fill: boolean;
             /** Quantity */
             quantity: string;
             /** Residual Exposure */
             residual_exposure: boolean;
+            residual_trim_order?: components["schemas"]["ExecutionOrderItem"] | null;
+            /**
+             * Residual Trim Quantity
+             * @default 0
+             */
+            residual_trim_quantity: string;
             /** Rollback Attempts */
             rollback_attempts: number;
             rollback_order?: components["schemas"]["ExecutionOrderItem"] | null;
@@ -921,6 +945,11 @@ export interface components {
             status: string;
             /** Symbol */
             symbol: string;
+            /**
+             * Unhedged Timeout
+             * @default false
+             */
+            unhedged_timeout: boolean;
         };
         /** ExecutionAttemptListResponse */
         ExecutionAttemptListResponse: {
@@ -940,6 +969,11 @@ export interface components {
             /** Exchange */
             exchange: string;
             fill?: components["schemas"]["ExecutionOrderItem"] | null;
+            /**
+             * Filled Quantity
+             * @default 0
+             */
+            filled_quantity: string;
             /** Intended Price */
             intended_price: string;
             /** Quantity */
@@ -967,12 +1001,19 @@ export interface components {
         };
         /** ExecutionOrderItem */
         ExecutionOrderItem: {
+            /** Average Fill Price */
+            average_fill_price?: string | null;
             /** Client Order Id */
             client_order_id: string;
             /** Error */
             error?: string | null;
             /** Exchange */
             exchange: string;
+            /**
+             * Filled Quantity
+             * @default 0
+             */
+            filled_quantity: string;
             /** Price */
             price?: string | null;
             /** Quantity */
@@ -982,6 +1023,11 @@ export interface components {
              * @default false
              */
             reduce_only: boolean;
+            /**
+             * Remaining Quantity
+             * @default 0
+             */
+            remaining_quantity: string;
             /**
              * Side
              * @enum {string}
