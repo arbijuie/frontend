@@ -1,4 +1,4 @@
-import { renderHook, act } from "@testing-library/react";
+import { renderHook, act, waitFor } from "@testing-library/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { fetchWsAuthTicket } from "../api/ws";
 import { useOpportunitiesSocket } from "./useOpportunitiesSocket";
@@ -64,11 +64,8 @@ describe("useOpportunitiesSocket with token auth", () => {
 
   it("fetches a ticket and sends it as the first message", async () => {
     renderHook(() => useOpportunitiesSocket());
-    await act(async () => {
-      await Promise.resolve();
-      await Promise.resolve();
-    });
 
+    await waitFor(() => expect(MockWebSocket.instances.length).toBeGreaterThan(0));
     expect(mockedFetchWsAuthTicket).toHaveBeenCalled();
 
     const socket = latestSocket();
