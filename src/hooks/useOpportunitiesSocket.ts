@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { fetchWsAuthTicket, getWsUrl } from "../api/ws";
 import { API_TOKEN } from "../api/config";
@@ -11,172 +11,141 @@ const STALL_TIMEOUT_MS = 60000;
 
 export function useOpportunitiesSocket() {
   const queryClient = useQueryClient();
-
   const [transportState, setTransportState] = useState<TransportState>("connecting");
   const [reconnectAttempt, setReconnectAttempt] = useState(0);
-
   const wsRef = useRef<WebSocket | null>(null);
   const attemptRef = useRef(0);
   const reconnectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const stallTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const stoppedRef = useRef(false);
-  const connectRef = useRef<() => Promise<void>>(async () => {});
+  const generationRef = useRef(0);
 
-  const clearStallTimer = useCallback(() => {
+  const clearStallTimer = () => {
     if (stallTimerRef.current) {
       clearTimeout(stallTimerRef.current);
       stallTimerRef.current = null;
     }
-  }, []);
+  };
 
-  const armStallTimer = useCallback(
-    (ws: WebSocket) => {
-      clearStallTimer();
+  const armStallTimer = (ws: WebSocket) => {
+    clearStallTimer();
+    stallTimerRef.current = setTimeout(() => {
+      if (wsRef.current === ws) {
+        ws.close();
+      }
+    }, STALL_TIMEOUT_MS);
+  };
 
-      stallTimerRef.current = setTimeout(() => {
-        if (wsRef.current === ws) {
-          ws.close();
-        }
-      }, STALL_TIMEOUT_MS);
-    },
-    [clearStallTimer]
-  );
-
-  const scheduleReconnect = useCallback(() => {
+  const scheduleReconnect = () => {
+    const failureCount = attemptRef.current;
     attemptRef.current += 1;
     setReconnectAttempt(attemptRef.current);
 
-    if (shouldGiveUp(attemptRef.current)) {
+    if (shouldGiveUp(failureCount)) {
       setTransportState("polling-fallback");
       return;
     }
 
     setTransportState("reconnecting");
+    const delay = getBackoffDelayMs(failureCount);
+    reconnectTimerRef.current = setTimeout(connect, delay);
+  };
 
-    const delay = getBackoffDelayMs(attemptRef.current);
-
-    reconnectTimerRef.current = setTimeout(() => {
-      void connectRef.current();
-    }, delay);
-  }, []);
-
-  const connect = useCallback(async () => {
-    if (stoppedRef.current) {
-      return;
-    }
-
+  const connect = async () => {
+    const myGeneration = ++generationRef.current;
+    if (stoppedRef.current) return;
     setTransportState(attemptRef.current === 0 ? "connecting" : "reconnecting");
 
     try {
       let ticket: string | undefined;
-
       if (API_TOKEN) {
         const ticketResponse = await fetchWsAuthTicket();
         ticket = ticketResponse.ticket;
       }
 
-      if (stoppedRef.current) {
+      if (stoppedRef.current || myGeneration !== generationRef.current) {
         return;
       }
 
       const ws = new WebSocket(getWsUrl());
 
       ws.onopen = () => {
+        if (myGeneration !== generationRef.current) {
+          ws.close();
+          return;
+        }
         if (ticket) {
           ws.send(JSON.stringify({ type: "auth", ticket }));
         }
-
         attemptRef.current = 0;
         setReconnectAttempt(0);
-        setTransportState("connected");
-
         armStallTimer(ws);
       };
 
       ws.onmessage = (event) => {
+        if (myGeneration !== generationRef.current) return;
         armStallTimer(ws);
 
         try {
           const frame: OpportunitiesResponse = JSON.parse(event.data);
-
           const cached = queryClient.getQueryData<OpportunitiesResponse>(["opportunities"]);
-
-          if (cached?.updated_at && frame.updated_at && frame.updated_at < cached.updated_at) {
-            return;
+          if (cached?.updated_at && frame.updated_at) {
+            const cachedTime = new Date(cached.updated_at).getTime();
+            const frameTime = new Date(frame.updated_at).getTime();
+            if (frameTime < cachedTime) return;
           }
-
           queryClient.setQueryData(["opportunities"], frame);
+          setTransportState("connected");
         } catch (error) {
-          console.error("Failed to parse WebSocket message:", error);
+          // Malformed WS frame — log for visibility, keep the connection alive.
+          console.warn("Failed to parse opportunities WS frame:", error);
         }
       };
 
       ws.onclose = () => {
-        if (wsRef.current === ws) {
-          wsRef.current = null;
-        }
-
+        if (myGeneration !== generationRef.current) return;
+        wsRef.current = null;
         clearStallTimer();
-
         if (!stoppedRef.current) {
           scheduleReconnect();
         }
       };
 
-      ws.onerror = () => {
-        ws.close();
-      };
-
       wsRef.current = ws;
-    } catch (error) {
-      console.error("WebSocket connection failed:", error);
-
-      if (!stoppedRef.current) {
+    } catch {
+      if (myGeneration === generationRef.current && !stoppedRef.current) {
         scheduleReconnect();
       }
     }
-  }, [armStallTimer, clearStallTimer, queryClient, scheduleReconnect]);
+  };
 
-  const retryNow = useCallback(() => {
+  const retryNow = () => {
     if (reconnectTimerRef.current) {
       clearTimeout(reconnectTimerRef.current);
-      reconnectTimerRef.current = null;
     }
-
+    generationRef.current += 1;
+    wsRef.current?.close();
+    wsRef.current = null;
+    clearStallTimer();
     attemptRef.current = 0;
     setReconnectAttempt(0);
-    setTransportState("connecting");
-
     void connect();
-  }, [connect]);
-
-  useEffect(() => {
-    connectRef.current = connect;
-  }, [connect]);
+  };
 
   useEffect(() => {
     stoppedRef.current = false;
-
     void connect();
-
     return () => {
       stoppedRef.current = true;
-
+      generationRef.current += 1;
       wsRef.current?.close();
-      wsRef.current = null;
-
       if (reconnectTimerRef.current) {
         clearTimeout(reconnectTimerRef.current);
-        reconnectTimerRef.current = null;
       }
-
       clearStallTimer();
     };
-  }, [clearStallTimer, connect]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  return {
-    transportState,
-    reconnectAttempt,
-    retryNow,
-  };
+  return { transportState, reconnectAttempt, retryNow };
 }
