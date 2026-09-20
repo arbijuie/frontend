@@ -2144,6 +2144,10 @@
             "title": "Correlated Ready Count",
             "type": "integer"
           },
+          "execution_adjusted_score_bps": {
+            "title": "Execution Adjusted Score Bps",
+            "type": "number"
+          },
           "legs": {
             "items": {
               "$ref": "#/components/schemas/LegItem"
@@ -2157,6 +2161,10 @@
             },
             "title": "Reasons",
             "type": "array"
+          },
+          "signal_score_bps": {
+            "title": "Signal Score Bps",
+            "type": "number"
           },
           "status": {
             "enum": [
@@ -2189,6 +2197,8 @@
           "symbol",
           "strategy_type",
           "strategy_profile_id",
+          "signal_score_bps",
+          "execution_adjusted_score_bps",
           "combined_score",
           "status"
         ],
@@ -2988,6 +2998,10 @@
             "title": "Effective Taker Fee By Exchange",
             "type": "object"
           },
+          "execution_adjusted_score_bps": {
+            "title": "Execution Adjusted Score Bps",
+            "type": "number"
+          },
           "fee_impact_bps": {
             "title": "Fee Impact Bps",
             "type": "number"
@@ -3144,6 +3158,11 @@
             ],
             "title": "Min Profitable Hours"
           },
+          "negative_funding_penalty_bps": {
+            "default": 0.0,
+            "title": "Negative Funding Penalty Bps",
+            "type": "number"
+          },
           "persistence_hours": {
             "anyOf": [
               {
@@ -3196,6 +3215,10 @@
           },
           "short_rate_apr": {
             "title": "Short Rate Apr",
+            "type": "number"
+          },
+          "signal_score_bps": {
+            "title": "Signal Score Bps",
             "type": "number"
           },
           "slippage_impact_bps": {
@@ -3252,6 +3275,8 @@
           "basis_bonus_bps",
           "fee_impact_bps",
           "funding_timing_penalty_bps",
+          "signal_score_bps",
+          "execution_adjusted_score_bps",
           "combined_score",
           "status"
         ],

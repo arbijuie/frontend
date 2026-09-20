@@ -1047,10 +1047,14 @@ export interface components {
              * @default 0
              */
             correlated_ready_count: number;
+            /** Execution Adjusted Score Bps */
+            execution_adjusted_score_bps: number;
             /** Legs */
             legs?: components["schemas"]["LegItem"][];
             /** Reasons */
             reasons?: components["schemas"]["ExecutionPreflightCandidateReasonItem"][];
+            /** Signal Score Bps */
+            signal_score_bps: number;
             /**
              * Status
              * @enum {string}
@@ -1311,6 +1315,8 @@ export interface components {
             effective_taker_fee_by_exchange?: {
                 [key: string]: number;
             };
+            /** Execution Adjusted Score Bps */
+            execution_adjusted_score_bps: number;
             /** Fee Impact Bps */
             fee_impact_bps: number;
             /** Fee Source By Exchange */
@@ -1355,6 +1361,11 @@ export interface components {
             };
             /** Min Profitable Hours */
             min_profitable_hours?: number | null;
+            /**
+             * Negative Funding Penalty Bps
+             * @default 0
+             */
+            negative_funding_penalty_bps: number;
             /** Persistence Hours */
             persistence_hours?: number | null;
             /** Reasons */
@@ -1366,6 +1377,8 @@ export interface components {
             short_hours_to_next_funding?: number | null;
             /** Short Rate Apr */
             short_rate_apr: number;
+            /** Signal Score Bps */
+            signal_score_bps: number;
             /**
              * Slippage Impact Bps
              * @default 0

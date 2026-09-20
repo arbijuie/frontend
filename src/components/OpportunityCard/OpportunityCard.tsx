@@ -236,6 +236,15 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
             </div>
           </div>
 
+            <div className={styles.detailRow}>
+              <span>Signal score</span>
+              <span>{item.signal_score_bps.toFixed(1)} bps</span>
+            </div>
+            <div className={styles.detailRow}>
+              <span>Execution-adjusted score</span>
+              <span>{item.execution_adjusted_score_bps.toFixed(1)} bps</span>
+            </div>
+
           <div className={styles.detailRow}>
             <span>Persistence</span>
             <span>

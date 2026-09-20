@@ -92,6 +92,8 @@ function makePreflight(overrides: Partial<ExecutionPreflightResponse> = {}): Exe
           quote_asset: "USDC",
         },
       ],
+      signal_score_bps: 16,
+      execution_adjusted_score_bps: 12,
       combined_score: 12,
       correlated_ready_count: 1,
       status: "ready",
@@ -275,6 +277,8 @@ describe("ExecutionPreflightPage", () => {
     expect(screen.getByRole("heading", { level: 2, name: "Candidate" })).toBeTruthy();
     expect(screen.getByText(/symbol: BTC/i)).toBeTruthy();
     expect(screen.getByText(/route: hyperliquid \/ lighter/i)).toBeTruthy();
+    expect(screen.getByText(/signal_score_bps: 16\.00/i)).toBeTruthy();
+    expect(screen.getByText(/execution_adjusted_score_bps: 12\.00/i)).toBeTruthy();
     expect(screen.getByText(/combined_score: 12\.00/i)).toBeTruthy();
     expect(screen.getByText(/status: ready/i)).toBeTruthy();
     expect(screen.getByText(/reasons: dry_run_mode/i)).toBeTruthy();
