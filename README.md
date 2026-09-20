@@ -48,14 +48,14 @@ Primary navigation is the fixed bottom bar rendered by `src/components/Nav/Nav.t
 Sections, their order, and their icons come from one registry: `src/lib/navigation.ts`.
 Order reflects the operator workflow: find opportunities, check status, tune config, validate via backtest, execute.
 
-| Route                  | Section       | Status                                             |
-| ---------------------- | ------------- | -------------------------------------------------- |
-| `/`                    | Opportunities | Implemented                                        |
-| `/status`              | Status        | Implemented (includes Deep Pipeline Diagnostics)   |
-| `/config`              | Config        | Implemented                                        |
-| `/backtest`            | Backtest      | Implemented                                        |
-| `/execution/preflight` | Preflight     | Implemented (readiness center for execution gate)  |
-| `*`                    | Not found     | Fallback page with link back to `/`                |
+| Route                  | Section       | Status                                            |
+| ---------------------- | ------------- | ------------------------------------------------- |
+| `/`                    | Opportunities | Implemented (WebSocket-first, see below)          |
+| `/status`              | Status        | Implemented (includes Deep Pipeline Diagnostics)  |
+| `/config`              | Config        | Implemented                                       |
+| `/backtest`            | Backtest      | Implemented                                       |
+| `/execution/preflight` | Preflight     | Implemented (readiness center for execution gate) |
+| `*`                    | Not found     | Fallback page with link back to `/`               |
 
 The Status page includes a Deep Pipeline Diagnostics section with:
 
@@ -63,6 +63,13 @@ The Status page includes a Deep Pipeline Diagnostics section with:
 - Top 3 blockers summary
 - Reason-code and severity distributions
 - Unified exchange split table for source-quality counters
+
+The Opportunities page consumes `/ws/opportunities` as its primary data source, with automatic fallback to REST polling:
+
+- Connects on load; a transport indicator near the title shows `live (WS)`, `connecting...`, `reconnecting (attempt N)...`, or `polling fallback`, with a manual retry button in fallback mode.
+- If a bearer token is configured, a short-lived ticket (`POST /ws/auth-ticket`) is sent as the first WS message — the token itself is never sent over the socket.
+- Reconnects with exponential backoff (1s–16s, 5 attempts) and a 60s stall timeout before permanently falling back to REST polling.
+- Manual refresh continues to work in any transport state.
 
 Adding a section:
 
