@@ -41,12 +41,8 @@ const ExecutionPreflightPage = () => {
   const aboveThreshold = correlation?.pairs?.filter((pair) => pair.above_threshold).length ?? 0;
   const blockers = preflight?.blockers ?? [];
   const candidateReasons = preflight?.candidate?.reasons ?? [];
-  const candidateLongVenue =
-    preflight?.candidate?.legs?.find((leg) => leg.side === "long")?.venue ??
-    preflight?.candidate?.long_exchange;
-  const candidateShortVenue =
-    preflight?.candidate?.legs?.find((leg) => leg.side === "short")?.venue ??
-    preflight?.candidate?.short_exchange;
+  const candidateLongVenue = preflight?.candidate?.legs?.find((leg) => leg.side === "long")?.venue;
+  const candidateShortVenue = preflight?.candidate?.legs?.find((leg) => leg.side === "short")?.venue;
 
   return (
     <div className={styles.page}>

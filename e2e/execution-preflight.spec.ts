@@ -2,6 +2,73 @@ import { expect, test } from "@playwright/test";
 
 type Decision = "ready" | "watching" | "blocked";
 
+type CandidateLeg = {
+  instrument_kind: "perp";
+  venue: string;
+  venue_native_symbol: string;
+  normalized_symbol: string;
+  side: "long" | "short";
+  mark_price: string;
+  index_price: string;
+  funding_rate: number;
+  borrow_rate: null;
+  fee_taker: number;
+  fee_maker: null;
+  margin_mode: null;
+  settlement_ccy: "USDC";
+  quote_asset: "USDC";
+};
+
+const BASE_LEGS: CandidateLeg[] = [
+  {
+    instrument_kind: "perp",
+    venue: "hyperliquid",
+    venue_native_symbol: "BTC",
+    normalized_symbol: "BTC",
+    side: "long",
+    mark_price: "100",
+    index_price: "100",
+    funding_rate: 5,
+    borrow_rate: null,
+    fee_taker: 0.035,
+    fee_maker: null,
+    margin_mode: null,
+    settlement_ccy: "USDC",
+    quote_asset: "USDC",
+  },
+  {
+    instrument_kind: "perp",
+    venue: "lighter",
+    venue_native_symbol: "BTC",
+    normalized_symbol: "BTC",
+    side: "short",
+    mark_price: "101",
+    index_price: "101",
+    funding_rate: 20,
+    borrow_rate: null,
+    fee_taker: 0.001,
+    fee_maker: null,
+    margin_mode: null,
+    settlement_ccy: "USDC",
+    quote_asset: "USDC",
+  },
+];
+
+function buildCandidate(decision: Decision) {
+  return {
+    symbol: "BTC",
+    strategy_type: "funding_arbitrage",
+    strategy_profile_id: "baseline-v1",
+    legs: BASE_LEGS,
+    signal_score_bps: 16,
+    execution_adjusted_score_bps: 12,
+    combined_score: 12,
+    correlated_ready_count: 1,
+    status: decision,
+    reasons: [],
+  };
+}
+
 const correlationPayload = {
   threshold: 0.7,
   max_correlated_positions: 3,
@@ -80,15 +147,7 @@ function preflightPayload(decision: Decision) {
       entries_stopped: false,
     },
     candidate: {
-      symbol: "BTC",
-      signal_score_bps: 16,
-      execution_adjusted_score_bps: 12,
-      long_exchange: "hyperliquid",
-      short_exchange: "lighter",
-      combined_score: 12,
-      correlated_ready_count: 1,
-      status: decision,
-      reasons: [],
+      ...buildCandidate(decision),
     },
     blockers: blockerByDecision[decision],
     lock_metrics: null,
