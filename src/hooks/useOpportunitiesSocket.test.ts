@@ -45,6 +45,13 @@ function latestSocket(): MockWebSocket {
   return MockWebSocket.instances[MockWebSocket.instances.length - 1];
 }
 
+const sampleFrame = {
+  count: 1,
+  ready_count: 1,
+  opportunities: [],
+  updated_at: "2026-09-17T10:00:00Z",
+};
+
 describe("useOpportunitiesSocket", () => {
   let getQueryData: ReturnType<typeof vi.fn>;
   let setQueryData: ReturnType<typeof vi.fn>;
@@ -75,7 +82,7 @@ describe("useOpportunitiesSocket", () => {
     expect(latestSocket()).toBeDefined();
   });
 
-  it("becomes connected after the socket opens", async () => {
+  it("does not report connected until the first frame arrives", async () => {
     const { result } = renderHook(() => useOpportunitiesSocket());
     await act(async () => {
       await Promise.resolve();
@@ -83,6 +90,22 @@ describe("useOpportunitiesSocket", () => {
 
     act(() => {
       latestSocket().onopen?.();
+    });
+
+    expect(result.current.transportState).not.toBe("connected");
+  });
+
+  it("reports connected once a frame is received", async () => {
+    const { result } = renderHook(() => useOpportunitiesSocket());
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    act(() => {
+      latestSocket().onopen?.();
+    });
+    act(() => {
+      latestSocket().onmessage?.({ data: JSON.stringify(sampleFrame) });
     });
 
     expect(result.current.transportState).toBe("connected");
@@ -97,17 +120,11 @@ describe("useOpportunitiesSocket", () => {
       latestSocket().onopen?.();
     });
 
-    const frame = {
-      count: 1,
-      ready_count: 1,
-      opportunities: [],
-      updated_at: "2026-09-17T10:00:00Z",
-    };
     act(() => {
-      latestSocket().onmessage?.({ data: JSON.stringify(frame) });
+      latestSocket().onmessage?.({ data: JSON.stringify(sampleFrame) });
     });
 
-    expect(setQueryData).toHaveBeenCalledWith(["opportunities"], frame);
+    expect(setQueryData).toHaveBeenCalledWith(["opportunities"], sampleFrame);
   });
 
   it("ignores a frame older than what is already cached", async () => {
@@ -120,14 +137,8 @@ describe("useOpportunitiesSocket", () => {
       latestSocket().onopen?.();
     });
 
-    const staleFrame = {
-      count: 1,
-      ready_count: 1,
-      opportunities: [],
-      updated_at: "2026-09-17T10:00:00Z",
-    };
     act(() => {
-      latestSocket().onmessage?.({ data: JSON.stringify(staleFrame) });
+      latestSocket().onmessage?.({ data: JSON.stringify(sampleFrame) });
     });
 
     expect(setQueryData).not.toHaveBeenCalled();
@@ -139,7 +150,7 @@ describe("useOpportunitiesSocket", () => {
       await Promise.resolve();
     });
 
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 10 && result.current.transportState !== "polling-fallback"; i++) {
       act(() => {
         latestSocket().close();
       });
@@ -175,7 +186,7 @@ describe("useOpportunitiesSocket", () => {
     expect(closed).toBe(true);
   });
 
-  it("retryNow resets the attempt count and reconnects immediately", async () => {
+  it("retryNow resets the attempt count, closes the old socket, and reconnects immediately", async () => {
     const { result } = renderHook(() => useOpportunitiesSocket());
     await act(async () => {
       await Promise.resolve();
@@ -189,6 +200,8 @@ describe("useOpportunitiesSocket", () => {
     });
     expect(result.current.reconnectAttempt).toBe(1);
 
+    const socketCountBefore = MockWebSocket.instances.length;
+
     act(() => {
       result.current.retryNow();
     });
@@ -197,5 +210,6 @@ describe("useOpportunitiesSocket", () => {
     });
 
     expect(result.current.reconnectAttempt).toBe(0);
+    expect(MockWebSocket.instances.length).toBe(socketCountBefore + 1);
   });
 });
