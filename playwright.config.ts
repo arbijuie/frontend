@@ -1,8 +1,11 @@
 import { defineConfig, devices } from "@playwright/test";
 
 const browserChannel = process.env.PW_BROWSER_CHANNEL;
+const localFallbackEnabled = process.env.PW_E2E_LOCAL_FALLBACK === "1";
+const localFallbackChannel = process.env.PW_E2E_LOCAL_FALLBACK_CHANNEL ?? "msedge";
 
-const channelOverride = browserChannel ? { channel: browserChannel } : {};
+const effectiveChannel = localFallbackEnabled ? localFallbackChannel : browserChannel;
+const channelOverride = effectiveChannel ? { channel: effectiveChannel } : {};
 
 export default defineConfig({
   testDir: "./e2e",

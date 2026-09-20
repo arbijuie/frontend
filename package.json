@@ -28,6 +28,7 @@
     "test:e2e:install": "playwright install chromium",
     "test": "vitest run --config config/vitest.config.ts",
     "test:e2e": "playwright test --config playwright.config.ts",
+    "test:e2e:local": "node -e \"const {spawnSync}=require('node:child_process'); const env={...process.env, PW_E2E_LOCAL_FALLBACK:'1'}; const r=spawnSync('corepack',['pnpm','exec','playwright','test','--config','playwright.config.ts'],{stdio:'inherit',env,shell:true}); process.exit(r.status ?? 1);\"",
     "test:coverage": "vitest run --config config/vitest.config.ts --coverage",
     "types:generate": "python ../scripts/export_openapi_schema.py --output src/api/generated/openapi.schema.json && openapi-typescript src/api/generated/openapi.schema.json -o src/api/generated/openapi.ts",
     "types:check": "corepack pnpm run types:generate && git diff --exit-code -- src/api/generated/openapi.schema.json src/api/generated/openapi.ts",

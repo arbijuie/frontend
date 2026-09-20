@@ -12,6 +12,10 @@ const decisionLabel: Record<"ready" | "watching" | "blocked", string> = {
   blocked: "BLOCKED",
 };
 
+const formatScore = (value: number | null | undefined): string => {
+  return typeof value === "number" && Number.isFinite(value) ? value.toFixed(2) : "-";
+};
+
 const ExecutionPreflightPage = () => {
   usePageTitle("Execution preflight");
   const {
@@ -37,8 +41,12 @@ const ExecutionPreflightPage = () => {
   const aboveThreshold = correlation?.pairs?.filter((pair) => pair.above_threshold).length ?? 0;
   const blockers = preflight?.blockers ?? [];
   const candidateReasons = preflight?.candidate?.reasons ?? [];
-  const candidateLongVenue = preflight?.candidate?.legs?.find((leg) => leg.side === "long")?.venue;
-  const candidateShortVenue = preflight?.candidate?.legs?.find((leg) => leg.side === "short")?.venue;
+  const candidateLongVenue =
+    preflight?.candidate?.legs?.find((leg) => leg.side === "long")?.venue ??
+    preflight?.candidate?.long_exchange;
+  const candidateShortVenue =
+    preflight?.candidate?.legs?.find((leg) => leg.side === "short")?.venue ??
+    preflight?.candidate?.short_exchange;
 
   return (
     <div className={styles.page}>
@@ -128,11 +136,11 @@ const ExecutionPreflightPage = () => {
             <ul>
               <li>symbol: {preflight.candidate.symbol}</li>
               <li>route: {candidateLongVenue ?? "-"} / {candidateShortVenue ?? "-"}</li>
-              <li>signal_score_bps: {preflight.candidate.signal_score_bps.toFixed(2)}</li>
+              <li>signal_score_bps: {formatScore(preflight.candidate.signal_score_bps)}</li>
               <li>
-                execution_adjusted_score_bps: {preflight.candidate.execution_adjusted_score_bps.toFixed(2)}
+                execution_adjusted_score_bps: {formatScore(preflight.candidate.execution_adjusted_score_bps)}
               </li>
-              <li>combined_score: {preflight.candidate.combined_score.toFixed(2)}</li>
+              <li>combined_score: {formatScore(preflight.candidate.combined_score)}</li>
               <li>status: {preflight.candidate.status}</li>
               <li>
                 correlated_ready_count: {preflight.candidate.correlated_ready_count ?? 0}

@@ -81,6 +81,8 @@ function preflightPayload(decision: Decision) {
     },
     candidate: {
       symbol: "BTC",
+      signal_score_bps: 16,
+      execution_adjusted_score_bps: 12,
       long_exchange: "hyperliquid",
       short_exchange: "lighter",
       combined_score: 12,
