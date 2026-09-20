@@ -1301,10 +1301,6 @@ export interface components {
             correlated_with?: string[];
             /** Depth Quality */
             depth_quality?: ("A" | "B" | "C" | "D") | null;
-            /** Depth Source By Exchange */
-            depth_source_by_exchange?: {
-                [key: string]: "real" | "none";
-            };
             /** Depth Source State By Exchange */
             depth_source_state_by_exchange?: {
                 [key: string]: "real_ws" | "real_rest" | "derived" | "config" | "unavailable";
@@ -1319,10 +1315,6 @@ export interface components {
             execution_adjusted_score_bps: number;
             /** Fee Impact Bps */
             fee_impact_bps: number;
-            /** Fee Source By Exchange */
-            fee_source_by_exchange?: {
-                [key: string]: "real" | "config";
-            };
             /** Fee Source State By Exchange */
             fee_source_state_by_exchange?: {
                 [key: string]: "real_ws" | "real_rest" | "derived" | "config" | "unavailable";

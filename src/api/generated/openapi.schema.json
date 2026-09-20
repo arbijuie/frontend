@@ -2955,17 +2955,6 @@
             ],
             "title": "Depth Quality"
           },
-          "depth_source_by_exchange": {
-            "additionalProperties": {
-              "enum": [
-                "real",
-                "none"
-              ],
-              "type": "string"
-            },
-            "title": "Depth Source By Exchange",
-            "type": "object"
-          },
           "depth_source_state_by_exchange": {
             "additionalProperties": {
               "enum": [
@@ -3005,17 +2994,6 @@
           "fee_impact_bps": {
             "title": "Fee Impact Bps",
             "type": "number"
-          },
-          "fee_source_by_exchange": {
-            "additionalProperties": {
-              "enum": [
-                "real",
-                "config"
-              ],
-              "type": "string"
-            },
-            "title": "Fee Source By Exchange",
-            "type": "object"
           },
           "fee_source_state_by_exchange": {
             "additionalProperties": {

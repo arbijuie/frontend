@@ -25,7 +25,7 @@ function formatSigned(value: number, fractionDigits = 2): string {
   return abs;
 }
 
-function normalizeLegacySourceState(value: string | null | undefined): string {
+function normalizeSourceState(value: string | null | undefined): string {
   const normalized = (value ?? "").trim().toLowerCase();
   if (["real_ws", "real_rest", "derived", "config", "unavailable"].includes(normalized)) {
     return normalized;
@@ -60,24 +60,23 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
   const shortLeg = item.legs?.find((leg) => leg.side === "short");
   const longVenue = longLeg?.venue ?? "unknown";
   const shortVenue = shortLeg?.venue ?? "unknown";
-  const depthSourceStateByExchange =
-    item.depth_source_state_by_exchange ?? item.depth_source_by_exchange ?? {};
-  const feeSourceStateByExchange = item.fee_source_state_by_exchange ?? item.fee_source_by_exchange ?? {};
+  const depthSourceStateByExchange = item.depth_source_state_by_exchange ?? {};
+  const feeSourceStateByExchange = item.fee_source_state_by_exchange ?? {};
   const microstructureByExchange = item.microstructure_by_exchange ?? {};
   const longMicro = microstructureByExchange[longVenue];
   const shortMicro = microstructureByExchange[shortVenue];
-  const longPriceSource = normalizeLegacySourceState(longMicro?.price_source);
-  const shortPriceSource = normalizeLegacySourceState(shortMicro?.price_source);
-  const longDepthSource = normalizeLegacySourceState(
+  const longPriceSource = normalizeSourceState(longMicro?.price_source);
+  const shortPriceSource = normalizeSourceState(shortMicro?.price_source);
+  const longDepthSource = normalizeSourceState(
     longMicro?.depth_source ?? depthSourceStateByExchange[longVenue]
   );
-  const shortDepthSource = normalizeLegacySourceState(
+  const shortDepthSource = normalizeSourceState(
     shortMicro?.depth_source ?? depthSourceStateByExchange[shortVenue]
   );
-  const longFeeSource = normalizeLegacySourceState(
+  const longFeeSource = normalizeSourceState(
     longMicro?.fee_source ?? feeSourceStateByExchange[longVenue]
   );
-  const shortFeeSource = normalizeLegacySourceState(
+  const shortFeeSource = normalizeSourceState(
     shortMicro?.fee_source ?? feeSourceStateByExchange[shortVenue]
   );
   const scoreFromComponents =

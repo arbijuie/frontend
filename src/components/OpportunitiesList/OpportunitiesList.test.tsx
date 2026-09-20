@@ -58,9 +58,13 @@ function makeItem(overrides: Partial<OpportunityItem>): OpportunityItem {
     slippage_impact_bps: 1,
     source_penalty_bps: 0,
     total_cost_bps: 3,
-    depth_source_by_exchange: {
-      hyperliquid: "real",
-      lighter: "real",
+    depth_source_state_by_exchange: {
+      hyperliquid: "real_rest",
+      lighter: "real_rest",
+    },
+    fee_source_state_by_exchange: {
+      hyperliquid: "real_rest",
+      lighter: "real_rest",
     },
     effective_taker_fee_by_exchange: {
       hyperliquid: 0.035,

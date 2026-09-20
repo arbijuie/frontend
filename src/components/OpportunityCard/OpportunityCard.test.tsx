@@ -53,9 +53,13 @@ function makeItem(): OpportunityItem {
     slippage_impact_bps: 1,
     source_penalty_bps: 0,
     total_cost_bps: 3,
-    depth_source_by_exchange: {
-      hyperliquid: "real",
-      lighter: "real",
+    depth_source_state_by_exchange: {
+      hyperliquid: "real_rest",
+      lighter: "real_rest",
+    },
+    fee_source_state_by_exchange: {
+      hyperliquid: "real_rest",
+      lighter: "real_rest",
     },
     effective_taker_fee_by_exchange: TEST_TAKER_FEE_BY_EXCHANGE,
     long_hours_to_next_funding: 0.5,
@@ -158,27 +162,6 @@ describe("OpportunityCard", () => {
     expect(screen.getAllByText(/source penalty/i).length).toBeGreaterThan(0);
     expect(screen.getByText('real_rest / unavailable')).toBeTruthy();
     expect(screen.getByText('real_rest / config')).toBeTruthy();
-  });
-
-  it('falls back from legacy source states in details', () => {
-    const item = makeItem();
-    item.depth_source_state_by_exchange = undefined;
-    item.fee_source_state_by_exchange = undefined;
-    item.depth_source_by_exchange = {
-      hyperliquid: 'real',
-      lighter: 'none',
-    };
-    item.fee_source_by_exchange = {
-      hyperliquid: 'config',
-      lighter: 'real',
-    };
-
-    render(<OpportunityCard item={item} updatedAt={'2026-01-01T00:00:00Z'} now={new Date()} />);
-
-    fireEvent.click(screen.getByRole('button', { name: /more details/i }));
-
-    expect(screen.getByText('real_rest / unavailable')).toBeTruthy();
-    expect(screen.getByText('config / real_rest')).toBeTruthy();
   });
 
   it('shows canonical microstructure values for both legs', () => {
