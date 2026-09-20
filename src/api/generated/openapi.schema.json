@@ -2694,6 +2694,155 @@
         "title": "LegItem",
         "type": "object"
       },
+      "MicrostructureSnapshotItem": {
+        "properties": {
+          "best_ask": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Best Ask"
+          },
+          "best_bid": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Best Bid"
+          },
+          "depth_band_10bps_usd": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Depth Band 10Bps Usd"
+          },
+          "depth_band_20bps_usd": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Depth Band 20Bps Usd"
+          },
+          "depth_band_5bps_usd": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Depth Band 5Bps Usd"
+          },
+          "depth_source": {
+            "enum": [
+              "real_ws",
+              "real_rest",
+              "derived",
+              "config",
+              "unavailable"
+            ],
+            "title": "Depth Source",
+            "type": "string"
+          },
+          "fee_source": {
+            "enum": [
+              "real_ws",
+              "real_rest",
+              "derived",
+              "config",
+              "unavailable"
+            ],
+            "title": "Fee Source",
+            "type": "string"
+          },
+          "imbalance": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Imbalance"
+          },
+          "mid": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mid"
+          },
+          "price_source": {
+            "enum": [
+              "real_ws",
+              "real_rest",
+              "derived",
+              "config",
+              "unavailable"
+            ],
+            "title": "Price Source",
+            "type": "string"
+          },
+          "quality": {
+            "anyOf": [
+              {
+                "enum": [
+                  "A",
+                  "B",
+                  "C",
+                  "D"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Quality"
+          },
+          "spread_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Spread Bps"
+          }
+        },
+        "required": [
+          "price_source",
+          "depth_source",
+          "fee_source"
+        ],
+        "title": "MicrostructureSnapshotItem",
+        "type": "object"
+      },
       "OpportunitiesResponse": {
         "properties": {
           "count": {
@@ -2807,6 +2956,20 @@
             "title": "Depth Source By Exchange",
             "type": "object"
           },
+          "depth_source_state_by_exchange": {
+            "additionalProperties": {
+              "enum": [
+                "real_ws",
+                "real_rest",
+                "derived",
+                "config",
+                "unavailable"
+              ],
+              "type": "string"
+            },
+            "title": "Depth Source State By Exchange",
+            "type": "object"
+          },
           "effective_hold_hours": {
             "anyOf": [
               {
@@ -2838,6 +3001,20 @@
               "type": "string"
             },
             "title": "Fee Source By Exchange",
+            "type": "object"
+          },
+          "fee_source_state_by_exchange": {
+            "additionalProperties": {
+              "enum": [
+                "real_ws",
+                "real_rest",
+                "derived",
+                "config",
+                "unavailable"
+              ],
+              "type": "string"
+            },
+            "title": "Fee Source State By Exchange",
             "type": "object"
           },
           "funding_diff_apr": {
@@ -2949,6 +3126,13 @@
             "title": "Long Rate Apr",
             "type": "number"
           },
+          "microstructure_by_exchange": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/MicrostructureSnapshotItem"
+            },
+            "title": "Microstructure By Exchange",
+            "type": "object"
+          },
           "min_profitable_hours": {
             "anyOf": [
               {
@@ -3017,6 +3201,11 @@
           "slippage_impact_bps": {
             "default": 0.0,
             "title": "Slippage Impact Bps",
+            "type": "number"
+          },
+          "source_penalty_bps": {
+            "default": 0.0,
+            "title": "Source Penalty Bps",
             "type": "number"
           },
           "status": {

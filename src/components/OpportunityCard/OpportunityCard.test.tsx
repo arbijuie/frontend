@@ -51,6 +51,7 @@ function makeItem(): OpportunityItem {
     basis_bonus_bps: 4,
     fee_impact_bps: 2,
     slippage_impact_bps: 1,
+    source_penalty_bps: 0,
     total_cost_bps: 3,
     depth_source_by_exchange: {
       hyperliquid: "real",
@@ -133,6 +134,93 @@ describe("OpportunityCard", () => {
 
     const label = screen.getByText(/historical win rate/i);
     expect(label.nextElementSibling?.textContent).toBe('—');
+  });
+
+  it('shows source penalty and canonical source states in details', () => {
+    const item = makeItem();
+    item.source_penalty_bps = 3;
+    item.depth_source_state_by_exchange = {
+      hyperliquid: 'real_rest',
+      lighter: 'unavailable',
+    };
+    item.fee_source_state_by_exchange = {
+      hyperliquid: 'real_rest',
+      lighter: 'config',
+    };
+
+    render(<OpportunityCard item={item} updatedAt={'2026-01-01T00:00:00Z'} now={new Date()} />);
+
+    fireEvent.click(screen.getByRole('button', { name: /more details/i }));
+
+    expect(screen.getAllByText(/source penalty/i).length).toBeGreaterThan(0);
+    expect(screen.getByText('real_rest / unavailable')).toBeTruthy();
+    expect(screen.getByText('real_rest / config')).toBeTruthy();
+  });
+
+  it('falls back from legacy source states in details', () => {
+    const item = makeItem();
+    item.depth_source_state_by_exchange = undefined;
+    item.fee_source_state_by_exchange = undefined;
+    item.depth_source_by_exchange = {
+      hyperliquid: 'real',
+      lighter: 'none',
+    };
+    item.fee_source_by_exchange = {
+      hyperliquid: 'config',
+      lighter: 'real',
+    };
+
+    render(<OpportunityCard item={item} updatedAt={'2026-01-01T00:00:00Z'} now={new Date()} />);
+
+    fireEvent.click(screen.getByRole('button', { name: /more details/i }));
+
+    expect(screen.getByText('real_rest / unavailable')).toBeTruthy();
+    expect(screen.getByText('config / real_rest')).toBeTruthy();
+  });
+
+  it('shows canonical microstructure values for both legs', () => {
+    const item = makeItem();
+    item.microstructure_by_exchange = {
+      hyperliquid: {
+        best_ask: '100.20',
+        best_bid: '100.00',
+        mid: '100.10',
+        spread_bps: 2.0,
+        depth_band_5bps_usd: 60000,
+        depth_band_10bps_usd: 120000,
+        depth_band_20bps_usd: 240000,
+        imbalance: 0.1,
+        quality: 'A',
+        price_source: 'real_rest',
+        depth_source: 'real_rest',
+        fee_source: 'real_rest',
+      },
+      lighter: {
+        best_ask: '101.40',
+        best_bid: '101.00',
+        mid: '101.20',
+        spread_bps: 3.95,
+        depth_band_5bps_usd: 45000,
+        depth_band_10bps_usd: 90000,
+        depth_band_20bps_usd: 180000,
+        imbalance: -0.05,
+        quality: 'B',
+        price_source: 'real_ws',
+        depth_source: 'real_ws',
+        fee_source: 'config',
+      },
+    };
+
+    render(<OpportunityCard item={item} updatedAt={'2026-01-01T00:00:00Z'} now={new Date()} />);
+
+    fireEvent.click(screen.getByRole('button', { name: /more details/i }));
+
+    expect(screen.getByText('2.00 / 3.95')).toBeTruthy();
+    expect(screen.getByText('120000 / 90000')).toBeTruthy();
+    expect(screen.getByText('240000 / 180000')).toBeTruthy();
+    expect(screen.getByText('100.10 / 101.20')).toBeTruthy();
+    expect(screen.getAllByText('real_rest / real_ws').length).toBeGreaterThanOrEqual(2);
+    expect(screen.getByText('real_rest / config')).toBeTruthy();
   });
 
   it('lists correlated symbols when the cluster cap recorded them', () => {

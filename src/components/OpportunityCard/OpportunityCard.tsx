@@ -25,12 +25,61 @@ function formatSigned(value: number, fractionDigits = 2): string {
   return abs;
 }
 
+function normalizeLegacySourceState(value: string | null | undefined): string {
+  const normalized = (value ?? "").trim().toLowerCase();
+  if (["real_ws", "real_rest", "derived", "config", "unavailable"].includes(normalized)) {
+    return normalized;
+  }
+  if (normalized === "real") {
+    return "real_rest";
+  }
+  if (!normalized || normalized === "none" || normalized === "unknown") {
+    return "unavailable";
+  }
+  return "unavailable";
+}
+
+function formatNullableNumber(value: number | null | undefined, fractionDigits: number): string {
+  return value != null ? value.toFixed(fractionDigits) : "—";
+}
+
+function formatNullablePrice(value: string | null | undefined): string {
+  if (value == null) {
+    return "—";
+  }
+  const numeric = Number(value);
+  if (!Number.isFinite(numeric)) {
+    return value;
+  }
+  return numeric.toFixed(2);
+}
+
 const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
   const [expanded, setExpanded] = useState(false);
   const longLeg = item.legs?.find((leg) => leg.side === "long");
   const shortLeg = item.legs?.find((leg) => leg.side === "short");
   const longVenue = longLeg?.venue ?? "unknown";
   const shortVenue = shortLeg?.venue ?? "unknown";
+  const depthSourceStateByExchange =
+    item.depth_source_state_by_exchange ?? item.depth_source_by_exchange ?? {};
+  const feeSourceStateByExchange = item.fee_source_state_by_exchange ?? item.fee_source_by_exchange ?? {};
+  const microstructureByExchange = item.microstructure_by_exchange ?? {};
+  const longMicro = microstructureByExchange[longVenue];
+  const shortMicro = microstructureByExchange[shortVenue];
+  const longPriceSource = normalizeLegacySourceState(longMicro?.price_source);
+  const shortPriceSource = normalizeLegacySourceState(shortMicro?.price_source);
+  const longDepthSource = normalizeLegacySourceState(
+    longMicro?.depth_source ?? depthSourceStateByExchange[longVenue]
+  );
+  const shortDepthSource = normalizeLegacySourceState(
+    shortMicro?.depth_source ?? depthSourceStateByExchange[shortVenue]
+  );
+  const longFeeSource = normalizeLegacySourceState(
+    longMicro?.fee_source ?? feeSourceStateByExchange[longVenue]
+  );
+  const shortFeeSource = normalizeLegacySourceState(
+    shortMicro?.fee_source ?? feeSourceStateByExchange[shortVenue]
+  );
   const scoreFromComponents =
     item.funding_edge_bps +
     item.basis_bonus_bps -
@@ -156,6 +205,10 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
               <span className={styles.negative}>{formatSigned(-item.total_cost_bps)}</span>
             </div>
             <div className={styles.detailRow}>
+              <span>Source penalty</span>
+              <span className={styles.negative}>{formatSigned(-item.source_penalty_bps)}</span>
+            </div>
+            <div className={styles.detailRow}>
               <span>Timing penalty</span>
               <span className={styles.negative}>
                 {formatSigned(-item.funding_timing_penalty_bps)}
@@ -218,6 +271,52 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
           <div className={styles.detailRow}>
             <span>Slippage impact</span>
             <span>{item.slippage_impact_bps.toFixed(1)} bps</span>
+          </div>
+          <div className={styles.detailRow}>
+            <span>Source penalty</span>
+            <span>{item.source_penalty_bps.toFixed(1)} bps</span>
+          </div>
+          <div className={styles.detailRow}>
+            <span>Depth source (L/S)</span>
+            <span>
+              {longDepthSource} / {shortDepthSource}
+            </span>
+          </div>
+          <div className={styles.detailRow}>
+            <span>Fee source (L/S)</span>
+            <span>
+              {longFeeSource} / {shortFeeSource}
+            </span>
+          </div>
+          <div className={styles.detailRow}>
+            <span>Price source (L/S)</span>
+            <span>
+              {longPriceSource} / {shortPriceSource}
+            </span>
+          </div>
+          <div className={styles.detailRow}>
+            <span>Spread bps (L/S)</span>
+            <span>
+              {formatNullableNumber(longMicro?.spread_bps, 2)} / {formatNullableNumber(shortMicro?.spread_bps, 2)}
+            </span>
+          </div>
+          <div className={styles.detailRow}>
+            <span>Depth 10bps USD (L/S)</span>
+            <span>
+              {formatNullableNumber(longMicro?.depth_band_10bps_usd, 0)} / {formatNullableNumber(shortMicro?.depth_band_10bps_usd, 0)}
+            </span>
+          </div>
+          <div className={styles.detailRow}>
+            <span>Depth 20bps USD (L/S)</span>
+            <span>
+              {formatNullableNumber(longMicro?.depth_band_20bps_usd, 0)} / {formatNullableNumber(shortMicro?.depth_band_20bps_usd, 0)}
+            </span>
+          </div>
+          <div className={styles.detailRow}>
+            <span>Mid price (L/S)</span>
+            <span>
+              {formatNullablePrice(longMicro?.mid)} / {formatNullablePrice(shortMicro?.mid)}
+            </span>
           </div>
           <div className={styles.detailRow}>
             <span>Recommended size</span>

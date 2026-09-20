@@ -56,6 +56,7 @@ function makeItem(overrides: Partial<OpportunityItem>): OpportunityItem {
     basis_bonus_bps: 4,
     fee_impact_bps: 2,
     slippage_impact_bps: 1,
+    source_penalty_bps: 0,
     total_cost_bps: 3,
     depth_source_by_exchange: {
       hyperliquid: "real",
