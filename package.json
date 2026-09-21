@@ -38,7 +38,7 @@
     "check": "corepack pnpm run lint && corepack pnpm run test && corepack pnpm run build && corepack pnpm run audit:ci"
   },
   "dependencies": {
-    "@tanstack/react-query": "^5.102.8",
+    "@tanstack/react-query": "^5.103.1",
     "axios": "^1.20.0",
     "lucide-react": "^1.47.0",
     "react": "^19.3.0",
