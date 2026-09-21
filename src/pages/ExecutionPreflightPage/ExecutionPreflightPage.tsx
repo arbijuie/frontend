@@ -38,7 +38,9 @@ const ExecutionPreflightPage = () => {
   const blockers = preflight?.blockers ?? [];
   const candidateReasons = preflight?.candidate?.reasons ?? [];
   const candidateLongVenue = preflight?.candidate?.legs?.find((leg) => leg.side === "long")?.venue;
-  const candidateShortVenue = preflight?.candidate?.legs?.find((leg) => leg.side === "short")?.venue;
+  const candidateShortVenue = preflight?.candidate?.legs?.find(
+    (leg) => leg.side === "short"
+  )?.venue;
 
   return (
     <div className={styles.page}>
@@ -48,7 +50,9 @@ const ExecutionPreflightPage = () => {
       />
 
       <div className={styles.summaryRow}>
-        <span className={styles.summaryPill}>Decision priority: blocked &gt; watching &gt; ready</span>
+        <span className={styles.summaryPill}>
+          Decision priority: blocked &gt; watching &gt; ready
+        </span>
         {preflight?.checked_at && (
           <span className={styles.summaryPill}>
             checked: {new Date(preflight.checked_at).toLocaleTimeString()}
@@ -57,7 +61,9 @@ const ExecutionPreflightPage = () => {
       </div>
 
       {preflightError && <div className={styles.errorBox}>Preflight error: {preflightError}</div>}
-      {correlationError && <div className={styles.errorBox}>Correlation error: {correlationError}</div>}
+      {correlationError && (
+        <div className={styles.errorBox}>Correlation error: {correlationError}</div>
+      )}
 
       {preflightLoading && !preflight && <div>Loading execution preflight...</div>}
 
@@ -127,14 +133,17 @@ const ExecutionPreflightPage = () => {
           ) : (
             <ul>
               <li>symbol: {preflight.candidate.symbol}</li>
-              <li>route: {candidateLongVenue ?? "-"} / {candidateShortVenue ?? "-"}</li>
+              <li>
+                route: {candidateLongVenue ?? "-"} / {candidateShortVenue ?? "-"}
+              </li>
               <li>combined_score: {preflight.candidate.combined_score.toFixed(2)}</li>
               <li>status: {preflight.candidate.status}</li>
+              <li>correlated_ready_count: {preflight.candidate.correlated_ready_count ?? 0}</li>
               <li>
-                correlated_ready_count: {preflight.candidate.correlated_ready_count ?? 0}
-              </li>
-              <li>
-                reasons: {candidateReasons.length === 0 ? "none" : candidateReasons.map((reason) => reason.code).join(", ")}
+                reasons:{" "}
+                {candidateReasons.length === 0
+                  ? "none"
+                  : candidateReasons.map((reason) => reason.code).join(", ")}
               </li>
             </ul>
           )}

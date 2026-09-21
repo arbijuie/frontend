@@ -26,11 +26,7 @@ const RecoveryHealthCard = ({ status }: RecoveryHealthCardProps) => {
 
   return (
     <div className={styles.grid}>
-      <StatCard
-        label="Startup Recovery"
-        value={result}
-        color={severityFromResult(result)}
-      />
+      <StatCard label="Startup Recovery" value={result} color={severityFromResult(result)} />
       <StatCard
         label="Recovery Scanned Rows"
         value={String(continuity?.last_recovery_scanned_rows ?? 0)}
@@ -39,10 +35,7 @@ const RecoveryHealthCard = ({ status }: RecoveryHealthCardProps) => {
         label="Recovery Duration"
         value={durationMs != null ? `${Math.round(durationMs)} ms` : "-"}
       />
-      <StatCard
-        label="Recovery Max Rows"
-        value={String(continuity?.recovery_max_rows ?? 0)}
-      />
+      <StatCard label="Recovery Max Rows" value={String(continuity?.recovery_max_rows ?? 0)} />
     </div>
   );
 };

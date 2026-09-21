@@ -36,7 +36,9 @@ const WsFeedReliabilityList = ({ status }: WsFeedReliabilityListProps) => {
           <div className={styles.feedHeader}>{exchange}</div>
           <div className={styles.row}>
             <span className={styles.label}>Connection</span>
-            <span className={styles.value}>{feed.connected == null ? "n/a" : feed.connected ? "up" : "down"}</span>
+            <span className={styles.value}>
+              {feed.connected == null ? "n/a" : feed.connected ? "up" : "down"}
+            </span>
           </div>
           <div className={styles.row}>
             <span className={styles.label}>Feed health</span>

@@ -163,7 +163,13 @@ const DeepPipelineDiagnostics = ({ status }: DeepPipelineDiagnosticsProps) => {
 
   const totalSignals = totalDrops + reasonTotal;
   const diagnosticsState =
-    totalSignals === 0 ? "empty" : totalSignals < 10 ? "low" : totalSignals > 120 ? "high" : "normal";
+    totalSignals === 0
+      ? "empty"
+      : totalSignals < 10
+        ? "low"
+        : totalSignals > 120
+          ? "high"
+          : "normal";
 
   return (
     <section className={styles.panel} aria-label="Deep pipeline diagnostics">
@@ -172,14 +178,19 @@ const DeepPipelineDiagnostics = ({ status }: DeepPipelineDiagnosticsProps) => {
           <span>No drop or reason events in the latest cycle. Keep monitoring live updates.</span>
         )}
         {diagnosticsState === "low" && (
-          <span>Low-volume cycle: counts are small, so prefer absolute counts over percentages.</span>
+          <span>
+            Low-volume cycle: counts are small, so prefer absolute counts over percentages.
+          </span>
         )}
         {diagnosticsState === "normal" && (
-          <span>Diagnostics stable: use top blockers and exchange split to triage bottlenecks.</span>
+          <span>
+            Diagnostics stable: use top blockers and exchange split to triage bottlenecks.
+          </span>
         )}
         {diagnosticsState === "high" && (
           <span>
-            High-volume cycle detected. Reason list is compacted to Top 8 by default for scanability.
+            High-volume cycle detected. Reason list is compacted to Top 8 by default for
+            scanability.
           </span>
         )}
       </div>
@@ -239,7 +250,8 @@ const DeepPipelineDiagnostics = ({ status }: DeepPipelineDiagnosticsProps) => {
           })}
         </div>
         <p className={styles.legend}>
-          Heat intensity is relative to the largest drop count in this cycle (not cross-cycle normalized).
+          Heat intensity is relative to the largest drop count in this cycle (not cross-cycle
+          normalized).
         </p>
       </section>
 

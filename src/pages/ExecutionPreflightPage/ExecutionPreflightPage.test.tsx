@@ -19,7 +19,9 @@ vi.mock("../../components/FloatingRefreshButton/FloatingRefreshButton", () => ({
 const mockedUseExecutionPreflight = vi.mocked(useExecutionPreflight);
 const mockedUseCorrelation = vi.mocked(useCorrelation);
 
-function makePreflight(overrides: Partial<ExecutionPreflightResponse> = {}): ExecutionPreflightResponse {
+function makePreflight(
+  overrides: Partial<ExecutionPreflightResponse> = {}
+): ExecutionPreflightResponse {
   return {
     ready: false,
     decision: "watching",
@@ -312,7 +314,9 @@ describe("ExecutionPreflightPage", () => {
       )
     ).toBeTruthy();
     expect(
-      screen.getByText("[blocked] runtime::stale_runtime_snapshot - Latest screener snapshot is stale.")
+      screen.getByText(
+        "[blocked] runtime::stale_runtime_snapshot - Latest screener snapshot is stale."
+      )
     ).toBeTruthy();
   });
 
@@ -322,14 +326,16 @@ describe("ExecutionPreflightPage", () => {
       source: "gate",
       code: "execution_disabled",
       message: "Execution mode is disabled by configuration.",
-      expected: "[watching] gate::execution_disabled - Execution mode is disabled by configuration.",
+      expected:
+        "[watching] gate::execution_disabled - Execution mode is disabled by configuration.",
     },
     {
       severity: "blocked",
       source: "candidate",
       code: "symbol_not_found",
       message: "No validated candidate found for symbol ETH.",
-      expected: "[blocked] candidate::symbol_not_found - No validated candidate found for symbol ETH.",
+      expected:
+        "[blocked] candidate::symbol_not_found - No validated candidate found for symbol ETH.",
     },
     {
       severity: "blocked",

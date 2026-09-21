@@ -93,7 +93,12 @@ describe("OpportunitiesList", () => {
 
   it("sorts ready items by fewer correlations first when sort is Priority", () => {
     const items: OpportunityItem[] = [
-      makeItem({ symbol: "AAA", status: "ready", combined_score: 100, correlated_with: ["X", "Y"] }),
+      makeItem({
+        symbol: "AAA",
+        status: "ready",
+        combined_score: 100,
+        correlated_with: ["X", "Y"],
+      }),
       makeItem({ symbol: "BBB", status: "ready", combined_score: 50, correlated_with: [] }),
       makeItem({ symbol: "CCC", status: "watching", combined_score: 999 }),
     ];

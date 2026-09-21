@@ -131,7 +131,9 @@ test.describe("Execution preflight readiness center", () => {
     await page.goto("/execution/preflight");
 
     await expect(page.getByText("final decision: WATCHING")).toBeVisible();
-    await expect(page.getByText("[watching] runtime::dry_run_mode - Execution dry-run mode is enabled.")).toBeVisible();
+    await expect(
+      page.getByText("[watching] runtime::dry_run_mode - Execution dry-run mode is enabled.")
+    ).toBeVisible();
   });
 
   test("renders blocked decision", async ({ page }) => {
@@ -139,6 +141,10 @@ test.describe("Execution preflight readiness center", () => {
     await page.goto("/execution/preflight");
 
     await expect(page.getByText("final decision: BLOCKED")).toBeVisible();
-    await expect(page.getByText("[blocked] runtime::stale_runtime_snapshot - Latest screener snapshot is stale.")).toBeVisible();
+    await expect(
+      page.getByText(
+        "[blocked] runtime::stale_runtime_snapshot - Latest screener snapshot is stale."
+      )
+    ).toBeVisible();
   });
 });
