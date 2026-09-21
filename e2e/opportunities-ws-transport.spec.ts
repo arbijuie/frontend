@@ -1,3 +1,4 @@
+
 import { expect, test } from "@playwright/test";
 
 const emptySnapshot = {
@@ -51,9 +52,55 @@ test.describe("Opportunities WS transport", () => {
     });
 
     await page.goto("/");
+
     await expect(page.getByText("live (WS)")).toBeVisible();
 
     await page.getByRole("button", { name: /refresh opportunities/i }).click();
+
     await expect(page.getByText("live (WS)")).toBeVisible();
+  });
+
+  test("eventually falls back to polling after repeated connection failures", async ({ page }) => {
+    test.setTimeout(45_000);
+
+    await mockOpportunitiesRest(page);
+
+    await page.routeWebSocket("ws://127.0.0.1:8000/ws/opportunities", (ws) => {
+      ws.close();
+    });
+
+    await page.goto("/");
+
+    await expect(page.getByText(/polling fallback/i)).toBeVisible({
+      timeout: 40_000,
+    });
+  });
+
+  test("manual refresh triggers a REST call", async ({ page }) => {
+    let restCallCount = 0;
+
+    await page.route("http://127.0.0.1:8000/opportunities**", async (route) => {
+      restCallCount += 1;
+
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify(emptySnapshot),
+      });
+    });
+
+    await page.routeWebSocket("ws://127.0.0.1:8000/ws/opportunities", (ws) => {
+      ws.send(JSON.stringify(emptySnapshot));
+    });
+
+    await page.goto("/");
+
+    await expect(page.getByText("live (WS)")).toBeVisible();
+
+    const callsBefore = restCallCount;
+
+    await page.getByRole("button", { name: /refresh opportunities/i }).click();
+
+    await expect.poll(() => restCallCount).toBeGreaterThan(callsBefore);
   });
 });
