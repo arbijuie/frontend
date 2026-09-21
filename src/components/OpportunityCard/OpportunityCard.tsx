@@ -1,6 +1,6 @@
 import styles from "./OpportunityCard.module.scss";
 import { useState } from "react";
-import type { OpportunityItem, FundingTrend } from "../../api/types";
+import { SOURCE_STATE_SET, type OpportunityItem, type FundingTrend } from "../../api/types";
 import StatusBadge from "../StatusBadge/StatusBadge";
 import ExchangeBadge from "../ExchangeBadge/ExchangeBadge";
 import { signColor, getFundingTargetTime, formatCountdown } from "../../lib/format";
@@ -27,7 +27,7 @@ function formatSigned(value: number, fractionDigits = 2): string {
 
 function normalizeSourceState(value: string | null | undefined): string {
   const normalized = (value ?? "").trim().toLowerCase();
-  if (["real_ws", "real_rest", "derived", "config", "unavailable"].includes(normalized)) {
+  if (Object.prototype.hasOwnProperty.call(SOURCE_STATE_SET, normalized)) {
     return normalized;
   }
   if (normalized === "real") {

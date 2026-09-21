@@ -210,6 +210,46 @@ describe("OpportunityCard", () => {
     expect(screen.getByText('real_rest / config')).toBeTruthy();
   });
 
+  it('renders unavailable depth bands as placeholders', () => {
+    const item = makeItem();
+    item.microstructure_by_exchange = {
+      hyperliquid: {
+        best_ask: null,
+        best_bid: null,
+        mid: null,
+        spread_bps: null,
+        depth_band_5bps_usd: null,
+        depth_band_10bps_usd: null,
+        depth_band_20bps_usd: null,
+        imbalance: null,
+        quality: null,
+        price_source: 'unavailable',
+        depth_source: 'unavailable',
+        fee_source: 'config',
+      },
+      lighter: {
+        best_ask: null,
+        best_bid: null,
+        mid: null,
+        spread_bps: null,
+        depth_band_5bps_usd: null,
+        depth_band_10bps_usd: null,
+        depth_band_20bps_usd: null,
+        imbalance: null,
+        quality: null,
+        price_source: 'unavailable',
+        depth_source: 'unavailable',
+        fee_source: 'config',
+      },
+    };
+
+    render(<OpportunityCard item={item} updatedAt={'2026-01-01T00:00:00Z'} now={new Date()} />);
+
+    fireEvent.click(screen.getByRole('button', { name: /more details/i }));
+
+    expect(screen.getAllByText('— / —').length).toBeGreaterThan(0);
+  });
+
   it('lists correlated symbols when the cluster cap recorded them', () => {
     const item = makeItem();
     item.correlated_with = ['MEME1', 'MEME2', 'MEME3'];
