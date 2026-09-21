@@ -200,12 +200,8 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
               <span className={styles.positive}>{formatSigned(item.basis_bonus_bps)}</span>
             </div>
             <div className={styles.detailRow}>
-              <span>Total cost (fees + slippage)</span>
+              <span>Total cost (fees + slippage + source penalty)</span>
               <span className={styles.negative}>{formatSigned(-item.total_cost_bps)}</span>
-            </div>
-            <div className={styles.detailRow}>
-              <span>Source penalty</span>
-              <span className={styles.negative}>{formatSigned(-item.source_penalty_bps)}</span>
             </div>
             <div className={styles.detailRow}>
               <span>Timing penalty</span>

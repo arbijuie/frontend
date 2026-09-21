@@ -159,7 +159,8 @@ describe("OpportunityCard", () => {
 
     fireEvent.click(screen.getByRole('button', { name: /more details/i }));
 
-    expect(screen.getAllByText(/source penalty/i).length).toBeGreaterThan(0);
+    expect(screen.getByText('Total cost (fees + slippage + source penalty)')).toBeTruthy();
+    expect(screen.getAllByText(/source penalty/i).length).toBe(2);
     expect(screen.getByText('real_rest / unavailable')).toBeTruthy();
     expect(screen.getByText('real_rest / config')).toBeTruthy();
   });
