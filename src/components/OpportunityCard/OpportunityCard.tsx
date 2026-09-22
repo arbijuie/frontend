@@ -231,14 +231,14 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
             </div>
           </div>
 
-            <div className={styles.detailRow}>
-              <span>Signal score</span>
-              <span>{item.signal_score_bps.toFixed(1)} bps</span>
-            </div>
-            <div className={styles.detailRow}>
-              <span>Execution-adjusted score</span>
-              <span>{item.execution_adjusted_score_bps.toFixed(1)} bps</span>
-            </div>
+          <div className={styles.detailRow}>
+            <span>Signal score</span>
+            <span>{item.signal_score_bps.toFixed(1)} bps</span>
+          </div>
+          <div className={styles.detailRow}>
+            <span>Execution-adjusted score</span>
+            <span>{item.execution_adjusted_score_bps.toFixed(1)} bps</span>
+          </div>
 
           <div className={styles.detailRow}>
             <span>Persistence</span>
@@ -301,19 +301,22 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
           <div className={styles.detailRow}>
             <span>Spread bps (L/S)</span>
             <span>
-              {formatNullableNumber(longMicro?.spread_bps, 2)} / {formatNullableNumber(shortMicro?.spread_bps, 2)}
+              {formatNullableNumber(longMicro?.spread_bps, 2)} /{" "}
+              {formatNullableNumber(shortMicro?.spread_bps, 2)}
             </span>
           </div>
           <div className={styles.detailRow}>
             <span>Depth 10bps USD (L/S)</span>
             <span>
-              {formatNullableNumber(longMicro?.depth_band_10bps_usd, 0)} / {formatNullableNumber(shortMicro?.depth_band_10bps_usd, 0)}
+              {formatNullableNumber(longMicro?.depth_band_10bps_usd, 0)} /{" "}
+              {formatNullableNumber(shortMicro?.depth_band_10bps_usd, 0)}
             </span>
           </div>
           <div className={styles.detailRow}>
             <span>Depth 20bps USD (L/S)</span>
             <span>
-              {formatNullableNumber(longMicro?.depth_band_20bps_usd, 0)} / {formatNullableNumber(shortMicro?.depth_band_20bps_usd, 0)}
+              {formatNullableNumber(longMicro?.depth_band_20bps_usd, 0)} /{" "}
+              {formatNullableNumber(shortMicro?.depth_band_20bps_usd, 0)}
             </span>
           </div>
           <div className={styles.detailRow}>
