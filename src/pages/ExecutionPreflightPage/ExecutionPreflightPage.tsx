@@ -137,17 +137,15 @@ const ExecutionPreflightPage = () => {
           ) : (
             <ul>
               <li>symbol: {preflight.candidate.symbol}</li>
-              <li>route: {candidateLongVenue ?? "-"} / {candidateShortVenue ?? "-"}</li>
-              <li>signal_score_bps: {formatScore(preflight.candidate.signal_score_bps)}</li>
-              <li>
-                execution_adjusted_score_bps: {formatScore(preflight.candidate.execution_adjusted_score_bps)}
-              </li>
-              <li>combined_score: {formatScore(preflight.candidate.combined_score)}</li>
-              <li>status: {preflight.candidate.status}</li>
               <li>
                 route: {candidateLongVenue ?? "-"} / {candidateShortVenue ?? "-"}
               </li>
-              <li>combined_score: {preflight.candidate.combined_score.toFixed(2)}</li>
+              <li>signal_score_bps: {formatScore(preflight.candidate.signal_score_bps)}</li>
+              <li>
+                execution_adjusted_score_bps:{" "}
+                {formatScore(preflight.candidate.execution_adjusted_score_bps)}
+              </li>
+              <li>combined_score: {formatScore(preflight.candidate.combined_score)}</li>
               <li>status: {preflight.candidate.status}</li>
               <li>correlated_ready_count: {preflight.candidate.correlated_ready_count ?? 0}</li>
               <li>
