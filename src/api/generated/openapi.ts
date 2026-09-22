@@ -1165,6 +1165,7 @@ export interface components {
             poll_count_success: number;
             /** Screener Ready Candidates */
             screener_ready_candidates: number;
+            trust_diagnostics?: components["schemas"]["PreflightTrustDiagnosticsItem"];
         };
         /** FundingForecastItem */
         FundingForecastItem: {
@@ -1400,6 +1401,16 @@ export interface components {
              * @default 0
              */
             total_cost_bps: number;
+        };
+        /** PreflightTrustDiagnosticsItem */
+        PreflightTrustDiagnosticsItem: {
+            confidence_distribution?: components["schemas"]["TrustConfidenceDistributionItem"];
+            /** Fallback Risk By Exchange */
+            fallback_risk_by_exchange?: {
+                [key: string]: components["schemas"]["TrustExchangeFallbackRiskItem"];
+            };
+            fallback_risk_counters?: components["schemas"]["TrustFallbackRiskCountersItem"];
+            provenance_coverage?: components["schemas"]["TrustProvenanceCoverageItem"];
         };
         /**
          * ReasonCode
@@ -1734,6 +1745,7 @@ export interface components {
             snapshot_continuity?: components["schemas"]["StatusSnapshotContinuity"];
             /** Started At */
             started_at: string;
+            trust_diagnostics?: components["schemas"]["StatusTrustDiagnosticsItem"];
             /** Uptime S */
             uptime_s: number;
             /** Ws Feed Diagnostics */
@@ -1821,6 +1833,16 @@ export interface components {
              */
             write_failures: number;
         };
+        /** StatusTrustDiagnosticsItem */
+        StatusTrustDiagnosticsItem: {
+            confidence_distribution?: components["schemas"]["TrustConfidenceDistributionItem"];
+            /** Fallback Risk By Exchange */
+            fallback_risk_by_exchange?: {
+                [key: string]: components["schemas"]["TrustExchangeFallbackRiskItem"];
+            };
+            fallback_risk_counters?: components["schemas"]["TrustFallbackRiskCountersItem"];
+            provenance_coverage?: components["schemas"]["TrustProvenanceCoverageItem"];
+        };
         /** StatusWsFeedDiagnostics */
         StatusWsFeedDiagnostics: {
             /** Connected */
@@ -1859,6 +1881,135 @@ export interface components {
              * @default 0
              */
             reconnects_in_window: number;
+        };
+        /** TrustConfidenceDistributionItem */
+        TrustConfidenceDistributionItem: {
+            /**
+             * Blocked
+             * @default 0
+             */
+            blocked: number;
+            /**
+             * Candidate Block
+             * @default 0
+             */
+            candidate_block: number;
+            /**
+             * Candidate Watch
+             * @default 0
+             */
+            candidate_watch: number;
+            /**
+             * Gate Block
+             * @default 0
+             */
+            gate_block: number;
+            /**
+             * Gate Watch
+             * @default 0
+             */
+            gate_watch: number;
+            /**
+             * Ready
+             * @default 0
+             */
+            ready: number;
+            /**
+             * Runtime Block
+             * @default 0
+             */
+            runtime_block: number;
+            /**
+             * Runtime Watch
+             * @default 0
+             */
+            runtime_watch: number;
+            /**
+             * Watching
+             * @default 0
+             */
+            watching: number;
+        };
+        /** TrustExchangeFallbackRiskItem */
+        TrustExchangeFallbackRiskItem: {
+            /**
+             * Missing Calibration
+             * @default 0
+             */
+            missing_calibration: number;
+            /**
+             * Missing Depth
+             * @default 0
+             */
+            missing_depth: number;
+            /**
+             * Missing Fee
+             * @default 0
+             */
+            missing_fee: number;
+            /**
+             * Missing Spread
+             * @default 0
+             */
+            missing_spread: number;
+        };
+        /** TrustFallbackRiskCountersItem */
+        TrustFallbackRiskCountersItem: {
+            /**
+             * Missing Calibration
+             * @default 0
+             */
+            missing_calibration: number;
+            /**
+             * Missing Depth
+             * @default 0
+             */
+            missing_depth: number;
+            /**
+             * Missing Fee
+             * @default 0
+             */
+            missing_fee: number;
+            /**
+             * Missing Spread
+             * @default 0
+             */
+            missing_spread: number;
+        };
+        /** TrustProvenanceCoverageItem */
+        TrustProvenanceCoverageItem: {
+            depth?: components["schemas"]["TrustProvenanceTermCoverageItem"];
+            fee?: components["schemas"]["TrustProvenanceTermCoverageItem"];
+            funding?: components["schemas"]["TrustProvenanceTermCoverageItem"];
+            mark?: components["schemas"]["TrustProvenanceTermCoverageItem"];
+        };
+        /** TrustProvenanceTermCoverageItem */
+        TrustProvenanceTermCoverageItem: {
+            /**
+             * Config
+             * @default 0
+             */
+            config: number;
+            /**
+             * Derived
+             * @default 0
+             */
+            derived: number;
+            /**
+             * Real Rest
+             * @default 0
+             */
+            real_rest: number;
+            /**
+             * Real Ws
+             * @default 0
+             */
+            real_ws: number;
+            /**
+             * Unavailable
+             * @default 0
+             */
+            unavailable: number;
         };
         /** ValidationError */
         ValidationError: {

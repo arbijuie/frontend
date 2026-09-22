@@ -2474,6 +2474,9 @@
           "screener_ready_candidates": {
             "title": "Screener Ready Candidates",
             "type": "integer"
+          },
+          "trust_diagnostics": {
+            "$ref": "#/components/schemas/PreflightTrustDiagnosticsItem"
           }
         },
         "required": [
@@ -3261,6 +3264,29 @@
         "title": "OpportunityItem",
         "type": "object"
       },
+      "PreflightTrustDiagnosticsItem": {
+        "additionalProperties": false,
+        "properties": {
+          "confidence_distribution": {
+            "$ref": "#/components/schemas/TrustConfidenceDistributionItem"
+          },
+          "fallback_risk_by_exchange": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/TrustExchangeFallbackRiskItem"
+            },
+            "title": "Fallback Risk By Exchange",
+            "type": "object"
+          },
+          "fallback_risk_counters": {
+            "$ref": "#/components/schemas/TrustFallbackRiskCountersItem"
+          },
+          "provenance_coverage": {
+            "$ref": "#/components/schemas/TrustProvenanceCoverageItem"
+          }
+        },
+        "title": "PreflightTrustDiagnosticsItem",
+        "type": "object"
+      },
       "ReasonCode": {
         "enum": [
           "persistence_insufficient",
@@ -3921,6 +3947,9 @@
             "title": "Started At",
             "type": "string"
           },
+          "trust_diagnostics": {
+            "$ref": "#/components/schemas/StatusTrustDiagnosticsItem"
+          },
           "uptime_s": {
             "title": "Uptime S",
             "type": "number"
@@ -4066,6 +4095,29 @@
         "title": "StatusSnapshotContinuity",
         "type": "object"
       },
+      "StatusTrustDiagnosticsItem": {
+        "additionalProperties": false,
+        "properties": {
+          "confidence_distribution": {
+            "$ref": "#/components/schemas/TrustConfidenceDistributionItem"
+          },
+          "fallback_risk_by_exchange": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/TrustExchangeFallbackRiskItem"
+            },
+            "title": "Fallback Risk By Exchange",
+            "type": "object"
+          },
+          "fallback_risk_counters": {
+            "$ref": "#/components/schemas/TrustFallbackRiskCountersItem"
+          },
+          "provenance_coverage": {
+            "$ref": "#/components/schemas/TrustProvenanceCoverageItem"
+          }
+        },
+        "title": "StatusTrustDiagnosticsItem",
+        "type": "object"
+      },
       "StatusWsFeedDiagnostics": {
         "additionalProperties": false,
         "properties": {
@@ -4157,6 +4209,163 @@
           }
         },
         "title": "StatusWsFeedDiagnostics",
+        "type": "object"
+      },
+      "TrustConfidenceDistributionItem": {
+        "additionalProperties": false,
+        "properties": {
+          "blocked": {
+            "default": 0,
+            "title": "Blocked",
+            "type": "integer"
+          },
+          "candidate_block": {
+            "default": 0,
+            "title": "Candidate Block",
+            "type": "integer"
+          },
+          "candidate_watch": {
+            "default": 0,
+            "title": "Candidate Watch",
+            "type": "integer"
+          },
+          "gate_block": {
+            "default": 0,
+            "title": "Gate Block",
+            "type": "integer"
+          },
+          "gate_watch": {
+            "default": 0,
+            "title": "Gate Watch",
+            "type": "integer"
+          },
+          "ready": {
+            "default": 0,
+            "title": "Ready",
+            "type": "integer"
+          },
+          "runtime_block": {
+            "default": 0,
+            "title": "Runtime Block",
+            "type": "integer"
+          },
+          "runtime_watch": {
+            "default": 0,
+            "title": "Runtime Watch",
+            "type": "integer"
+          },
+          "watching": {
+            "default": 0,
+            "title": "Watching",
+            "type": "integer"
+          }
+        },
+        "title": "TrustConfidenceDistributionItem",
+        "type": "object"
+      },
+      "TrustExchangeFallbackRiskItem": {
+        "additionalProperties": false,
+        "properties": {
+          "missing_calibration": {
+            "default": 0,
+            "title": "Missing Calibration",
+            "type": "integer"
+          },
+          "missing_depth": {
+            "default": 0,
+            "title": "Missing Depth",
+            "type": "integer"
+          },
+          "missing_fee": {
+            "default": 0,
+            "title": "Missing Fee",
+            "type": "integer"
+          },
+          "missing_spread": {
+            "default": 0,
+            "title": "Missing Spread",
+            "type": "integer"
+          }
+        },
+        "title": "TrustExchangeFallbackRiskItem",
+        "type": "object"
+      },
+      "TrustFallbackRiskCountersItem": {
+        "additionalProperties": false,
+        "properties": {
+          "missing_calibration": {
+            "default": 0,
+            "title": "Missing Calibration",
+            "type": "integer"
+          },
+          "missing_depth": {
+            "default": 0,
+            "title": "Missing Depth",
+            "type": "integer"
+          },
+          "missing_fee": {
+            "default": 0,
+            "title": "Missing Fee",
+            "type": "integer"
+          },
+          "missing_spread": {
+            "default": 0,
+            "title": "Missing Spread",
+            "type": "integer"
+          }
+        },
+        "title": "TrustFallbackRiskCountersItem",
+        "type": "object"
+      },
+      "TrustProvenanceCoverageItem": {
+        "additionalProperties": false,
+        "properties": {
+          "depth": {
+            "$ref": "#/components/schemas/TrustProvenanceTermCoverageItem"
+          },
+          "fee": {
+            "$ref": "#/components/schemas/TrustProvenanceTermCoverageItem"
+          },
+          "funding": {
+            "$ref": "#/components/schemas/TrustProvenanceTermCoverageItem"
+          },
+          "mark": {
+            "$ref": "#/components/schemas/TrustProvenanceTermCoverageItem"
+          }
+        },
+        "title": "TrustProvenanceCoverageItem",
+        "type": "object"
+      },
+      "TrustProvenanceTermCoverageItem": {
+        "additionalProperties": false,
+        "properties": {
+          "config": {
+            "default": 0,
+            "title": "Config",
+            "type": "integer"
+          },
+          "derived": {
+            "default": 0,
+            "title": "Derived",
+            "type": "integer"
+          },
+          "real_rest": {
+            "default": 0,
+            "title": "Real Rest",
+            "type": "integer"
+          },
+          "real_ws": {
+            "default": 0,
+            "title": "Real Ws",
+            "type": "integer"
+          },
+          "unavailable": {
+            "default": 0,
+            "title": "Unavailable",
+            "type": "integer"
+          }
+        },
+        "title": "TrustProvenanceTermCoverageItem",
         "type": "object"
       },
       "ValidationError": {
