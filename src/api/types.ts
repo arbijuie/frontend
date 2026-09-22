@@ -17,6 +17,16 @@ export type OpportunityReason = ApiSchemas["ReasonItem"];
 export type FundingForecast = _FundingForecastItem;
 export type OpportunityItem = _OpportunityItem;
 export type OpportunitiesResponse = ApiSchemas["OpportunitiesResponse"];
+export type SourceState = NonNullable<
+  NonNullable<OpportunityItem["microstructure_by_exchange"]>[string]
+>["price_source"];
+export const SOURCE_STATE_SET: Record<SourceState, true> = {
+  real_ws: true,
+  real_rest: true,
+  derived: true,
+  config: true,
+  unavailable: true,
+};
 
 export type ConfigResponse = ApiSchemas["ConfigResponse"];
 export type ConfigPresetName = Exclude<NonNullable<_ConfigUpdateRequest["preset"]>, null>;

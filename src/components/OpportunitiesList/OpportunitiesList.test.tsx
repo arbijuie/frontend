@@ -56,10 +56,15 @@ function makeItem(overrides: Partial<OpportunityItem>): OpportunityItem {
     basis_bonus_bps: 4,
     fee_impact_bps: 2,
     slippage_impact_bps: 1,
+    source_penalty_bps: 0,
     total_cost_bps: 3,
-    depth_source_by_exchange: {
-      hyperliquid: "real",
-      lighter: "real",
+    depth_source_state_by_exchange: {
+      hyperliquid: "real_rest",
+      lighter: "real_rest",
+    },
+    fee_source_state_by_exchange: {
+      hyperliquid: "real_rest",
+      lighter: "real_rest",
     },
     effective_taker_fee_by_exchange: {
       hyperliquid: 0.035,
@@ -70,9 +75,12 @@ function makeItem(overrides: Partial<OpportunityItem>): OpportunityItem {
     funding_timing_asymmetry_hours: 0.3,
     funding_timing_penalty_bps: 0.0,
     basis_expansion_penalty_bps: 0,
+    negative_funding_penalty_bps: 0,
     min_profitable_hours: 10,
     hours_to_breakeven: null,
     effective_hold_hours: 72,
+    signal_score_bps: 16,
+    execution_adjusted_score_bps: 13,
     combined_score: 13,
     long_forecast: null,
     short_forecast: null,

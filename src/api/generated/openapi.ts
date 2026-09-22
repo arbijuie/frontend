@@ -1047,10 +1047,14 @@ export interface components {
              * @default 0
              */
             correlated_ready_count: number;
+            /** Execution Adjusted Score Bps */
+            execution_adjusted_score_bps: number;
             /** Legs */
             legs?: components["schemas"]["LegItem"][];
             /** Reasons */
             reasons?: components["schemas"]["ExecutionPreflightCandidateReasonItem"][];
+            /** Signal Score Bps */
+            signal_score_bps: number;
             /**
              * Status
              * @enum {string}
@@ -1229,6 +1233,42 @@ export interface components {
             /** Venue Native Symbol */
             venue_native_symbol?: string | null;
         };
+        /** MicrostructureSnapshotItem */
+        MicrostructureSnapshotItem: {
+            /** Best Ask */
+            best_ask?: string | null;
+            /** Best Bid */
+            best_bid?: string | null;
+            /** Depth Band 10Bps Usd */
+            depth_band_10bps_usd?: number | null;
+            /** Depth Band 20Bps Usd */
+            depth_band_20bps_usd?: number | null;
+            /** Depth Band 5Bps Usd */
+            depth_band_5bps_usd?: number | null;
+            /**
+             * Depth Source
+             * @enum {string}
+             */
+            depth_source: "real_ws" | "real_rest" | "derived" | "config" | "unavailable";
+            /**
+             * Fee Source
+             * @enum {string}
+             */
+            fee_source: "real_ws" | "real_rest" | "derived" | "config" | "unavailable";
+            /** Imbalance */
+            imbalance?: number | null;
+            /** Mid */
+            mid?: string | null;
+            /**
+             * Price Source
+             * @enum {string}
+             */
+            price_source: "real_ws" | "real_rest" | "derived" | "config" | "unavailable";
+            /** Quality */
+            quality?: ("A" | "B" | "C" | "D") | null;
+            /** Spread Bps */
+            spread_bps?: number | null;
+        };
         /** OpportunitiesResponse */
         OpportunitiesResponse: {
             /** Count */
@@ -1261,9 +1301,9 @@ export interface components {
             correlated_with?: string[];
             /** Depth Quality */
             depth_quality?: ("A" | "B" | "C" | "D") | null;
-            /** Depth Source By Exchange */
-            depth_source_by_exchange?: {
-                [key: string]: "real" | "none";
+            /** Depth Source State By Exchange */
+            depth_source_state_by_exchange?: {
+                [key: string]: "real_ws" | "real_rest" | "derived" | "config" | "unavailable";
             };
             /** Effective Hold Hours */
             effective_hold_hours?: number | null;
@@ -1271,11 +1311,13 @@ export interface components {
             effective_taker_fee_by_exchange?: {
                 [key: string]: number;
             };
+            /** Execution Adjusted Score Bps */
+            execution_adjusted_score_bps: number;
             /** Fee Impact Bps */
             fee_impact_bps: number;
-            /** Fee Source By Exchange */
-            fee_source_by_exchange?: {
-                [key: string]: "real" | "config";
+            /** Fee Source State By Exchange */
+            fee_source_state_by_exchange?: {
+                [key: string]: "real_ws" | "real_rest" | "derived" | "config" | "unavailable";
             };
             /** Funding Diff Apr */
             funding_diff_apr: number;
@@ -1305,8 +1347,17 @@ export interface components {
             long_hours_to_next_funding?: number | null;
             /** Long Rate Apr */
             long_rate_apr: number;
+            /** Microstructure By Exchange */
+            microstructure_by_exchange?: {
+                [key: string]: components["schemas"]["MicrostructureSnapshotItem"];
+            };
             /** Min Profitable Hours */
             min_profitable_hours?: number | null;
+            /**
+             * Negative Funding Penalty Bps
+             * @default 0
+             */
+            negative_funding_penalty_bps: number;
             /** Persistence Hours */
             persistence_hours?: number | null;
             /** Reasons */
@@ -1318,11 +1369,18 @@ export interface components {
             short_hours_to_next_funding?: number | null;
             /** Short Rate Apr */
             short_rate_apr: number;
+            /** Signal Score Bps */
+            signal_score_bps: number;
             /**
              * Slippage Impact Bps
              * @default 0
              */
             slippage_impact_bps: number;
+            /**
+             * Source Penalty Bps
+             * @default 0
+             */
+            source_penalty_bps: number;
             /**
              * Status
              * @enum {string}

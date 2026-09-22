@@ -12,6 +12,10 @@ const decisionLabel: Record<"ready" | "watching" | "blocked", string> = {
   blocked: "BLOCKED",
 };
 
+const formatScore = (value: number | null | undefined): string => {
+  return typeof value === "number" && Number.isFinite(value) ? value.toFixed(2) : "-";
+};
+
 const ExecutionPreflightPage = () => {
   usePageTitle("Execution preflight");
   const {
@@ -133,6 +137,13 @@ const ExecutionPreflightPage = () => {
           ) : (
             <ul>
               <li>symbol: {preflight.candidate.symbol}</li>
+              <li>route: {candidateLongVenue ?? "-"} / {candidateShortVenue ?? "-"}</li>
+              <li>signal_score_bps: {formatScore(preflight.candidate.signal_score_bps)}</li>
+              <li>
+                execution_adjusted_score_bps: {formatScore(preflight.candidate.execution_adjusted_score_bps)}
+              </li>
+              <li>combined_score: {formatScore(preflight.candidate.combined_score)}</li>
+              <li>status: {preflight.candidate.status}</li>
               <li>
                 route: {candidateLongVenue ?? "-"} / {candidateShortVenue ?? "-"}
               </li>
