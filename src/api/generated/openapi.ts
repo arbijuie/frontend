@@ -727,6 +727,22 @@ export interface components {
             max_reasonable_apr: number;
             /** Max Volume Fraction */
             max_volume_fraction: number;
+            /** Migration Nautilus Compare Enabled */
+            migration_nautilus_compare_enabled: boolean;
+            /** Migration Nautilus Enabled */
+            migration_nautilus_enabled: boolean;
+            /**
+             * Migration Nautilus Fallback Policy
+             * @constant
+             */
+            migration_nautilus_fallback_policy: "deny_and_observe";
+            /**
+             * Migration Nautilus Mode
+             * @enum {string}
+             */
+            migration_nautilus_mode: "legacy_only" | "shadow_compare" | "nautilus_primary";
+            /** Migration Nautilus Observe Only */
+            migration_nautilus_observe_only: boolean;
             /** Min Depth Quality */
             min_depth_quality: string;
             /** Min Open Interest */
@@ -810,6 +826,14 @@ export interface components {
             max_reasonable_apr?: number | null;
             /** Max Volume Fraction */
             max_volume_fraction?: number | null;
+            /** Migration Nautilus Compare Enabled */
+            migration_nautilus_compare_enabled?: boolean | null;
+            /** Migration Nautilus Enabled */
+            migration_nautilus_enabled?: boolean | null;
+            /** Migration Nautilus Mode */
+            migration_nautilus_mode?: ("legacy_only" | "shadow_compare" | "nautilus_primary") | null;
+            /** Migration Nautilus Observe Only */
+            migration_nautilus_observe_only?: boolean | null;
             /** Min Open Interest */
             min_open_interest?: number | null;
             /** Min Persistence Hours */
@@ -1650,6 +1674,47 @@ export interface components {
              */
             strict_depth: number;
         };
+        /** StatusMigrationFallbackDiagnostics */
+        StatusMigrationFallbackDiagnostics: {
+            /**
+             * Compare Enabled
+             * @default false
+             */
+            compare_enabled: boolean;
+            /**
+             * Enabled
+             * @default false
+             */
+            enabled: boolean;
+            /**
+             * Fallback Engaged
+             * @default true
+             */
+            fallback_engaged: boolean;
+            /**
+             * Fallback Policy
+             * @default deny_and_observe
+             * @constant
+             */
+            fallback_policy: "deny_and_observe";
+            /**
+             * Fallback Reason
+             * @default migration_disabled
+             * @enum {string}
+             */
+            fallback_reason: "migration_disabled" | "legacy_only_mode" | "observe_only_mode" | "compare_disabled";
+            /**
+             * Mode
+             * @default legacy_only
+             * @enum {string}
+             */
+            mode: "legacy_only" | "shadow_compare" | "nautilus_primary";
+            /**
+             * Observe Only
+             * @default true
+             */
+            observe_only: boolean;
+        };
         /** StatusReasonSeverityCounts */
         StatusReasonSeverityCounts: {
             /**
@@ -1722,6 +1787,7 @@ export interface components {
             last_poll_started_at?: string | null;
             /** Last Updated At */
             last_updated_at?: string | null;
+            migration_fallback?: components["schemas"]["StatusMigrationFallbackDiagnostics"];
             /** Poll Count Failed */
             poll_count_failed: number;
             /** Poll Count Success */

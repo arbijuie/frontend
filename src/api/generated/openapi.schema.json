@@ -1041,6 +1041,32 @@
             "title": "Max Volume Fraction",
             "type": "number"
           },
+          "migration_nautilus_compare_enabled": {
+            "title": "Migration Nautilus Compare Enabled",
+            "type": "boolean"
+          },
+          "migration_nautilus_enabled": {
+            "title": "Migration Nautilus Enabled",
+            "type": "boolean"
+          },
+          "migration_nautilus_fallback_policy": {
+            "const": "deny_and_observe",
+            "title": "Migration Nautilus Fallback Policy",
+            "type": "string"
+          },
+          "migration_nautilus_mode": {
+            "enum": [
+              "legacy_only",
+              "shadow_compare",
+              "nautilus_primary"
+            ],
+            "title": "Migration Nautilus Mode",
+            "type": "string"
+          },
+          "migration_nautilus_observe_only": {
+            "title": "Migration Nautilus Observe Only",
+            "type": "boolean"
+          },
           "min_depth_quality": {
             "title": "Min Depth Quality",
             "type": "string"
@@ -1189,6 +1215,11 @@
           "exec_adl_critical_quantile",
           "exec_recovery_cooldown_s",
           "exec_recovery_require_manual_ack",
+          "migration_nautilus_enabled",
+          "migration_nautilus_mode",
+          "migration_nautilus_compare_enabled",
+          "migration_nautilus_observe_only",
+          "migration_nautilus_fallback_policy",
           "extra_exchanges",
           "binance_base_url",
           "aster_base_url",
@@ -1504,6 +1535,55 @@
               }
             ],
             "title": "Max Volume Fraction"
+          },
+          "migration_nautilus_compare_enabled": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Migration Nautilus Compare Enabled"
+          },
+          "migration_nautilus_enabled": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Migration Nautilus Enabled"
+          },
+          "migration_nautilus_mode": {
+            "anyOf": [
+              {
+                "enum": [
+                  "legacy_only",
+                  "shadow_compare",
+                  "nautilus_primary"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Migration Nautilus Mode"
+          },
+          "migration_nautilus_observe_only": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Migration Nautilus Observe Only"
           },
           "min_open_interest": {
             "anyOf": [
@@ -3693,6 +3773,60 @@
         "title": "StatusExchangeDiagnostics",
         "type": "object"
       },
+      "StatusMigrationFallbackDiagnostics": {
+        "additionalProperties": false,
+        "properties": {
+          "compare_enabled": {
+            "default": false,
+            "title": "Compare Enabled",
+            "type": "boolean"
+          },
+          "enabled": {
+            "default": false,
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "fallback_engaged": {
+            "default": true,
+            "title": "Fallback Engaged",
+            "type": "boolean"
+          },
+          "fallback_policy": {
+            "const": "deny_and_observe",
+            "default": "deny_and_observe",
+            "title": "Fallback Policy",
+            "type": "string"
+          },
+          "fallback_reason": {
+            "default": "migration_disabled",
+            "enum": [
+              "migration_disabled",
+              "legacy_only_mode",
+              "observe_only_mode",
+              "compare_disabled"
+            ],
+            "title": "Fallback Reason",
+            "type": "string"
+          },
+          "mode": {
+            "default": "legacy_only",
+            "enum": [
+              "legacy_only",
+              "shadow_compare",
+              "nautilus_primary"
+            ],
+            "title": "Mode",
+            "type": "string"
+          },
+          "observe_only": {
+            "default": true,
+            "title": "Observe Only",
+            "type": "boolean"
+          }
+        },
+        "title": "StatusMigrationFallbackDiagnostics",
+        "type": "object"
+      },
       "StatusReasonSeverityCounts": {
         "additionalProperties": false,
         "properties": {
@@ -3898,6 +4032,9 @@
               }
             ],
             "title": "Last Updated At"
+          },
+          "migration_fallback": {
+            "$ref": "#/components/schemas/StatusMigrationFallbackDiagnostics"
           },
           "poll_count_failed": {
             "title": "Poll Count Failed",
