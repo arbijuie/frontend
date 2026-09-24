@@ -762,7 +762,7 @@ export interface components {
             /** Runbook Presets */
             runbook_presets: {
                 [key: string]: {
-                    [key: string]: number | boolean;
+                    [key: string]: number | boolean | string;
                 };
             };
             /** Stale Data S */
