@@ -14,11 +14,17 @@ vi.mock("./useOpportunitiesSocket", () => ({
 }));
 
 vi.mock("../api/opportunities", () => ({
+  OPPORTUNITIES_QUERY_KEY: ["opportunities"],
   fetchOpportunities: vi.fn(),
+  opportunitiesQueryKey: (options?: { strategyTypes?: string[] }) => {
+    const values = [...(options?.strategyTypes ?? [])].sort();
+    return values.length > 0 ? (["opportunities", ...values] as const) : (["opportunities"] as const);
+  },
 }));
 
 const mockedUseQuery = vi.mocked(useQuery);
 const mockedUseOpportunitiesSocket = vi.mocked(useOpportunitiesSocket);
+const mockedFetchOpportunities = vi.mocked(fetchOpportunities);
 
 describe("useOpportunities", () => {
   beforeEach(() => {
@@ -42,11 +48,18 @@ describe("useOpportunities", () => {
 
     const { result } = renderHook(() => useOpportunities());
 
+    expect(mockedUseOpportunitiesSocket).toHaveBeenCalledWith({
+      queryKey: ["opportunities"],
+      enabled: true,
+    });
     expect(mockedUseQuery).toHaveBeenCalledWith({
       queryKey: ["opportunities"],
-      queryFn: fetchOpportunities,
+      queryFn: expect.any(Function),
       refetchInterval: POLL_INTERVAL_MS,
     });
+    const queryFn = mockedUseQuery.mock.calls[0][0].queryFn as () => Promise<unknown>;
+    void queryFn();
+    expect(mockedFetchOpportunities).toHaveBeenCalledWith({ strategyTypes: undefined });
     expect(result.current.data).toEqual({
       count: 0,
       ready_count: 0,
@@ -77,8 +90,35 @@ describe("useOpportunities", () => {
 
     expect(mockedUseQuery).toHaveBeenCalledWith({
       queryKey: ["opportunities"],
-      queryFn: fetchOpportunities,
+      queryFn: expect.any(Function),
       refetchInterval: false,
+    });
+  });
+
+  it("uses filtered query keys and polling policy for strategy-filtered views", () => {
+    mockedUseQuery.mockReturnValue({
+      data: null,
+      error: null,
+      isLoading: false,
+      isFetching: false,
+      refetch: vi.fn(),
+    } as never);
+
+    renderHook(() => useOpportunities({ strategyTypes: ["cash_and_carry", "basis_convergence"] }));
+
+    expect(mockedUseOpportunitiesSocket).toHaveBeenCalledWith({
+      queryKey: ["opportunities"],
+      enabled: false,
+    });
+    expect(mockedUseQuery).toHaveBeenCalledWith({
+      queryKey: ["opportunities", "basis_convergence", "cash_and_carry"],
+      queryFn: expect.any(Function),
+      refetchInterval: POLL_INTERVAL_MS,
+    });
+    const queryFn = mockedUseQuery.mock.calls[0][0].queryFn as () => Promise<unknown>;
+    void queryFn();
+    expect(mockedFetchOpportunities).toHaveBeenCalledWith({
+      strategyTypes: ["cash_and_carry", "basis_convergence"],
     });
   });
 

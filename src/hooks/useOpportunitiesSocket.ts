@@ -9,9 +9,18 @@ export type TransportState = "connecting" | "connected" | "reconnecting" | "poll
 
 const STALL_TIMEOUT_MS = 60000;
 
-export function useOpportunitiesSocket() {
+type UseOpportunitiesSocketOptions = {
+  queryKey?: readonly unknown[];
+  enabled?: boolean;
+};
+
+export function useOpportunitiesSocket(options?: UseOpportunitiesSocketOptions) {
+  const queryKey = options?.queryKey ?? ["opportunities"];
+  const enabled = options?.enabled ?? true;
   const queryClient = useQueryClient();
-  const [transportState, setTransportState] = useState<TransportState>("connecting");
+  const [transportState, setTransportState] = useState<TransportState>(
+    enabled ? "connecting" : "polling-fallback"
+  );
   const [reconnectAttempt, setReconnectAttempt] = useState(0);
   const wsRef = useRef<WebSocket | null>(null);
   const attemptRef = useRef(0);
@@ -88,13 +97,13 @@ export function useOpportunitiesSocket() {
 
         try {
           const frame: OpportunitiesResponse = JSON.parse(event.data);
-          const cached = queryClient.getQueryData<OpportunitiesResponse>(["opportunities"]);
+          const cached = queryClient.getQueryData<OpportunitiesResponse>(queryKey);
           if (cached?.updated_at && frame.updated_at) {
             const cachedTime = new Date(cached.updated_at).getTime();
             const frameTime = new Date(frame.updated_at).getTime();
             if (frameTime < cachedTime) return;
           }
-          queryClient.setQueryData(["opportunities"], frame);
+          queryClient.setQueryData(queryKey, frame);
           setTransportState("connected");
         } catch (error) {
           // Malformed WS frame — log for visibility, keep the connection alive.
@@ -133,6 +142,20 @@ export function useOpportunitiesSocket() {
   };
 
   useEffect(() => {
+    if (!enabled) {
+      stoppedRef.current = true;
+      generationRef.current += 1;
+      wsRef.current?.close();
+      wsRef.current = null;
+      if (reconnectTimerRef.current) {
+        clearTimeout(reconnectTimerRef.current);
+      }
+      clearStallTimer();
+      attemptRef.current = 0;
+      setReconnectAttempt(0);
+      setTransportState("polling-fallback");
+      return;
+    }
     stoppedRef.current = false;
     void connect();
     return () => {
@@ -145,7 +168,7 @@ export function useOpportunitiesSocket() {
       clearStallTimer();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [enabled]);
 
   return { transportState, reconnectAttempt, retryNow };
 }

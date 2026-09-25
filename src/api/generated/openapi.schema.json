@@ -4054,6 +4054,20 @@
           "screener_drop_counters": {
             "$ref": "#/components/schemas/StatusDropCounters"
           },
+          "screener_drop_counters_by_strategy": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/StatusDropCounters"
+            },
+            "propertyNames": {
+              "enum": [
+                "funding_arbitrage",
+                "basis_convergence",
+                "cash_and_carry"
+              ]
+            },
+            "title": "Screener Drop Counters By Strategy",
+            "type": "object"
+          },
           "screener_post_cost_candidates": {
             "title": "Screener Post Cost Candidates",
             "type": "integer"
@@ -5013,6 +5027,32 @@
     "/opportunities": {
       "get": {
         "operationId": "get_opportunities_opportunities_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "strategy_type",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "enum": [
+                      "funding_arbitrage",
+                      "basis_convergence",
+                      "cash_and_carry"
+                    ],
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Strategy Type"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "content": {
@@ -5023,6 +5063,16 @@
               }
             },
             "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
           }
         },
         "summary": "Get Opportunities"

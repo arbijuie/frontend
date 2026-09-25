@@ -22,6 +22,27 @@
   color: v.$text-muted;
 }
 
+.filterRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.4rem;
+}
+
+.filterLabel {
+  font-size: 0.8rem;
+  color: v.$text-muted;
+}
+
+.filterSelect {
+  padding: 0.2rem 0.45rem;
+  border: 1px solid v.$border-color;
+  border-radius: 0.45rem;
+  background: v.$bg-card;
+  color: v.$text-primary;
+  font-size: 0.8rem;
+}
+
 .summaryRow {
   display: flex;
   gap: 0.5rem;

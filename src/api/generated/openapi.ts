@@ -1795,6 +1795,10 @@ export interface components {
             /** Poll Count Total */
             poll_count_total: number;
             screener_drop_counters?: components["schemas"]["StatusDropCounters"];
+            /** Screener Drop Counters By Strategy */
+            screener_drop_counters_by_strategy?: {
+                [key: string]: components["schemas"]["StatusDropCounters"];
+            };
             /** Screener Post Cost Candidates */
             screener_post_cost_candidates: number;
             /** Screener Raw Candidates */
@@ -2468,7 +2472,9 @@ export interface operations {
     };
     get_opportunities_opportunities_get: {
         parameters: {
-            query?: never;
+            query?: {
+                strategy_type?: ("funding_arbitrage" | "basis_convergence" | "cash_and_carry")[] | null;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -2482,6 +2488,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["OpportunitiesResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

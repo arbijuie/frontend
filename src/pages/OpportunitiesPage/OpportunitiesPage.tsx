@@ -1,6 +1,7 @@
 import styles from "./OpportunitiesPage.module.scss";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useOpportunities } from "../../hooks/useOpportunities";
+import type { OpportunityStrategyType } from "../../api/opportunities";
 import { useStatus } from "../../hooks/useStatus";
 import { useConfig } from "../../hooks/useConfig";
 import OpportunitiesList from "../../components/OpportunitiesList/OpportunitiesList";
@@ -18,6 +19,8 @@ import TransportIndicator from "../../components/TransportIndicator/TransportInd
 
 export default function OpportunitiesPage() {
   usePageTitle("Opportunities");
+  const [strategyFilter, setStrategyFilter] = useState<"all" | OpportunityStrategyType>("all");
+  const strategyTypes = strategyFilter === "all" ? undefined : [strategyFilter];
   const {
     data,
     error,
@@ -27,7 +30,7 @@ export default function OpportunitiesPage() {
     transportState,
     reconnectAttempt,
     retryConnection,
-  } = useOpportunities();
+  } = useOpportunities({ strategyTypes });
   const { data: status } = useStatus();
   const { data: config } = useConfig({
     staleTime: 0,
@@ -54,6 +57,25 @@ export default function OpportunitiesPage() {
       <div className={styles.header}>
         <div>
           <h1 className={styles.title}>Opportunities</h1>
+          <div className={styles.filterRow}>
+            <label htmlFor="opportunities-strategy-filter" className={styles.filterLabel}>
+              Strategy
+            </label>
+            <select
+              id="opportunities-strategy-filter"
+              className={styles.filterSelect}
+              value={strategyFilter}
+              onChange={(event) =>
+                setStrategyFilter(event.target.value as "all" | OpportunityStrategyType)
+              }
+              aria-label="Filter opportunities by strategy"
+            >
+              <option value="all">All strategies</option>
+              <option value="funding_arbitrage">Funding arbitrage</option>
+              <option value="basis_convergence">Basis convergence</option>
+              <option value="cash_and_carry">Cash and carry</option>
+            </select>
+          </div>
           <div className={styles.liveRow}>
             <TransportIndicator
               state={transportState}
@@ -69,6 +91,7 @@ export default function OpportunitiesPage() {
           <div className={styles.summaryRow}>
             <span className={styles.summaryPill}>count: {data?.count ?? "—"}</span>
             <span className={styles.summaryPill}>ready: {data?.ready_count ?? "—"}</span>
+            <span className={styles.summaryPill}>strategy: {strategyFilter}</span>
             <span className={styles.summaryPill}>raw: {rawCandidates ?? "—"}</span>
             <span className={styles.summaryPill}>post-cost: {postCostCandidates ?? "—"}</span>
           </div>

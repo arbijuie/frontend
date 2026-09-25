@@ -127,6 +127,22 @@ describe("useOpportunitiesSocket", () => {
     expect(setQueryData).toHaveBeenCalledWith(["opportunities"], sampleFrame);
   });
 
+  it("writes incoming frames into a provided query key", async () => {
+    renderHook(() => useOpportunitiesSocket({ queryKey: ["opportunities", "cash_and_carry"] }));
+    await act(async () => {
+      await Promise.resolve();
+    });
+    act(() => {
+      latestSocket().onopen?.();
+    });
+
+    act(() => {
+      latestSocket().onmessage?.({ data: JSON.stringify(sampleFrame) });
+    });
+
+    expect(setQueryData).toHaveBeenCalledWith(["opportunities", "cash_and_carry"], sampleFrame);
+  });
+
   it("ignores a frame older than what is already cached", async () => {
     getQueryData.mockReturnValue({ updated_at: "2026-09-17T10:05:00Z" });
     renderHook(() => useOpportunitiesSocket());
@@ -211,5 +227,15 @@ describe("useOpportunitiesSocket", () => {
 
     expect(result.current.reconnectAttempt).toBe(0);
     expect(MockWebSocket.instances.length).toBe(socketCountBefore + 1);
+  });
+
+  it("stays in polling-fallback and does not create a socket when disabled", async () => {
+    const { result } = renderHook(() => useOpportunitiesSocket({ enabled: false }));
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(result.current.transportState).toBe("polling-fallback");
+    expect(MockWebSocket.instances.length).toBe(0);
   });
 });
