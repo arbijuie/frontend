@@ -1,7 +1,11 @@
 import styles from "./OpportunitiesPage.module.scss";
 import { useRef, useState } from "react";
 import { useOpportunities } from "../../hooks/useOpportunities";
-import type { OpportunityStrategyType } from "../../api/opportunities";
+import {
+  OPPORTUNITY_STRATEGY_LABEL,
+  OPPORTUNITY_STRATEGY_TYPES,
+  type OpportunityStrategyType,
+} from "../../api/opportunities";
 import { useStatus } from "../../hooks/useStatus";
 import { useConfig } from "../../hooks/useConfig";
 import OpportunitiesList from "../../components/OpportunitiesList/OpportunitiesList";
@@ -20,6 +24,7 @@ import TransportIndicator from "../../components/TransportIndicator/TransportInd
 export default function OpportunitiesPage() {
   usePageTitle("Opportunities");
   const [strategyFilter, setStrategyFilter] = useState<"all" | OpportunityStrategyType>("all");
+  const usesLiveTransport = strategyFilter === "all";
   const strategyTypes = strategyFilter === "all" ? undefined : [strategyFilter];
   const {
     data,
@@ -71,17 +76,23 @@ export default function OpportunitiesPage() {
               aria-label="Filter opportunities by strategy"
             >
               <option value="all">All strategies</option>
-              <option value="funding_arbitrage">Funding arbitrage</option>
-              <option value="basis_convergence">Basis convergence</option>
-              <option value="cash_and_carry">Cash and carry</option>
+              {OPPORTUNITY_STRATEGY_TYPES.map((strategyType) => (
+                <option key={strategyType} value={strategyType}>
+                  {OPPORTUNITY_STRATEGY_LABEL[strategyType]}
+                </option>
+              ))}
             </select>
           </div>
           <div className={styles.liveRow}>
-            <TransportIndicator
-              state={transportState}
-              reconnectAttempt={reconnectAttempt}
-              onRetry={retryConnection}
-            />
+            {usesLiveTransport ? (
+              <TransportIndicator
+                state={transportState}
+                reconnectAttempt={reconnectAttempt}
+                onRetry={retryConnection}
+              />
+            ) : (
+              <div className={styles.hint}>HTTP polling (strategy filter active)</div>
+            )}
             {data?.updated_at && (
               <div className={styles.hint}>
                 updated {new Date(data.updated_at).toLocaleTimeString()}

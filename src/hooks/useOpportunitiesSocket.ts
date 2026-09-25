@@ -8,6 +8,7 @@ import type { OpportunitiesResponse } from "../api/types";
 export type TransportState = "connecting" | "connected" | "reconnecting" | "polling-fallback";
 
 const STALL_TIMEOUT_MS = 60000;
+const DEFAULT_QUERY_KEY = ["opportunities"] as const;
 
 type UseOpportunitiesSocketOptions = {
   queryKey?: readonly unknown[];
@@ -15,7 +16,7 @@ type UseOpportunitiesSocketOptions = {
 };
 
 export function useOpportunitiesSocket(options?: UseOpportunitiesSocketOptions) {
-  const queryKey = options?.queryKey ?? ["opportunities"];
+  const queryKey = options?.queryKey ?? DEFAULT_QUERY_KEY;
   const enabled = options?.enabled ?? true;
   const queryClient = useQueryClient();
   const [transportState, setTransportState] = useState<TransportState>(
@@ -26,8 +27,13 @@ export function useOpportunitiesSocket(options?: UseOpportunitiesSocketOptions) 
   const attemptRef = useRef(0);
   const reconnectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const stallTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const queryKeyRef = useRef(queryKey);
   const stoppedRef = useRef(false);
   const generationRef = useRef(0);
+
+  useEffect(() => {
+    queryKeyRef.current = queryKey;
+  }, [queryKey]);
 
   const clearStallTimer = () => {
     if (stallTimerRef.current) {
@@ -97,13 +103,13 @@ export function useOpportunitiesSocket(options?: UseOpportunitiesSocketOptions) 
 
         try {
           const frame: OpportunitiesResponse = JSON.parse(event.data);
-          const cached = queryClient.getQueryData<OpportunitiesResponse>(queryKey);
+          const cached = queryClient.getQueryData<OpportunitiesResponse>(queryKeyRef.current);
           if (cached?.updated_at && frame.updated_at) {
             const cachedTime = new Date(cached.updated_at).getTime();
             const frameTime = new Date(frame.updated_at).getTime();
             if (frameTime < cachedTime) return;
           }
-          queryClient.setQueryData(queryKey, frame);
+          queryClient.setQueryData(queryKeyRef.current, frame);
           setTransportState("connected");
         } catch (error) {
           // Malformed WS frame — log for visibility, keep the connection alive.
@@ -129,6 +135,9 @@ export function useOpportunitiesSocket(options?: UseOpportunitiesSocketOptions) 
   };
 
   const retryNow = () => {
+    if (!enabled) {
+      return;
+    }
     if (reconnectTimerRef.current) {
       clearTimeout(reconnectTimerRef.current);
     }

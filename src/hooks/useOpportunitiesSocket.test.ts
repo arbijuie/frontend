@@ -143,6 +143,36 @@ describe("useOpportunitiesSocket", () => {
     expect(setQueryData).toHaveBeenCalledWith(["opportunities", "cash_and_carry"], sampleFrame);
   });
 
+  it("uses the latest query key after rerender", async () => {
+    const { rerender } = renderHook(
+      ({ queryKey }: { queryKey: readonly ("opportunities" | "funding_arbitrage" | "cash_and_carry")[] }) =>
+        useOpportunitiesSocket({ queryKey }),
+      {
+        initialProps: {
+          queryKey: ["opportunities", "funding_arbitrage"] as readonly (
+            | "opportunities"
+            | "funding_arbitrage"
+            | "cash_and_carry"
+          )[],
+        },
+      }
+    );
+    await act(async () => {
+      await Promise.resolve();
+    });
+    act(() => {
+      latestSocket().onopen?.();
+    });
+
+    rerender({ queryKey: ["opportunities", "cash_and_carry"] as const });
+
+    act(() => {
+      latestSocket().onmessage?.({ data: JSON.stringify(sampleFrame) });
+    });
+
+    expect(setQueryData).toHaveBeenCalledWith(["opportunities", "cash_and_carry"], sampleFrame);
+  });
+
   it("ignores a frame older than what is already cached", async () => {
     getQueryData.mockReturnValue({ updated_at: "2026-09-17T10:05:00Z" });
     renderHook(() => useOpportunitiesSocket());

@@ -1,10 +1,22 @@
 import { API_URL, authHeaders } from "./config";
-import type { OpportunitiesResponse } from "./types";
+import type {
+  OpportunitiesResponse,
+  OpportunityStrategyType as ApiOpportunityStrategyType,
+} from "./types";
 
-export type OpportunityStrategyType =
-  | "funding_arbitrage"
-  | "basis_convergence"
-  | "cash_and_carry";
+export type OpportunityStrategyType = ApiOpportunityStrategyType;
+
+export const OPPORTUNITY_STRATEGY_TYPES = [
+  "funding_arbitrage",
+  "basis_convergence",
+  "cash_and_carry",
+] as const;
+
+export const OPPORTUNITY_STRATEGY_LABEL: Record<OpportunityStrategyType, string> = {
+  funding_arbitrage: "Funding arbitrage",
+  basis_convergence: "Basis convergence",
+  cash_and_carry: "Cash and carry",
+};
 
 export type OpportunitiesFilterOptions = {
   strategyTypes?: OpportunityStrategyType[];
