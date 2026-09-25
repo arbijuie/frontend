@@ -152,8 +152,6 @@ export function useOpportunitiesSocket(options?: UseOpportunitiesSocketOptions) 
       }
       clearStallTimer();
       attemptRef.current = 0;
-      setReconnectAttempt(0);
-      setTransportState("polling-fallback");
       return;
     }
     stoppedRef.current = false;
@@ -170,5 +168,9 @@ export function useOpportunitiesSocket(options?: UseOpportunitiesSocketOptions) 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enabled]);
 
-  return { transportState, reconnectAttempt, retryNow };
+  return {
+    transportState: enabled ? transportState : "polling-fallback",
+    reconnectAttempt: enabled ? reconnectAttempt : 0,
+    retryNow,
+  };
 }
