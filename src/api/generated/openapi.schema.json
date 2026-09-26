@@ -785,6 +785,10 @@
             "title": "Bybit Base Url",
             "type": "string"
           },
+          "calibration_artifact_path": {
+            "title": "Calibration Artifact Path",
+            "type": "string"
+          },
           "cash_and_carry_entry_bps": {
             "title": "Cash And Carry Entry Bps",
             "type": "number"
@@ -1255,6 +1259,7 @@
           "backtest_history_min_win_rate",
           "backtest_history_min_closed_trades",
           "backtest_history_refresh_s",
+          "calibration_artifact_path",
           "runbook_config_fields",
           "runbook_presets"
         ],

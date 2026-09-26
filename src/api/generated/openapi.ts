@@ -599,6 +599,8 @@ export interface components {
             borrow_rate_apr: number;
             /** Bybit Base Url */
             bybit_base_url: string;
+            /** Calibration Artifact Path */
+            calibration_artifact_path: string;
             /** Cash And Carry Entry Bps */
             cash_and_carry_entry_bps: number;
             /** Correlation Bucket S */
