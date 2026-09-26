@@ -3384,6 +3384,7 @@
         "enum": [
           "persistence_insufficient",
           "historical_win_rate_low",
+          "historical_win_rate_unavailable",
           "break_even_window",
           "score_below_min",
           "funding_flips",

@@ -1444,7 +1444,7 @@ export interface components {
          * ReasonCode
          * @enum {string}
          */
-        ReasonCode: "persistence_insufficient" | "historical_win_rate_low" | "break_even_window" | "score_below_min" | "funding_flips" | "basis_limit" | "basis_trend_unstable" | "basis_divergence_hard" | "basis_divergence_window" | "funding_timing_asymmetry" | "funding_unstable" | "funding_trend_thin_edge" | "stale_data" | "real_depth_unavailable" | "depth_quality_below_min" | "real_fee_unavailable" | "margin_mode_unknown" | "adl_limit" | "margin_mode_cross" | "anti_churn_cooldown" | "correlation_limit";
+        ReasonCode: "persistence_insufficient" | "historical_win_rate_low" | "historical_win_rate_unavailable" | "break_even_window" | "score_below_min" | "funding_flips" | "basis_limit" | "basis_trend_unstable" | "basis_divergence_hard" | "basis_divergence_window" | "funding_timing_asymmetry" | "funding_unstable" | "funding_trend_thin_edge" | "stale_data" | "real_depth_unavailable" | "depth_quality_below_min" | "real_fee_unavailable" | "margin_mode_unknown" | "adl_limit" | "margin_mode_cross" | "anti_churn_cooldown" | "correlation_limit";
         /** ReasonItem */
         ReasonItem: {
             code: components["schemas"]["ReasonCode"];
