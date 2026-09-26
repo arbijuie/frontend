@@ -601,6 +601,8 @@ export interface components {
             bybit_base_url: string;
             /** Calibration Artifact Path */
             calibration_artifact_path: string;
+            /** Calibration Artifact Rollback Path */
+            calibration_artifact_rollback_path: string;
             /** Cash And Carry Entry Bps */
             cash_and_carry_entry_bps: number;
             /** Correlation Bucket S */
@@ -1522,6 +1524,38 @@ export interface components {
             /** Write Failures */
             write_failures: number;
         };
+        /** StatusCalibrationLoaderDiagnostics */
+        StatusCalibrationLoaderDiagnostics: {
+            /**
+             * Active Path
+             * @default
+             */
+            active_path: string;
+            /**
+             * Base Path
+             * @default
+             */
+            base_path: string;
+            /** Last Error */
+            last_error?: string | null;
+            /** Loaded Artifact Id */
+            loaded_artifact_id?: string | null;
+            /** Loaded Schema Version */
+            loaded_schema_version?: number | null;
+            /**
+             * Rollback Active
+             * @default false
+             */
+            rollback_active: boolean;
+            /** Rollback Path */
+            rollback_path?: string | null;
+            /**
+             * Status
+             * @default missing
+             * @enum {string}
+             */
+            status: "loaded" | "missing" | "path_error" | "load_failed";
+        };
         /** StatusDropCounters */
         StatusDropCounters: {
             /**
@@ -1746,6 +1780,7 @@ export interface components {
             backtest_history_pairs: number;
             /** Backtest History Refreshed At */
             backtest_history_refreshed_at?: string | null;
+            calibration_loader?: components["schemas"]["StatusCalibrationLoaderDiagnostics"];
             correlation_concentration?: components["schemas"]["CorrelationConcentrationItem"];
             /** Exchange Diagnostics */
             exchange_diagnostics?: {
