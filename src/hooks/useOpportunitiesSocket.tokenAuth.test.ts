@@ -1,16 +1,20 @@
-import { renderHook, act, waitFor } from "@testing-library/react";
+import { renderHook, act } from "@testing-library/react";
 import { useQueryClient } from "@tanstack/react-query";
-import { fetchWsAuthTicket } from "../api/ws";
+import { fetchWsAuthTicket, WsAuthTicketRequestError } from "../api/ws";
 import { useOpportunitiesSocket } from "./useOpportunitiesSocket";
 
 vi.mock("@tanstack/react-query", () => ({
   useQueryClient: vi.fn(),
 }));
 
-vi.mock("../api/ws", () => ({
-  fetchWsAuthTicket: vi.fn(),
-  getWsUrl: vi.fn(() => "ws://test/ws/opportunities"),
-}));
+vi.mock("../api/ws", async () => {
+  const actual = await vi.importActual<typeof import("../api/ws")>("../api/ws");
+  return {
+    ...actual,
+    fetchWsAuthTicket: vi.fn(),
+    getWsUrl: vi.fn(() => "ws://test/ws/opportunities"),
+  };
+});
 
 vi.mock("../api/config", () => ({
   API_TOKEN: "secret-token",
@@ -48,6 +52,7 @@ function latestSocket(): MockWebSocket {
 describe("useOpportunitiesSocket with token auth", () => {
   beforeEach(() => {
     vi.resetAllMocks();
+    vi.useFakeTimers();
     MockWebSocket.instances = [];
     vi.stubGlobal("WebSocket", MockWebSocket as unknown as typeof WebSocket);
     mockedUseQueryClient.mockReturnValue({ getQueryData: vi.fn(), setQueryData: vi.fn() } as never);
@@ -59,13 +64,16 @@ describe("useOpportunitiesSocket with token auth", () => {
   });
 
   afterEach(() => {
+    vi.useRealTimers();
     vi.unstubAllGlobals();
   });
 
   it("fetches a ticket and sends it as the first message", async () => {
     renderHook(() => useOpportunitiesSocket());
-
-    await waitFor(() => expect(MockWebSocket.instances.length).toBeGreaterThan(0));
+    await act(async () => {
+      await Promise.resolve();
+    });
+    expect(MockWebSocket.instances.length).toBeGreaterThan(0);
     expect(mockedFetchWsAuthTicket).toHaveBeenCalled();
 
     const socket = latestSocket();
@@ -74,5 +82,78 @@ describe("useOpportunitiesSocket with token auth", () => {
     });
 
     expect(socket.sentMessages).toEqual([JSON.stringify({ type: "auth", ticket: "abc" })]);
+  });
+
+  it("surfaces Retry-After from 429 ticket responses and retries", async () => {
+    mockedFetchWsAuthTicket.mockRejectedValueOnce(new WsAuthTicketRequestError(429, 2));
+
+    const { result } = renderHook(() => useOpportunitiesSocket());
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(result.current.transportState).toBe("reconnecting");
+    expect(result.current.authStatus).toBe("rate-limited");
+    expect(result.current.authRetryAfterSeconds).toBe(2);
+
+    await act(async () => {
+      vi.advanceTimersByTime(2000);
+      await Promise.resolve();
+    });
+
+    expect(mockedFetchWsAuthTicket).toHaveBeenCalledTimes(2);
+  });
+
+  it("falls back after repeated 429 ticket responses", async () => {
+    mockedFetchWsAuthTicket.mockRejectedValue(new WsAuthTicketRequestError(429, 1));
+
+    const { result } = renderHook(() => useOpportunitiesSocket());
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    for (let i = 0; i < 4; i++) {
+      await act(async () => {
+        vi.advanceTimersByTime(1000);
+        await Promise.resolve();
+      });
+    }
+
+    expect(result.current.transportState).toBe("polling-fallback");
+    expect(result.current.authStatus).toBe("auth-failed");
+  });
+
+  it("reissues a ticket when auth is rejected before first data frame", async () => {
+    mockedFetchWsAuthTicket.mockResolvedValueOnce({
+      ticket: "expired",
+      expires_at: "2026-09-17T10:01:00Z",
+      ttl_s: 60,
+    });
+    mockedFetchWsAuthTicket.mockResolvedValueOnce({
+      ticket: "fresh",
+      expires_at: "2026-09-17T10:02:00Z",
+      ttl_s: 60,
+    });
+
+    const { result } = renderHook(() => useOpportunitiesSocket());
+    await act(async () => {
+      await Promise.resolve();
+    });
+    expect(MockWebSocket.instances.length).toBeGreaterThan(0);
+
+    act(() => {
+      latestSocket().onopen?.();
+      latestSocket().onclose?.();
+    });
+
+    expect(result.current.authStatus).toBe("ticket-rejected");
+
+    await act(async () => {
+      vi.advanceTimersByTime(1000);
+      await Promise.resolve();
+    });
+
+    expect(mockedFetchWsAuthTicket).toHaveBeenCalledTimes(2);
+    expect(MockWebSocket.instances.length).toBeGreaterThan(1);
   });
 });

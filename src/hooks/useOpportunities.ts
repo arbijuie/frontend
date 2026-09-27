@@ -4,7 +4,8 @@ import { POLL_INTERVAL_MS } from "../api/config";
 import { useOpportunitiesSocket } from "./useOpportunitiesSocket";
 
 export function useOpportunities() {
-  const { transportState, reconnectAttempt, retryNow } = useOpportunitiesSocket();
+  const { transportState, reconnectAttempt, authStatus, authRetryAfterSeconds, authDetail, retryNow } =
+    useOpportunitiesSocket();
   const isLive = transportState === "connected";
 
   const query = useQuery({
@@ -21,6 +22,9 @@ export function useOpportunities() {
     refetch: query.refetch,
     transportState,
     reconnectAttempt,
+    authStatus,
+    authRetryAfterSeconds,
+    authDetail,
     retryConnection: retryNow,
   };
 }

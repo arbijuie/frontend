@@ -1,5 +1,5 @@
 import styles from "./TransportIndicator.module.scss";
-import type { TransportState } from "../../hooks/useOpportunitiesSocket";
+import type { AuthStatus, TransportState } from "../../hooks/useOpportunitiesSocket";
 
 function severityFromState(state: TransportState): "green" | "yellow" | "red" {
   if (state === "connected") return "green";
@@ -14,25 +14,63 @@ function labelFromState(state: TransportState, reconnectAttempt: number): string
   return "polling fallback";
 }
 
+function authHint(
+  authStatus: AuthStatus,
+  authRetryAfterSeconds: number | null,
+  authDetail: string | null
+): string | null {
+  if (authStatus === "rate-limited") {
+    const retrySeconds = authRetryAfterSeconds != null ? Math.ceil(authRetryAfterSeconds) : null;
+    if (retrySeconds != null) {
+      return `ticket request rate-limited, retry in ~${retrySeconds}s`;
+    }
+    return "ticket request rate-limited, retrying shortly";
+  }
+
+  if (authStatus === "ticket-rejected") {
+    return authDetail ?? "ticket rejected, requesting a new ticket";
+  }
+
+  if (authStatus === "auth-failed") {
+    return authDetail ?? "WS auth failed, using polling fallback";
+  }
+
+  return null;
+}
+
 interface TransportIndicatorProps {
   state: TransportState;
   reconnectAttempt: number;
+  authStatus: AuthStatus;
+  authRetryAfterSeconds: number | null;
+  authDetail: string | null;
   onRetry: () => void;
 }
 
-const TransportIndicator = ({ state, reconnectAttempt, onRetry }: TransportIndicatorProps) => {
+const TransportIndicator = ({
+  state,
+  reconnectAttempt,
+  authStatus,
+  authRetryAfterSeconds,
+  authDetail,
+  onRetry,
+}: TransportIndicatorProps) => {
   const severity = severityFromState(state);
   const label = labelFromState(state, reconnectAttempt);
+  const detail = authHint(authStatus, authRetryAfterSeconds, authDetail);
 
   return (
-    <div className={styles.row} aria-live="polite">
-      <span className={`${styles.dot} ${styles[severity]}`} aria-hidden="true" />
-      <span>{label}</span>
-      {state === "polling-fallback" && (
-        <button className={styles.retryButton} onClick={onRetry} aria-label="Retry live connection">
-          Retry
-        </button>
-      )}
+    <div className={styles.container} aria-live="polite">
+      <div className={styles.row}>
+        <span className={`${styles.dot} ${styles[severity]}`} aria-hidden="true" />
+        <span>{label}</span>
+        {state === "polling-fallback" && (
+          <button className={styles.retryButton} onClick={onRetry} aria-label="Retry live connection">
+            Retry
+          </button>
+        )}
+      </div>
+      {detail && <div className={styles.detail}>{detail}</div>}
     </div>
   );
 };

@@ -26,6 +26,9 @@ export default function OpportunitiesPage() {
     refetch,
     transportState,
     reconnectAttempt,
+    authStatus,
+    authRetryAfterSeconds,
+    authDetail,
     retryConnection,
   } = useOpportunities();
   const { data: status } = useStatus();
@@ -58,6 +61,9 @@ export default function OpportunitiesPage() {
             <TransportIndicator
               state={transportState}
               reconnectAttempt={reconnectAttempt}
+              authStatus={authStatus}
+              authRetryAfterSeconds={authRetryAfterSeconds}
+              authDetail={authDetail}
               onRetry={retryConnection}
             />
             {data?.updated_at && (

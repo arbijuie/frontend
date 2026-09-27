@@ -1,20 +1,34 @@
 import { useEffect, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { fetchWsAuthTicket, getWsUrl } from "../api/ws";
+import { fetchWsAuthTicket, getWsUrl, WsAuthTicketRequestError } from "../api/ws";
 import { API_TOKEN } from "../api/config";
 import { getBackoffDelayMs, shouldGiveUp } from "../lib/wsBackoff";
 import type { OpportunitiesResponse } from "../api/types";
 
 export type TransportState = "connecting" | "connected" | "reconnecting" | "polling-fallback";
+export type AuthStatus = "ok" | "rate-limited" | "ticket-rejected" | "auth-failed";
 
 const STALL_TIMEOUT_MS = 60000;
+const MAX_AUTH_REISSUE_ATTEMPTS = 3;
+
+type AuthDiagnostics = {
+  status: AuthStatus;
+  retryAfterSeconds: number | null;
+  detail: string | null;
+};
 
 export function useOpportunitiesSocket() {
   const queryClient = useQueryClient();
   const [transportState, setTransportState] = useState<TransportState>("connecting");
+  const [authDiagnostics, setAuthDiagnostics] = useState<AuthDiagnostics>({
+    status: "ok",
+    retryAfterSeconds: null,
+    detail: null,
+  });
   const [reconnectAttempt, setReconnectAttempt] = useState(0);
   const wsRef = useRef<WebSocket | null>(null);
   const attemptRef = useRef(0);
+  const authReissueAttemptRef = useRef(0);
   const reconnectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const stallTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const stoppedRef = useRef(false);
@@ -51,6 +65,53 @@ export function useOpportunitiesSocket() {
     reconnectTimerRef.current = setTimeout(connect, delay);
   };
 
+  const scheduleAuthRetry = (delayMs: number, authStatus: AuthStatus, detail: string | null) => {
+    authReissueAttemptRef.current += 1;
+    setReconnectAttempt(authReissueAttemptRef.current);
+    setAuthDiagnostics({
+      status: authStatus,
+      retryAfterSeconds: null,
+      detail,
+    });
+
+    if (authReissueAttemptRef.current > MAX_AUTH_REISSUE_ATTEMPTS) {
+      setTransportState("polling-fallback");
+      setAuthDiagnostics({
+        status: "auth-failed",
+        retryAfterSeconds: null,
+        detail: "WS auth failed repeatedly; using polling fallback.",
+      });
+      return;
+    }
+
+    setTransportState("reconnecting");
+    reconnectTimerRef.current = setTimeout(connect, delayMs);
+  };
+
+  const scheduleRateLimitedRetry = (retryAfterSeconds: number | null) => {
+    const safeRetrySeconds = retryAfterSeconds && retryAfterSeconds > 0 ? retryAfterSeconds : 1;
+    authReissueAttemptRef.current += 1;
+    setReconnectAttempt(authReissueAttemptRef.current);
+    setAuthDiagnostics({
+      status: "rate-limited",
+      retryAfterSeconds: safeRetrySeconds,
+      detail: "Ticket issuance is rate-limited.",
+    });
+
+    if (authReissueAttemptRef.current > MAX_AUTH_REISSUE_ATTEMPTS) {
+      setTransportState("polling-fallback");
+      setAuthDiagnostics({
+        status: "auth-failed",
+        retryAfterSeconds: null,
+        detail: "WS ticket request rate-limited repeatedly; using polling fallback.",
+      });
+      return;
+    }
+
+    setTransportState("reconnecting");
+    reconnectTimerRef.current = setTimeout(connect, safeRetrySeconds * 1000);
+  };
+
   const connect = async () => {
     const myGeneration = ++generationRef.current;
     if (stoppedRef.current) return;
@@ -58,9 +119,29 @@ export function useOpportunitiesSocket() {
 
     try {
       let ticket: string | undefined;
+      let waitingForTicketAuth = false;
       if (API_TOKEN) {
-        const ticketResponse = await fetchWsAuthTicket();
-        ticket = ticketResponse.ticket;
+        try {
+          const ticketResponse = await fetchWsAuthTicket();
+          ticket = ticketResponse.ticket;
+          waitingForTicketAuth = true;
+        } catch (error) {
+          if (error instanceof WsAuthTicketRequestError && error.status === 429) {
+            if (myGeneration === generationRef.current && !stoppedRef.current) {
+              scheduleRateLimitedRetry(error.retryAfterSeconds);
+            }
+            return;
+          }
+
+          if (myGeneration === generationRef.current && !stoppedRef.current) {
+            scheduleAuthRetry(
+              getBackoffDelayMs(authReissueAttemptRef.current),
+              "auth-failed",
+              "Unable to issue WS auth ticket."
+            );
+          }
+          return;
+        }
       }
 
       if (stoppedRef.current || myGeneration !== generationRef.current) {
@@ -96,6 +177,13 @@ export function useOpportunitiesSocket() {
           }
           queryClient.setQueryData(["opportunities"], frame);
           setTransportState("connected");
+          authReissueAttemptRef.current = 0;
+          setAuthDiagnostics({
+            status: "ok",
+            retryAfterSeconds: null,
+            detail: null,
+          });
+          waitingForTicketAuth = false;
         } catch (error) {
           // Malformed WS frame — log for visibility, keep the connection alive.
           console.warn("Failed to parse opportunities WS frame:", error);
@@ -107,6 +195,14 @@ export function useOpportunitiesSocket() {
         wsRef.current = null;
         clearStallTimer();
         if (!stoppedRef.current) {
+          if (API_TOKEN && waitingForTicketAuth) {
+            scheduleAuthRetry(
+              getBackoffDelayMs(authReissueAttemptRef.current),
+              "ticket-rejected",
+              "WS auth ticket was rejected; requesting a new ticket."
+            );
+            return;
+          }
           scheduleReconnect();
         }
       };
@@ -128,7 +224,13 @@ export function useOpportunitiesSocket() {
     wsRef.current = null;
     clearStallTimer();
     attemptRef.current = 0;
+    authReissueAttemptRef.current = 0;
     setReconnectAttempt(0);
+    setAuthDiagnostics({
+      status: "ok",
+      retryAfterSeconds: null,
+      detail: null,
+    });
     void connect();
   };
 
@@ -147,5 +249,12 @@ export function useOpportunitiesSocket() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return { transportState, reconnectAttempt, retryNow };
+  return {
+    transportState,
+    reconnectAttempt,
+    authStatus: authDiagnostics.status,
+    authRetryAfterSeconds: authDiagnostics.retryAfterSeconds,
+    authDetail: authDiagnostics.detail,
+    retryNow,
+  };
 }
