@@ -215,6 +215,74 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/migration/parity/artifacts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Migration Parity Artifacts */
+        get: operations["list_migration_parity_artifacts_migration_parity_artifacts_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/migration/parity/report": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Migration Parity Report */
+        get: operations["get_migration_parity_report_migration_parity_report_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/migration/preflight-parity/artifacts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Migration Preflight Parity Artifacts */
+        get: operations["list_migration_preflight_parity_artifacts_migration_preflight_parity_artifacts_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/migration/preflight-parity/report": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Migration Preflight Parity Report */
+        get: operations["get_migration_preflight_parity_report_migration_preflight_parity_report_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/opportunities": {
         parameters: {
             query?: never;
@@ -1193,6 +1261,18 @@ export interface components {
             poll_count_success: number;
             /** Screener Ready Candidates */
             screener_ready_candidates: number;
+            /**
+             * Shadow Preflight Capture Count
+             * @default 0
+             */
+            shadow_preflight_capture_count: number;
+            /**
+             * Shadow Preflight Capture Failures
+             * @default 0
+             */
+            shadow_preflight_capture_failures: number;
+            /** Shadow Preflight Last Duration Ms */
+            shadow_preflight_last_duration_ms?: number | null;
             trust_diagnostics?: components["schemas"]["PreflightTrustDiagnosticsItem"];
         };
         /** FundingForecastItem */
@@ -1297,6 +1377,111 @@ export interface components {
             quality?: ("A" | "B" | "C" | "D") | null;
             /** Spread Bps */
             spread_bps?: number | null;
+        };
+        /** MigrationParityArtifactItem */
+        MigrationParityArtifactItem: {
+            /** Attempt Id */
+            attempt_id: string;
+            /** Diffs */
+            diffs?: components["schemas"]["MigrationParityDiffItem"][];
+            /**
+             * Evaluation Status
+             * @enum {string}
+             */
+            evaluation_status: "evaluated" | "not_evaluated";
+            /** Generated At */
+            generated_at: string;
+            /** Joinable */
+            joinable: boolean;
+            /** Legacy Conflict Count */
+            legacy_conflict_count: number;
+            /** Legacy Event Count */
+            legacy_event_count: number;
+            /**
+             * Parity Status
+             * @enum {string}
+             */
+            parity_status: "pass" | "watching" | "fail" | "not_evaluated";
+            /** Schema Version */
+            schema_version: string;
+            /** Shadow Conflict Count */
+            shadow_conflict_count: number;
+            /** Shadow Correlation Group Id */
+            shadow_correlation_group_id?: string | null;
+            /** Shadow Correlation Version */
+            shadow_correlation_version: string;
+            /** Shadow Event Count */
+            shadow_event_count: number;
+        };
+        /** MigrationParityArtifactListResponse */
+        MigrationParityArtifactListResponse: {
+            /** Count */
+            count: number;
+            /** Items */
+            items?: components["schemas"]["MigrationParityArtifactItem"][];
+        };
+        /** MigrationParityDiffItem */
+        MigrationParityDiffItem: {
+            /** Code */
+            code: string;
+            /** Dimension */
+            dimension: string;
+            /** Legacy Value */
+            legacy_value?: string | null;
+            /** Message */
+            message: string;
+            /**
+             * Severity
+             * @enum {string}
+             */
+            severity: "ok" | "watching" | "blocked";
+            /** Shadow Value */
+            shadow_value?: string | null;
+        };
+        /** MigrationParityReportResponse */
+        MigrationParityReportResponse: {
+            /** Attempts Analyzed */
+            attempts_analyzed: number;
+            /** Generated At */
+            generated_at: string;
+            /** Items */
+            items?: components["schemas"]["MigrationParityArtifactItem"][];
+            /**
+             * Not Evaluated Count
+             * @default 0
+             */
+            not_evaluated_count: number;
+            /** Parity Passed */
+            parity_passed: boolean;
+            /** Reason Counts */
+            reason_counts?: {
+                [key: string]: number;
+            };
+            /** Schema Version */
+            schema_version: string;
+            severity_counts?: components["schemas"]["MigrationParitySeverityCountsItem"];
+            /** Window End */
+            window_end: string;
+            /** Window Start */
+            window_start: string;
+        };
+        /** MigrationParitySeverityCountsItem */
+        MigrationParitySeverityCountsItem: {
+            /**
+             * Blocked
+             * @default 0
+             */
+            blocked: number;
+            /**
+             * Ok
+             * @default 0
+             */
+            ok: number;
+            /**
+             * Watching
+             * @default 0
+             */
+            watching: number;
         };
         /** OpportunitiesResponse */
         OpportunitiesResponse: {
@@ -1429,6 +1614,168 @@ export interface components {
              * @default 0
              */
             total_cost_bps: number;
+        };
+        /** PreflightParityArtifactItem */
+        PreflightParityArtifactItem: {
+            /** Artifact Id */
+            artifact_id: string;
+            /** Diffs */
+            diffs?: components["schemas"]["PreflightParityDiffItem"][];
+            /**
+             * Evaluation Status
+             * @enum {string}
+             */
+            evaluation_status: "evaluated" | "not_evaluated";
+            /** Generated At */
+            generated_at: string;
+            /** Legacy Blocker Codes */
+            legacy_blocker_codes?: string[];
+            /** Legacy Candidate Status */
+            legacy_candidate_status?: string | null;
+            /** Legacy Candidate Symbol */
+            legacy_candidate_symbol?: string | null;
+            /**
+             * Legacy Decision
+             * @enum {string}
+             */
+            legacy_decision: "ready" | "watching" | "blocked";
+            /** Legacy Gate Reason */
+            legacy_gate_reason?: string | null;
+            /** Legacy Payload Hash */
+            legacy_payload_hash: string;
+            /**
+             * Parity Status
+             * @enum {string}
+             */
+            parity_status: "pass" | "watching" | "fail" | "not_evaluated";
+            /** Reason Groups */
+            reason_groups?: {
+                [key: string]: number;
+            };
+            /** Schema Version */
+            schema_version: string;
+            /** Shadow Blocker Codes */
+            shadow_blocker_codes?: string[];
+            /** Shadow Candidate Status */
+            shadow_candidate_status?: string | null;
+            /** Shadow Candidate Symbol */
+            shadow_candidate_symbol?: string | null;
+            /** Shadow Decision */
+            shadow_decision?: ("ready" | "watching" | "blocked") | null;
+            /** Shadow Gate Reason */
+            shadow_gate_reason?: string | null;
+            /** Shadow Payload Hash */
+            shadow_payload_hash?: string | null;
+            /** Symbol Filter */
+            symbol_filter?: string | null;
+        };
+        /** PreflightParityArtifactListResponse */
+        PreflightParityArtifactListResponse: {
+            /** Count */
+            count: number;
+            /** Items */
+            items?: components["schemas"]["PreflightParityArtifactItem"][];
+        };
+        /** PreflightParityDiffItem */
+        PreflightParityDiffItem: {
+            /** Code */
+            code: string;
+            /**
+             * Group
+             * @enum {string}
+             */
+            group: "decision" | "gate" | "blockers" | "candidate";
+            /** Legacy Value */
+            legacy_value?: string | null;
+            /** Message */
+            message: string;
+            /**
+             * Severity
+             * @enum {string}
+             */
+            severity: "ok" | "watching" | "blocked";
+            /** Shadow Value */
+            shadow_value?: string | null;
+        };
+        /** PreflightParityPromotionPolicyItem */
+        PreflightParityPromotionPolicyItem: {
+            /** Policy Hash */
+            policy_hash: string;
+            /** Policy Schema Version */
+            policy_schema_version: string;
+            /** Policy Version */
+            policy_version: string;
+            /** Thresholds */
+            thresholds?: {
+                [key: string]: number;
+            };
+        };
+        /** PreflightParityPromotionRecommendationItem */
+        PreflightParityPromotionRecommendationItem: {
+            /**
+             * Decision
+             * @enum {string}
+             */
+            decision: "pass" | "fail";
+            /** Evaluated At */
+            evaluated_at: string;
+            /** Metrics */
+            metrics?: {
+                [key: string]: number;
+            };
+            policy: components["schemas"]["PreflightParityPromotionPolicyItem"];
+            /** Reasons */
+            reasons?: string[];
+        };
+        /** PreflightParityReportResponse */
+        PreflightParityReportResponse: {
+            /** Artifacts Analyzed */
+            artifacts_analyzed: number;
+            /** Generated At */
+            generated_at: string;
+            /** Items */
+            items?: components["schemas"]["PreflightParityArtifactItem"][];
+            /**
+             * Not Evaluated Count
+             * @default 0
+             */
+            not_evaluated_count: number;
+            /** Parity Passed */
+            parity_passed: boolean;
+            promotion_recommendation?: components["schemas"]["PreflightParityPromotionRecommendationItem"] | null;
+            /** Reason Counts */
+            reason_counts?: {
+                [key: string]: number;
+            };
+            /** Reason Group Counts */
+            reason_group_counts?: {
+                [key: string]: number;
+            };
+            /** Schema Version */
+            schema_version: string;
+            severity_counts?: components["schemas"]["PreflightParitySeverityCountsItem"];
+            /** Window End */
+            window_end: string;
+            /** Window Start */
+            window_start: string;
+        };
+        /** PreflightParitySeverityCountsItem */
+        PreflightParitySeverityCountsItem: {
+            /**
+             * Blocked
+             * @default 0
+             */
+            blocked: number;
+            /**
+             * Ok
+             * @default 0
+             */
+            ok: number;
+            /**
+             * Watching
+             * @default 0
+             */
+            watching: number;
         };
         /** PreflightTrustDiagnosticsItem */
         PreflightTrustDiagnosticsItem: {
@@ -2494,6 +2841,134 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ExecutionPreflightResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_migration_parity_artifacts_migration_parity_artifacts_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MigrationParityArtifactListResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_migration_parity_report_migration_parity_report_get: {
+        parameters: {
+            query?: {
+                window_s?: number;
+                limit?: number;
+                include_artifacts?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MigrationParityReportResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_migration_preflight_parity_artifacts_migration_preflight_parity_artifacts_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PreflightParityArtifactListResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_migration_preflight_parity_report_migration_preflight_parity_report_get: {
+        parameters: {
+            query?: {
+                window_s?: number;
+                limit?: number;
+                include_artifacts?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PreflightParityReportResponse"];
                 };
             };
             /** @description Validation Error */
