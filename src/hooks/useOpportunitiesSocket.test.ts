@@ -82,6 +82,16 @@ describe("useOpportunitiesSocket", () => {
     expect(latestSocket()).toBeDefined();
   });
 
+  it("does not connect when disabled", async () => {
+    renderHook(() => useOpportunitiesSocket({ enabled: false, queryKey: ["opportunities", "filtered"] }));
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(mockedFetchWsAuthTicket).not.toHaveBeenCalled();
+    expect(MockWebSocket.instances).toHaveLength(0);
+  });
+
   it("does not report connected until the first frame arrives", async () => {
     const { result } = renderHook(() => useOpportunitiesSocket());
     await act(async () => {

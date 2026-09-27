@@ -158,6 +158,6 @@ describe("useOpportunitiesSocket with token auth", () => {
 
     expect(mockedFetchWsAuthTicket).toHaveBeenCalledTimes(2);
     expect(MockWebSocket.instances.length).toBeGreaterThan(1);
-    expect(result.current.authDetail).toBe("WS auth ticket was already used; requesting a new ticket.");
+    expect(result.current.authDetail).toBe("WS auth ticket was rejected; requesting a new ticket.");
   });
 });

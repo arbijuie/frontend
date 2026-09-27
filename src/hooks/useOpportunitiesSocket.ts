@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { fetchWsAuthTicket, getWsUrl, WsAuthTicketRequestError } from "../api/ws";
 import { API_TOKEN } from "../api/config";
@@ -17,7 +17,14 @@ type AuthDiagnostics = {
   detail: string | null;
 };
 
-export function useOpportunitiesSocket() {
+export type UseOpportunitiesSocketOptions = {
+  enabled?: boolean;
+  queryKey?: readonly unknown[];
+};
+
+export function useOpportunitiesSocket(options?: UseOpportunitiesSocketOptions) {
+  const enabled = options?.enabled ?? true;
+  const queryKey = useMemo(() => options?.queryKey ?? ["opportunities"], [options?.queryKey]);
   const queryClient = useQueryClient();
   const [transportState, setTransportState] = useState<TransportState>("connecting");
   const [authDiagnostics, setAuthDiagnostics] = useState<AuthDiagnostics>({
@@ -31,6 +38,7 @@ export function useOpportunitiesSocket() {
   const authReissueAttemptRef = useRef(0);
   const reconnectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const stallTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pendingRejectReasonRef = useRef<"expired" | "reused" | null>(null);
   const stoppedRef = useRef(false);
   const generationRef = useRef(0);
 
@@ -115,29 +123,19 @@ export function useOpportunitiesSocket() {
   const connect = async () => {
     const myGeneration = ++generationRef.current;
     if (stoppedRef.current) return;
+    if (!enabled) return;
     setTransportState(attemptRef.current === 0 ? "connecting" : "reconnecting");
 
     try {
       let ticket: string | undefined;
       let waitingForTicketAuth = false;
+      pendingRejectReasonRef.current = null;
       if (API_TOKEN) {
         try {
           const ticketResponse = await fetchWsAuthTicket();
           ticket = ticketResponse.ticket;
           waitingForTicketAuth = true;
-          if (ticketResponse.last_reject_reason === "expired") {
-            setAuthDiagnostics({
-              status: "ticket-rejected",
-              retryAfterSeconds: null,
-              detail: "WS auth ticket expired; requesting a new ticket.",
-            });
-          } else if (ticketResponse.last_reject_reason === "reused") {
-            setAuthDiagnostics({
-              status: "ticket-rejected",
-              retryAfterSeconds: null,
-              detail: "WS auth ticket was already used; requesting a new ticket.",
-            });
-          }
+          pendingRejectReasonRef.current = ticketResponse.last_reject_reason ?? null;
         } catch (error) {
           if (error instanceof WsAuthTicketRequestError && error.status === 429) {
             if (myGeneration === generationRef.current && !stoppedRef.current) {
@@ -182,15 +180,16 @@ export function useOpportunitiesSocket() {
 
         try {
           const frame: OpportunitiesResponse = JSON.parse(event.data);
-          const cached = queryClient.getQueryData<OpportunitiesResponse>(["opportunities"]);
+          const cached = queryClient.getQueryData<OpportunitiesResponse>(queryKey);
           if (cached?.updated_at && frame.updated_at) {
             const cachedTime = new Date(cached.updated_at).getTime();
             const frameTime = new Date(frame.updated_at).getTime();
             if (frameTime < cachedTime) return;
           }
-          queryClient.setQueryData(["opportunities"], frame);
+          queryClient.setQueryData(queryKey, frame);
           setTransportState("connected");
           authReissueAttemptRef.current = 0;
+          pendingRejectReasonRef.current = null;
           setAuthDiagnostics({
             status: "ok",
             retryAfterSeconds: null,
@@ -209,10 +208,18 @@ export function useOpportunitiesSocket() {
         clearStallTimer();
         if (!stoppedRef.current) {
           if (API_TOKEN && waitingForTicketAuth) {
+            const reason = pendingRejectReasonRef.current;
+            pendingRejectReasonRef.current = null;
+            const detail =
+              reason === "expired"
+                ? "WS auth ticket expired; requesting a new ticket."
+                : reason === "reused"
+                  ? "WS auth ticket was already used; requesting a new ticket."
+                  : "WS auth ticket was rejected; requesting a new ticket.";
             scheduleAuthRetry(
               getBackoffDelayMs(authReissueAttemptRef.current),
               "ticket-rejected",
-              "WS auth ticket was rejected; requesting a new ticket."
+              detail
             );
             return;
           }
@@ -229,6 +236,9 @@ export function useOpportunitiesSocket() {
   };
 
   const retryNow = () => {
+    if (!enabled) {
+      return;
+    }
     if (reconnectTimerRef.current) {
       clearTimeout(reconnectTimerRef.current);
     }
@@ -249,6 +259,11 @@ export function useOpportunitiesSocket() {
 
   useEffect(() => {
     stoppedRef.current = false;
+    if (!enabled) {
+      return () => {
+        stoppedRef.current = true;
+      };
+    }
     void connect();
     return () => {
       stoppedRef.current = true;
@@ -260,14 +275,18 @@ export function useOpportunitiesSocket() {
       clearStallTimer();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [enabled, queryKey]);
+
+  const effectiveAuthDiagnostics = enabled
+    ? authDiagnostics
+    : { status: "ok" as const, retryAfterSeconds: null, detail: null };
 
   return {
-    transportState,
+    transportState: enabled ? transportState : "polling-fallback",
     reconnectAttempt,
-    authStatus: authDiagnostics.status,
-    authRetryAfterSeconds: authDiagnostics.retryAfterSeconds,
-    authDetail: authDiagnostics.detail,
+    authStatus: effectiveAuthDiagnostics.status,
+    authRetryAfterSeconds: effectiveAuthDiagnostics.retryAfterSeconds,
+    authDetail: effectiveAuthDiagnostics.detail,
     retryNow,
   };
 }
