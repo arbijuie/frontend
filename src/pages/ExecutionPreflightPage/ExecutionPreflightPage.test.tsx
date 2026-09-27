@@ -55,6 +55,9 @@ function makePreflight(
       },
       consecutive_rollbacks: 0,
       entries_stopped: false,
+      shadow_preflight_last_duration_ms: 4.2,
+      shadow_preflight_capture_count: 1,
+      shadow_preflight_capture_failures: 0,
     },
     candidate: {
       symbol: "BTC",
