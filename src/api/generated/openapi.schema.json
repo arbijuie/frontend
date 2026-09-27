@@ -785,6 +785,14 @@
             "title": "Bybit Base Url",
             "type": "string"
           },
+          "calibration_artifact_path": {
+            "title": "Calibration Artifact Path",
+            "type": "string"
+          },
+          "calibration_artifact_rollback_path": {
+            "title": "Calibration Artifact Rollback Path",
+            "type": "string"
+          },
           "cash_and_carry_entry_bps": {
             "title": "Cash And Carry Entry Bps",
             "type": "number"
@@ -1041,6 +1049,32 @@
             "title": "Max Volume Fraction",
             "type": "number"
           },
+          "migration_nautilus_compare_enabled": {
+            "title": "Migration Nautilus Compare Enabled",
+            "type": "boolean"
+          },
+          "migration_nautilus_enabled": {
+            "title": "Migration Nautilus Enabled",
+            "type": "boolean"
+          },
+          "migration_nautilus_fallback_policy": {
+            "const": "deny_and_observe",
+            "title": "Migration Nautilus Fallback Policy",
+            "type": "string"
+          },
+          "migration_nautilus_mode": {
+            "enum": [
+              "legacy_only",
+              "shadow_compare",
+              "nautilus_primary"
+            ],
+            "title": "Migration Nautilus Mode",
+            "type": "string"
+          },
+          "migration_nautilus_observe_only": {
+            "title": "Migration Nautilus Observe Only",
+            "type": "boolean"
+          },
           "min_depth_quality": {
             "title": "Min Depth Quality",
             "type": "string"
@@ -1085,6 +1119,9 @@
                   },
                   {
                     "type": "boolean"
+                  },
+                  {
+                    "type": "string"
                   }
                 ]
               },
@@ -1189,6 +1226,11 @@
           "exec_adl_critical_quantile",
           "exec_recovery_cooldown_s",
           "exec_recovery_require_manual_ack",
+          "migration_nautilus_enabled",
+          "migration_nautilus_mode",
+          "migration_nautilus_compare_enabled",
+          "migration_nautilus_observe_only",
+          "migration_nautilus_fallback_policy",
           "extra_exchanges",
           "binance_base_url",
           "aster_base_url",
@@ -1221,6 +1263,8 @@
           "backtest_history_min_win_rate",
           "backtest_history_min_closed_trades",
           "backtest_history_refresh_s",
+          "calibration_artifact_path",
+          "calibration_artifact_rollback_path",
           "runbook_config_fields",
           "runbook_presets"
         ],
@@ -1504,6 +1548,55 @@
               }
             ],
             "title": "Max Volume Fraction"
+          },
+          "migration_nautilus_compare_enabled": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Migration Nautilus Compare Enabled"
+          },
+          "migration_nautilus_enabled": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Migration Nautilus Enabled"
+          },
+          "migration_nautilus_mode": {
+            "anyOf": [
+              {
+                "enum": [
+                  "legacy_only",
+                  "shadow_compare",
+                  "nautilus_primary"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Migration Nautilus Mode"
+          },
+          "migration_nautilus_observe_only": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Migration Nautilus Observe Only"
           },
           "min_open_interest": {
             "anyOf": [
@@ -2475,6 +2568,27 @@
             "title": "Screener Ready Candidates",
             "type": "integer"
           },
+          "shadow_preflight_capture_count": {
+            "default": 0,
+            "title": "Shadow Preflight Capture Count",
+            "type": "integer"
+          },
+          "shadow_preflight_capture_failures": {
+            "default": 0,
+            "title": "Shadow Preflight Capture Failures",
+            "type": "integer"
+          },
+          "shadow_preflight_last_duration_ms": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shadow Preflight Last Duration Ms"
+          },
           "trust_diagnostics": {
             "$ref": "#/components/schemas/PreflightTrustDiagnosticsItem"
           }
@@ -2854,6 +2968,258 @@
           "fee_source"
         ],
         "title": "MicrostructureSnapshotItem",
+        "type": "object"
+      },
+      "MigrationParityArtifactItem": {
+        "additionalProperties": false,
+        "properties": {
+          "attempt_id": {
+            "title": "Attempt Id",
+            "type": "string"
+          },
+          "diffs": {
+            "items": {
+              "$ref": "#/components/schemas/MigrationParityDiffItem"
+            },
+            "title": "Diffs",
+            "type": "array"
+          },
+          "evaluation_status": {
+            "enum": [
+              "evaluated",
+              "not_evaluated"
+            ],
+            "title": "Evaluation Status",
+            "type": "string"
+          },
+          "generated_at": {
+            "title": "Generated At",
+            "type": "string"
+          },
+          "joinable": {
+            "title": "Joinable",
+            "type": "boolean"
+          },
+          "legacy_conflict_count": {
+            "title": "Legacy Conflict Count",
+            "type": "integer"
+          },
+          "legacy_event_count": {
+            "title": "Legacy Event Count",
+            "type": "integer"
+          },
+          "parity_status": {
+            "enum": [
+              "pass",
+              "watching",
+              "fail",
+              "not_evaluated"
+            ],
+            "title": "Parity Status",
+            "type": "string"
+          },
+          "schema_version": {
+            "title": "Schema Version",
+            "type": "string"
+          },
+          "shadow_conflict_count": {
+            "title": "Shadow Conflict Count",
+            "type": "integer"
+          },
+          "shadow_correlation_group_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shadow Correlation Group Id"
+          },
+          "shadow_correlation_version": {
+            "title": "Shadow Correlation Version",
+            "type": "string"
+          },
+          "shadow_event_count": {
+            "title": "Shadow Event Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "schema_version",
+          "generated_at",
+          "attempt_id",
+          "shadow_correlation_version",
+          "evaluation_status",
+          "joinable",
+          "parity_status",
+          "legacy_event_count",
+          "shadow_event_count",
+          "legacy_conflict_count",
+          "shadow_conflict_count"
+        ],
+        "title": "MigrationParityArtifactItem",
+        "type": "object"
+      },
+      "MigrationParityArtifactListResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/MigrationParityArtifactItem"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "count"
+        ],
+        "title": "MigrationParityArtifactListResponse",
+        "type": "object"
+      },
+      "MigrationParityDiffItem": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "dimension": {
+            "title": "Dimension",
+            "type": "string"
+          },
+          "legacy_value": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Legacy Value"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "severity": {
+            "enum": [
+              "ok",
+              "watching",
+              "blocked"
+            ],
+            "title": "Severity",
+            "type": "string"
+          },
+          "shadow_value": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shadow Value"
+          }
+        },
+        "required": [
+          "dimension",
+          "code",
+          "severity",
+          "message"
+        ],
+        "title": "MigrationParityDiffItem",
+        "type": "object"
+      },
+      "MigrationParityReportResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "attempts_analyzed": {
+            "title": "Attempts Analyzed",
+            "type": "integer"
+          },
+          "generated_at": {
+            "title": "Generated At",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/MigrationParityArtifactItem"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "not_evaluated_count": {
+            "default": 0,
+            "title": "Not Evaluated Count",
+            "type": "integer"
+          },
+          "parity_passed": {
+            "title": "Parity Passed",
+            "type": "boolean"
+          },
+          "reason_counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Reason Counts",
+            "type": "object"
+          },
+          "schema_version": {
+            "title": "Schema Version",
+            "type": "string"
+          },
+          "severity_counts": {
+            "$ref": "#/components/schemas/MigrationParitySeverityCountsItem"
+          },
+          "window_end": {
+            "title": "Window End",
+            "type": "string"
+          },
+          "window_start": {
+            "title": "Window Start",
+            "type": "string"
+          }
+        },
+        "required": [
+          "schema_version",
+          "generated_at",
+          "window_start",
+          "window_end",
+          "attempts_analyzed",
+          "parity_passed"
+        ],
+        "title": "MigrationParityReportResponse",
+        "type": "object"
+      },
+      "MigrationParitySeverityCountsItem": {
+        "additionalProperties": false,
+        "properties": {
+          "blocked": {
+            "default": 0,
+            "title": "Blocked",
+            "type": "integer"
+          },
+          "ok": {
+            "default": 0,
+            "title": "Ok",
+            "type": "integer"
+          },
+          "watching": {
+            "default": 0,
+            "title": "Watching",
+            "type": "integer"
+          }
+        },
+        "title": "MigrationParitySeverityCountsItem",
         "type": "object"
       },
       "OpportunitiesResponse": {
@@ -3264,6 +3630,452 @@
         "title": "OpportunityItem",
         "type": "object"
       },
+      "PreflightParityArtifactItem": {
+        "additionalProperties": false,
+        "properties": {
+          "artifact_id": {
+            "title": "Artifact Id",
+            "type": "string"
+          },
+          "diffs": {
+            "items": {
+              "$ref": "#/components/schemas/PreflightParityDiffItem"
+            },
+            "title": "Diffs",
+            "type": "array"
+          },
+          "evaluation_status": {
+            "enum": [
+              "evaluated",
+              "not_evaluated"
+            ],
+            "title": "Evaluation Status",
+            "type": "string"
+          },
+          "generated_at": {
+            "title": "Generated At",
+            "type": "string"
+          },
+          "legacy_blocker_codes": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Legacy Blocker Codes",
+            "type": "array"
+          },
+          "legacy_candidate_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Legacy Candidate Status"
+          },
+          "legacy_candidate_symbol": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Legacy Candidate Symbol"
+          },
+          "legacy_decision": {
+            "enum": [
+              "ready",
+              "watching",
+              "blocked"
+            ],
+            "title": "Legacy Decision",
+            "type": "string"
+          },
+          "legacy_gate_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Legacy Gate Reason"
+          },
+          "legacy_payload_hash": {
+            "title": "Legacy Payload Hash",
+            "type": "string"
+          },
+          "parity_status": {
+            "enum": [
+              "pass",
+              "watching",
+              "fail",
+              "not_evaluated"
+            ],
+            "title": "Parity Status",
+            "type": "string"
+          },
+          "reason_groups": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Reason Groups",
+            "type": "object"
+          },
+          "schema_version": {
+            "title": "Schema Version",
+            "type": "string"
+          },
+          "shadow_blocker_codes": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Shadow Blocker Codes",
+            "type": "array"
+          },
+          "shadow_candidate_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shadow Candidate Status"
+          },
+          "shadow_candidate_symbol": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shadow Candidate Symbol"
+          },
+          "shadow_decision": {
+            "anyOf": [
+              {
+                "enum": [
+                  "ready",
+                  "watching",
+                  "blocked"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shadow Decision"
+          },
+          "shadow_gate_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shadow Gate Reason"
+          },
+          "shadow_payload_hash": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shadow Payload Hash"
+          },
+          "symbol_filter": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Symbol Filter"
+          }
+        },
+        "required": [
+          "schema_version",
+          "artifact_id",
+          "generated_at",
+          "evaluation_status",
+          "parity_status",
+          "legacy_decision",
+          "legacy_payload_hash"
+        ],
+        "title": "PreflightParityArtifactItem",
+        "type": "object"
+      },
+      "PreflightParityArtifactListResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/PreflightParityArtifactItem"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "count"
+        ],
+        "title": "PreflightParityArtifactListResponse",
+        "type": "object"
+      },
+      "PreflightParityDiffItem": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "group": {
+            "enum": [
+              "decision",
+              "gate",
+              "blockers",
+              "candidate"
+            ],
+            "title": "Group",
+            "type": "string"
+          },
+          "legacy_value": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Legacy Value"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "severity": {
+            "enum": [
+              "ok",
+              "watching",
+              "blocked"
+            ],
+            "title": "Severity",
+            "type": "string"
+          },
+          "shadow_value": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shadow Value"
+          }
+        },
+        "required": [
+          "group",
+          "code",
+          "severity",
+          "message"
+        ],
+        "title": "PreflightParityDiffItem",
+        "type": "object"
+      },
+      "PreflightParityPromotionPolicyItem": {
+        "additionalProperties": false,
+        "properties": {
+          "policy_hash": {
+            "title": "Policy Hash",
+            "type": "string"
+          },
+          "policy_schema_version": {
+            "title": "Policy Schema Version",
+            "type": "string"
+          },
+          "policy_version": {
+            "title": "Policy Version",
+            "type": "string"
+          },
+          "thresholds": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Thresholds",
+            "type": "object"
+          }
+        },
+        "required": [
+          "policy_schema_version",
+          "policy_version",
+          "policy_hash"
+        ],
+        "title": "PreflightParityPromotionPolicyItem",
+        "type": "object"
+      },
+      "PreflightParityPromotionRecommendationItem": {
+        "additionalProperties": false,
+        "properties": {
+          "decision": {
+            "enum": [
+              "pass",
+              "fail"
+            ],
+            "title": "Decision",
+            "type": "string"
+          },
+          "evaluated_at": {
+            "title": "Evaluated At",
+            "type": "string"
+          },
+          "metrics": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Metrics",
+            "type": "object"
+          },
+          "policy": {
+            "$ref": "#/components/schemas/PreflightParityPromotionPolicyItem"
+          },
+          "reasons": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Reasons",
+            "type": "array"
+          }
+        },
+        "required": [
+          "evaluated_at",
+          "decision",
+          "policy"
+        ],
+        "title": "PreflightParityPromotionRecommendationItem",
+        "type": "object"
+      },
+      "PreflightParityReportResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "artifacts_analyzed": {
+            "title": "Artifacts Analyzed",
+            "type": "integer"
+          },
+          "generated_at": {
+            "title": "Generated At",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/PreflightParityArtifactItem"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "not_evaluated_count": {
+            "default": 0,
+            "title": "Not Evaluated Count",
+            "type": "integer"
+          },
+          "parity_passed": {
+            "title": "Parity Passed",
+            "type": "boolean"
+          },
+          "promotion_recommendation": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PreflightParityPromotionRecommendationItem"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "reason_counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Reason Counts",
+            "type": "object"
+          },
+          "reason_group_counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Reason Group Counts",
+            "type": "object"
+          },
+          "schema_version": {
+            "title": "Schema Version",
+            "type": "string"
+          },
+          "severity_counts": {
+            "$ref": "#/components/schemas/PreflightParitySeverityCountsItem"
+          },
+          "window_end": {
+            "title": "Window End",
+            "type": "string"
+          },
+          "window_start": {
+            "title": "Window Start",
+            "type": "string"
+          }
+        },
+        "required": [
+          "schema_version",
+          "generated_at",
+          "window_start",
+          "window_end",
+          "artifacts_analyzed",
+          "parity_passed"
+        ],
+        "title": "PreflightParityReportResponse",
+        "type": "object"
+      },
+      "PreflightParitySeverityCountsItem": {
+        "additionalProperties": false,
+        "properties": {
+          "blocked": {
+            "default": 0,
+            "title": "Blocked",
+            "type": "integer"
+          },
+          "ok": {
+            "default": 0,
+            "title": "Ok",
+            "type": "integer"
+          },
+          "watching": {
+            "default": 0,
+            "title": "Watching",
+            "type": "integer"
+          }
+        },
+        "title": "PreflightParitySeverityCountsItem",
+        "type": "object"
+      },
       "PreflightTrustDiagnosticsItem": {
         "additionalProperties": false,
         "properties": {
@@ -3291,6 +4103,7 @@
         "enum": [
           "persistence_insufficient",
           "historical_win_rate_low",
+          "historical_win_rate_unavailable",
           "break_even_window",
           "score_below_min",
           "funding_flips",
@@ -3533,6 +4346,83 @@
         "title": "SnapshotContinuityResponse",
         "type": "object"
       },
+      "StatusCalibrationLoaderDiagnostics": {
+        "additionalProperties": false,
+        "properties": {
+          "active_path": {
+            "default": "",
+            "title": "Active Path",
+            "type": "string"
+          },
+          "base_path": {
+            "default": "",
+            "title": "Base Path",
+            "type": "string"
+          },
+          "last_error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Error"
+          },
+          "loaded_artifact_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Loaded Artifact Id"
+          },
+          "loaded_schema_version": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Loaded Schema Version"
+          },
+          "rollback_active": {
+            "default": false,
+            "title": "Rollback Active",
+            "type": "boolean"
+          },
+          "rollback_path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rollback Path"
+          },
+          "status": {
+            "default": "missing",
+            "enum": [
+              "loaded",
+              "missing",
+              "path_error",
+              "load_failed"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "title": "StatusCalibrationLoaderDiagnostics",
+        "type": "object"
+      },
       "StatusDropCounters": {
         "additionalProperties": false,
         "properties": {
@@ -3693,6 +4583,60 @@
         "title": "StatusExchangeDiagnostics",
         "type": "object"
       },
+      "StatusMigrationFallbackDiagnostics": {
+        "additionalProperties": false,
+        "properties": {
+          "compare_enabled": {
+            "default": false,
+            "title": "Compare Enabled",
+            "type": "boolean"
+          },
+          "enabled": {
+            "default": false,
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "fallback_engaged": {
+            "default": true,
+            "title": "Fallback Engaged",
+            "type": "boolean"
+          },
+          "fallback_policy": {
+            "const": "deny_and_observe",
+            "default": "deny_and_observe",
+            "title": "Fallback Policy",
+            "type": "string"
+          },
+          "fallback_reason": {
+            "default": "migration_disabled",
+            "enum": [
+              "migration_disabled",
+              "legacy_only_mode",
+              "observe_only_mode",
+              "compare_disabled"
+            ],
+            "title": "Fallback Reason",
+            "type": "string"
+          },
+          "mode": {
+            "default": "legacy_only",
+            "enum": [
+              "legacy_only",
+              "shadow_compare",
+              "nautilus_primary"
+            ],
+            "title": "Mode",
+            "type": "string"
+          },
+          "observe_only": {
+            "default": true,
+            "title": "Observe Only",
+            "type": "boolean"
+          }
+        },
+        "title": "StatusMigrationFallbackDiagnostics",
+        "type": "object"
+      },
       "StatusReasonSeverityCounts": {
         "additionalProperties": false,
         "properties": {
@@ -3739,6 +4683,9 @@
               }
             ],
             "title": "Backtest History Refreshed At"
+          },
+          "calibration_loader": {
+            "$ref": "#/components/schemas/StatusCalibrationLoaderDiagnostics"
           },
           "correlation_concentration": {
             "$ref": "#/components/schemas/CorrelationConcentrationItem"
@@ -3899,6 +4846,9 @@
             ],
             "title": "Last Updated At"
           },
+          "migration_fallback": {
+            "$ref": "#/components/schemas/StatusMigrationFallbackDiagnostics"
+          },
           "poll_count_failed": {
             "title": "Poll Count Failed",
             "type": "integer"
@@ -3913,6 +4863,20 @@
           },
           "screener_drop_counters": {
             "$ref": "#/components/schemas/StatusDropCounters"
+          },
+          "screener_drop_counters_by_strategy": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/StatusDropCounters"
+            },
+            "propertyNames": {
+              "enum": [
+                "funding_arbitrage",
+                "basis_convergence",
+                "cash_and_carry"
+              ]
+            },
+            "title": "Screener Drop Counters By Strategy",
+            "type": "object"
           },
           "screener_post_cost_candidates": {
             "title": "Screener Post Cost Candidates",
@@ -4885,9 +5849,247 @@
         "summary": "Get Execution Preflight"
       }
     },
+    "/migration/parity/artifacts": {
+      "get": {
+        "operationId": "list_migration_parity_artifacts_migration_parity_artifacts_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MigrationParityArtifactListResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Migration Parity Artifacts"
+      }
+    },
+    "/migration/parity/report": {
+      "get": {
+        "operationId": "get_migration_parity_report_migration_parity_report_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "window_s",
+            "required": false,
+            "schema": {
+              "default": 3600.0,
+              "maximum": 604800.0,
+              "minimum": 60.0,
+              "title": "Window S",
+              "type": "number"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 200,
+              "maximum": 500,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "include_artifacts",
+            "required": false,
+            "schema": {
+              "default": false,
+              "title": "Include Artifacts",
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MigrationParityReportResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Migration Parity Report"
+      }
+    },
+    "/migration/preflight-parity/artifacts": {
+      "get": {
+        "operationId": "list_migration_preflight_parity_artifacts_migration_preflight_parity_artifacts_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 200,
+              "maximum": 1000,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PreflightParityArtifactListResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Migration Preflight Parity Artifacts"
+      }
+    },
+    "/migration/preflight-parity/report": {
+      "get": {
+        "operationId": "get_migration_preflight_parity_report_migration_preflight_parity_report_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "window_s",
+            "required": false,
+            "schema": {
+              "default": 3600.0,
+              "maximum": 604800.0,
+              "minimum": 60.0,
+              "title": "Window S",
+              "type": "number"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 500,
+              "maximum": 2000,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "include_artifacts",
+            "required": false,
+            "schema": {
+              "default": false,
+              "title": "Include Artifacts",
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PreflightParityReportResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Migration Preflight Parity Report"
+      }
+    },
     "/opportunities": {
       "get": {
         "operationId": "get_opportunities_opportunities_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "strategy_type",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "enum": [
+                      "funding_arbitrage",
+                      "basis_convergence",
+                      "cash_and_carry"
+                    ],
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Strategy Type"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "content": {
@@ -4898,6 +6100,16 @@
               }
             },
             "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
           }
         },
         "summary": "Get Opportunities"

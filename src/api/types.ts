@@ -16,6 +16,7 @@ export type OpportunityReasonCode = ApiSchemas["ReasonCode"];
 export type OpportunityReason = ApiSchemas["ReasonItem"];
 export type FundingForecast = _FundingForecastItem;
 export type OpportunityItem = _OpportunityItem;
+export type OpportunityStrategyType = NonNullable<OpportunityItem["strategy_type"]>;
 export type OpportunitiesResponse = ApiSchemas["OpportunitiesResponse"];
 export type SourceState = NonNullable<
   NonNullable<OpportunityItem["microstructure_by_exchange"]>[string]

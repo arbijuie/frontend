@@ -1,13 +1,16 @@
 import { API_URL, authHeaders } from "./config";
-import type { OpportunitiesResponse } from "./types";
+import type {
+  OpportunitiesResponse,
+  OpportunityStrategyType as ApiOpportunityStrategyType,
+} from "./types";
 
-export type OpportunityStrategyType = "funding_arbitrage" | "basis_convergence" | "cash_and_carry";
+export type OpportunityStrategyType = ApiOpportunityStrategyType;
 
-export const OPPORTUNITY_STRATEGY_TYPES: readonly OpportunityStrategyType[] = [
+export const OPPORTUNITY_STRATEGY_TYPES = [
   "funding_arbitrage",
   "basis_convergence",
   "cash_and_carry",
-];
+] as const;
 
 export const OPPORTUNITY_STRATEGY_LABEL: Record<OpportunityStrategyType, string> = {
   funding_arbitrage: "Funding arbitrage",
@@ -15,24 +18,34 @@ export const OPPORTUNITY_STRATEGY_LABEL: Record<OpportunityStrategyType, string>
   cash_and_carry: "Cash and carry",
 };
 
-export const OPPORTUNITIES_QUERY_KEY = ["opportunities"] as const;
-
-type FetchOpportunitiesOptions = {
+export type OpportunitiesFilterOptions = {
   strategyTypes?: OpportunityStrategyType[];
 };
 
-export function opportunitiesQueryKey(options?: FetchOpportunitiesOptions) {
-  const strategyTypes = [...(options?.strategyTypes ?? [])].sort();
-  return strategyTypes.length > 0
-    ? ([...OPPORTUNITIES_QUERY_KEY, ...strategyTypes] as const)
-    : OPPORTUNITIES_QUERY_KEY;
+export const OPPORTUNITIES_QUERY_KEY = ["opportunities"] as const;
+
+function normalizeStrategyTypes(
+  strategyTypes: OpportunityStrategyType[] | undefined
+): OpportunityStrategyType[] {
+  if (!strategyTypes || strategyTypes.length === 0) {
+    return [];
+  }
+  return [...new Set(strategyTypes)].sort();
+}
+
+export function opportunitiesQueryKey(
+  options?: OpportunitiesFilterOptions
+): readonly ["opportunities"] | readonly ["opportunities", ...OpportunityStrategyType[]] {
+  const normalized = normalizeStrategyTypes(options?.strategyTypes);
+  return normalized.length > 0 ? (["opportunities", ...normalized] as const) : OPPORTUNITIES_QUERY_KEY;
 }
 
 export async function fetchOpportunities(
-  options?: FetchOpportunitiesOptions
+  options?: OpportunitiesFilterOptions
 ): Promise<OpportunitiesResponse> {
+  const normalized = normalizeStrategyTypes(options?.strategyTypes);
   const url = new URL(`${API_URL}/opportunities`);
-  for (const strategyType of options?.strategyTypes ?? []) {
+  for (const strategyType of normalized) {
     url.searchParams.append("strategy_type", strategyType);
   }
   const res = await fetch(url.toString(), { headers: authHeaders() });

@@ -34,7 +34,6 @@ vi.mock("../../api/opportunities", () => ({
     basis_convergence: "Basis convergence",
   },
 }));
-
 vi.mock("../../components/StatsGrid/StatsGrid", () => ({
   default: () => <div data-testid="stats-grid" />,
 }));

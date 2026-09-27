@@ -14,6 +14,7 @@ type WsCloseLike = {
 
 const STALL_TIMEOUT_MS = 60000;
 const MAX_AUTH_REISSUE_ATTEMPTS = 3;
+const DEFAULT_QUERY_KEY = ["opportunities"] as const;
 
 function isUnauthorizedWsClose(event: WsCloseLike | Event | undefined): boolean {
   return !!event && "code" in event && event.code === 4401;
@@ -25,16 +26,18 @@ type AuthDiagnostics = {
   detail: string | null;
 };
 
-export type UseOpportunitiesSocketOptions = {
+type UseOpportunitiesSocketOptions = {
   enabled?: boolean;
   queryKey?: readonly unknown[];
 };
 
 export function useOpportunitiesSocket(options?: UseOpportunitiesSocketOptions) {
   const enabled = options?.enabled ?? true;
-  const queryKey = useMemo(() => options?.queryKey ?? ["opportunities"], [options?.queryKey]);
+  const queryKey = useMemo(() => options?.queryKey ?? DEFAULT_QUERY_KEY, [options?.queryKey]);
   const queryClient = useQueryClient();
-  const [transportState, setTransportState] = useState<TransportState>("connecting");
+  const [transportState, setTransportState] = useState<TransportState>(
+    enabled ? "connecting" : "polling-fallback"
+  );
   const [authDiagnostics, setAuthDiagnostics] = useState<AuthDiagnostics>({
     status: "ok",
     retryAfterSeconds: null,
@@ -47,8 +50,13 @@ export function useOpportunitiesSocket(options?: UseOpportunitiesSocketOptions) 
   const reconnectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const stallTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pendingRejectReasonRef = useRef<"expired" | "reused" | null>(null);
+  const queryKeyRef = useRef(queryKey);
   const stoppedRef = useRef(false);
   const generationRef = useRef(0);
+
+  useEffect(() => {
+    queryKeyRef.current = queryKey;
+  }, [queryKey]);
 
   const clearStallTimer = () => {
     if (stallTimerRef.current) {
@@ -194,13 +202,13 @@ export function useOpportunitiesSocket(options?: UseOpportunitiesSocketOptions) 
 
         try {
           const frame: OpportunitiesResponse = JSON.parse(event.data);
-          const cached = queryClient.getQueryData<OpportunitiesResponse>(queryKey);
+          const cached = queryClient.getQueryData<OpportunitiesResponse>(queryKeyRef.current);
           if (cached?.updated_at && frame.updated_at) {
             const cachedTime = new Date(cached.updated_at).getTime();
             const frameTime = new Date(frame.updated_at).getTime();
             if (frameTime < cachedTime) return;
           }
-          queryClient.setQueryData(queryKey, frame);
+          queryClient.setQueryData(queryKeyRef.current, frame);
           setTransportState("connected");
           authReissueAttemptRef.current = 0;
           pendingRejectReasonRef.current = null;
@@ -271,12 +279,27 @@ export function useOpportunitiesSocket(options?: UseOpportunitiesSocketOptions) 
   };
 
   useEffect(() => {
-    stoppedRef.current = false;
     if (!enabled) {
-      return () => {
-        stoppedRef.current = true;
-      };
+      stoppedRef.current = true;
+      generationRef.current += 1;
+      wsRef.current?.close();
+      wsRef.current = null;
+      if (reconnectTimerRef.current) {
+        clearTimeout(reconnectTimerRef.current);
+      }
+      clearStallTimer();
+      attemptRef.current = 0;
+      authReissueAttemptRef.current = 0;
+      setReconnectAttempt(0);
+      setAuthDiagnostics({
+        status: "ok",
+        retryAfterSeconds: null,
+        detail: null,
+      });
+      setTransportState("polling-fallback");
+      return;
     }
+    stoppedRef.current = false;
     void connect();
     return () => {
       stoppedRef.current = true;
@@ -288,7 +311,7 @@ export function useOpportunitiesSocket(options?: UseOpportunitiesSocketOptions) 
       clearStallTimer();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [enabled, queryKey]);
+  }, [enabled]);
 
   const effectiveAuthDiagnostics = enabled
     ? authDiagnostics
@@ -296,7 +319,7 @@ export function useOpportunitiesSocket(options?: UseOpportunitiesSocketOptions) 
 
   return {
     transportState: enabled ? transportState : "polling-fallback",
-    reconnectAttempt,
+    reconnectAttempt: enabled ? reconnectAttempt : 0,
     authStatus: effectiveAuthDiagnostics.status,
     authRetryAfterSeconds: effectiveAuthDiagnostics.retryAfterSeconds,
     authDetail: effectiveAuthDiagnostics.detail,
