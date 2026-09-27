@@ -125,6 +125,19 @@ export function useOpportunitiesSocket() {
           const ticketResponse = await fetchWsAuthTicket();
           ticket = ticketResponse.ticket;
           waitingForTicketAuth = true;
+          if (ticketResponse.last_reject_reason === "expired") {
+            setAuthDiagnostics({
+              status: "ticket-rejected",
+              retryAfterSeconds: null,
+              detail: "WS auth ticket expired; requesting a new ticket.",
+            });
+          } else if (ticketResponse.last_reject_reason === "reused") {
+            setAuthDiagnostics({
+              status: "ticket-rejected",
+              retryAfterSeconds: null,
+              detail: "WS auth ticket was already used; requesting a new ticket.",
+            });
+          }
         } catch (error) {
           if (error instanceof WsAuthTicketRequestError && error.status === 429) {
             if (myGeneration === generationRef.current && !stoppedRef.current) {

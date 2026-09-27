@@ -2028,6 +2028,8 @@ export interface components {
         WsAuthTicketResponse: {
             /** Expires At */
             expires_at: string;
+            /** Last Reject Reason */
+            last_reject_reason?: ("expired" | "reused") | null;
             /** Ticket */
             ticket: string;
             /** Ttl S */

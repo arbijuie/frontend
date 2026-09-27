@@ -60,6 +60,7 @@ describe("useOpportunitiesSocket with token auth", () => {
       ticket: "abc",
       expires_at: "2026-09-17T10:01:00Z",
       ttl_s: 60,
+      last_reject_reason: null,
     });
   });
 
@@ -128,11 +129,13 @@ describe("useOpportunitiesSocket with token auth", () => {
       ticket: "expired",
       expires_at: "2026-09-17T10:01:00Z",
       ttl_s: 60,
+      last_reject_reason: null,
     });
     mockedFetchWsAuthTicket.mockResolvedValueOnce({
       ticket: "fresh",
       expires_at: "2026-09-17T10:02:00Z",
       ttl_s: 60,
+      last_reject_reason: "reused",
     });
 
     const { result } = renderHook(() => useOpportunitiesSocket());
@@ -155,5 +158,6 @@ describe("useOpportunitiesSocket with token auth", () => {
 
     expect(mockedFetchWsAuthTicket).toHaveBeenCalledTimes(2);
     expect(MockWebSocket.instances.length).toBeGreaterThan(1);
+    expect(result.current.authDetail).toBe("WS auth ticket was already used; requesting a new ticket.");
   });
 });

@@ -4414,6 +4414,21 @@
             "title": "Expires At",
             "type": "string"
           },
+          "last_reject_reason": {
+            "anyOf": [
+              {
+                "enum": [
+                  "expired",
+                  "reused"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Reject Reason"
+          },
           "ticket": {
             "title": "Ticket",
             "type": "string"
