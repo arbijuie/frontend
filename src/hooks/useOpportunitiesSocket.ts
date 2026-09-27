@@ -8,8 +8,16 @@ import type { OpportunitiesResponse } from "../api/types";
 export type TransportState = "connecting" | "connected" | "reconnecting" | "polling-fallback";
 export type AuthStatus = "ok" | "rate-limited" | "ticket-rejected" | "auth-failed";
 
+type WsCloseLike = {
+  code: number;
+};
+
 const STALL_TIMEOUT_MS = 60000;
 const MAX_AUTH_REISSUE_ATTEMPTS = 3;
+
+function isUnauthorizedWsClose(event: WsCloseLike | Event | undefined): boolean {
+  return !!event && "code" in event && event.code === 4401;
+}
 
 type AuthDiagnostics = {
   status: AuthStatus;
@@ -129,6 +137,7 @@ export function useOpportunitiesSocket(options?: UseOpportunitiesSocketOptions) 
     try {
       let ticket: string | undefined;
       let waitingForTicketAuth = false;
+      let socketOpened = false;
       pendingRejectReasonRef.current = null;
       if (API_TOKEN) {
         try {
@@ -166,6 +175,7 @@ export function useOpportunitiesSocket(options?: UseOpportunitiesSocketOptions) 
           ws.close();
           return;
         }
+        socketOpened = true;
         if (ticket) {
           ws.send(JSON.stringify({ type: "auth", ticket }));
         }
@@ -177,6 +187,10 @@ export function useOpportunitiesSocket(options?: UseOpportunitiesSocketOptions) 
       ws.onmessage = (event) => {
         if (myGeneration !== generationRef.current) return;
         armStallTimer(ws);
+
+        // Any frame implies auth handshake completed and we should not classify
+        // subsequent closes as ticket-auth rejection.
+        waitingForTicketAuth = false;
 
         try {
           const frame: OpportunitiesResponse = JSON.parse(event.data);
@@ -195,19 +209,18 @@ export function useOpportunitiesSocket(options?: UseOpportunitiesSocketOptions) 
             retryAfterSeconds: null,
             detail: null,
           });
-          waitingForTicketAuth = false;
         } catch (error) {
           // Malformed WS frame — log for visibility, keep the connection alive.
           console.warn("Failed to parse opportunities WS frame:", error);
         }
       };
 
-      ws.onclose = () => {
+      ws.onclose = (event) => {
         if (myGeneration !== generationRef.current) return;
         wsRef.current = null;
         clearStallTimer();
         if (!stoppedRef.current) {
-          if (API_TOKEN && waitingForTicketAuth) {
+          if (API_TOKEN && waitingForTicketAuth && socketOpened && isUnauthorizedWsClose(event)) {
             const reason = pendingRejectReasonRef.current;
             pendingRejectReasonRef.current = null;
             const detail =

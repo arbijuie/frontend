@@ -28,7 +28,7 @@ class MockWebSocket {
   url: string;
   onopen: (() => void) | null = null;
   onmessage: ((event: { data: string }) => void) | null = null;
-  onclose: (() => void) | null = null;
+  onclose: ((event?: { code: number }) => void) | null = null;
   sentMessages: string[] = [];
 
   constructor(url: string) {
@@ -41,7 +41,7 @@ class MockWebSocket {
   }
 
   close() {
-    this.onclose?.();
+    this.onclose?.({ code: 1000 });
   }
 }
 
@@ -146,7 +146,7 @@ describe("useOpportunitiesSocket with token auth", () => {
 
     act(() => {
       latestSocket().onopen?.();
-      latestSocket().onclose?.();
+      latestSocket().onclose?.({ code: 4401 });
     });
 
     expect(result.current.authStatus).toBe("ticket-rejected");
@@ -159,5 +159,27 @@ describe("useOpportunitiesSocket with token auth", () => {
     expect(mockedFetchWsAuthTicket).toHaveBeenCalledTimes(2);
     expect(MockWebSocket.instances.length).toBeGreaterThan(1);
     expect(result.current.authDetail).toBe("WS auth ticket was rejected; requesting a new ticket.");
+  });
+
+  it("uses normal reconnect flow for non-unauthorized early close", async () => {
+    const { result } = renderHook(() => useOpportunitiesSocket());
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    act(() => {
+      latestSocket().onopen?.();
+      latestSocket().onclose?.({ code: 1006 });
+    });
+
+    expect(result.current.authStatus).toBe("ok");
+    expect(result.current.transportState).toBe("reconnecting");
+
+    await act(async () => {
+      vi.advanceTimersByTime(1000);
+      await Promise.resolve();
+    });
+
+    expect(mockedFetchWsAuthTicket).toHaveBeenCalledTimes(2);
   });
 });

@@ -24,7 +24,7 @@ class MockWebSocket {
   url: string;
   onopen: (() => void) | null = null;
   onmessage: ((event: { data: string }) => void) | null = null;
-  onclose: (() => void) | null = null;
+  onclose: ((event?: { code: number }) => void) | null = null;
   sentMessages: string[] = [];
 
   constructor(url: string) {
@@ -37,7 +37,7 @@ class MockWebSocket {
   }
 
   close() {
-    this.onclose?.();
+    this.onclose?.({ code: 1000 });
   }
 }
 
@@ -182,7 +182,7 @@ describe("useOpportunitiesSocket", () => {
     let closed = false;
     socket.close = () => {
       closed = true;
-      socket.onclose?.();
+      socket.onclose?.({ code: 1000 });
     };
 
     act(() => {
