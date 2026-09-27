@@ -32,6 +32,7 @@ describe("useOpportunities", () => {
     mockedUseOpportunitiesSocket.mockReturnValue({
       transportState: "reconnecting",
       reconnectAttempt: 0,
+      authRetryAttempt: 0,
       authStatus: "ok",
       authRetryAfterSeconds: null,
       authDetail: null,
@@ -79,6 +80,7 @@ describe("useOpportunities", () => {
     mockedUseOpportunitiesSocket.mockReturnValue({
       transportState: "connected",
       reconnectAttempt: 0,
+      authRetryAttempt: 0,
       authStatus: "ok",
       authRetryAfterSeconds: null,
       authDetail: null,
@@ -148,6 +150,7 @@ describe("useOpportunities", () => {
     mockedUseOpportunitiesSocket.mockReturnValue({
       transportState: "polling-fallback",
       reconnectAttempt: 3,
+      authRetryAttempt: 2,
       authStatus: "auth-failed",
       authRetryAfterSeconds: null,
       authDetail: "WS auth failed repeatedly; using polling fallback.",
@@ -165,6 +168,7 @@ describe("useOpportunities", () => {
 
     expect(result.current.transportState).toBe("polling-fallback");
     expect(result.current.reconnectAttempt).toBe(3);
+    expect(result.current.authRetryAttempt).toBe(2);
     expect(result.current.authStatus).toBe("auth-failed");
     expect(result.current.retryConnection).toBe(retryNow);
   });

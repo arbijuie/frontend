@@ -14,6 +14,7 @@ type WsCloseLike = {
 
 const STALL_TIMEOUT_MS = 60000;
 const MAX_AUTH_REISSUE_ATTEMPTS = 3;
+const DEFAULT_AUTH_RETRY_SECONDS = 5;
 const DEFAULT_QUERY_KEY = ["opportunities"] as const;
 
 function isUnauthorizedWsClose(event: WsCloseLike | Event | undefined): boolean {
@@ -44,6 +45,7 @@ export function useOpportunitiesSocket(options?: UseOpportunitiesSocketOptions) 
     detail: null,
   });
   const [reconnectAttempt, setReconnectAttempt] = useState(0);
+  const [authRetryAttempt, setAuthRetryAttempt] = useState(0);
   const wsRef = useRef<WebSocket | null>(null);
   const attemptRef = useRef(0);
   const authReissueAttemptRef = useRef(0);
@@ -91,7 +93,7 @@ export function useOpportunitiesSocket(options?: UseOpportunitiesSocketOptions) 
 
   const scheduleAuthRetry = (delayMs: number, authStatus: AuthStatus, detail: string | null) => {
     authReissueAttemptRef.current += 1;
-    setReconnectAttempt(authReissueAttemptRef.current);
+    setAuthRetryAttempt(authReissueAttemptRef.current);
     setAuthDiagnostics({
       status: authStatus,
       retryAfterSeconds: null,
@@ -113,13 +115,24 @@ export function useOpportunitiesSocket(options?: UseOpportunitiesSocketOptions) 
   };
 
   const scheduleRateLimitedRetry = (retryAfterSeconds: number | null) => {
-    const safeRetrySeconds = retryAfterSeconds && retryAfterSeconds > 0 ? retryAfterSeconds : 1;
+    const fallbackRetrySeconds = Math.max(
+      DEFAULT_AUTH_RETRY_SECONDS,
+      Math.ceil(getBackoffDelayMs(authReissueAttemptRef.current) / 1000)
+    );
+    const hasValidRetryAfter = !!(retryAfterSeconds && retryAfterSeconds > 0);
+    const requestedRetrySeconds = hasValidRetryAfter ? retryAfterSeconds : fallbackRetrySeconds;
+    const safeRetrySeconds = Math.max(DEFAULT_AUTH_RETRY_SECONDS, requestedRetrySeconds);
+    const retryDetail = !hasValidRetryAfter
+      ? "Retry-After missing or invalid; using safe default delay."
+      : requestedRetrySeconds < DEFAULT_AUTH_RETRY_SECONDS
+        ? "Retry-After below safe minimum; applying minimum delay."
+        : null;
     authReissueAttemptRef.current += 1;
-    setReconnectAttempt(authReissueAttemptRef.current);
+    setAuthRetryAttempt(authReissueAttemptRef.current);
     setAuthDiagnostics({
       status: "rate-limited",
       retryAfterSeconds: safeRetrySeconds,
-      detail: "Ticket issuance is rate-limited.",
+      detail: retryDetail,
     });
 
     if (authReissueAttemptRef.current > MAX_AUTH_REISSUE_ATTEMPTS) {
@@ -140,7 +153,18 @@ export function useOpportunitiesSocket(options?: UseOpportunitiesSocketOptions) 
     const myGeneration = ++generationRef.current;
     if (stoppedRef.current) return;
     if (!enabled) return;
-    setTransportState(attemptRef.current === 0 ? "connecting" : "reconnecting");
+    const isFreshSessionAttempt =
+      attemptRef.current === 0 && authReissueAttemptRef.current === 0 && wsRef.current === null;
+    if (isFreshSessionAttempt) {
+      setReconnectAttempt(0);
+      setAuthRetryAttempt(0);
+      setAuthDiagnostics({
+        status: "ok",
+        retryAfterSeconds: null,
+        detail: null,
+      });
+    }
+    setTransportState(isFreshSessionAttempt ? "connecting" : "reconnecting");
 
     try {
       let ticket: string | undefined;
@@ -189,6 +213,7 @@ export function useOpportunitiesSocket(options?: UseOpportunitiesSocketOptions) 
         }
         attemptRef.current = 0;
         setReconnectAttempt(0);
+        setAuthRetryAttempt(authReissueAttemptRef.current);
         armStallTimer(ws);
       };
 
@@ -211,6 +236,7 @@ export function useOpportunitiesSocket(options?: UseOpportunitiesSocketOptions) 
           queryClient.setQueryData(queryKeyRef.current, frame);
           setTransportState("connected");
           authReissueAttemptRef.current = 0;
+          setAuthRetryAttempt(0);
           pendingRejectReasonRef.current = null;
           setAuthDiagnostics({
             status: "ok",
@@ -270,6 +296,7 @@ export function useOpportunitiesSocket(options?: UseOpportunitiesSocketOptions) 
     attemptRef.current = 0;
     authReissueAttemptRef.current = 0;
     setReconnectAttempt(0);
+    setAuthRetryAttempt(0);
     setAuthDiagnostics({
       status: "ok",
       retryAfterSeconds: null,
@@ -313,6 +340,7 @@ export function useOpportunitiesSocket(options?: UseOpportunitiesSocketOptions) 
   return {
     transportState: enabled ? transportState : "polling-fallback",
     reconnectAttempt: enabled ? reconnectAttempt : 0,
+    authRetryAttempt: enabled ? authRetryAttempt : 0,
     authStatus: effectiveAuthDiagnostics.status,
     authRetryAfterSeconds: effectiveAuthDiagnostics.retryAfterSeconds,
     authDetail: effectiveAuthDiagnostics.detail,

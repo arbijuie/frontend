@@ -15,11 +15,18 @@ type UseOpportunitiesOptions = {
 export function useOpportunities(options?: UseOpportunitiesOptions) {
   const strategyTypes = options?.strategyTypes;
   const isFiltered = !!strategyTypes && strategyTypes.length > 0;
-  const { transportState, reconnectAttempt, authStatus, authRetryAfterSeconds, authDetail, retryNow } =
-    useOpportunitiesSocket({
-      queryKey: OPPORTUNITIES_QUERY_KEY,
-      enabled: !isFiltered,
-    });
+  const {
+    transportState,
+    reconnectAttempt,
+    authRetryAttempt,
+    authStatus,
+    authRetryAfterSeconds,
+    authDetail,
+    retryNow,
+  } = useOpportunitiesSocket({
+    queryKey: OPPORTUNITIES_QUERY_KEY,
+    enabled: !isFiltered,
+  });
   const isLive = transportState === "connected";
 
   const query = useQuery({
@@ -37,6 +44,7 @@ export function useOpportunities(options?: UseOpportunitiesOptions) {
     refetch: query.refetch,
     transportState,
     reconnectAttempt,
+    authRetryAttempt,
     authStatus,
     authRetryAfterSeconds,
     authDetail,

@@ -34,6 +34,7 @@ export default function OpportunitiesPage() {
     refetch,
     transportState,
     reconnectAttempt,
+    authRetryAttempt,
     authStatus,
     authRetryAfterSeconds,
     authDetail,
@@ -91,6 +92,7 @@ export default function OpportunitiesPage() {
               <TransportIndicator
                 state={transportState}
                 reconnectAttempt={reconnectAttempt}
+                authRetryAttempt={authRetryAttempt}
                 authStatus={authStatus}
                 authRetryAfterSeconds={authRetryAfterSeconds}
                 authDetail={authDetail}

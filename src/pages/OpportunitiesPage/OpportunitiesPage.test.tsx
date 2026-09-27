@@ -86,6 +86,7 @@ describe("OpportunitiesPage", () => {
       refetch: vi.fn().mockResolvedValue({ data: null }),
       transportState: "connected",
       reconnectAttempt: 0,
+      authRetryAttempt: 0,
       authStatus: "ok",
       authRetryAfterSeconds: null,
       authDetail: null,

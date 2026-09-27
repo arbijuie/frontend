@@ -7,10 +7,20 @@ function severityFromState(state: TransportState): "green" | "yellow" | "red" {
   return "yellow";
 }
 
-function labelFromState(state: TransportState, reconnectAttempt: number): string {
+function labelFromState(
+  state: TransportState,
+  reconnectAttempt: number,
+  authStatus: AuthStatus,
+  authRetryAttempt: number
+): string {
   if (state === "connected") return "live (WS)";
   if (state === "connecting") return "connecting...";
-  if (state === "reconnecting") return `reconnecting (attempt ${reconnectAttempt})...`;
+  if (state === "reconnecting") {
+    if (authStatus !== "ok") {
+      return `reissuing auth ticket (attempt ${authRetryAttempt})...`;
+    }
+    return `reconnecting transport (attempt ${reconnectAttempt})...`;
+  }
   return "polling fallback";
 }
 
@@ -21,10 +31,11 @@ function authHint(
 ): string | null {
   if (authStatus === "rate-limited") {
     const retrySeconds = authRetryAfterSeconds != null ? Math.ceil(authRetryAfterSeconds) : null;
+    const safeDefaultHint = authDetail ? ` (${authDetail})` : "";
     if (retrySeconds != null) {
-      return `ticket request rate-limited, retry in ~${retrySeconds}s`;
+      return `ticket request rate-limited, retry in ~${retrySeconds}s${safeDefaultHint}`;
     }
-    return "ticket request rate-limited, retrying shortly";
+    return `ticket request rate-limited, retrying shortly${safeDefaultHint}`;
   }
 
   if (authStatus === "ticket-rejected") {
@@ -41,6 +52,7 @@ function authHint(
 interface TransportIndicatorProps {
   state: TransportState;
   reconnectAttempt: number;
+  authRetryAttempt: number;
   authStatus: AuthStatus;
   authRetryAfterSeconds: number | null;
   authDetail: string | null;
@@ -50,13 +62,14 @@ interface TransportIndicatorProps {
 const TransportIndicator = ({
   state,
   reconnectAttempt,
+  authRetryAttempt,
   authStatus,
   authRetryAfterSeconds,
   authDetail,
   onRetry,
 }: TransportIndicatorProps) => {
   const severity = severityFromState(state);
-  const label = labelFromState(state, reconnectAttempt);
+  const label = labelFromState(state, reconnectAttempt, authStatus, authRetryAttempt);
   const detail = authHint(authStatus, authRetryAfterSeconds, authDetail);
 
   return (

@@ -66,9 +66,9 @@ The Status page includes a Deep Pipeline Diagnostics section with:
 
 The Opportunities page consumes `/ws/opportunities` as its primary data source, with automatic fallback to REST polling:
 
-- Connects on load; a transport indicator near the title shows `live (WS)`, `connecting...`, `reconnecting (attempt N)...`, or `polling fallback`, with a manual retry button in fallback mode.
+- Connects on load; a transport indicator near the title shows `live (WS)`, `connecting...`, `reconnecting transport (attempt N)...`, `reissuing auth ticket (attempt N)...`, or `polling fallback`, with a manual retry button in fallback mode.
 - If a bearer token is configured, a short-lived ticket (`POST /ws/auth-ticket`) is sent as the first WS message — the token itself is never sent over the socket.
-- Ticket auth failures are surfaced in the transport indicator: 429 responses show Retry-After guidance, rejected tickets trigger bounded automatic reissue attempts, and repeated failures switch to polling fallback with explicit status text.
+- Ticket auth failures are surfaced in the transport indicator: 429 responses show Retry-After guidance; if Retry-After is missing/invalid or below the safe minimum, the UI explicitly notes delay clamping/default usage; rejected tickets trigger bounded automatic reissue attempts, and repeated failures switch to polling fallback with explicit status text.
 - When available, the indicator distinguishes `expired` vs `reused` rejects using diagnostics from the next authenticated `POST /ws/auth-ticket` response.
 - Reconnects with exponential backoff (1s–16s, 5 attempts) and a 60s stall timeout before permanently falling back to REST polling.
 - Manual refresh continues to work in any transport state.
