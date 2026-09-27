@@ -290,13 +290,6 @@ export function useOpportunitiesSocket(options?: UseOpportunitiesSocketOptions) 
       clearStallTimer();
       attemptRef.current = 0;
       authReissueAttemptRef.current = 0;
-      setReconnectAttempt(0);
-      setAuthDiagnostics({
-        status: "ok",
-        retryAfterSeconds: null,
-        detail: null,
-      });
-      setTransportState("polling-fallback");
       return;
     }
     stoppedRef.current = false;
