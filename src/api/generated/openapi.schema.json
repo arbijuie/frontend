@@ -4583,6 +4583,55 @@
         "title": "StatusExchangeDiagnostics",
         "type": "object"
       },
+      "StatusExecutionPersistenceDiagnostics": {
+        "additionalProperties": false,
+        "properties": {
+          "enabled": {
+            "default": false,
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "last_write_error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Write Error"
+          },
+          "restart_open_attempts": {
+            "default": 0,
+            "title": "Restart Open Attempts",
+            "type": "integer"
+          },
+          "restart_open_orders": {
+            "default": 0,
+            "title": "Restart Open Orders",
+            "type": "integer"
+          },
+          "restore_error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Restore Error"
+          },
+          "write_failures": {
+            "default": 0,
+            "title": "Write Failures",
+            "type": "integer"
+          }
+        },
+        "title": "StatusExecutionPersistenceDiagnostics",
+        "type": "object"
+      },
       "StatusMigrationFallbackDiagnostics": {
         "additionalProperties": false,
         "properties": {
@@ -4768,6 +4817,9 @@
               }
             ],
             "title": "Execution Last Rollback Slippage Bps"
+          },
+          "execution_persistence": {
+            "$ref": "#/components/schemas/StatusExecutionPersistenceDiagnostics"
           },
           "execution_strategy_id": {
             "anyOf": [

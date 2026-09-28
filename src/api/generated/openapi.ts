@@ -2057,6 +2057,33 @@ export interface components {
              */
             strict_depth: number;
         };
+        /** StatusExecutionPersistenceDiagnostics */
+        StatusExecutionPersistenceDiagnostics: {
+            /**
+             * Enabled
+             * @default false
+             */
+            enabled: boolean;
+            /** Last Write Error */
+            last_write_error?: string | null;
+            /**
+             * Restart Open Attempts
+             * @default 0
+             */
+            restart_open_attempts: number;
+            /**
+             * Restart Open Orders
+             * @default 0
+             */
+            restart_open_orders: number;
+            /** Restore Error */
+            restore_error?: string | null;
+            /**
+             * Write Failures
+             * @default 0
+             */
+            write_failures: number;
+        };
         /** StatusMigrationFallbackDiagnostics */
         StatusMigrationFallbackDiagnostics: {
             /**
@@ -2157,6 +2184,7 @@ export interface components {
             execution_last_attempt_status?: string | null;
             /** Execution Last Rollback Slippage Bps */
             execution_last_rollback_slippage_bps?: number | null;
+            execution_persistence?: components["schemas"]["StatusExecutionPersistenceDiagnostics"];
             /** Execution Strategy Id */
             execution_strategy_id?: string | null;
             /** Execution Strategy Lock Id */
