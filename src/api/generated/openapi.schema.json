@@ -1880,6 +1880,24 @@
           "first_leg": {
             "$ref": "#/components/schemas/ExecutionLegItem"
           },
+          "hydrated_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hydrated At"
+          },
+          "hydration_conflicts": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Hydration Conflicts",
+            "type": "array"
+          },
           "long_exchange": {
             "title": "Long Exchange",
             "type": "string"
@@ -4583,6 +4601,55 @@
         "title": "StatusExchangeDiagnostics",
         "type": "object"
       },
+      "StatusExecutionHydrationDiagnostics": {
+        "additionalProperties": false,
+        "properties": {
+          "completed": {
+            "default": false,
+            "title": "Completed",
+            "type": "boolean"
+          },
+          "conflicts_total": {
+            "default": 0,
+            "title": "Conflicts Total",
+            "type": "integer"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "hydrated_attempts": {
+            "default": 0,
+            "title": "Hydrated Attempts",
+            "type": "integer"
+          },
+          "last_run_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Run At"
+          },
+          "unresolved_attempts": {
+            "default": 0,
+            "title": "Unresolved Attempts",
+            "type": "integer"
+          }
+        },
+        "title": "StatusExecutionHydrationDiagnostics",
+        "type": "object"
+      },
       "StatusExecutionPersistenceDiagnostics": {
         "additionalProperties": false,
         "properties": {
@@ -4784,6 +4851,9 @@
             "default": false,
             "title": "Execution Entries Stopped",
             "type": "boolean"
+          },
+          "execution_hydration": {
+            "$ref": "#/components/schemas/StatusExecutionHydrationDiagnostics"
           },
           "execution_last_attempt_id": {
             "anyOf": [

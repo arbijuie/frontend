@@ -1008,6 +1008,10 @@ export interface components {
              */
             filled_quantity: string;
             first_leg: components["schemas"]["ExecutionLegItem"];
+            /** Hydrated At */
+            hydrated_at?: string | null;
+            /** Hydration Conflicts */
+            hydration_conflicts?: string[];
             /** Long Exchange */
             long_exchange: string;
             /**
@@ -2057,6 +2061,33 @@ export interface components {
              */
             strict_depth: number;
         };
+        /** StatusExecutionHydrationDiagnostics */
+        StatusExecutionHydrationDiagnostics: {
+            /**
+             * Completed
+             * @default false
+             */
+            completed: boolean;
+            /**
+             * Conflicts Total
+             * @default 0
+             */
+            conflicts_total: number;
+            /** Error */
+            error?: string | null;
+            /**
+             * Hydrated Attempts
+             * @default 0
+             */
+            hydrated_attempts: number;
+            /** Last Run At */
+            last_run_at?: string | null;
+            /**
+             * Unresolved Attempts
+             * @default 0
+             */
+            unresolved_attempts: number;
+        };
         /** StatusExecutionPersistenceDiagnostics */
         StatusExecutionPersistenceDiagnostics: {
             /**
@@ -2178,6 +2209,7 @@ export interface components {
              * @default false
              */
             execution_entries_stopped: boolean;
+            execution_hydration?: components["schemas"]["StatusExecutionHydrationDiagnostics"];
             /** Execution Last Attempt Id */
             execution_last_attempt_id?: string | null;
             /** Execution Last Attempt Status */
