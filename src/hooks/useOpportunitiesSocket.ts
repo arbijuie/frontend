@@ -16,6 +16,9 @@ const STALL_TIMEOUT_MS = 60000;
 const MAX_AUTH_REISSUE_ATTEMPTS = 3;
 const DEFAULT_AUTH_RETRY_SECONDS = 5;
 const DEFAULT_QUERY_KEY = ["opportunities"] as const;
+export type TransportTransition = { state: TransportState; atMs: number };
+
+const MAX_TRANSITIONS = 6;
 
 function isUnauthorizedWsClose(event: WsCloseLike | Event | undefined): boolean {
   return !!event && "code" in event && event.code === 4401;
@@ -36,9 +39,20 @@ export function useOpportunitiesSocket(options?: UseOpportunitiesSocketOptions) 
   const enabled = options?.enabled ?? true;
   const queryKey = useMemo(() => options?.queryKey ?? DEFAULT_QUERY_KEY, [options?.queryKey]);
   const queryClient = useQueryClient();
-  const [transportState, setTransportState] = useState<TransportState>(
+  const [transportState, setTransportStateRaw] = useState<TransportState>(
     enabled ? "connecting" : "polling-fallback"
   );
+  const [transitions, setTransitions] = useState<TransportTransition[]>([]);
+  const [lastMessageAtMs, setLastMessageAtMs] = useState<number | null>(null);
+  const lastRecordedStateRef = useRef<TransportState | null>(null);
+
+  const setTransportState = (next: TransportState) => {
+    setTransportStateRaw(next);
+    if (lastRecordedStateRef.current === next) return;
+    lastRecordedStateRef.current = next;
+    const atMs = Date.now();
+    setTransitions((prev) => [...prev, { state: next, atMs }].slice(-MAX_TRANSITIONS));
+  };
   const [authDiagnostics, setAuthDiagnostics] = useState<AuthDiagnostics>({
     status: "ok",
     retryAfterSeconds: null,
@@ -68,6 +82,7 @@ export function useOpportunitiesSocket(options?: UseOpportunitiesSocketOptions) 
   };
 
   const armStallTimer = (ws: WebSocket) => {
+    setLastMessageAtMs(Date.now());
     clearStallTimer();
     stallTimerRef.current = setTimeout(() => {
       if (wsRef.current === ws) {
@@ -344,6 +359,8 @@ export function useOpportunitiesSocket(options?: UseOpportunitiesSocketOptions) 
     authStatus: effectiveAuthDiagnostics.status,
     authRetryAfterSeconds: effectiveAuthDiagnostics.retryAfterSeconds,
     authDetail: effectiveAuthDiagnostics.detail,
+    lastMessageAtMs,
+    transitions,
     retryNow,
   };
 }
