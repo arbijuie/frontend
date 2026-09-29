@@ -31,7 +31,7 @@ const WsTransportHealthCard = () => {
   const recentTransitions = [...transitions].reverse();
 
   return (
-    <div>
+    <div className={styles.container}>
       <p className={styles.caption}>
         Your browser&apos;s live connection to the backend (not the backend&apos;s exchange feeds).
       </p>

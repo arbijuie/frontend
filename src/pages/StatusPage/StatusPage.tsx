@@ -58,7 +58,7 @@ const StatusPage = () => {
       {config && <RuntimeKnobsCard config={config} />}
 
       {data && <PipelineDiagnosticsHint status={data} />}
-      
+
       <h2 className={styles.sectionTitle}>Live Transport</h2>
       <WsTransportHealthCard />
 
