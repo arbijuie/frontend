@@ -1049,6 +1049,14 @@
             "title": "Max Volume Fraction",
             "type": "number"
           },
+          "migration_nautilus_adapter_enabled": {
+            "title": "Migration Nautilus Adapter Enabled",
+            "type": "boolean"
+          },
+          "migration_nautilus_adapter_venues": {
+            "title": "Migration Nautilus Adapter Venues",
+            "type": "string"
+          },
           "migration_nautilus_compare_enabled": {
             "title": "Migration Nautilus Compare Enabled",
             "type": "boolean"
@@ -1231,6 +1239,8 @@
           "migration_nautilus_compare_enabled",
           "migration_nautilus_observe_only",
           "migration_nautilus_fallback_policy",
+          "migration_nautilus_adapter_enabled",
+          "migration_nautilus_adapter_venues",
           "extra_exchanges",
           "binance_base_url",
           "aster_base_url",
@@ -1548,6 +1558,17 @@
               }
             ],
             "title": "Max Volume Fraction"
+          },
+          "migration_nautilus_adapter_enabled": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Migration Nautilus Adapter Enabled"
           },
           "migration_nautilus_compare_enabled": {
             "anyOf": [
@@ -4702,6 +4723,31 @@
       "StatusMigrationFallbackDiagnostics": {
         "additionalProperties": false,
         "properties": {
+          "adapter_enabled": {
+            "default": false,
+            "title": "Adapter Enabled",
+            "type": "boolean"
+          },
+          "adapter_selection_reason": {
+            "default": "adapter_disabled",
+            "enum": [
+              "adapter_disabled",
+              "migration_not_primary",
+              "dry_run_required",
+              "adapter_unavailable",
+              "venue_out_of_scope",
+              "selected"
+            ],
+            "title": "Adapter Selection Reason",
+            "type": "string"
+          },
+          "adapter_venues": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Adapter Venues",
+            "type": "array"
+          },
           "compare_enabled": {
             "default": false,
             "title": "Compare Enabled",
@@ -4711,6 +4757,15 @@
             "default": false,
             "title": "Enabled",
             "type": "boolean"
+          },
+          "execution_provider": {
+            "default": "legacy",
+            "enum": [
+              "legacy",
+              "nautilus"
+            ],
+            "title": "Execution Provider",
+            "type": "string"
           },
           "fallback_engaged": {
             "default": true,

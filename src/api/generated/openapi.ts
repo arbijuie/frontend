@@ -799,6 +799,10 @@ export interface components {
             max_reasonable_apr: number;
             /** Max Volume Fraction */
             max_volume_fraction: number;
+            /** Migration Nautilus Adapter Enabled */
+            migration_nautilus_adapter_enabled: boolean;
+            /** Migration Nautilus Adapter Venues */
+            migration_nautilus_adapter_venues: string;
             /** Migration Nautilus Compare Enabled */
             migration_nautilus_compare_enabled: boolean;
             /** Migration Nautilus Enabled */
@@ -898,6 +902,8 @@ export interface components {
             max_reasonable_apr?: number | null;
             /** Max Volume Fraction */
             max_volume_fraction?: number | null;
+            /** Migration Nautilus Adapter Enabled */
+            migration_nautilus_adapter_enabled?: boolean | null;
             /** Migration Nautilus Compare Enabled */
             migration_nautilus_compare_enabled?: boolean | null;
             /** Migration Nautilus Enabled */
@@ -2118,6 +2124,19 @@ export interface components {
         /** StatusMigrationFallbackDiagnostics */
         StatusMigrationFallbackDiagnostics: {
             /**
+             * Adapter Enabled
+             * @default false
+             */
+            adapter_enabled: boolean;
+            /**
+             * Adapter Selection Reason
+             * @default adapter_disabled
+             * @enum {string}
+             */
+            adapter_selection_reason: "adapter_disabled" | "migration_not_primary" | "dry_run_required" | "adapter_unavailable" | "venue_out_of_scope" | "selected";
+            /** Adapter Venues */
+            adapter_venues?: string[];
+            /**
              * Compare Enabled
              * @default false
              */
@@ -2127,6 +2146,12 @@ export interface components {
              * @default false
              */
             enabled: boolean;
+            /**
+             * Execution Provider
+             * @default legacy
+             * @enum {string}
+             */
+            execution_provider: "legacy" | "nautilus";
             /**
              * Fallback Engaged
              * @default true
