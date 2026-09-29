@@ -82,7 +82,6 @@ export function useOpportunitiesSocket(options?: UseOpportunitiesSocketOptions) 
   };
 
   const armStallTimer = (ws: WebSocket) => {
-    setLastMessageAtMs(Date.now());
     clearStallTimer();
     stallTimerRef.current = setTimeout(() => {
       if (wsRef.current === ws) {
@@ -238,6 +237,7 @@ export function useOpportunitiesSocket(options?: UseOpportunitiesSocketOptions) 
 
         // Any frame implies auth handshake completed and we should not classify
         // subsequent closes as ticket-auth rejection.
+        setLastMessageAtMs(Date.now());
         waitingForTicketAuth = false;
 
         try {

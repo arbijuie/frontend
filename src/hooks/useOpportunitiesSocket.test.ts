@@ -83,7 +83,9 @@ describe("useOpportunitiesSocket", () => {
   });
 
   it("does not connect when disabled", async () => {
-    renderHook(() => useOpportunitiesSocket({ enabled: false, queryKey: ["opportunities", "filtered"] }));
+    renderHook(() =>
+      useOpportunitiesSocket({ enabled: false, queryKey: ["opportunities", "filtered"] })
+    );
     await act(async () => {
       await Promise.resolve();
     });
@@ -155,14 +157,15 @@ describe("useOpportunitiesSocket", () => {
 
   it("uses the latest query key after rerender", async () => {
     const { rerender } = renderHook(
-      ({ queryKey }: { queryKey: readonly ("opportunities" | "funding_arbitrage" | "cash_and_carry")[] }) =>
-        useOpportunitiesSocket({ queryKey }),
+      ({
+        queryKey,
+      }: {
+        queryKey: readonly ("opportunities" | "funding_arbitrage" | "cash_and_carry")[];
+      }) => useOpportunitiesSocket({ queryKey }),
       {
         initialProps: {
           queryKey: ["opportunities", "funding_arbitrage"] as readonly (
-            | "opportunities"
-            | "funding_arbitrage"
-            | "cash_and_carry"
+            "opportunities" | "funding_arbitrage" | "cash_and_carry"
           )[],
         },
       }
@@ -277,5 +280,43 @@ describe("useOpportunitiesSocket", () => {
 
     expect(result.current.transportState).toBe("polling-fallback");
     expect(MockWebSocket.instances.length).toBe(0);
+  });
+
+  it("records the time of the last received frame", async () => {
+    vi.setSystemTime(new Date("2026-09-28T10:00:00Z"));
+    const { result } = renderHook(() => useOpportunitiesSocket());
+    await act(async () => {
+      await Promise.resolve();
+    });
+    act(() => {
+      latestSocket().onopen?.();
+    });
+    expect(result.current.lastMessageAtMs).toBeNull();
+
+    act(() => {
+      latestSocket().onmessage?.({ data: JSON.stringify(sampleFrame) });
+    });
+
+    expect(result.current.lastMessageAtMs).toBe(Date.parse("2026-09-28T10:00:00Z"));
+  });
+
+  it("records each transport state change once", async () => {
+    const { result } = renderHook(() => useOpportunitiesSocket());
+    await act(async () => {
+      await Promise.resolve();
+    });
+    act(() => {
+      latestSocket().onopen?.();
+    });
+    act(() => {
+      latestSocket().onmessage?.({ data: JSON.stringify(sampleFrame) });
+    });
+    act(() => {
+      latestSocket().onmessage?.({ data: JSON.stringify(sampleFrame) });
+    });
+
+    const states = result.current.transitions.map((transition) => transition.state);
+    expect(states).toContain("connecting");
+    expect(states.filter((state) => state === "connected")).toHaveLength(1);
   });
 });
