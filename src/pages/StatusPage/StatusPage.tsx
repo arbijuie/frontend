@@ -16,6 +16,7 @@ import { getLiveUptimeSeconds } from "../../lib/format";
 import { useConfig } from "../../hooks/useConfig";
 import { POLL_INTERVAL_MS } from "../../api/config";
 import { usePageTitle } from "../../hooks/usePageTitle";
+import WsTransportHealthCard from "../../components/WsTransportHealthCard/WsTransportHealthCard";
 
 const StatusPage = () => {
   usePageTitle("Status");
@@ -57,6 +58,9 @@ const StatusPage = () => {
       {config && <RuntimeKnobsCard config={config} />}
 
       {data && <PipelineDiagnosticsHint status={data} />}
+      
+      <h2 className={styles.sectionTitle}>Live Transport</h2>
+      <WsTransportHealthCard />
 
       {justChecked && <div className={styles.hint}>Already up to date</div>}
 
