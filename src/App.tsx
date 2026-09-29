@@ -7,6 +7,7 @@ import ExecutionPreflightPage from "./pages/ExecutionPreflightPage/ExecutionPref
 import NotFoundPage from "./pages/NotFoundPage/NotFoundPage";
 import Nav from "./components/Nav/Nav";
 import RouteErrorBoundary from "./components/RouteErrorBoundary/RouteErrorBoundary";
+import OpportunitiesSocketProvider from "./components/OpportunitiesSocketProvider/OpportunitiesSocketProvider";
 
 export function AppShell() {
   return (
@@ -29,7 +30,9 @@ export function AppShell() {
 function App() {
   return (
     <BrowserRouter>
-      <AppShell />
+      <OpportunitiesSocketProvider>
+        <AppShell />
+      </OpportunitiesSocketProvider>
     </BrowserRouter>
   );
 }

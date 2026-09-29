@@ -1,12 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import {
   fetchOpportunities,
-  OPPORTUNITIES_QUERY_KEY,
   opportunitiesQueryKey,
   type OpportunityStrategyType,
 } from "../api/opportunities";
 import { POLL_INTERVAL_MS } from "../api/config";
-import { useOpportunitiesSocket } from "./useOpportunitiesSocket";
+import { useOpportunitiesTransport } from "./useOpportunitiesTransport";
 
 type UseOpportunitiesOptions = {
   strategyTypes?: OpportunityStrategyType[];
@@ -23,10 +22,7 @@ export function useOpportunities(options?: UseOpportunitiesOptions) {
     authRetryAfterSeconds,
     authDetail,
     retryNow,
-  } = useOpportunitiesSocket({
-    queryKey: OPPORTUNITIES_QUERY_KEY,
-    enabled: !isFiltered,
-  });
+  } = useOpportunitiesTransport();
   const isLive = transportState === "connected";
 
   const query = useQuery({
