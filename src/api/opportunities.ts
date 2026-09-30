@@ -37,9 +37,7 @@ export function opportunitiesQueryKey(
   options?: OpportunitiesFilterOptions
 ): readonly ["opportunities"] | readonly ["opportunities", ...OpportunityStrategyType[]] {
   const normalized = normalizeStrategyTypes(options?.strategyTypes);
-  return normalized.length > 0
-    ? (["opportunities", ...normalized] as const)
-    : OPPORTUNITIES_QUERY_KEY;
+  return normalized.length > 0 ? (["opportunities", ...normalized] as const) : OPPORTUNITIES_QUERY_KEY;
 }
 
 export async function fetchOpportunities(

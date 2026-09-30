@@ -78,11 +78,7 @@ const TransportIndicator = ({
         <span className={`${styles.dot} ${styles[severity]}`} aria-hidden="true" />
         <span>{label}</span>
         {state === "polling-fallback" && (
-          <button
-            className={styles.retryButton}
-            onClick={onRetry}
-            aria-label="Retry live connection"
-          >
+          <button className={styles.retryButton} onClick={onRetry} aria-label="Retry live connection">
             Retry
           </button>
         )}

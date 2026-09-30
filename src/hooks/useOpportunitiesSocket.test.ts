@@ -83,9 +83,7 @@ describe("useOpportunitiesSocket", () => {
   });
 
   it("does not connect when disabled", async () => {
-    renderHook(() =>
-      useOpportunitiesSocket({ enabled: false, queryKey: ["opportunities", "filtered"] })
-    );
+    renderHook(() => useOpportunitiesSocket({ enabled: false, queryKey: ["opportunities", "filtered"] }));
     await act(async () => {
       await Promise.resolve();
     });
@@ -157,15 +155,14 @@ describe("useOpportunitiesSocket", () => {
 
   it("uses the latest query key after rerender", async () => {
     const { rerender } = renderHook(
-      ({
-        queryKey,
-      }: {
-        queryKey: readonly ("opportunities" | "funding_arbitrage" | "cash_and_carry")[];
-      }) => useOpportunitiesSocket({ queryKey }),
+      ({ queryKey }: { queryKey: readonly ("opportunities" | "funding_arbitrage" | "cash_and_carry")[] }) =>
+        useOpportunitiesSocket({ queryKey }),
       {
         initialProps: {
           queryKey: ["opportunities", "funding_arbitrage"] as readonly (
-            "opportunities" | "funding_arbitrage" | "cash_and_carry"
+            | "opportunities"
+            | "funding_arbitrage"
+            | "cash_and_carry"
           )[],
         },
       }
@@ -282,7 +279,7 @@ describe("useOpportunitiesSocket", () => {
     expect(MockWebSocket.instances.length).toBe(0);
   });
 
-  it("records the time of the last received frame", async () => {
+    it("records the time of the last received frame", async () => {
     vi.setSystemTime(new Date("2026-09-28T10:00:00Z"));
     const { result } = renderHook(() => useOpportunitiesSocket());
     await act(async () => {
