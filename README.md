@@ -73,6 +73,15 @@ The Opportunities page consumes `/ws/opportunities` as its primary data source, 
 - Reconnects with exponential backoff (1s–16s, 5 attempts) and a 60s stall timeout before permanently falling back to REST polling.
 - Manual refresh continues to work in any transport state.
 
+The WS connection itself is owned by an app-level `OpportunitiesSocketProvider` (wrapping `AppShell` in `App.tsx`), not by the Opportunities page component — so it stays open while navigating between pages. This lets the Status page surface the same live connection state through a **Live Transport** section:
+
+- Connection health as one of `connected` / `reconnecting` / `degraded`, always shown as text (never color alone)
+- Age of the last received WS message and current REST fallback polling activity
+- Combined transport/auth retry-attempt counters
+- A short history of the most recent state transitions with timestamps
+- A degraded-state banner with an operator hint and a manual Retry button, announced via `aria-live` for screen readers
+- This is the browser's own connection to the backend — a separate concern from the "WS Feed Reliability" section above it, which reports the backend's own connections to the exchanges
+
 Adding a section:
 
 1. Create `src/pages/<Name>Page/<Name>Page.tsx`, wrap content in the shared `.page` layout, and call `usePageTitle("<Name>")`.

@@ -49,6 +49,10 @@ vi.mock("../../components/DeepPipelineDiagnostics/DeepPipelineDiagnostics", () =
   default: () => <div>Deep diagnostics mock</div>,
 }));
 
+vi.mock("../../components/WsTransportHealthCard/WsTransportHealthCard", () => ({
+  default: () => <div>Transport health mock</div>,
+}));
+
 const mockedUseStatus = vi.mocked(useStatus);
 const mockedUseConfig = vi.mocked(useConfig);
 const mockedUseNow = vi.mocked(useNow);
@@ -96,6 +100,13 @@ describe("StatusPage", () => {
     expect(screen.getByText("Deep diagnostics mock")).toBeTruthy();
     expect(screen.getByRole("heading", { level: 2, name: "Recovery Health" })).toBeTruthy();
     expect(screen.getByText("Startup Recovery")).toBeTruthy();
+  });
+
+  it("renders the Live Transport section", () => {
+    render(<StatusPage />);
+
+    expect(screen.getByRole("heading", { level: 2, name: "Live Transport" })).toBeTruthy();
+    expect(screen.getByText("Transport health mock")).toBeTruthy();
   });
 
   it("shows default recovery result when continuity is missing", () => {
