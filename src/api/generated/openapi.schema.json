@@ -1862,6 +1862,17 @@
       },
       "ExecutionAttemptItem": {
         "properties": {
+          "abort_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Abort Reason"
+          },
           "attempt_id": {
             "title": "Attempt Id",
             "type": "string"
@@ -1896,6 +1907,20 @@
             "title": "Events",
             "type": "array"
           },
+          "expected_slippage_bps": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "title": "Expected Slippage Bps",
+            "type": "object"
+          },
           "filled_quantity": {
             "default": "0",
             "title": "Filled Quantity",
@@ -1903,6 +1928,26 @@
           },
           "first_leg": {
             "$ref": "#/components/schemas/ExecutionLegItem"
+          },
+          "first_leg_slippage_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "First Leg Slippage Bps"
+          },
+          "hedge_leg": {
+            "default": "long",
+            "enum": [
+              "long",
+              "short"
+            ],
+            "title": "Hedge Leg",
+            "type": "string"
           },
           "hydrated_at": {
             "anyOf": [
@@ -1985,6 +2030,17 @@
           "second_leg_attempts": {
             "title": "Second Leg Attempts",
             "type": "integer"
+          },
+          "second_leg_slippage_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Second Leg Slippage Bps"
           },
           "short_exchange": {
             "title": "Short Exchange",

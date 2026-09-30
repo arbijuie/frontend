@@ -997,6 +997,8 @@ export interface components {
         };
         /** ExecutionAttemptItem */
         ExecutionAttemptItem: {
+            /** Abort Reason */
+            abort_reason?: string | null;
             /** Attempt Id */
             attempt_id: string;
             /** Consecutive Rollbacks */
@@ -1009,12 +1011,24 @@ export interface components {
             error?: string | null;
             /** Events */
             events?: string[];
+            /** Expected Slippage Bps */
+            expected_slippage_bps?: {
+                [key: string]: number | null;
+            };
             /**
              * Filled Quantity
              * @default 0
              */
             filled_quantity: string;
             first_leg: components["schemas"]["ExecutionLegItem"];
+            /** First Leg Slippage Bps */
+            first_leg_slippage_bps?: number | null;
+            /**
+             * Hedge Leg
+             * @default long
+             * @enum {string}
+             */
+            hedge_leg: "long" | "short";
             /** Hydrated At */
             hydrated_at?: string | null;
             /** Hydration Conflicts */
@@ -1044,6 +1058,8 @@ export interface components {
             second_leg: components["schemas"]["ExecutionLegItem"];
             /** Second Leg Attempts */
             second_leg_attempts: number;
+            /** Second Leg Slippage Bps */
+            second_leg_slippage_bps?: number | null;
             /** Short Exchange */
             short_exchange: string;
             /** Size Usd */
