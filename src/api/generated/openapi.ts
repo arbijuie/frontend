@@ -361,6 +361,7 @@ export interface components {
             lock_id?: string | null;
             /** Passed */
             passed: boolean;
+            posture?: components["schemas"]["ExecutionGatePostureItem"];
             /** Reason */
             reason?: string | null;
             /** Strategy Id */
@@ -1068,6 +1069,32 @@ export interface components {
             /** Items */
             items?: components["schemas"]["ExecutionAttemptItem"][];
         };
+        /**
+         * ExecutionGatePostureItem
+         * @description Explicit Phase 4-pre gate posture, independent of the execution switches.
+         *
+         *     `criteria_*` report the acceptance criteria (strategy lock plus signed acceptance
+         *     evidence). `live_execution_allowed` is true only when execution is enabled, dry-run is
+         *     off, and the criteria are satisfied.
+         */
+        ExecutionGatePostureItem: {
+            /** Acceptance Matrix Version */
+            acceptance_matrix_version?: string | null;
+            /** Acceptance Record Id */
+            acceptance_record_id?: string | null;
+            /** Criteria Reason */
+            criteria_reason?: string | null;
+            /**
+             * Criteria Satisfied
+             * @default false
+             */
+            criteria_satisfied: boolean;
+            /**
+             * Live Execution Allowed
+             * @default false
+             */
+            live_execution_allowed: boolean;
+        };
         /** ExecutionLegItem */
         ExecutionLegItem: {
             /** Attempts */
@@ -1194,6 +1221,7 @@ export interface components {
             lock_id?: string | null;
             /** Passed */
             passed: boolean;
+            posture?: components["schemas"]["ExecutionGatePostureItem"];
             /** Reason */
             reason?: string | null;
             /** Strategy Id */
@@ -2234,6 +2262,7 @@ export interface components {
              * @default false
              */
             execution_entries_stopped: boolean;
+            execution_gate?: components["schemas"]["ExecutionGatePostureItem"];
             execution_hydration?: components["schemas"]["StatusExecutionHydrationDiagnostics"];
             /** Execution Last Attempt Id */
             execution_last_attempt_id?: string | null;

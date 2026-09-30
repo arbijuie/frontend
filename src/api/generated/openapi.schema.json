@@ -18,6 +18,9 @@
             "title": "Passed",
             "type": "boolean"
           },
+          "posture": {
+            "$ref": "#/components/schemas/ExecutionGatePostureItem"
+          },
           "reason": {
             "anyOf": [
               {
@@ -2055,6 +2058,56 @@
         "title": "ExecutionAttemptListResponse",
         "type": "object"
       },
+      "ExecutionGatePostureItem": {
+        "description": "Explicit Phase 4-pre gate posture, independent of the execution switches.\n\n`criteria_*` report the acceptance criteria (strategy lock plus signed acceptance\nevidence). `live_execution_allowed` is true only when execution is enabled, dry-run is\noff, and the criteria are satisfied.",
+        "properties": {
+          "acceptance_matrix_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Acceptance Matrix Version"
+          },
+          "acceptance_record_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Acceptance Record Id"
+          },
+          "criteria_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Criteria Reason"
+          },
+          "criteria_satisfied": {
+            "default": false,
+            "title": "Criteria Satisfied",
+            "type": "boolean"
+          },
+          "live_execution_allowed": {
+            "default": false,
+            "title": "Live Execution Allowed",
+            "type": "boolean"
+          }
+        },
+        "title": "ExecutionGatePostureItem",
+        "type": "object"
+      },
       "ExecutionLegItem": {
         "properties": {
           "attempts": {
@@ -2380,6 +2433,9 @@
           "passed": {
             "title": "Passed",
             "type": "boolean"
+          },
+          "posture": {
+            "$ref": "#/components/schemas/ExecutionGatePostureItem"
           },
           "reason": {
             "anyOf": [
@@ -4906,6 +4962,9 @@
             "default": false,
             "title": "Execution Entries Stopped",
             "type": "boolean"
+          },
+          "execution_gate": {
+            "$ref": "#/components/schemas/ExecutionGatePostureItem"
           },
           "execution_hydration": {
             "$ref": "#/components/schemas/StatusExecutionHydrationDiagnostics"
