@@ -24,7 +24,7 @@ export function formatMessageAge(lastMessageAtMs: number | null, nowMs: number):
 
 export function operatorHint(health: TransportHealth, pollIntervalSeconds: number): string | null {
   if (health === "degraded") {
-    return `Live updates are unavailable. The Opportunities page falls back to REST polling every ${pollIntervalSeconds}s, so data can lag by up to that interval. Use Retry to reconnect.`;
+    return `Live updates are unavailable. The Opportunities page falls back to REST polling every ${pollIntervalSeconds}s while it's open, so data can lag by up to that interval there. Use Retry to reconnect.`;
   }
   if (health === "reconnecting") {
     return "Live connection is being re-established. The Opportunities page keeps refreshing by REST polling in the meantime.";

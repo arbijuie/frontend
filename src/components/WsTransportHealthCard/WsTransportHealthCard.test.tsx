@@ -48,7 +48,7 @@ describe("WsTransportHealthCard", () => {
     expect(screen.queryByRole("button", { name: /retry live connection/i })).toBeNull();
   });
 
-  it("renders the degraded state with a banner and a working Retry button", () => {
+  it("renders the degraded state with a banner, polling-scope wording, and a working Retry button", () => {
     const retryNow = vi.fn();
     mockedUseTransport.mockReturnValue(
       makeTransport({ transportState: "polling-fallback", retryNow })
@@ -59,6 +59,7 @@ describe("WsTransportHealthCard", () => {
     expect(screen.getByText("degraded")).not.toBeNull();
     expect(screen.getByText("DEGRADED")).not.toBeNull();
     expect(screen.getByText(/live updates are unavailable/i)).not.toBeNull();
+    expect(screen.getByText(/opportunities page polls every/i)).not.toBeNull();
 
     fireEvent.click(screen.getByRole("button", { name: /retry live connection/i }));
     expect(retryNow).toHaveBeenCalledTimes(1);

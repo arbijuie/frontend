@@ -63,7 +63,9 @@ const WsTransportHealthCard = () => {
         />
         <StatCard
           label="REST fallback polling"
-          value={health === "connected" ? "standby" : `every ${pollSeconds}s`}
+          value={
+            health === "connected" ? "standby" : `Opportunities page polls every ${pollSeconds}s`
+          }
         />
         <StatCard
           label="Attempts"

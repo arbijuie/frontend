@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { fetchWsAuthTicket, getWsUrl, WsAuthTicketRequestError } from "../api/ws";
 import { API_TOKEN } from "../api/config";
@@ -46,13 +46,13 @@ export function useOpportunitiesSocket(options?: UseOpportunitiesSocketOptions) 
   const [lastMessageAtMs, setLastMessageAtMs] = useState<number | null>(null);
   const lastRecordedStateRef = useRef<TransportState | null>(null);
 
-  const setTransportState = (next: TransportState) => {
+  const setTransportState = useCallback((next: TransportState) => {
     setTransportStateRaw(next);
     if (lastRecordedStateRef.current === next) return;
     lastRecordedStateRef.current = next;
     const atMs = Date.now();
     setTransitions((prev) => [...prev, { state: next, atMs }].slice(-MAX_TRANSITIONS));
-  };
+  }, []);
   const [authDiagnostics, setAuthDiagnostics] = useState<AuthDiagnostics>({
     status: "ok",
     retryAfterSeconds: null,
