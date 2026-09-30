@@ -2,6 +2,7 @@ import { renderHook } from "@testing-library/react";
 import { useQuery } from "@tanstack/react-query";
 import { useOpportunities } from "./useOpportunities";
 import { useOpportunitiesTransport } from "./useOpportunitiesTransport";
+import { fetchOpportunities, opportunitiesQueryKey } from "../api/opportunities";
 import { POLL_INTERVAL_MS } from "../api/config";
 import { makeTransport } from "../test-utils/transport-fixture";
 
@@ -13,13 +14,18 @@ vi.mock("./useOpportunitiesTransport", () => ({
   useOpportunitiesTransport: vi.fn(),
 }));
 
-vi.mock("../api/opportunities", () => ({
-  fetchOpportunities: vi.fn(),
-  opportunitiesQueryKey: vi.fn(() => ["opportunities"]),
-}));
+vi.mock("../api/opportunities", async () => {
+  const actual =
+    await vi.importActual<typeof import("../api/opportunities")>("../api/opportunities");
+  return {
+    ...actual,
+    fetchOpportunities: vi.fn(),
+  };
+});
 
 const mockedUseQuery = vi.mocked(useQuery);
 const mockedUseTransport = vi.mocked(useOpportunitiesTransport);
+const mockedFetchOpportunities = vi.mocked(fetchOpportunities);
 
 function mockQuery(overrides: Record<string, unknown> = {}) {
   mockedUseQuery.mockReturnValue({
@@ -50,7 +56,10 @@ describe("useOpportunities", () => {
     const { result } = renderHook(() => useOpportunities());
 
     expect(mockedUseQuery).toHaveBeenCalledWith(
-      expect.objectContaining({ refetchInterval: POLL_INTERVAL_MS })
+      expect.objectContaining({
+        queryKey: opportunitiesQueryKey({}),
+        refetchInterval: POLL_INTERVAL_MS,
+      })
     );
     expect(result.current.data).toEqual({
       count: 0,
@@ -75,15 +84,24 @@ describe("useOpportunities", () => {
     );
   });
 
-  it("keeps polling for filtered strategy views even when WS is connected", () => {
+  it("keeps polling and uses the filtered cache key for filtered strategy views even when WS is connected", () => {
     mockedUseTransport.mockReturnValue(makeTransport({ transportState: "connected" }));
     mockQuery();
 
     renderHook(() => useOpportunities({ strategyTypes: ["funding_arbitrage"] }));
 
     expect(mockedUseQuery).toHaveBeenCalledWith(
-      expect.objectContaining({ refetchInterval: POLL_INTERVAL_MS })
+      expect.objectContaining({
+        queryKey: opportunitiesQueryKey({ strategyTypes: ["funding_arbitrage"] }),
+        refetchInterval: POLL_INTERVAL_MS,
+      })
     );
+
+    const call = mockedUseQuery.mock.calls[0][0] as unknown as { queryFn: () => unknown };
+    call.queryFn();
+    expect(mockedFetchOpportunities).toHaveBeenCalledWith({
+      strategyTypes: ["funding_arbitrage"],
+    });
   });
 
   it("returns Error message when query fails", () => {
