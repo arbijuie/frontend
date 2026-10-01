@@ -181,6 +181,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/execution/close": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Close Two Leg Position
+         * @description Close an open pair: both legs in parallel, then a bounded reconciliation window.
+         */
+        post: operations["close_two_leg_position_execution_close_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/execution/open": {
         parameters: {
             query?: never;
@@ -1021,6 +1041,22 @@ export interface components {
             abort_reason?: string | null;
             /** Attempt Id */
             attempt_id: string;
+            /**
+             * Close Attempts
+             * @default 0
+             */
+            close_attempts: number;
+            /** Close Orders */
+            close_orders?: components["schemas"]["ExecutionOrderItem"][];
+            /** Close Reason */
+            close_reason?: string | null;
+            close_reconciliation?: components["schemas"]["ExecutionCloseReconciliationItem"] | null;
+            /** Close Requested At */
+            close_requested_at?: string | null;
+            /** Close Trigger */
+            close_trigger?: ("manual" | "guardrail" | "signal") | null;
+            /** Closed At */
+            closed_at?: string | null;
             /** Consecutive Rollbacks */
             consecutive_rollbacks: number;
             /** Created At */
@@ -1106,6 +1142,51 @@ export interface components {
             items?: components["schemas"]["ExecutionAttemptItem"][];
         };
         /**
+         * ExecutionCloseReconciliationItem
+         * @description Outcome of the last bounded close run; `complete` means both legs are flat.
+         */
+        ExecutionCloseReconciliationItem: {
+            /** Complete */
+            complete: boolean;
+            /**
+             * Imbalance
+             * @default 0
+             */
+            imbalance: string;
+            /**
+             * Long Residual
+             * @default 0
+             */
+            long_residual: string;
+            /** Notes */
+            notes?: string[];
+            /** Poll S */
+            poll_s: number;
+            /** Reconciled At */
+            reconciled_at: string;
+            /** Rounds */
+            rounds: number;
+            /**
+             * Short Residual
+             * @default 0
+             */
+            short_residual: string;
+            /** Unresolved Orders */
+            unresolved_orders?: string[];
+            /** Window S */
+            window_s: number;
+        };
+        /** ExecutionCloseRequest */
+        ExecutionCloseRequest: {
+            /** Attempt Id */
+            attempt_id: string;
+            /**
+             * Reason
+             * @default manual close
+             */
+            reason: string;
+        };
+        /**
          * ExecutionGatePostureItem
          * @description Explicit Phase 4-pre gate posture, independent of the execution switches.
          *
@@ -1135,6 +1216,13 @@ export interface components {
         ExecutionLegItem: {
             /** Attempts */
             attempts: number;
+            /** Close Average Price */
+            close_average_price?: string | null;
+            /**
+             * Closed Quantity
+             * @default 0
+             */
+            closed_quantity: string;
             /** Exchange */
             exchange: string;
             fill?: components["schemas"]["ExecutionOrderItem"] | null;
@@ -3191,6 +3279,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ExecutionAttemptListResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    close_two_leg_position_execution_close_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExecutionCloseRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExecutionAttemptItem"];
                 };
             };
             /** @description Validation Error */

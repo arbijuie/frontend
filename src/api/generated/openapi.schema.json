@@ -1877,6 +1877,77 @@
             "title": "Attempt Id",
             "type": "string"
           },
+          "close_attempts": {
+            "default": 0,
+            "title": "Close Attempts",
+            "type": "integer"
+          },
+          "close_orders": {
+            "items": {
+              "$ref": "#/components/schemas/ExecutionOrderItem"
+            },
+            "title": "Close Orders",
+            "type": "array"
+          },
+          "close_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Close Reason"
+          },
+          "close_reconciliation": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ExecutionCloseReconciliationItem"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "close_requested_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Close Requested At"
+          },
+          "close_trigger": {
+            "anyOf": [
+              {
+                "enum": [
+                  "manual",
+                  "guardrail",
+                  "signal"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Close Trigger"
+          },
+          "closed_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Closed At"
+          },
           "consecutive_rollbacks": {
             "title": "Consecutive Rollbacks",
             "type": "integer"
@@ -2114,6 +2185,88 @@
         "title": "ExecutionAttemptListResponse",
         "type": "object"
       },
+      "ExecutionCloseReconciliationItem": {
+        "description": "Outcome of the last bounded close run; `complete` means both legs are flat.",
+        "properties": {
+          "complete": {
+            "title": "Complete",
+            "type": "boolean"
+          },
+          "imbalance": {
+            "default": "0",
+            "title": "Imbalance",
+            "type": "string"
+          },
+          "long_residual": {
+            "default": "0",
+            "title": "Long Residual",
+            "type": "string"
+          },
+          "notes": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Notes",
+            "type": "array"
+          },
+          "poll_s": {
+            "title": "Poll S",
+            "type": "number"
+          },
+          "reconciled_at": {
+            "title": "Reconciled At",
+            "type": "string"
+          },
+          "rounds": {
+            "title": "Rounds",
+            "type": "integer"
+          },
+          "short_residual": {
+            "default": "0",
+            "title": "Short Residual",
+            "type": "string"
+          },
+          "unresolved_orders": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Unresolved Orders",
+            "type": "array"
+          },
+          "window_s": {
+            "title": "Window S",
+            "type": "number"
+          }
+        },
+        "required": [
+          "window_s",
+          "poll_s",
+          "rounds",
+          "complete",
+          "reconciled_at"
+        ],
+        "title": "ExecutionCloseReconciliationItem",
+        "type": "object"
+      },
+      "ExecutionCloseRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "attempt_id": {
+            "title": "Attempt Id",
+            "type": "string"
+          },
+          "reason": {
+            "default": "manual close",
+            "title": "Reason",
+            "type": "string"
+          }
+        },
+        "required": [
+          "attempt_id"
+        ],
+        "title": "ExecutionCloseRequest",
+        "type": "object"
+      },
       "ExecutionGatePostureItem": {
         "description": "Explicit Phase 4-pre gate posture, independent of the execution switches.\n\n`criteria_*` report the acceptance criteria (strategy lock plus signed acceptance\nevidence). `live_execution_allowed` is true only when execution is enabled, dry-run is\noff, and the criteria are satisfied.",
         "properties": {
@@ -2169,6 +2322,22 @@
           "attempts": {
             "title": "Attempts",
             "type": "integer"
+          },
+          "close_average_price": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Close Average Price"
+          },
+          "closed_quantity": {
+            "default": "0",
+            "title": "Closed Quantity",
+            "type": "string"
           },
           "exchange": {
             "title": "Exchange",
@@ -6615,6 +6784,45 @@
           }
         },
         "summary": "List Execution Attempts"
+      }
+    },
+    "/execution/close": {
+      "post": {
+        "description": "Close an open pair: both legs in parallel, then a bounded reconciliation window.",
+        "operationId": "close_two_leg_position_execution_close_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExecutionCloseRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExecutionAttemptItem"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Close Two Leg Position"
       }
     },
     "/execution/open": {
