@@ -52,7 +52,7 @@ Order reflects the operator workflow: find opportunities, check status, tune con
 | ---------------------- | ------------- | ------------------------------------------------- |
 | `/`                    | Opportunities | Implemented (WebSocket-first, see below)          |
 | `/status`              | Status        | Implemented (includes Deep Pipeline Diagnostics)  |
-| `/config`              | Config        | Implemented                                       |
+| `/config`              | Config        | Implemented (Editor v2, see below)                |
 | `/backtest`            | Backtest      | Implemented                                       |
 | `/execution/preflight` | Preflight     | Implemented (readiness center for execution gate) |
 | `*`                    | Not found     | Fallback page with link back to `/`               |
@@ -87,6 +87,13 @@ Each Opportunity card's expanded ("More details") view includes:
 - **Score breakdown, risk, and history metrics** — visible immediately, including a **Risk Lens** block (liquidity tier, funding timing asymmetry, basis divergence, effective hold window, minimum profitable hours), each with a tap-friendly help tooltip (`HelpTooltip`) explaining the metric — works identically on desktop (click or hover) and mobile (tap), unlike a plain `title` attribute.
 - **Provenance** (per-exchange data source labels, effective taker fees, spread, depth bands, mid price for both legs) — nested behind its own "Show data provenance" toggle, since it's consulted less often than the metrics above it; keeps the default expanded view compact.
 - Nullable risk/provenance fields show an explicit, meaning-specific placeholder ("not enough data", "unknown") rather than a bare dash.
+
+The Config page's "Custom Runbook Fields" editor supports both numeric and boolean runbook fields, grouped by category (matching the read-only Live Configuration accordion above it, including a dedicated Nautilus Migration group with accurate help text). Any newly-added runbook field without a specific label yet falls into an "Other" group instead of silently disappearing. Workflow:
+
+- Edit values, then click **Preview changes** to see the exact old → new diff before anything is sent — this is the same payload the app actually submits, not a separately-computed approximation.
+- An explicit **Persist** checkbox controls whether the change is written to `.env` (checked) or applied for the current session only (unchecked) — reflected in the submitted payload either way.
+- **Revert draft to preset** loads a preset's values into the draft for review, without applying anything until you preview and confirm.
+- If the live config changes in the background while you have an unsaved draft, a conflict banner names the affected fields and offers to reload the draft from the current live values. Background polling for this check is only active while a draft is in progress.
 
 Adding a section:
 
