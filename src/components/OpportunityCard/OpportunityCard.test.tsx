@@ -291,7 +291,9 @@ describe("OpportunityCard", () => {
     fireEvent.click(screen.getByRole("button", { name: /more details/i }));
 
     expect(screen.getByText("unknown")).toBeTruthy();
-    expect(screen.getAllByText("not enough data")).toHaveLength(4);
+    expect(screen.getByText("n/a (different funding intervals)")).toBeTruthy();
+    expect(screen.getByText("not profitable on funding")).toBeTruthy();
+    expect(screen.getAllByText("not enough data")).toHaveLength(2);
   });
 
   it("renders risk lens values when present", () => {
