@@ -14,11 +14,13 @@ const trendClass: Record<FundingTrend, string> = {
 };
 
 const RISK_LENS_HELP: Record<string, string> = {
-  liquidityTier: "Relative order-book depth tier (High/Medium/Low) at the recommended trade size",
+  liquidityTier:
+    "24h volume tier of the thinner leg relative to the minimum volume filter (High ≥10×, Medium ≥3×, Low below)",
   fundingTimingAsymmetry:
     "Hours between long and short funding settlement times — larger values mean more exposure risk between payouts",
-  basisDivergence: "Hours the basis has been widening beyond the configured threshold",
-  effectiveHold: "Expected holding window after adjusting for instability and risk dampeners",
+  basisDivergence: "Consecutive hours the basis has stayed above the divergence threshold",
+  effectiveHold:
+    "Expected holding window, shortened when funding/basis instability is detected (expected_hold_hours × (1 − hold_window_instability_scale))",
   minProfitableHours: "Minimum hold time needed to cover costs at current rates",
 };
 
@@ -64,8 +66,8 @@ function formatNullablePrice(value: string | null | undefined): string {
   return numeric.toFixed(2);
 }
 
-function formatHours(value: number | null | undefined): string {
-  if (value == null) return "not enough data";
+function formatHours(value: number | null | undefined, fallback = "not enough data"): string {
+  if (value == null) return fallback;
   return `${value.toFixed(1)}h`;
 }
 
@@ -146,7 +148,10 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
         <div>
           <div className={styles.metricLabelWithHelp}>
             Funding Edge
-            <HelpTooltip text="Projected funding PnL for expected hold window: funding_diff_apr * hold_hours / 8760 * 100" />
+            <HelpTooltip
+              label="Funding Edge"
+              text="Projected funding PnL for expected hold window: funding_diff_apr * hold_hours / 8760 * 100"
+            />
           </div>
           <div className={`${styles.metricValue} ${styles[signColor(item.funding_edge_bps)]}`}>
             {item.funding_edge_bps.toFixed(1)} bps
@@ -161,7 +166,10 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
         <div>
           <div className={styles.metricLabelWithHelp}>
             Score
-            <HelpTooltip text="Combined score = Funding Edge + Basis Bonus - Total Cost - Timing Penalty - Basis Divergence Penalty (plus instability/liquidity/rounding adjustment)" />
+            <HelpTooltip
+              label="Score"
+              text="Combined score = Funding Edge + Basis Bonus - Total Cost - Timing Penalty - Basis Divergence Penalty (plus instability/liquidity/rounding adjustment)"
+            />
           </div>
           <div className={`${styles.metricValue} ${styles[signColor(item.combined_score)]}`}>
             {item.combined_score.toFixed(1)}
@@ -300,6 +308,18 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
             <span>Source penalty</span>
             <span>{item.source_penalty_bps.toFixed(1)} bps</span>
           </div>
+          <div className={styles.detailRow}>
+            <span>Recommended size</span>
+            <span>
+              {item.recommended_size_usd != null
+                ? `$${item.recommended_size_usd.toLocaleString()}`
+                : "—"}
+            </span>
+          </div>
+          <div className={styles.detailRow}>
+            <span>Depth quality</span>
+            <span>{item.depth_quality ?? "—"}</span>
+          </div>
 
           {item.long_forecast && (
             <>
@@ -356,37 +376,45 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
           <div className={styles.detailRow}>
             <span className={styles.detailLabelWithHelp}>
               Liquidity tier
-              <HelpTooltip text={RISK_LENS_HELP.liquidityTier} />
+              <HelpTooltip label="Liquidity tier" text={RISK_LENS_HELP.liquidityTier} />
             </span>
             <span>{formatLiquidityTier(item.liquidity_tier)}</span>
           </div>
           <div className={styles.detailRow}>
             <span className={styles.detailLabelWithHelp}>
               Funding timing asymmetry
-              <HelpTooltip text={RISK_LENS_HELP.fundingTimingAsymmetry} />
+              <HelpTooltip
+                label="Funding timing asymmetry"
+                text={RISK_LENS_HELP.fundingTimingAsymmetry}
+              />
             </span>
-            <span>{formatHours(item.funding_timing_asymmetry_hours)}</span>
+            <span>
+              {formatHours(
+                item.funding_timing_asymmetry_hours,
+                "n/a (different funding intervals)"
+              )}
+            </span>
           </div>
           <div className={styles.detailRow}>
             <span className={styles.detailLabelWithHelp}>
               Basis divergence
-              <HelpTooltip text={RISK_LENS_HELP.basisDivergence} />
+              <HelpTooltip label="Basis divergence" text={RISK_LENS_HELP.basisDivergence} />
             </span>
             <span>{formatHours(item.basis_divergence_hours)}</span>
           </div>
           <div className={styles.detailRow}>
             <span className={styles.detailLabelWithHelp}>
               Effective hold
-              <HelpTooltip text={RISK_LENS_HELP.effectiveHold} />
+              <HelpTooltip label="Effective hold" text={RISK_LENS_HELP.effectiveHold} />
             </span>
             <span>{formatHours(item.effective_hold_hours)}</span>
           </div>
           <div className={styles.detailRow}>
             <span className={styles.detailLabelWithHelp}>
               Min profitable hours
-              <HelpTooltip text={RISK_LENS_HELP.minProfitableHours} />
+              <HelpTooltip label="Min profitable hours" text={RISK_LENS_HELP.minProfitableHours} />
             </span>
-            <span>{formatHours(item.min_profitable_hours)}</span>
+            <span>{formatHours(item.min_profitable_hours, "not profitable on funding")}</span>
           </div>
 
           <button
@@ -452,22 +480,6 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
                 <span>
                   {formatNullablePrice(longMicro?.mid)} / {formatNullablePrice(shortMicro?.mid)}
                 </span>
-              </div>
-              <div className={styles.detailRow}>
-                <span>Recommended size</span>
-                <span>
-                  {item.recommended_size_usd != null
-                    ? `$${item.recommended_size_usd.toLocaleString()}`
-                    : "—"}
-                </span>
-              </div>
-              <div className={styles.detailRow}>
-                <span>Depth quality</span>
-                <span>{item.depth_quality ?? "—"}</span>
-              </div>
-              <div className={styles.detailRow}>
-                <span>Total cost</span>
-                <span>{item.total_cost_bps.toFixed(1)} bps</span>
               </div>
             </>
           )}
