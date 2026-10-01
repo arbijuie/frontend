@@ -86,6 +86,15 @@ describe("hasInvalidDraftValues", () => {
 
     expect(hasInvalidDraftValues(draft, fields)).toEqual([]);
   });
+
+  it("flags an empty string as invalid, not as zero", () => {
+    const config = makeConfig();
+    const fields = editableFieldsFromConfig(config);
+    const draft = buildDraftFromConfig(config, fields);
+    draft.min_score_bps = "";
+
+    expect(hasInvalidDraftValues(draft, fields)).toEqual(["min_score_bps"]);
+  });
 });
 
 describe("buildDiffRows", () => {
@@ -120,6 +129,15 @@ describe("buildDiffRows", () => {
     const fields = editableFieldsFromConfig(config);
     const draft = buildDraftFromConfig(config, fields);
     draft.min_score_bps = "not-a-number";
+
+    expect(buildDiffRows(draft, config, fields)).toEqual([]);
+  });
+
+  it("does not silently treat an empty string as 0", () => {
+    const config = makeConfig();
+    const fields = editableFieldsFromConfig(config);
+    const draft = buildDraftFromConfig(config, fields);
+    draft.min_score_bps = "";
 
     expect(buildDiffRows(draft, config, fields)).toEqual([]);
   });
