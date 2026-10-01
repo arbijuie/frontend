@@ -54,20 +54,6 @@
   margin-bottom: 0.2rem;
 }
 
-.helpDot {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 0.9rem;
-  height: 0.9rem;
-  border: 1px solid v.$border-color;
-  border-radius: 50%;
-  color: v.$text-secondary;
-  font-size: 0.65rem;
-  line-height: 1;
-  cursor: help;
-}
-
 .metricValue {
   font-weight: 600;
   color: v.$text-primary;

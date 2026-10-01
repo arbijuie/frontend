@@ -4,6 +4,7 @@ import { SOURCE_STATE_SET, type OpportunityItem, type FundingTrend } from "../..
 import StatusBadge from "../StatusBadge/StatusBadge";
 import ExchangeBadge from "../ExchangeBadge/ExchangeBadge";
 import { signColor, getFundingTargetTime, formatCountdown } from "../../lib/format";
+import HelpTooltip from "../HelpTooltip/HelpTooltip";
 
 const trendIcon: Record<FundingTrend, string> = { rising: "↑", falling: "↓", stable: "→" };
 const trendClass: Record<FundingTrend, string> = {
@@ -144,12 +145,7 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
         <div>
           <div className={styles.metricLabelWithHelp}>
             Funding Edge
-            <span
-              className={styles.helpDot}
-              title="Projected funding PnL for expected hold window: funding_diff_apr * hold_hours / 8760 * 100"
-            >
-              ?
-            </span>
+            <HelpTooltip text="Projected funding PnL for expected hold window: funding_diff_apr * hold_hours / 8760 * 100" />
           </div>
           <div className={`${styles.metricValue} ${styles[signColor(item.funding_edge_bps)]}`}>
             {item.funding_edge_bps.toFixed(1)} bps
@@ -164,12 +160,7 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
         <div>
           <div className={styles.metricLabelWithHelp}>
             Score
-            <span
-              className={styles.helpDot}
-              title="Combined score = Funding Edge + Basis Bonus - Total Cost - Timing Penalty - Basis Divergence Penalty (plus instability/liquidity/rounding adjustment)"
-            >
-              ?
-            </span>
+            <HelpTooltip text="Combined score = Funding Edge + Basis Bonus - Total Cost - Timing Penalty - Basis Divergence Penalty (plus instability/liquidity/rounding adjustment)" />
           </div>
           <div className={`${styles.metricValue} ${styles[signColor(item.combined_score)]}`}>
             {item.combined_score.toFixed(1)}
@@ -432,65 +423,35 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
           <div className={styles.detailRow}>
             <span className={styles.detailLabelWithHelp}>
               Liquidity tier
-              <span
-                className={styles.helpDot}
-                title={RISK_LENS_HELP.liquidityTier}
-                aria-label={RISK_LENS_HELP.liquidityTier}
-              >
-                ?
-              </span>
+              <HelpTooltip text={RISK_LENS_HELP.liquidityTier} />
             </span>
             <span>{formatLiquidityTier(item.liquidity_tier)}</span>
           </div>
           <div className={styles.detailRow}>
             <span className={styles.detailLabelWithHelp}>
               Funding timing asymmetry
-              <span
-                className={styles.helpDot}
-                title={RISK_LENS_HELP.fundingTimingAsymmetry}
-                aria-label={RISK_LENS_HELP.fundingTimingAsymmetry}
-              >
-                ?
-              </span>
+              <HelpTooltip text={RISK_LENS_HELP.fundingTimingAsymmetry} />
             </span>
             <span>{formatHours(item.funding_timing_asymmetry_hours)}</span>
           </div>
           <div className={styles.detailRow}>
             <span className={styles.detailLabelWithHelp}>
               Basis divergence
-              <span
-                className={styles.helpDot}
-                title={RISK_LENS_HELP.basisDivergence}
-                aria-label={RISK_LENS_HELP.basisDivergence}
-              >
-                ?
-              </span>
+              <HelpTooltip text={RISK_LENS_HELP.basisDivergence} />
             </span>
             <span>{formatHours(item.basis_divergence_hours)}</span>
           </div>
           <div className={styles.detailRow}>
             <span className={styles.detailLabelWithHelp}>
               Effective hold
-              <span
-                className={styles.helpDot}
-                title={RISK_LENS_HELP.effectiveHold}
-                aria-label={RISK_LENS_HELP.effectiveHold}
-              >
-                ?
-              </span>
+              <HelpTooltip text={RISK_LENS_HELP.effectiveHold} />
             </span>
             <span>{formatHours(item.effective_hold_hours)}</span>
           </div>
           <div className={styles.detailRow}>
             <span className={styles.detailLabelWithHelp}>
               Min profitable hours
-              <span
-                className={styles.helpDot}
-                title={RISK_LENS_HELP.minProfitableHours}
-                aria-label={RISK_LENS_HELP.minProfitableHours}
-              >
-                ?
-              </span>
+              <HelpTooltip text={RISK_LENS_HELP.minProfitableHours} />
             </span>
             <span>{formatHours(item.min_profitable_hours)}</span>
           </div>
