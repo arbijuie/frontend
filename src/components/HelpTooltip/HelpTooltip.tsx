@@ -2,10 +2,11 @@ import { useEffect, useId, useRef, useState } from "react";
 import styles from "./HelpTooltip.module.scss";
 
 interface HelpTooltipProps {
+  label: string;
   text: string;
 }
 
-const HelpTooltip = ({ text }: HelpTooltipProps) => {
+const HelpTooltip = ({ label, text }: HelpTooltipProps) => {
   const [open, setOpen] = useState(false);
   const tooltipId = useId();
   const containerRef = useRef<HTMLSpanElement>(null);
@@ -37,7 +38,7 @@ const HelpTooltip = ({ text }: HelpTooltipProps) => {
       <button
         type="button"
         className={styles.helpDot}
-        title={text}
+        aria-label={`Help: ${label}`}
         aria-expanded={open}
         aria-describedby={open ? tooltipId : undefined}
         onClick={(event) => {
