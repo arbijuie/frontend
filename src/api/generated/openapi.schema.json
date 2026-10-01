@@ -2807,6 +2807,160 @@
         "title": "FundingForecastItem",
         "type": "object"
       },
+      "GuardrailCloseRecordItem": {
+        "additionalProperties": false,
+        "properties": {
+          "at": {
+            "title": "At",
+            "type": "string"
+          },
+          "attempt_id": {
+            "title": "Attempt Id",
+            "type": "string"
+          },
+          "guardrail": {
+            "title": "Guardrail",
+            "type": "string"
+          },
+          "orders": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Orders",
+            "type": "array"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "closed",
+              "failed"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "attempt_id",
+          "guardrail",
+          "reason",
+          "status",
+          "at"
+        ],
+        "title": "GuardrailCloseRecordItem",
+        "type": "object"
+      },
+      "GuardrailDecisionItem": {
+        "additionalProperties": false,
+        "description": "One hard-guardrail decision with the value and threshold it was compared with.",
+        "properties": {
+          "action": {
+            "enum": [
+              "alert",
+              "block_entry",
+              "close_position"
+            ],
+            "title": "Action",
+            "type": "string"
+          },
+          "attempt_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Attempt Id"
+          },
+          "evaluated_at": {
+            "title": "Evaluated At",
+            "type": "string"
+          },
+          "exchange": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Exchange"
+          },
+          "guardrail": {
+            "enum": [
+              "margin",
+              "adl",
+              "funding_flip",
+              "spread_expansion",
+              "max_open_positions",
+              "max_pair_exposure",
+              "max_memecoin_exposure"
+            ],
+            "title": "Guardrail",
+            "type": "string"
+          },
+          "observed": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Observed"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          },
+          "severity": {
+            "enum": [
+              "info",
+              "warning",
+              "critical"
+            ],
+            "title": "Severity",
+            "type": "string"
+          },
+          "symbol": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Symbol"
+          },
+          "threshold": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Threshold"
+          }
+        },
+        "required": [
+          "guardrail",
+          "action",
+          "severity",
+          "reason",
+          "evaluated_at"
+        ],
+        "title": "GuardrailDecisionItem",
+        "type": "object"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -4304,6 +4458,168 @@
         "title": "ReasonItem",
         "type": "object"
       },
+      "RiskGuardrailsResponse": {
+        "additionalProperties": false,
+        "description": "`GET /risk/guardrails`: the status summary plus thresholds and close history.",
+        "properties": {
+          "account_sources": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Account Sources",
+            "type": "array"
+          },
+          "blocking_guardrails": {
+            "items": {
+              "enum": [
+                "margin",
+                "adl",
+                "funding_flip",
+                "spread_expansion",
+                "max_open_positions",
+                "max_pair_exposure",
+                "max_memecoin_exposure"
+              ],
+              "type": "string"
+            },
+            "title": "Blocking Guardrails",
+            "type": "array"
+          },
+          "close_records": {
+            "items": {
+              "$ref": "#/components/schemas/GuardrailCloseRecordItem"
+            },
+            "title": "Close Records",
+            "type": "array"
+          },
+          "closed_attempt_ids": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Closed Attempt Ids",
+            "type": "array"
+          },
+          "closed_attempts": {
+            "default": 0,
+            "title": "Closed Attempts",
+            "type": "integer"
+          },
+          "decision_counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "propertyNames": {
+              "enum": [
+                "alert",
+                "block_entry",
+                "close_position"
+              ]
+            },
+            "title": "Decision Counts",
+            "type": "object"
+          },
+          "decisions": {
+            "items": {
+              "$ref": "#/components/schemas/GuardrailDecisionItem"
+            },
+            "title": "Decisions",
+            "type": "array"
+          },
+          "entries_blocked": {
+            "default": false,
+            "title": "Entries Blocked",
+            "type": "boolean"
+          },
+          "entry_blocks_by_guardrail": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Entry Blocks By Guardrail",
+            "type": "object"
+          },
+          "entry_blocks_total": {
+            "default": 0,
+            "title": "Entry Blocks Total",
+            "type": "integer"
+          },
+          "last_close": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/GuardrailCloseRecordItem"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "last_entry_block": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/GuardrailDecisionItem"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "last_error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Error"
+          },
+          "last_evaluated_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Evaluated At"
+          },
+          "monitored_positions": {
+            "default": 0,
+            "title": "Monitored Positions",
+            "type": "integer"
+          },
+          "recent_close_failures": {
+            "default": 0,
+            "title": "Recent Close Failures",
+            "type": "integer"
+          },
+          "recent_closes": {
+            "default": 0,
+            "title": "Recent Closes",
+            "type": "integer"
+          },
+          "thresholds": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            },
+            "title": "Thresholds",
+            "type": "object"
+          }
+        },
+        "title": "RiskGuardrailsResponse",
+        "type": "object"
+      },
       "SnapshotContinuityResponse": {
         "properties": {
           "distinct_timestamps": {
@@ -4920,6 +5236,133 @@
         "title": "StatusMigrationFallbackDiagnostics",
         "type": "object"
       },
+      "StatusNotificationDiagnostics": {
+        "additionalProperties": false,
+        "description": "Alert delivery health. `healthy` is false while any route's last delivery failed.",
+        "properties": {
+          "degraded_routes": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Degraded Routes",
+            "type": "array"
+          },
+          "enabled": {
+            "default": false,
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "failed": {
+            "default": 0,
+            "title": "Failed",
+            "type": "integer"
+          },
+          "filtered": {
+            "default": 0,
+            "title": "Filtered",
+            "type": "integer"
+          },
+          "healthy": {
+            "default": true,
+            "title": "Healthy",
+            "type": "boolean"
+          },
+          "pending": {
+            "default": 0,
+            "title": "Pending",
+            "type": "integer"
+          },
+          "routes": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/StatusNotificationRouteDiagnostics"
+            },
+            "title": "Routes",
+            "type": "object"
+          },
+          "sent": {
+            "default": 0,
+            "title": "Sent",
+            "type": "integer"
+          },
+          "submitted": {
+            "default": 0,
+            "title": "Submitted",
+            "type": "integer"
+          },
+          "suppressed": {
+            "default": 0,
+            "title": "Suppressed",
+            "type": "integer"
+          }
+        },
+        "title": "StatusNotificationDiagnostics",
+        "type": "object"
+      },
+      "StatusNotificationRouteDiagnostics": {
+        "additionalProperties": false,
+        "properties": {
+          "consecutive_failures": {
+            "default": 0,
+            "title": "Consecutive Failures",
+            "type": "integer"
+          },
+          "degraded": {
+            "default": false,
+            "title": "Degraded",
+            "type": "boolean"
+          },
+          "failed": {
+            "default": 0,
+            "title": "Failed",
+            "type": "integer"
+          },
+          "last_error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Error"
+          },
+          "last_failure_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Failure At"
+          },
+          "last_sent_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Sent At"
+          },
+          "retries": {
+            "default": 0,
+            "title": "Retries",
+            "type": "integer"
+          },
+          "sent": {
+            "default": 0,
+            "title": "Sent",
+            "type": "integer"
+          }
+        },
+        "title": "StatusNotificationRouteDiagnostics",
+        "type": "object"
+      },
       "StatusReasonSeverityCounts": {
         "additionalProperties": false,
         "properties": {
@@ -5141,6 +5584,9 @@
           "migration_fallback": {
             "$ref": "#/components/schemas/StatusMigrationFallbackDiagnostics"
           },
+          "notifications": {
+            "$ref": "#/components/schemas/StatusNotificationDiagnostics"
+          },
           "poll_count_failed": {
             "title": "Poll Count Failed",
             "type": "integer"
@@ -5152,6 +5598,9 @@
           "poll_count_total": {
             "title": "Poll Count Total",
             "type": "integer"
+          },
+          "risk_guardrails": {
+            "$ref": "#/components/schemas/StatusRiskGuardrailsDiagnostics"
           },
           "screener_drop_counters": {
             "$ref": "#/components/schemas/StatusDropCounters"
@@ -5232,6 +5681,137 @@
           "execution_backtest_gate_passed"
         ],
         "title": "StatusResponse",
+        "type": "object"
+      },
+      "StatusRiskGuardrailsDiagnostics": {
+        "additionalProperties": false,
+        "description": "Guardrail outcomes (issue #189).\n\n`decisions` and `entries_blocked` describe the last continuous pass. Entry-block counters\nrun since process start; close counters cover the bounded recent close history.",
+        "properties": {
+          "account_sources": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Account Sources",
+            "type": "array"
+          },
+          "blocking_guardrails": {
+            "items": {
+              "enum": [
+                "margin",
+                "adl",
+                "funding_flip",
+                "spread_expansion",
+                "max_open_positions",
+                "max_pair_exposure",
+                "max_memecoin_exposure"
+              ],
+              "type": "string"
+            },
+            "title": "Blocking Guardrails",
+            "type": "array"
+          },
+          "closed_attempts": {
+            "default": 0,
+            "title": "Closed Attempts",
+            "type": "integer"
+          },
+          "decision_counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "propertyNames": {
+              "enum": [
+                "alert",
+                "block_entry",
+                "close_position"
+              ]
+            },
+            "title": "Decision Counts",
+            "type": "object"
+          },
+          "decisions": {
+            "items": {
+              "$ref": "#/components/schemas/GuardrailDecisionItem"
+            },
+            "title": "Decisions",
+            "type": "array"
+          },
+          "entries_blocked": {
+            "default": false,
+            "title": "Entries Blocked",
+            "type": "boolean"
+          },
+          "entry_blocks_by_guardrail": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Entry Blocks By Guardrail",
+            "type": "object"
+          },
+          "entry_blocks_total": {
+            "default": 0,
+            "title": "Entry Blocks Total",
+            "type": "integer"
+          },
+          "last_close": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/GuardrailCloseRecordItem"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "last_entry_block": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/GuardrailDecisionItem"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "last_error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Error"
+          },
+          "last_evaluated_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Evaluated At"
+          },
+          "monitored_positions": {
+            "default": 0,
+            "title": "Monitored Positions",
+            "type": "integer"
+          },
+          "recent_close_failures": {
+            "default": 0,
+            "title": "Recent Close Failures",
+            "type": "integer"
+          },
+          "recent_closes": {
+            "default": 0,
+            "title": "Recent Closes",
+            "type": "integer"
+          }
+        },
+        "title": "StatusRiskGuardrailsDiagnostics",
         "type": "object"
       },
       "StatusSnapshotContinuity": {
@@ -6405,6 +6985,25 @@
           }
         },
         "summary": "Get Opportunities"
+      }
+    },
+    "/risk/guardrails": {
+      "get": {
+        "description": "Guardrail decisions, entry blocks, close history, and the active thresholds.",
+        "operationId": "get_risk_guardrails_risk_guardrails_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RiskGuardrailsResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Risk Guardrails"
       }
     },
     "/snapshots/continuity": {

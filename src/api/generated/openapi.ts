@@ -300,6 +300,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/risk/guardrails": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Risk Guardrails
+         * @description Guardrail decisions, entry blocks, close history, and the active thresholds.
+         */
+        get: operations["get_risk_guardrails_risk_guardrails_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/snapshots/continuity": {
         parameters: {
             query?: never;
@@ -1354,6 +1374,59 @@ export interface components {
              */
             trend: "rising" | "falling" | "stable";
         };
+        /** GuardrailCloseRecordItem */
+        GuardrailCloseRecordItem: {
+            /** At */
+            at: string;
+            /** Attempt Id */
+            attempt_id: string;
+            /** Guardrail */
+            guardrail: string;
+            /** Orders */
+            orders?: string[];
+            /** Reason */
+            reason: string;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "closed" | "failed";
+        };
+        /**
+         * GuardrailDecisionItem
+         * @description One hard-guardrail decision with the value and threshold it was compared with.
+         */
+        GuardrailDecisionItem: {
+            /**
+             * Action
+             * @enum {string}
+             */
+            action: "alert" | "block_entry" | "close_position";
+            /** Attempt Id */
+            attempt_id?: string | null;
+            /** Evaluated At */
+            evaluated_at: string;
+            /** Exchange */
+            exchange?: string | null;
+            /**
+             * Guardrail
+             * @enum {string}
+             */
+            guardrail: "margin" | "adl" | "funding_flip" | "spread_expansion" | "max_open_positions" | "max_pair_exposure" | "max_memecoin_exposure";
+            /** Observed */
+            observed?: number | null;
+            /** Reason */
+            reason: string;
+            /**
+             * Severity
+             * @enum {string}
+             */
+            severity: "info" | "warning" | "critical";
+            /** Symbol */
+            symbol?: string | null;
+            /** Threshold */
+            threshold?: number | null;
+        };
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
@@ -1857,6 +1930,70 @@ export interface components {
              */
             severity: "watching" | "blocked";
         };
+        /**
+         * RiskGuardrailsResponse
+         * @description `GET /risk/guardrails`: the status summary plus thresholds and close history.
+         */
+        RiskGuardrailsResponse: {
+            /** Account Sources */
+            account_sources?: string[];
+            /** Blocking Guardrails */
+            blocking_guardrails?: ("margin" | "adl" | "funding_flip" | "spread_expansion" | "max_open_positions" | "max_pair_exposure" | "max_memecoin_exposure")[];
+            /** Close Records */
+            close_records?: components["schemas"]["GuardrailCloseRecordItem"][];
+            /** Closed Attempt Ids */
+            closed_attempt_ids?: string[];
+            /**
+             * Closed Attempts
+             * @default 0
+             */
+            closed_attempts: number;
+            /** Decision Counts */
+            decision_counts?: {
+                [key: string]: number;
+            };
+            /** Decisions */
+            decisions?: components["schemas"]["GuardrailDecisionItem"][];
+            /**
+             * Entries Blocked
+             * @default false
+             */
+            entries_blocked: boolean;
+            /** Entry Blocks By Guardrail */
+            entry_blocks_by_guardrail?: {
+                [key: string]: number;
+            };
+            /**
+             * Entry Blocks Total
+             * @default 0
+             */
+            entry_blocks_total: number;
+            last_close?: components["schemas"]["GuardrailCloseRecordItem"] | null;
+            last_entry_block?: components["schemas"]["GuardrailDecisionItem"] | null;
+            /** Last Error */
+            last_error?: string | null;
+            /** Last Evaluated At */
+            last_evaluated_at?: string | null;
+            /**
+             * Monitored Positions
+             * @default 0
+             */
+            monitored_positions: number;
+            /**
+             * Recent Close Failures
+             * @default 0
+             */
+            recent_close_failures: number;
+            /**
+             * Recent Closes
+             * @default 0
+             */
+            recent_closes: number;
+            /** Thresholds */
+            thresholds?: {
+                [key: string]: number | string;
+            };
+        };
         /** SnapshotContinuityResponse */
         SnapshotContinuityResponse: {
             /** Distinct Timestamps */
@@ -2225,6 +2362,92 @@ export interface components {
              */
             observe_only: boolean;
         };
+        /**
+         * StatusNotificationDiagnostics
+         * @description Alert delivery health. `healthy` is false while any route's last delivery failed.
+         */
+        StatusNotificationDiagnostics: {
+            /** Degraded Routes */
+            degraded_routes?: string[];
+            /**
+             * Enabled
+             * @default false
+             */
+            enabled: boolean;
+            /**
+             * Failed
+             * @default 0
+             */
+            failed: number;
+            /**
+             * Filtered
+             * @default 0
+             */
+            filtered: number;
+            /**
+             * Healthy
+             * @default true
+             */
+            healthy: boolean;
+            /**
+             * Pending
+             * @default 0
+             */
+            pending: number;
+            /** Routes */
+            routes?: {
+                [key: string]: components["schemas"]["StatusNotificationRouteDiagnostics"];
+            };
+            /**
+             * Sent
+             * @default 0
+             */
+            sent: number;
+            /**
+             * Submitted
+             * @default 0
+             */
+            submitted: number;
+            /**
+             * Suppressed
+             * @default 0
+             */
+            suppressed: number;
+        };
+        /** StatusNotificationRouteDiagnostics */
+        StatusNotificationRouteDiagnostics: {
+            /**
+             * Consecutive Failures
+             * @default 0
+             */
+            consecutive_failures: number;
+            /**
+             * Degraded
+             * @default false
+             */
+            degraded: boolean;
+            /**
+             * Failed
+             * @default 0
+             */
+            failed: number;
+            /** Last Error */
+            last_error?: string | null;
+            /** Last Failure At */
+            last_failure_at?: string | null;
+            /** Last Sent At */
+            last_sent_at?: string | null;
+            /**
+             * Retries
+             * @default 0
+             */
+            retries: number;
+            /**
+             * Sent
+             * @default 0
+             */
+            sent: number;
+        };
         /** StatusReasonSeverityCounts */
         StatusReasonSeverityCounts: {
             /**
@@ -2302,12 +2525,14 @@ export interface components {
             /** Last Updated At */
             last_updated_at?: string | null;
             migration_fallback?: components["schemas"]["StatusMigrationFallbackDiagnostics"];
+            notifications?: components["schemas"]["StatusNotificationDiagnostics"];
             /** Poll Count Failed */
             poll_count_failed: number;
             /** Poll Count Success */
             poll_count_success: number;
             /** Poll Count Total */
             poll_count_total: number;
+            risk_guardrails?: components["schemas"]["StatusRiskGuardrailsDiagnostics"];
             screener_drop_counters?: components["schemas"]["StatusDropCounters"];
             /** Screener Drop Counters By Strategy */
             screener_drop_counters_by_strategy?: {
@@ -2336,6 +2561,65 @@ export interface components {
             ws_feed_diagnostics?: {
                 [key: string]: components["schemas"]["StatusWsFeedDiagnostics"];
             };
+        };
+        /**
+         * StatusRiskGuardrailsDiagnostics
+         * @description Guardrail outcomes (issue #189).
+         *
+         *     `decisions` and `entries_blocked` describe the last continuous pass. Entry-block counters
+         *     run since process start; close counters cover the bounded recent close history.
+         */
+        StatusRiskGuardrailsDiagnostics: {
+            /** Account Sources */
+            account_sources?: string[];
+            /** Blocking Guardrails */
+            blocking_guardrails?: ("margin" | "adl" | "funding_flip" | "spread_expansion" | "max_open_positions" | "max_pair_exposure" | "max_memecoin_exposure")[];
+            /**
+             * Closed Attempts
+             * @default 0
+             */
+            closed_attempts: number;
+            /** Decision Counts */
+            decision_counts?: {
+                [key: string]: number;
+            };
+            /** Decisions */
+            decisions?: components["schemas"]["GuardrailDecisionItem"][];
+            /**
+             * Entries Blocked
+             * @default false
+             */
+            entries_blocked: boolean;
+            /** Entry Blocks By Guardrail */
+            entry_blocks_by_guardrail?: {
+                [key: string]: number;
+            };
+            /**
+             * Entry Blocks Total
+             * @default 0
+             */
+            entry_blocks_total: number;
+            last_close?: components["schemas"]["GuardrailCloseRecordItem"] | null;
+            last_entry_block?: components["schemas"]["GuardrailDecisionItem"] | null;
+            /** Last Error */
+            last_error?: string | null;
+            /** Last Evaluated At */
+            last_evaluated_at?: string | null;
+            /**
+             * Monitored Positions
+             * @default 0
+             */
+            monitored_positions: number;
+            /**
+             * Recent Close Failures
+             * @default 0
+             */
+            recent_close_failures: number;
+            /**
+             * Recent Closes
+             * @default 0
+             */
+            recent_closes: number;
         };
         /** StatusSnapshotContinuity */
         StatusSnapshotContinuity: {
@@ -3141,6 +3425,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_risk_guardrails_risk_guardrails_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RiskGuardrailsResponse"];
                 };
             };
         };
