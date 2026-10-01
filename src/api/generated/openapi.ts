@@ -320,6 +320,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/positions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Positions
+         * @description Latest position monitor snapshot: margin flags, PnL, and funding per open pair.
+         */
+        get: operations["get_positions_positions_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/positions/pnl/daily": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Daily Pnl
+         * @description Daily realized/unrealized PnL with funding contribution, most recent UTC day first.
+         */
+        get: operations["get_daily_pnl_positions_pnl_daily_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/risk/guardrails": {
         parameters: {
             query?: never;
@@ -1034,6 +1074,48 @@ export interface components {
             updated_at?: string | null;
             /** Window Hours */
             window_hours: number;
+        };
+        /**
+         * DailyPnlItem
+         * @description One UTC day: `total = realized + funding + unrealized_change` (mark-to-market).
+         */
+        DailyPnlItem: {
+            /** Day */
+            day: string;
+            /** Funding Pnl Usd */
+            funding_pnl_usd: number;
+            /** Positions Closed */
+            positions_closed: number;
+            /** Positions Open */
+            positions_open: number;
+            /** Realized Pnl Usd */
+            realized_pnl_usd: number;
+            /** Total Pnl Usd */
+            total_pnl_usd: number;
+            /** Unrealized Change Usd */
+            unrealized_change_usd: number;
+            /** Unrealized Pnl Usd */
+            unrealized_pnl_usd: number;
+        };
+        /** DailyPnlResponse */
+        DailyPnlResponse: {
+            /** Days */
+            days?: components["schemas"]["DailyPnlItem"][];
+            /**
+             * Funding Pnl Usd
+             * @default 0
+             */
+            funding_pnl_usd: number;
+            /**
+             * Realized Pnl Usd
+             * @default 0
+             */
+            realized_pnl_usd: number;
+            /**
+             * Total Pnl Usd
+             * @default 0
+             */
+            total_pnl_usd: number;
         };
         /** ExecutionAttemptItem */
         ExecutionAttemptItem: {
@@ -1830,6 +1912,109 @@ export interface components {
              */
             total_cost_bps: number;
         };
+        /** PositionAccountItem */
+        PositionAccountItem: {
+            /** Available */
+            available?: string | null;
+            /** Equity */
+            equity?: string | null;
+            /** Error */
+            error?: string | null;
+            /** Free Margin Pct */
+            free_margin_pct?: number | null;
+        };
+        /** PositionSnapshotItem */
+        PositionSnapshotItem: {
+            /** Age S */
+            age_s: number;
+            /** Attempt Id */
+            attempt_id: string;
+            /** Basis Bps */
+            basis_bps?: number | null;
+            /** Funding Accrued Usd */
+            funding_accrued_usd: number;
+            /** Health Flags */
+            health_flags?: string[];
+            /** Long Entry Price */
+            long_entry_price: string;
+            /** Long Exchange */
+            long_exchange: string;
+            /** Long Funding Apr */
+            long_funding_apr?: number | null;
+            /** Long Mark */
+            long_mark?: string | null;
+            /** Long Open Quantity */
+            long_open_quantity: string;
+            /** Net Funding Apr */
+            net_funding_apr?: number | null;
+            /** Net Pnl Usd */
+            net_pnl_usd: number;
+            /** Notional Usd */
+            notional_usd: number;
+            /** Opened At */
+            opened_at: string;
+            /** Realized Pnl Usd */
+            realized_pnl_usd: number;
+            /** Short Entry Price */
+            short_entry_price: string;
+            /** Short Exchange */
+            short_exchange: string;
+            /** Short Funding Apr */
+            short_funding_apr?: number | null;
+            /** Short Mark */
+            short_mark?: string | null;
+            /** Short Open Quantity */
+            short_open_quantity: string;
+            /** Status */
+            status: string;
+            /** Symbol */
+            symbol: string;
+            /** Unrealized Pnl Usd */
+            unrealized_pnl_usd: number;
+            /** Updated At */
+            updated_at: string;
+        };
+        /**
+         * PositionsResponse
+         * @description `GET /positions`: the latest monitor snapshot of every open pair.
+         */
+        PositionsResponse: {
+            /** Accounts */
+            accounts?: {
+                [key: string]: components["schemas"]["PositionAccountItem"];
+            };
+            /** Count */
+            count: number;
+            /**
+             * Funding Accrued Usd
+             * @default 0
+             */
+            funding_accrued_usd: number;
+            /**
+             * Net Pnl Usd
+             * @default 0
+             */
+            net_pnl_usd: number;
+            /**
+             * Notional Usd
+             * @default 0
+             */
+            notional_usd: number;
+            /** Positions */
+            positions?: components["schemas"]["PositionSnapshotItem"][];
+            /**
+             * Realized Pnl Usd
+             * @default 0
+             */
+            realized_pnl_usd: number;
+            /**
+             * Unrealized Pnl Usd
+             * @default 0
+             */
+            unrealized_pnl_usd: number;
+            /** Updated At */
+            updated_at?: string | null;
+        };
         /** PreflightParityArtifactItem */
         PreflightParityArtifactItem: {
             /** Artifact Id */
@@ -2536,6 +2721,56 @@ export interface components {
              */
             sent: number;
         };
+        /**
+         * StatusPositionMonitorDiagnostics
+         * @description Position monitor summary (issue #192); `today_*` are the current UTC day so far.
+         */
+        StatusPositionMonitorDiagnostics: {
+            /** Last Error */
+            last_error?: string | null;
+            /** Last Run At */
+            last_run_at?: string | null;
+            /**
+             * Ledger Write Failures
+             * @default 0
+             */
+            ledger_write_failures: number;
+            /**
+             * Notional Usd
+             * @default 0
+             */
+            notional_usd: number;
+            /**
+             * Open Positions
+             * @default 0
+             */
+            open_positions: number;
+            /**
+             * Positions With Flags
+             * @default 0
+             */
+            positions_with_flags: number;
+            /**
+             * Today Funding Pnl Usd
+             * @default 0
+             */
+            today_funding_pnl_usd: number;
+            /**
+             * Today Realized Pnl Usd
+             * @default 0
+             */
+            today_realized_pnl_usd: number;
+            /**
+             * Today Total Pnl Usd
+             * @default 0
+             */
+            today_total_pnl_usd: number;
+            /**
+             * Unrealized Pnl Usd
+             * @default 0
+             */
+            unrealized_pnl_usd: number;
+        };
         /** StatusReasonSeverityCounts */
         StatusReasonSeverityCounts: {
             /**
@@ -2620,6 +2855,7 @@ export interface components {
             poll_count_success: number;
             /** Poll Count Total */
             poll_count_total: number;
+            position_monitor?: components["schemas"]["StatusPositionMonitorDiagnostics"];
             risk_guardrails?: components["schemas"]["StatusRiskGuardrailsDiagnostics"];
             screener_drop_counters?: components["schemas"]["StatusDropCounters"];
             /** Screener Drop Counters By Strategy */
@@ -3537,6 +3773,57 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["OpportunitiesResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_positions_positions_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PositionsResponse"];
+                };
+            };
+        };
+    };
+    get_daily_pnl_positions_pnl_daily_get: {
+        parameters: {
+            query?: {
+                days?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DailyPnlResponse"];
                 };
             };
             /** @description Validation Error */

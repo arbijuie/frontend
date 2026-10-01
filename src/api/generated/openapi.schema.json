@@ -1860,6 +1860,83 @@
         "title": "CorrelationResponse",
         "type": "object"
       },
+      "DailyPnlItem": {
+        "description": "One UTC day: `total = realized + funding + unrealized_change` (mark-to-market).",
+        "properties": {
+          "day": {
+            "title": "Day",
+            "type": "string"
+          },
+          "funding_pnl_usd": {
+            "title": "Funding Pnl Usd",
+            "type": "number"
+          },
+          "positions_closed": {
+            "title": "Positions Closed",
+            "type": "integer"
+          },
+          "positions_open": {
+            "title": "Positions Open",
+            "type": "integer"
+          },
+          "realized_pnl_usd": {
+            "title": "Realized Pnl Usd",
+            "type": "number"
+          },
+          "total_pnl_usd": {
+            "title": "Total Pnl Usd",
+            "type": "number"
+          },
+          "unrealized_change_usd": {
+            "title": "Unrealized Change Usd",
+            "type": "number"
+          },
+          "unrealized_pnl_usd": {
+            "title": "Unrealized Pnl Usd",
+            "type": "number"
+          }
+        },
+        "required": [
+          "day",
+          "realized_pnl_usd",
+          "funding_pnl_usd",
+          "unrealized_pnl_usd",
+          "unrealized_change_usd",
+          "total_pnl_usd",
+          "positions_open",
+          "positions_closed"
+        ],
+        "title": "DailyPnlItem",
+        "type": "object"
+      },
+      "DailyPnlResponse": {
+        "properties": {
+          "days": {
+            "items": {
+              "$ref": "#/components/schemas/DailyPnlItem"
+            },
+            "title": "Days",
+            "type": "array"
+          },
+          "funding_pnl_usd": {
+            "default": 0.0,
+            "title": "Funding Pnl Usd",
+            "type": "number"
+          },
+          "realized_pnl_usd": {
+            "default": 0.0,
+            "title": "Realized Pnl Usd",
+            "type": "number"
+          },
+          "total_pnl_usd": {
+            "default": 0.0,
+            "title": "Total Pnl Usd",
+            "type": "number"
+          }
+        },
+        "title": "DailyPnlResponse",
+        "type": "object"
+      },
       "ExecutionAttemptItem": {
         "properties": {
           "abort_reason": {
@@ -4104,6 +4181,286 @@
         "title": "OpportunityItem",
         "type": "object"
       },
+      "PositionAccountItem": {
+        "properties": {
+          "available": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Available"
+          },
+          "equity": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Equity"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "free_margin_pct": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Free Margin Pct"
+          }
+        },
+        "title": "PositionAccountItem",
+        "type": "object"
+      },
+      "PositionSnapshotItem": {
+        "properties": {
+          "age_s": {
+            "title": "Age S",
+            "type": "number"
+          },
+          "attempt_id": {
+            "title": "Attempt Id",
+            "type": "string"
+          },
+          "basis_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Basis Bps"
+          },
+          "funding_accrued_usd": {
+            "title": "Funding Accrued Usd",
+            "type": "number"
+          },
+          "health_flags": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Health Flags",
+            "type": "array"
+          },
+          "long_entry_price": {
+            "title": "Long Entry Price",
+            "type": "string"
+          },
+          "long_exchange": {
+            "title": "Long Exchange",
+            "type": "string"
+          },
+          "long_funding_apr": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Long Funding Apr"
+          },
+          "long_mark": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Long Mark"
+          },
+          "long_open_quantity": {
+            "title": "Long Open Quantity",
+            "type": "string"
+          },
+          "net_funding_apr": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Net Funding Apr"
+          },
+          "net_pnl_usd": {
+            "title": "Net Pnl Usd",
+            "type": "number"
+          },
+          "notional_usd": {
+            "title": "Notional Usd",
+            "type": "number"
+          },
+          "opened_at": {
+            "title": "Opened At",
+            "type": "string"
+          },
+          "realized_pnl_usd": {
+            "title": "Realized Pnl Usd",
+            "type": "number"
+          },
+          "short_entry_price": {
+            "title": "Short Entry Price",
+            "type": "string"
+          },
+          "short_exchange": {
+            "title": "Short Exchange",
+            "type": "string"
+          },
+          "short_funding_apr": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Short Funding Apr"
+          },
+          "short_mark": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Short Mark"
+          },
+          "short_open_quantity": {
+            "title": "Short Open Quantity",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "symbol": {
+            "title": "Symbol",
+            "type": "string"
+          },
+          "unrealized_pnl_usd": {
+            "title": "Unrealized Pnl Usd",
+            "type": "number"
+          },
+          "updated_at": {
+            "title": "Updated At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "attempt_id",
+          "symbol",
+          "status",
+          "long_exchange",
+          "short_exchange",
+          "opened_at",
+          "age_s",
+          "long_open_quantity",
+          "short_open_quantity",
+          "long_entry_price",
+          "short_entry_price",
+          "notional_usd",
+          "realized_pnl_usd",
+          "unrealized_pnl_usd",
+          "funding_accrued_usd",
+          "net_pnl_usd",
+          "updated_at"
+        ],
+        "title": "PositionSnapshotItem",
+        "type": "object"
+      },
+      "PositionsResponse": {
+        "description": "`GET /positions`: the latest monitor snapshot of every open pair.",
+        "properties": {
+          "accounts": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/PositionAccountItem"
+            },
+            "title": "Accounts",
+            "type": "object"
+          },
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "funding_accrued_usd": {
+            "default": 0.0,
+            "title": "Funding Accrued Usd",
+            "type": "number"
+          },
+          "net_pnl_usd": {
+            "default": 0.0,
+            "title": "Net Pnl Usd",
+            "type": "number"
+          },
+          "notional_usd": {
+            "default": 0.0,
+            "title": "Notional Usd",
+            "type": "number"
+          },
+          "positions": {
+            "items": {
+              "$ref": "#/components/schemas/PositionSnapshotItem"
+            },
+            "title": "Positions",
+            "type": "array"
+          },
+          "realized_pnl_usd": {
+            "default": 0.0,
+            "title": "Realized Pnl Usd",
+            "type": "number"
+          },
+          "unrealized_pnl_usd": {
+            "default": 0.0,
+            "title": "Unrealized Pnl Usd",
+            "type": "number"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          }
+        },
+        "required": [
+          "count"
+        ],
+        "title": "PositionsResponse",
+        "type": "object"
+      },
       "PreflightParityArtifactItem": {
         "additionalProperties": false,
         "properties": {
@@ -5532,6 +5889,76 @@
         "title": "StatusNotificationRouteDiagnostics",
         "type": "object"
       },
+      "StatusPositionMonitorDiagnostics": {
+        "additionalProperties": false,
+        "description": "Position monitor summary (issue #192); `today_*` are the current UTC day so far.",
+        "properties": {
+          "last_error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Error"
+          },
+          "last_run_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Run At"
+          },
+          "ledger_write_failures": {
+            "default": 0,
+            "title": "Ledger Write Failures",
+            "type": "integer"
+          },
+          "notional_usd": {
+            "default": 0.0,
+            "title": "Notional Usd",
+            "type": "number"
+          },
+          "open_positions": {
+            "default": 0,
+            "title": "Open Positions",
+            "type": "integer"
+          },
+          "positions_with_flags": {
+            "default": 0,
+            "title": "Positions With Flags",
+            "type": "integer"
+          },
+          "today_funding_pnl_usd": {
+            "default": 0.0,
+            "title": "Today Funding Pnl Usd",
+            "type": "number"
+          },
+          "today_realized_pnl_usd": {
+            "default": 0.0,
+            "title": "Today Realized Pnl Usd",
+            "type": "number"
+          },
+          "today_total_pnl_usd": {
+            "default": 0.0,
+            "title": "Today Total Pnl Usd",
+            "type": "number"
+          },
+          "unrealized_pnl_usd": {
+            "default": 0.0,
+            "title": "Unrealized Pnl Usd",
+            "type": "number"
+          }
+        },
+        "title": "StatusPositionMonitorDiagnostics",
+        "type": "object"
+      },
       "StatusReasonSeverityCounts": {
         "additionalProperties": false,
         "properties": {
@@ -5767,6 +6194,9 @@
           "poll_count_total": {
             "title": "Poll Count Total",
             "type": "integer"
+          },
+          "position_monitor": {
+            "$ref": "#/components/schemas/StatusPositionMonitorDiagnostics"
           },
           "risk_guardrails": {
             "$ref": "#/components/schemas/StatusRiskGuardrailsDiagnostics"
@@ -7193,6 +7623,68 @@
           }
         },
         "summary": "Get Opportunities"
+      }
+    },
+    "/positions": {
+      "get": {
+        "description": "Latest position monitor snapshot: margin flags, PnL, and funding per open pair.",
+        "operationId": "get_positions_positions_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PositionsResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Positions"
+      }
+    },
+    "/positions/pnl/daily": {
+      "get": {
+        "description": "Daily realized/unrealized PnL with funding contribution, most recent UTC day first.",
+        "operationId": "get_daily_pnl_positions_pnl_daily_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "days",
+            "required": false,
+            "schema": {
+              "default": 7,
+              "maximum": 366,
+              "minimum": 1,
+              "title": "Days",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DailyPnlResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Daily Pnl"
       }
     },
     "/risk/guardrails": {
