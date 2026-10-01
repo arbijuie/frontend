@@ -140,3 +140,16 @@
   color: v.$red;
   margin-top: 0.25rem;
 }
+
+.sectionLabel {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: v.$accent-purple;
+  margin: 0.6rem 0 0.3rem;
+
+  &:first-child {
+    margin-top: 0;
+  }
+}

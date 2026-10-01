@@ -54,6 +54,25 @@ function formatNullablePrice(value: string | null | undefined): string {
   return numeric.toFixed(2);
 }
 
+function formatHours(value: number | null | undefined): string {
+  if (value == null) return "not enough data";
+  return `${value.toFixed(1)}h`;
+}
+
+function formatLiquidityTier(tier: "H" | "M" | "L" | null | undefined): string {
+  if (tier == null) return "unknown";
+  const labels = { H: "High", M: "Medium", L: "Low" };
+  return labels[tier];
+}
+
+function formatEffectiveFee(
+  feesByExchange: Record<string, number> | undefined,
+  venue: string
+): string {
+  const fee = feesByExchange?.[venue];
+  return fee != null ? `${(fee * 100).toFixed(3)}%` : "—";
+}
+
 const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
   const [expanded, setExpanded] = useState(false);
   const longLeg = item.legs?.find((leg) => leg.side === "long");
@@ -280,6 +299,7 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
             <span>Source penalty</span>
             <span>{item.source_penalty_bps.toFixed(1)} bps</span>
           </div>
+          <div className={styles.sectionLabel}>Provenance</div>
           <div className={styles.detailRow}>
             <span>Depth source (L/S)</span>
             <span>
@@ -296,6 +316,13 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
             <span>Price source (L/S)</span>
             <span>
               {longPriceSource} / {shortPriceSource}
+            </span>
+          </div>
+          <div className={styles.detailRow}>
+            <span>Effective taker fee (L/S)</span>
+            <span>
+              {formatEffectiveFee(item.effective_taker_fee_by_exchange, longVenue)} /{" "}
+              {formatEffectiveFee(item.effective_taker_fee_by_exchange, shortVenue)}
             </span>
           </div>
           <div className={styles.detailRow}>
@@ -391,6 +418,28 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
               </span>
             </div>
           )}
+
+          <div className={styles.sectionLabel}>Risk Lens</div>
+          <div className={styles.detailRow}>
+            <span>Liquidity tier</span>
+            <span>{formatLiquidityTier(item.liquidity_tier)}</span>
+          </div>
+          <div className={styles.detailRow}>
+            <span>Funding timing asymmetry</span>
+            <span>{formatHours(item.funding_timing_asymmetry_hours)}</span>
+          </div>
+          <div className={styles.detailRow}>
+            <span>Basis divergence</span>
+            <span>{formatHours(item.basis_divergence_hours)}</span>
+          </div>
+          <div className={styles.detailRow}>
+            <span>Effective hold</span>
+            <span>{formatHours(item.effective_hold_hours)}</span>
+          </div>
+          <div className={styles.detailRow}>
+            <span>Min profitable hours</span>
+            <span>{formatHours(item.min_profitable_hours)}</span>
+          </div>
         </div>
       )}
     </div>

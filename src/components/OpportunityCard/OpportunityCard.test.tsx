@@ -273,4 +273,61 @@ describe("OpportunityCard", () => {
 
     expect(screen.queryByText(/correlated with/i)).toBeNull();
   });
+
+  it("shows fallback placeholders when risk lens fields are null", () => {
+    const item = makeItem();
+    item.liquidity_tier = null;
+    item.funding_timing_asymmetry_hours = null;
+    item.basis_divergence_hours = null;
+    item.effective_hold_hours = null;
+    item.min_profitable_hours = null;
+
+    render(<OpportunityCard item={item} updatedAt={"2026-01-01T00:00:00Z"} now={new Date()} />);
+
+    fireEvent.click(screen.getByRole("button", { name: /more details/i }));
+
+    expect(screen.getByText("unknown")).toBeTruthy();
+    expect(screen.getAllByText("not enough data")).toHaveLength(4);
+  });
+
+  it("renders risk lens values when present", () => {
+    const item = makeItem();
+    item.liquidity_tier = "H";
+    item.funding_timing_asymmetry_hours = 2.5;
+    item.basis_divergence_hours = 1.2;
+    item.effective_hold_hours = 48;
+    item.min_profitable_hours = 6;
+
+    render(<OpportunityCard item={item} updatedAt={"2026-01-01T00:00:00Z"} now={new Date()} />);
+
+    fireEvent.click(screen.getByRole("button", { name: /more details/i }));
+
+    expect(screen.getByText("High")).toBeTruthy();
+    expect(screen.getByText("2.5h")).toBeTruthy();
+    expect(screen.getByText("1.2h")).toBeTruthy();
+    expect(screen.getByText("48.0h")).toBeTruthy();
+    expect(screen.getByText("6.0h")).toBeTruthy();
+  });
+
+  it("shows provenance section with effective taker fees", () => {
+    const item = makeItem();
+    item.effective_taker_fee_by_exchange = { hyperliquid: 0.00035, lighter: 0.0001 };
+
+    render(<OpportunityCard item={item} updatedAt={"2026-01-01T00:00:00Z"} now={new Date()} />);
+
+    fireEvent.click(screen.getByRole("button", { name: /more details/i }));
+
+    expect(screen.getByText("Provenance")).toBeTruthy();
+    expect(screen.getByText("0.035% / 0.010%")).toBeTruthy();
+  });
+
+  it("shows the Risk Lens section header", () => {
+    render(
+      <OpportunityCard item={makeItem()} updatedAt={"2026-01-01T00:00:00Z"} now={new Date()} />
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /more details/i }));
+
+    expect(screen.getByText("Risk Lens")).toBeTruthy();
+  });
 });
