@@ -106,6 +106,144 @@
         "title": "AutoEntryDecisionListResponse",
         "type": "object"
       },
+      "AutoExitDecisionItem": {
+        "properties": {
+          "action": {
+            "enum": [
+              "exit",
+              "hold"
+            ],
+            "title": "Action",
+            "type": "string"
+          },
+          "attempt_id": {
+            "title": "Attempt Id",
+            "type": "string"
+          },
+          "conditions": {
+            "items": {
+              "enum": [
+                "funding_flip",
+                "score_decay",
+                "time_limit"
+              ],
+              "type": "string"
+            },
+            "title": "Conditions",
+            "type": "array"
+          },
+          "current_score_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Current Score Bps"
+          },
+          "entry_score_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Entry Score Bps"
+          },
+          "evaluated_at": {
+            "title": "Evaluated At",
+            "type": "string"
+          },
+          "held_hours": {
+            "title": "Held Hours",
+            "type": "number"
+          },
+          "net_funding_apr": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Net Funding Apr"
+          },
+          "outcome": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Outcome"
+          },
+          "reason": {
+            "default": "",
+            "title": "Reason",
+            "type": "string"
+          },
+          "symbol": {
+            "title": "Symbol",
+            "type": "string"
+          },
+          "trigger": {
+            "anyOf": [
+              {
+                "enum": [
+                  "funding_flip",
+                  "score_decay",
+                  "time_limit"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Trigger"
+          }
+        },
+        "required": [
+          "attempt_id",
+          "symbol",
+          "action",
+          "held_hours",
+          "evaluated_at"
+        ],
+        "title": "AutoExitDecisionItem",
+        "type": "object"
+      },
+      "AutoExitDecisionListResponse": {
+        "properties": {
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/AutoExitDecisionItem"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "status": {
+            "$ref": "#/components/schemas/StatusAutoExitDiagnostics"
+          }
+        },
+        "required": [
+          "count",
+          "status"
+        ],
+        "title": "AutoExitDecisionListResponse",
+        "type": "object"
+      },
       "BacktestGateResponse": {
         "properties": {
           "lock_id": {
@@ -2141,6 +2279,17 @@
           "dry_run": {
             "title": "Dry Run",
             "type": "boolean"
+          },
+          "entry_score_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Entry Score Bps"
           },
           "error": {
             "anyOf": [
@@ -5532,6 +5681,106 @@
         "title": "StatusAutoEntryDiagnostics",
         "type": "object"
       },
+      "StatusAutoExitDiagnostics": {
+        "additionalProperties": false,
+        "description": "Rule-based auto-exit (issue #194): last pass and exits by trigger since start.",
+        "properties": {
+          "enabled": {
+            "default": false,
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "exit_failures_total": {
+            "default": 0,
+            "title": "Exit Failures Total",
+            "type": "integer"
+          },
+          "exits_by_trigger": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Exits By Trigger",
+            "type": "object"
+          },
+          "exits_total": {
+            "default": 0,
+            "title": "Exits Total",
+            "type": "integer"
+          },
+          "last_exit_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Exit At"
+          },
+          "last_exit_outcome": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Exit Outcome"
+          },
+          "last_exit_symbol": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Exit Symbol"
+          },
+          "last_exit_trigger": {
+            "anyOf": [
+              {
+                "enum": [
+                  "funding_flip",
+                  "score_decay",
+                  "time_limit"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Exit Trigger"
+          },
+          "last_run_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Run At"
+          },
+          "pairs_evaluated": {
+            "default": 0,
+            "title": "Pairs Evaluated",
+            "type": "integer"
+          },
+          "pairs_exiting": {
+            "default": 0,
+            "title": "Pairs Exiting",
+            "type": "integer"
+          }
+        },
+        "title": "StatusAutoExitDiagnostics",
+        "type": "object"
+      },
       "StatusCalibrationLoaderDiagnostics": {
         "additionalProperties": false,
         "properties": {
@@ -6180,6 +6429,9 @@
           },
           "auto_entry": {
             "$ref": "#/components/schemas/StatusAutoEntryDiagnostics"
+          },
+          "auto_exit": {
+            "$ref": "#/components/schemas/StatusAutoExitDiagnostics"
           },
           "backtest_history_gate_enabled": {
             "default": false,
@@ -7126,6 +7378,49 @@
           }
         },
         "summary": "List Auto Entry Decisions"
+      }
+    },
+    "/automation/exit/decisions": {
+      "get": {
+        "description": "Recent auto-exit decisions (newest first) with trigger, conditions, and close outcome.",
+        "operationId": "list_auto_exit_decisions_automation_exit_decisions_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AutoExitDecisionListResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Auto Exit Decisions"
       }
     },
     "/backtest/gate": {

@@ -24,6 +24,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/automation/exit/decisions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Auto Exit Decisions
+         * @description Recent auto-exit decisions (newest first) with trigger, conditions, and close outcome.
+         */
+        get: operations["list_auto_exit_decisions_automation_exit_decisions_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/backtest/gate": {
         parameters: {
             query?: never;
@@ -491,6 +511,47 @@ export interface components {
             /** Items */
             items?: components["schemas"]["AutoEntryDecisionItem"][];
             status: components["schemas"]["StatusAutoEntryDiagnostics"];
+        };
+        /** AutoExitDecisionItem */
+        AutoExitDecisionItem: {
+            /**
+             * Action
+             * @enum {string}
+             */
+            action: "exit" | "hold";
+            /** Attempt Id */
+            attempt_id: string;
+            /** Conditions */
+            conditions?: ("funding_flip" | "score_decay" | "time_limit")[];
+            /** Current Score Bps */
+            current_score_bps?: number | null;
+            /** Entry Score Bps */
+            entry_score_bps?: number | null;
+            /** Evaluated At */
+            evaluated_at: string;
+            /** Held Hours */
+            held_hours: number;
+            /** Net Funding Apr */
+            net_funding_apr?: number | null;
+            /** Outcome */
+            outcome?: string | null;
+            /**
+             * Reason
+             * @default
+             */
+            reason: string;
+            /** Symbol */
+            symbol: string;
+            /** Trigger */
+            trigger?: ("funding_flip" | "score_decay" | "time_limit") | null;
+        };
+        /** AutoExitDecisionListResponse */
+        AutoExitDecisionListResponse: {
+            /** Count */
+            count: number;
+            /** Items */
+            items?: components["schemas"]["AutoExitDecisionItem"][];
+            status: components["schemas"]["StatusAutoExitDiagnostics"];
         };
         /** BacktestGateResponse */
         BacktestGateResponse: {
@@ -1202,6 +1263,8 @@ export interface components {
             created_at: string;
             /** Dry Run */
             dry_run: boolean;
+            /** Entry Score Bps */
+            entry_score_bps?: number | null;
             /** Error */
             error?: string | null;
             /** Events */
@@ -2429,6 +2492,51 @@ export interface components {
             /** Strategy Types */
             strategy_types?: string[];
         };
+        /**
+         * StatusAutoExitDiagnostics
+         * @description Rule-based auto-exit (issue #194): last pass and exits by trigger since start.
+         */
+        StatusAutoExitDiagnostics: {
+            /**
+             * Enabled
+             * @default false
+             */
+            enabled: boolean;
+            /**
+             * Exit Failures Total
+             * @default 0
+             */
+            exit_failures_total: number;
+            /** Exits By Trigger */
+            exits_by_trigger?: {
+                [key: string]: number;
+            };
+            /**
+             * Exits Total
+             * @default 0
+             */
+            exits_total: number;
+            /** Last Exit At */
+            last_exit_at?: string | null;
+            /** Last Exit Outcome */
+            last_exit_outcome?: string | null;
+            /** Last Exit Symbol */
+            last_exit_symbol?: string | null;
+            /** Last Exit Trigger */
+            last_exit_trigger?: ("funding_flip" | "score_decay" | "time_limit") | null;
+            /** Last Run At */
+            last_run_at?: string | null;
+            /**
+             * Pairs Evaluated
+             * @default 0
+             */
+            pairs_evaluated: number;
+            /**
+             * Pairs Exiting
+             * @default 0
+             */
+            pairs_exiting: number;
+        };
         /** StatusCalibrationLoaderDiagnostics */
         StatusCalibrationLoaderDiagnostics: {
             /**
@@ -2883,6 +2991,7 @@ export interface components {
             /** Active Exchanges */
             active_exchanges?: string[];
             auto_entry?: components["schemas"]["StatusAutoEntryDiagnostics"];
+            auto_exit?: components["schemas"]["StatusAutoExitDiagnostics"];
             /**
              * Backtest History Gate Enabled
              * @default false
@@ -3349,6 +3458,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AutoEntryDecisionListResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_auto_exit_decisions_automation_exit_decisions_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AutoExitDecisionListResponse"];
                 };
             };
             /** @description Validation Error */
