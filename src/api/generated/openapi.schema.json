@@ -631,6 +631,172 @@
         "title": "BacktestSummaryResponse",
         "type": "object"
       },
+      "BacktestSurvivalGroupItem": {
+        "description": "Kaplan-Meier summary for one episode group (`all`, `strategy:*`, `score:*`).",
+        "properties": {
+          "censored": {
+            "title": "Censored",
+            "type": "integer"
+          },
+          "curve": {
+            "items": {
+              "$ref": "#/components/schemas/SurvivalPoint"
+            },
+            "title": "Curve",
+            "type": "array"
+          },
+          "episodes": {
+            "title": "Episodes",
+            "type": "integer"
+          },
+          "events": {
+            "title": "Events",
+            "type": "integer"
+          },
+          "group": {
+            "title": "Group",
+            "type": "string"
+          },
+          "hazard": {
+            "items": {
+              "$ref": "#/components/schemas/HazardBucket"
+            },
+            "title": "Hazard",
+            "type": "array"
+          },
+          "max_observed_s": {
+            "title": "Max Observed S",
+            "type": "number"
+          },
+          "median_s": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Median S"
+          },
+          "p25_s": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "P25 S"
+          },
+          "p75_s": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "P75 S"
+          },
+          "restricted_horizon_s": {
+            "title": "Restricted Horizon S",
+            "type": "number"
+          },
+          "restricted_mean_s": {
+            "title": "Restricted Mean S",
+            "type": "number"
+          }
+        },
+        "required": [
+          "group",
+          "episodes",
+          "events",
+          "censored",
+          "restricted_mean_s",
+          "restricted_horizon_s",
+          "max_observed_s"
+        ],
+        "title": "BacktestSurvivalGroupItem",
+        "type": "object"
+      },
+      "BacktestSurvivalResponse": {
+        "description": "`GET /backtest/survival`: READY-episode persistence survival analysis (issue #196).",
+        "properties": {
+          "censored_total": {
+            "title": "Censored Total",
+            "type": "integer"
+          },
+          "end_reasons": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "End Reasons",
+            "type": "object"
+          },
+          "episodes_total": {
+            "title": "Episodes Total",
+            "type": "integer"
+          },
+          "events_total": {
+            "title": "Events Total",
+            "type": "integer"
+          },
+          "gap_tolerance_s": {
+            "title": "Gap Tolerance S",
+            "type": "number"
+          },
+          "generated_at": {
+            "title": "Generated At",
+            "type": "string"
+          },
+          "groups": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/BacktestSurvivalGroupItem"
+            },
+            "title": "Groups",
+            "type": "object"
+          },
+          "lookback_days": {
+            "title": "Lookback Days",
+            "type": "number"
+          },
+          "window_end": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Window End"
+          },
+          "window_start": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Window Start"
+          }
+        },
+        "required": [
+          "generated_at",
+          "lookback_days",
+          "gap_tolerance_s",
+          "episodes_total",
+          "events_total",
+          "censored_total"
+        ],
+        "title": "BacktestSurvivalResponse",
+        "type": "object"
+      },
       "ConfigResponse": {
         "properties": {
           "active_exchanges": {
@@ -2820,6 +2986,45 @@
         "title": "HTTPValidationError",
         "type": "object"
       },
+      "HazardBucket": {
+        "description": "Life-table hazard: events per second at risk inside [start_s, end_s).",
+        "properties": {
+          "at_risk": {
+            "title": "At Risk",
+            "type": "integer"
+          },
+          "censored": {
+            "title": "Censored",
+            "type": "integer"
+          },
+          "end_s": {
+            "title": "End S",
+            "type": "number"
+          },
+          "events": {
+            "title": "Events",
+            "type": "integer"
+          },
+          "hazard_per_hour": {
+            "title": "Hazard Per Hour",
+            "type": "number"
+          },
+          "start_s": {
+            "title": "Start S",
+            "type": "number"
+          }
+        },
+        "required": [
+          "start_s",
+          "end_s",
+          "at_risk",
+          "events",
+          "censored",
+          "hazard_per_hour"
+        ],
+        "title": "HazardBucket",
+        "type": "object"
+      },
       "LegItem": {
         "properties": {
           "borrow_rate": {
@@ -3779,6 +3984,119 @@
           "status"
         ],
         "title": "OpportunityItem",
+        "type": "object"
+      },
+      "PersistenceForecastItem": {
+        "properties": {
+          "age_s": {
+            "title": "Age S",
+            "type": "number"
+          },
+          "episodes": {
+            "default": 0,
+            "title": "Episodes",
+            "type": "integer"
+          },
+          "group": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Group"
+          },
+          "long_exchange": {
+            "title": "Long Exchange",
+            "type": "string"
+          },
+          "median_remaining_s": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Median Remaining S"
+          },
+          "score_bps": {
+            "title": "Score Bps",
+            "type": "number"
+          },
+          "short_exchange": {
+            "title": "Short Exchange",
+            "type": "string"
+          },
+          "strategy_type": {
+            "enum": [
+              "funding_arbitrage",
+              "basis_convergence",
+              "cash_and_carry"
+            ],
+            "title": "Strategy Type",
+            "type": "string"
+          },
+          "survival_at_age": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Survival At Age"
+          },
+          "survive_probability": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "title": "Survive Probability",
+            "type": "object"
+          },
+          "symbol": {
+            "title": "Symbol",
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "strategy_type",
+          "long_exchange",
+          "short_exchange",
+          "score_bps",
+          "age_s"
+        ],
+        "title": "PersistenceForecastItem",
+        "type": "object"
+      },
+      "PersistenceForecastResponse": {
+        "properties": {
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "generated_at": {
+            "title": "Generated At",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/PersistenceForecastItem"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "generated_at",
+          "count"
+        ],
+        "title": "PersistenceForecastResponse",
         "type": "object"
       },
       "PreflightParityArtifactItem": {
@@ -5467,6 +5785,45 @@
         "title": "StatusWsFeedDiagnostics",
         "type": "object"
       },
+      "SurvivalPoint": {
+        "description": "Kaplan-Meier step at time `t_s`; `std_error` is Greenwood's estimate.",
+        "properties": {
+          "at_risk": {
+            "title": "At Risk",
+            "type": "integer"
+          },
+          "censored": {
+            "title": "Censored",
+            "type": "integer"
+          },
+          "events": {
+            "title": "Events",
+            "type": "integer"
+          },
+          "std_error": {
+            "title": "Std Error",
+            "type": "number"
+          },
+          "survival": {
+            "title": "Survival",
+            "type": "number"
+          },
+          "t_s": {
+            "title": "T S",
+            "type": "number"
+          }
+        },
+        "required": [
+          "t_s",
+          "at_risk",
+          "events",
+          "censored",
+          "survival",
+          "std_error"
+        ],
+        "title": "SurvivalPoint",
+        "type": "object"
+      },
       "TrustConfidenceDistributionItem": {
         "additionalProperties": false,
         "properties": {
@@ -5920,6 +6277,84 @@
           }
         },
         "summary": "Get Backtest Summary"
+      }
+    },
+    "/backtest/survival": {
+      "get": {
+        "description": "Kaplan-Meier persistence of READY episodes and life-table hazards per group.",
+        "operationId": "get_backtest_survival_backtest_survival_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "lookback_days",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "exclusiveMinimum": 0,
+                  "maximum": 366,
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Lookback Days"
+            }
+          },
+          {
+            "in": "query",
+            "name": "refresh",
+            "required": false,
+            "schema": {
+              "default": false,
+              "title": "Refresh",
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BacktestSurvivalResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Backtest Survival"
+      }
+    },
+    "/backtest/survival/forecast": {
+      "get": {
+        "description": "Expected persistence window of each READY candidate, given how long it has been READY.",
+        "operationId": "get_persistence_forecast_backtest_survival_forecast_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersistenceForecastResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Persistence Forecast"
       }
     },
     "/config": {

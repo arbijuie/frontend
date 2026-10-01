@@ -126,6 +126,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/backtest/survival": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Backtest Survival
+         * @description Kaplan-Meier persistence of READY episodes and life-table hazards per group.
+         */
+        get: operations["get_backtest_survival_backtest_survival_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/backtest/survival/forecast": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Persistence Forecast
+         * @description Expected persistence window of each READY candidate, given how long it has been READY.
+         */
+        get: operations["get_persistence_forecast_backtest_survival_forecast_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/config": {
         parameters: {
             query?: never;
@@ -589,6 +629,66 @@ export interface components {
             symbols_covered: number;
             /** Total Snapshots */
             total_snapshots: number;
+        };
+        /**
+         * BacktestSurvivalGroupItem
+         * @description Kaplan-Meier summary for one episode group (`all`, `strategy:*`, `score:*`).
+         */
+        BacktestSurvivalGroupItem: {
+            /** Censored */
+            censored: number;
+            /** Curve */
+            curve?: components["schemas"]["SurvivalPoint"][];
+            /** Episodes */
+            episodes: number;
+            /** Events */
+            events: number;
+            /** Group */
+            group: string;
+            /** Hazard */
+            hazard?: components["schemas"]["HazardBucket"][];
+            /** Max Observed S */
+            max_observed_s: number;
+            /** Median S */
+            median_s?: number | null;
+            /** P25 S */
+            p25_s?: number | null;
+            /** P75 S */
+            p75_s?: number | null;
+            /** Restricted Horizon S */
+            restricted_horizon_s: number;
+            /** Restricted Mean S */
+            restricted_mean_s: number;
+        };
+        /**
+         * BacktestSurvivalResponse
+         * @description `GET /backtest/survival`: READY-episode persistence survival analysis (issue #196).
+         */
+        BacktestSurvivalResponse: {
+            /** Censored Total */
+            censored_total: number;
+            /** End Reasons */
+            end_reasons?: {
+                [key: string]: number;
+            };
+            /** Episodes Total */
+            episodes_total: number;
+            /** Events Total */
+            events_total: number;
+            /** Gap Tolerance S */
+            gap_tolerance_s: number;
+            /** Generated At */
+            generated_at: string;
+            /** Groups */
+            groups?: {
+                [key: string]: components["schemas"]["BacktestSurvivalGroupItem"];
+            };
+            /** Lookback Days */
+            lookback_days: number;
+            /** Window End */
+            window_end?: string | null;
+            /** Window Start */
+            window_start?: string | null;
         };
         /** ConfigResponse */
         ConfigResponse: {
@@ -1359,6 +1459,24 @@ export interface components {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
         };
+        /**
+         * HazardBucket
+         * @description Life-table hazard: events per second at risk inside [start_s, end_s).
+         */
+        HazardBucket: {
+            /** At Risk */
+            at_risk: number;
+            /** Censored */
+            censored: number;
+            /** End S */
+            end_s: number;
+            /** Events */
+            events: number;
+            /** Hazard Per Hour */
+            hazard_per_hour: number;
+            /** Start S */
+            start_s: number;
+        };
         /** LegItem */
         LegItem: {
             /** Borrow Rate */
@@ -1668,6 +1786,48 @@ export interface components {
              * @default 0
              */
             total_cost_bps: number;
+        };
+        /** PersistenceForecastItem */
+        PersistenceForecastItem: {
+            /** Age S */
+            age_s: number;
+            /**
+             * Episodes
+             * @default 0
+             */
+            episodes: number;
+            /** Group */
+            group?: string | null;
+            /** Long Exchange */
+            long_exchange: string;
+            /** Median Remaining S */
+            median_remaining_s?: number | null;
+            /** Score Bps */
+            score_bps: number;
+            /** Short Exchange */
+            short_exchange: string;
+            /**
+             * Strategy Type
+             * @enum {string}
+             */
+            strategy_type: "funding_arbitrage" | "basis_convergence" | "cash_and_carry";
+            /** Survival At Age */
+            survival_at_age?: number | null;
+            /** Survive Probability */
+            survive_probability?: {
+                [key: string]: number;
+            };
+            /** Symbol */
+            symbol: string;
+        };
+        /** PersistenceForecastResponse */
+        PersistenceForecastResponse: {
+            /** Count */
+            count: number;
+            /** Generated At */
+            generated_at: string;
+            /** Items */
+            items?: components["schemas"]["PersistenceForecastItem"][];
         };
         /** PreflightParityArtifactItem */
         PreflightParityArtifactItem: {
@@ -2466,6 +2626,24 @@ export interface components {
              */
             reconnects_in_window: number;
         };
+        /**
+         * SurvivalPoint
+         * @description Kaplan-Meier step at time `t_s`; `std_error` is Greenwood's estimate.
+         */
+        SurvivalPoint: {
+            /** At Risk */
+            at_risk: number;
+            /** Censored */
+            censored: number;
+            /** Events */
+            events: number;
+            /** Std Error */
+            std_error: number;
+            /** Survival */
+            survival: number;
+            /** T S */
+            t_s: number;
+        };
         /** TrustConfidenceDistributionItem */
         TrustConfidenceDistributionItem: {
             /**
@@ -2812,6 +2990,58 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["BacktestSummaryResponse"];
+                };
+            };
+        };
+    };
+    get_backtest_survival_backtest_survival_get: {
+        parameters: {
+            query?: {
+                lookback_days?: number | null;
+                refresh?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BacktestSurvivalResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_persistence_forecast_backtest_survival_forecast_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PersistenceForecastResponse"];
                 };
             };
         };
