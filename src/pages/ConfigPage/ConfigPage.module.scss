@@ -6,6 +6,23 @@
   margin-bottom: 1rem;
 }
 
+.fieldGroup {
+  margin-bottom: 0.85rem;
+
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+}
+
+.groupLabel {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: v.$accent-purple;
+  margin-bottom: 0.4rem;
+}
+
 .grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -21,7 +38,14 @@
 .field {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.3rem;
+}
+
+.booleanField {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .toggleField {
@@ -31,6 +55,9 @@
 }
 
 .label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
   font-size: 0.75rem;
   color: v.$text-muted;
 }
@@ -42,6 +69,14 @@
   color: v.$text-primary;
   padding: 0.45rem 0.55rem;
   font-size: 0.875rem;
+
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  appearance: textfield;
+  -moz-appearance: textfield;
 }
 
 .actions {
@@ -75,4 +110,50 @@
 .buttonSecondary:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+.conflictBanner {
+  margin-bottom: 0.5rem;
+  padding: 0.6rem 0.75rem;
+  border: 0.0625rem solid v.$yellow;
+  background: v.$yellow-bg;
+  border-radius: 0.625rem;
+  font-size: 0.78rem;
+  color: v.$text-primary;
+}
+
+.conflictButton {
+  margin-left: 0.4rem;
+  border: 0.0625rem solid v.$yellow;
+  background: none;
+  color: v.$yellow;
+  border-radius: 0.4rem;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.72rem;
+  cursor: pointer;
+}
+
+.persistToggle {
+  margin: 0.5rem 0;
+  font-size: 0.78rem;
+  color: v.$text-secondary;
+}
+
+.revertRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.5rem 0;
+}
+
+.revertLabel {
+  font-size: 0.75rem;
+  color: v.$text-muted;
+}
+
+.editorIntro {
+  font-size: 0.78rem;
+  color: v.$text-muted;
+  margin-bottom: 0.5rem;
 }
