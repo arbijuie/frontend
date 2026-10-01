@@ -12,6 +12,15 @@ const trendClass: Record<FundingTrend, string> = {
   stable: styles.neutral,
 };
 
+const RISK_LENS_HELP: Record<string, string> = {
+  liquidityTier: "Relative order-book depth tier (High/Medium/Low) at the recommended trade size",
+  fundingTimingAsymmetry:
+    "Hours between long and short funding settlement times — larger values mean more exposure risk between payouts",
+  basisDivergence: "Hours the basis has been widening beyond the configured threshold",
+  effectiveHold: "Expected holding window after adjusting for instability and risk dampeners",
+  minProfitableHours: "Minimum hold time needed to cover costs at current rates",
+};
+
 interface OpportunityCardProps {
   item: OpportunityItem;
   updatedAt: string | null;
@@ -421,23 +430,68 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
 
           <div className={styles.sectionLabel}>Risk Lens</div>
           <div className={styles.detailRow}>
-            <span>Liquidity tier</span>
+            <span className={styles.detailLabelWithHelp}>
+              Liquidity tier
+              <span
+                className={styles.helpDot}
+                title={RISK_LENS_HELP.liquidityTier}
+                aria-label={RISK_LENS_HELP.liquidityTier}
+              >
+                ?
+              </span>
+            </span>
             <span>{formatLiquidityTier(item.liquidity_tier)}</span>
           </div>
           <div className={styles.detailRow}>
-            <span>Funding timing asymmetry</span>
+            <span className={styles.detailLabelWithHelp}>
+              Funding timing asymmetry
+              <span
+                className={styles.helpDot}
+                title={RISK_LENS_HELP.fundingTimingAsymmetry}
+                aria-label={RISK_LENS_HELP.fundingTimingAsymmetry}
+              >
+                ?
+              </span>
+            </span>
             <span>{formatHours(item.funding_timing_asymmetry_hours)}</span>
           </div>
           <div className={styles.detailRow}>
-            <span>Basis divergence</span>
+            <span className={styles.detailLabelWithHelp}>
+              Basis divergence
+              <span
+                className={styles.helpDot}
+                title={RISK_LENS_HELP.basisDivergence}
+                aria-label={RISK_LENS_HELP.basisDivergence}
+              >
+                ?
+              </span>
+            </span>
             <span>{formatHours(item.basis_divergence_hours)}</span>
           </div>
           <div className={styles.detailRow}>
-            <span>Effective hold</span>
+            <span className={styles.detailLabelWithHelp}>
+              Effective hold
+              <span
+                className={styles.helpDot}
+                title={RISK_LENS_HELP.effectiveHold}
+                aria-label={RISK_LENS_HELP.effectiveHold}
+              >
+                ?
+              </span>
+            </span>
             <span>{formatHours(item.effective_hold_hours)}</span>
           </div>
           <div className={styles.detailRow}>
-            <span>Min profitable hours</span>
+            <span className={styles.detailLabelWithHelp}>
+              Min profitable hours
+              <span
+                className={styles.helpDot}
+                title={RISK_LENS_HELP.minProfitableHours}
+                aria-label={RISK_LENS_HELP.minProfitableHours}
+              >
+                ?
+              </span>
+            </span>
             <span>{formatHours(item.min_profitable_hours)}</span>
           </div>
         </div>
