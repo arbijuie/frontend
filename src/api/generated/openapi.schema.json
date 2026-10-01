@@ -1,6 +1,111 @@
 {
   "components": {
     "schemas": {
+      "AutoEntryDecisionItem": {
+        "properties": {
+          "action": {
+            "enum": [
+              "enter",
+              "skip"
+            ],
+            "title": "Action",
+            "type": "string"
+          },
+          "attempt_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Attempt Id"
+          },
+          "evaluated_at": {
+            "title": "Evaluated At",
+            "type": "string"
+          },
+          "long_exchange": {
+            "title": "Long Exchange",
+            "type": "string"
+          },
+          "outcome": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Outcome"
+          },
+          "reasons": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Reasons",
+            "type": "array"
+          },
+          "score_bps": {
+            "title": "Score Bps",
+            "type": "number"
+          },
+          "short_exchange": {
+            "title": "Short Exchange",
+            "type": "string"
+          },
+          "strategy_type": {
+            "enum": [
+              "funding_arbitrage",
+              "basis_convergence",
+              "cash_and_carry"
+            ],
+            "title": "Strategy Type",
+            "type": "string"
+          },
+          "symbol": {
+            "title": "Symbol",
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "strategy_type",
+          "long_exchange",
+          "short_exchange",
+          "score_bps",
+          "action",
+          "evaluated_at"
+        ],
+        "title": "AutoEntryDecisionItem",
+        "type": "object"
+      },
+      "AutoEntryDecisionListResponse": {
+        "properties": {
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/AutoEntryDecisionItem"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "status": {
+            "$ref": "#/components/schemas/StatusAutoEntryDiagnostics"
+          }
+        },
+        "required": [
+          "count",
+          "status"
+        ],
+        "title": "AutoEntryDecisionListResponse",
+        "type": "object"
+      },
       "BacktestGateResponse": {
         "properties": {
           "lock_id": {
@@ -5339,6 +5444,94 @@
         "title": "SnapshotContinuityResponse",
         "type": "object"
       },
+      "StatusAutoEntryDiagnostics": {
+        "additionalProperties": false,
+        "description": "Rule-based auto-entry (issue #193). `global_blockers` stopped every entry last pass.",
+        "properties": {
+          "enabled": {
+            "default": false,
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "entries_total": {
+            "default": 0,
+            "title": "Entries Total",
+            "type": "integer"
+          },
+          "entry_failures_total": {
+            "default": 0,
+            "title": "Entry Failures Total",
+            "type": "integer"
+          },
+          "global_blockers": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Global Blockers",
+            "type": "array"
+          },
+          "last_entry_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Entry At"
+          },
+          "last_entry_outcome": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Entry Outcome"
+          },
+          "last_entry_symbol": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Entry Symbol"
+          },
+          "last_pass_skip_reasons": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Last Pass Skip Reasons",
+            "type": "object"
+          },
+          "last_run_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Run At"
+          },
+          "strategy_types": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Strategy Types",
+            "type": "array"
+          }
+        },
+        "title": "StatusAutoEntryDiagnostics",
+        "type": "object"
+      },
       "StatusCalibrationLoaderDiagnostics": {
         "additionalProperties": false,
         "properties": {
@@ -5984,6 +6177,9 @@
             },
             "title": "Active Exchanges",
             "type": "array"
+          },
+          "auto_entry": {
+            "$ref": "#/components/schemas/StatusAutoEntryDiagnostics"
           },
           "backtest_history_gate_enabled": {
             "default": false,
@@ -6889,6 +7085,49 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/automation/entry/decisions": {
+      "get": {
+        "description": "Recent auto-entry decisions (newest first) with skip reasons and entry outcomes.",
+        "operationId": "list_auto_entry_decisions_automation_entry_decisions_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AutoEntryDecisionListResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Auto Entry Decisions"
+      }
+    },
     "/backtest/gate": {
       "get": {
         "operationId": "get_backtest_gate_backtest_gate_get",

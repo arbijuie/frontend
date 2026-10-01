@@ -4,6 +4,26 @@
  */
 
 export interface paths {
+    "/automation/entry/decisions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Auto Entry Decisions
+         * @description Recent auto-entry decisions (newest first) with skip reasons and entry outcomes.
+         */
+        get: operations["list_auto_entry_decisions_automation_entry_decisions_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/backtest/gate": {
         parameters: {
             query?: never;
@@ -435,6 +455,43 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** AutoEntryDecisionItem */
+        AutoEntryDecisionItem: {
+            /**
+             * Action
+             * @enum {string}
+             */
+            action: "enter" | "skip";
+            /** Attempt Id */
+            attempt_id?: string | null;
+            /** Evaluated At */
+            evaluated_at: string;
+            /** Long Exchange */
+            long_exchange: string;
+            /** Outcome */
+            outcome?: string | null;
+            /** Reasons */
+            reasons?: string[];
+            /** Score Bps */
+            score_bps: number;
+            /** Short Exchange */
+            short_exchange: string;
+            /**
+             * Strategy Type
+             * @enum {string}
+             */
+            strategy_type: "funding_arbitrage" | "basis_convergence" | "cash_and_carry";
+            /** Symbol */
+            symbol: string;
+        };
+        /** AutoEntryDecisionListResponse */
+        AutoEntryDecisionListResponse: {
+            /** Count */
+            count: number;
+            /** Items */
+            items?: components["schemas"]["AutoEntryDecisionItem"][];
+            status: components["schemas"]["StatusAutoEntryDiagnostics"];
+        };
         /** BacktestGateResponse */
         BacktestGateResponse: {
             /** Lock Id */
@@ -2335,6 +2392,43 @@ export interface components {
             /** Write Failures */
             write_failures: number;
         };
+        /**
+         * StatusAutoEntryDiagnostics
+         * @description Rule-based auto-entry (issue #193). `global_blockers` stopped every entry last pass.
+         */
+        StatusAutoEntryDiagnostics: {
+            /**
+             * Enabled
+             * @default false
+             */
+            enabled: boolean;
+            /**
+             * Entries Total
+             * @default 0
+             */
+            entries_total: number;
+            /**
+             * Entry Failures Total
+             * @default 0
+             */
+            entry_failures_total: number;
+            /** Global Blockers */
+            global_blockers?: string[];
+            /** Last Entry At */
+            last_entry_at?: string | null;
+            /** Last Entry Outcome */
+            last_entry_outcome?: string | null;
+            /** Last Entry Symbol */
+            last_entry_symbol?: string | null;
+            /** Last Pass Skip Reasons */
+            last_pass_skip_reasons?: {
+                [key: string]: number;
+            };
+            /** Last Run At */
+            last_run_at?: string | null;
+            /** Strategy Types */
+            strategy_types?: string[];
+        };
         /** StatusCalibrationLoaderDiagnostics */
         StatusCalibrationLoaderDiagnostics: {
             /**
@@ -2788,6 +2882,7 @@ export interface components {
         StatusResponse: {
             /** Active Exchanges */
             active_exchanges?: string[];
+            auto_entry?: components["schemas"]["StatusAutoEntryDiagnostics"];
             /**
              * Backtest History Gate Enabled
              * @default false
@@ -3236,6 +3331,37 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    list_auto_entry_decisions_automation_entry_decisions_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AutoEntryDecisionListResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     get_backtest_gate_backtest_gate_get: {
         parameters: {
             query?: never;
