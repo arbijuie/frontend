@@ -53,6 +53,11 @@ function parseDraftValue(raw: DraftValue): { value: number | boolean; valid: boo
   if (typeof raw === "boolean") {
     return { value: raw, valid: true };
   }
+  // An empty string must NOT be treated as a valid number: Number("") coerces to 0,
+  // which would silently accept a cleared/invalid input as "the user wants zero".
+  if (raw.trim() === "") {
+    return { value: NaN, valid: false };
+  }
   const parsed = Number(raw);
   return Number.isFinite(parsed) ? { value: parsed, valid: true } : { value: NaN, valid: false };
 }
