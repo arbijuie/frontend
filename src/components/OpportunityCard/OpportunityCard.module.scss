@@ -145,3 +145,15 @@
   align-items: center;
   gap: 0.3rem;
 }
+
+.subToggle {
+  width: 100%;
+  margin: 0.4rem 0;
+  padding: 0.3rem;
+  background: none;
+  border: 1px dashed v.$border-color;
+  border-radius: 0.4rem;
+  color: v.$accent-purple;
+  font-size: 0.72rem;
+  cursor: pointer;
+}

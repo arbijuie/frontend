@@ -145,7 +145,7 @@ describe("OpportunityCard", () => {
     expect(label.nextElementSibling?.textContent).toBe("—");
   });
 
-  it("shows source penalty and canonical source states in details", () => {
+  it("shows source penalty and canonical source states in provenance", () => {
     const item = makeItem();
     item.source_penalty_bps = 3;
     item.depth_source_state_by_exchange = {
@@ -160,14 +160,16 @@ describe("OpportunityCard", () => {
     render(<OpportunityCard item={item} updatedAt={"2026-01-01T00:00:00Z"} now={new Date()} />);
 
     fireEvent.click(screen.getByRole("button", { name: /more details/i }));
-
     expect(screen.getByText("Total cost (fees + slippage + source penalty)")).toBeTruthy();
-    expect(screen.getAllByText(/source penalty/i).length).toBe(2);
+    expect(screen.getByText(/^source penalty$/i)).toBeTruthy();
+
+    fireEvent.click(screen.getByRole("button", { name: /show data provenance/i }));
+
     expect(screen.getByText("real_rest / unavailable")).toBeTruthy();
     expect(screen.getByText("real_rest / config")).toBeTruthy();
   });
 
-  it("shows canonical microstructure values for both legs", () => {
+  it("shows canonical microstructure values for both legs in provenance", () => {
     const item = makeItem();
     item.microstructure_by_exchange = {
       hyperliquid: {
@@ -203,6 +205,7 @@ describe("OpportunityCard", () => {
     render(<OpportunityCard item={item} updatedAt={"2026-01-01T00:00:00Z"} now={new Date()} />);
 
     fireEvent.click(screen.getByRole("button", { name: /more details/i }));
+    fireEvent.click(screen.getByRole("button", { name: /show data provenance/i }));
 
     expect(screen.getByText("2.00 / 3.95")).toBeTruthy();
     expect(screen.getByText("120000 / 90000")).toBeTruthy();
@@ -212,7 +215,7 @@ describe("OpportunityCard", () => {
     expect(screen.getByText("real_rest / config")).toBeTruthy();
   });
 
-  it("renders unavailable depth bands as placeholders", () => {
+  it("renders unavailable depth bands as placeholders in provenance", () => {
     const item = makeItem();
     item.microstructure_by_exchange = {
       hyperliquid: {
@@ -248,6 +251,7 @@ describe("OpportunityCard", () => {
     render(<OpportunityCard item={item} updatedAt={"2026-01-01T00:00:00Z"} now={new Date()} />);
 
     fireEvent.click(screen.getByRole("button", { name: /more details/i }));
+    fireEvent.click(screen.getByRole("button", { name: /show data provenance/i }));
 
     expect(screen.getAllByText("— / —").length).toBeGreaterThan(0);
   });
@@ -309,19 +313,22 @@ describe("OpportunityCard", () => {
     expect(screen.getByText("6.0h")).toBeTruthy();
   });
 
-  it("shows provenance section with effective taker fees", () => {
+  it("shows provenance section with effective taker fees after expanding it", () => {
     const item = makeItem();
     item.effective_taker_fee_by_exchange = { hyperliquid: 0.00035, lighter: 0.0001 };
 
     render(<OpportunityCard item={item} updatedAt={"2026-01-01T00:00:00Z"} now={new Date()} />);
 
     fireEvent.click(screen.getByRole("button", { name: /more details/i }));
+    expect(screen.queryByText("Provenance")).toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: /show data provenance/i }));
 
     expect(screen.getByText("Provenance")).toBeTruthy();
     expect(screen.getByText("0.035% / 0.010%")).toBeTruthy();
   });
 
-  it("shows the Risk Lens section header", () => {
+  it("shows the Risk Lens section header right after More details", () => {
     render(
       <OpportunityCard item={makeItem()} updatedAt={"2026-01-01T00:00:00Z"} now={new Date()} />
     );
@@ -329,5 +336,17 @@ describe("OpportunityCard", () => {
     fireEvent.click(screen.getByRole("button", { name: /more details/i }));
 
     expect(screen.getByText("Risk Lens")).toBeTruthy();
+  });
+
+  it("toggles the provenance button label between show and hide", () => {
+    render(
+      <OpportunityCard item={makeItem()} updatedAt={"2026-01-01T00:00:00Z"} now={new Date()} />
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /more details/i }));
+    expect(screen.getByRole("button", { name: /show data provenance/i })).toBeTruthy();
+
+    fireEvent.click(screen.getByRole("button", { name: /show data provenance/i }));
+    expect(screen.getByRole("button", { name: /hide data provenance/i })).toBeTruthy();
   });
 });

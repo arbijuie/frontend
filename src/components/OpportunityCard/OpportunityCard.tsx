@@ -85,6 +85,7 @@ function formatEffectiveFee(
 
 const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
   const [expanded, setExpanded] = useState(false);
+  const [showProvenance, setShowProvenance] = useState(false);
   const longLeg = item.legs?.find((leg) => leg.side === "long");
   const shortLeg = item.legs?.find((leg) => leg.side === "short");
   const longVenue = longLeg?.venue ?? "unknown";
@@ -299,75 +300,7 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
             <span>Source penalty</span>
             <span>{item.source_penalty_bps.toFixed(1)} bps</span>
           </div>
-          <div className={styles.sectionLabel}>Provenance</div>
-          <div className={styles.detailRow}>
-            <span>Depth source (L/S)</span>
-            <span>
-              {longDepthSource} / {shortDepthSource}
-            </span>
-          </div>
-          <div className={styles.detailRow}>
-            <span>Fee source (L/S)</span>
-            <span>
-              {longFeeSource} / {shortFeeSource}
-            </span>
-          </div>
-          <div className={styles.detailRow}>
-            <span>Price source (L/S)</span>
-            <span>
-              {longPriceSource} / {shortPriceSource}
-            </span>
-          </div>
-          <div className={styles.detailRow}>
-            <span>Effective taker fee (L/S)</span>
-            <span>
-              {formatEffectiveFee(item.effective_taker_fee_by_exchange, longVenue)} /{" "}
-              {formatEffectiveFee(item.effective_taker_fee_by_exchange, shortVenue)}
-            </span>
-          </div>
-          <div className={styles.detailRow}>
-            <span>Spread bps (L/S)</span>
-            <span>
-              {formatNullableNumber(longMicro?.spread_bps, 2)} /{" "}
-              {formatNullableNumber(shortMicro?.spread_bps, 2)}
-            </span>
-          </div>
-          <div className={styles.detailRow}>
-            <span>Depth 10bps USD (L/S)</span>
-            <span>
-              {formatNullableNumber(longMicro?.depth_band_10bps_usd, 0)} /{" "}
-              {formatNullableNumber(shortMicro?.depth_band_10bps_usd, 0)}
-            </span>
-          </div>
-          <div className={styles.detailRow}>
-            <span>Depth 20bps USD (L/S)</span>
-            <span>
-              {formatNullableNumber(longMicro?.depth_band_20bps_usd, 0)} /{" "}
-              {formatNullableNumber(shortMicro?.depth_band_20bps_usd, 0)}
-            </span>
-          </div>
-          <div className={styles.detailRow}>
-            <span>Mid price (L/S)</span>
-            <span>
-              {formatNullablePrice(longMicro?.mid)} / {formatNullablePrice(shortMicro?.mid)}
-            </span>
-          </div>
-          <div className={styles.detailRow}>
-            <span>Recommended size</span>
-            <span>
-              {item.recommended_size_usd != null
-                ? `$${item.recommended_size_usd.toLocaleString()}`
-                : "—"}
-            </span>
-          </div>
-          <div className={styles.detailRow}>
-            <span>Depth quality</span>
-            <span>{item.depth_quality ?? "—"}</span>
-          </div>
-          <div className={styles.detailRow}>
-            <span>Total cost</span>
-            <span>{item.total_cost_bps.toFixed(1)} bps</span>
-          </div>
+
           {item.long_forecast && (
             <>
               <div className={styles.detailRow}>
@@ -455,6 +388,89 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
             </span>
             <span>{formatHours(item.min_profitable_hours)}</span>
           </div>
+
+          <button
+            type="button"
+            className={styles.subToggle}
+            onClick={() => setShowProvenance(!showProvenance)}
+            aria-expanded={showProvenance}
+          >
+            {showProvenance ? "Hide data provenance" : "Show data provenance"}
+          </button>
+
+          {showProvenance && (
+            <>
+              <div className={styles.sectionLabel}>Provenance</div>
+              <div className={styles.detailRow}>
+                <span>Depth source (L/S)</span>
+                <span>
+                  {longDepthSource} / {shortDepthSource}
+                </span>
+              </div>
+              <div className={styles.detailRow}>
+                <span>Fee source (L/S)</span>
+                <span>
+                  {longFeeSource} / {shortFeeSource}
+                </span>
+              </div>
+              <div className={styles.detailRow}>
+                <span>Price source (L/S)</span>
+                <span>
+                  {longPriceSource} / {shortPriceSource}
+                </span>
+              </div>
+              <div className={styles.detailRow}>
+                <span>Effective taker fee (L/S)</span>
+                <span>
+                  {formatEffectiveFee(item.effective_taker_fee_by_exchange, longVenue)} /{" "}
+                  {formatEffectiveFee(item.effective_taker_fee_by_exchange, shortVenue)}
+                </span>
+              </div>
+              <div className={styles.detailRow}>
+                <span>Spread bps (L/S)</span>
+                <span>
+                  {formatNullableNumber(longMicro?.spread_bps, 2)} /{" "}
+                  {formatNullableNumber(shortMicro?.spread_bps, 2)}
+                </span>
+              </div>
+              <div className={styles.detailRow}>
+                <span>Depth 10bps USD (L/S)</span>
+                <span>
+                  {formatNullableNumber(longMicro?.depth_band_10bps_usd, 0)} /{" "}
+                  {formatNullableNumber(shortMicro?.depth_band_10bps_usd, 0)}
+                </span>
+              </div>
+              <div className={styles.detailRow}>
+                <span>Depth 20bps USD (L/S)</span>
+                <span>
+                  {formatNullableNumber(longMicro?.depth_band_20bps_usd, 0)} /{" "}
+                  {formatNullableNumber(shortMicro?.depth_band_20bps_usd, 0)}
+                </span>
+              </div>
+              <div className={styles.detailRow}>
+                <span>Mid price (L/S)</span>
+                <span>
+                  {formatNullablePrice(longMicro?.mid)} / {formatNullablePrice(shortMicro?.mid)}
+                </span>
+              </div>
+              <div className={styles.detailRow}>
+                <span>Recommended size</span>
+                <span>
+                  {item.recommended_size_usd != null
+                    ? `$${item.recommended_size_usd.toLocaleString()}`
+                    : "—"}
+                </span>
+              </div>
+              <div className={styles.detailRow}>
+                <span>Depth quality</span>
+                <span>{item.depth_quality ?? "—"}</span>
+              </div>
+              <div className={styles.detailRow}>
+                <span>Total cost</span>
+                <span>{item.total_cost_bps.toFixed(1)} bps</span>
+              </div>
+            </>
+          )}
         </div>
       )}
     </div>
