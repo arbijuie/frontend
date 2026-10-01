@@ -30,15 +30,17 @@ export function buildDraftFromConfig(config: ConfigResponse, fields: string[]): 
 }
 
 export function buildDraftFromPreset(
-  presetValues: Record<string, number | boolean>,
+  presetValues: Record<string, string | number | boolean>,
   fields: string[],
   liveConfig: ConfigResponse
 ): Draft {
   const draft: Draft = {};
   for (const field of fields) {
-    if (field in presetValues) {
-      const value = presetValues[field];
-      draft[field] = typeof value === "boolean" ? value : String(value);
+    const presetValue = presetValues[field];
+    const isUsablePresetValue = typeof presetValue === "number" || typeof presetValue === "boolean";
+
+    if (isUsablePresetValue) {
+      draft[field] = typeof presetValue === "boolean" ? presetValue : String(presetValue);
     } else {
       const liveValue = configValue(liveConfig, field);
       draft[field] = typeof liveValue === "boolean" ? liveValue : String(liveValue);
