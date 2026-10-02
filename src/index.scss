@@ -4,10 +4,29 @@
   box-sizing: border-box;
 }
 
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   background: v.$bg-primary;
   color: v.$text-primary;
-  padding-bottom: v.$nav-height;
+  min-height: 100dvh;
+  --app-max-width: 48rem;
+  --app-horizontal-padding: 0.8rem;
+  --app-nav-max-width: 48rem;
+  padding-bottom: calc(v.$nav-height + env(safe-area-inset-bottom, 0px) + 0.75rem);
   overflow-x: hidden;
+}
+
+@media (min-width: 960px) {
+  body {
+    --app-max-width: 64rem;
+    --app-horizontal-padding: 1.25rem;
+    --app-nav-max-width: 60rem;
+  }
 }

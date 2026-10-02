@@ -157,3 +157,54 @@
   font-size: 0.72rem;
   cursor: pointer;
 }
+
+@media (min-width: 960px) {
+  .card {
+    padding: 0.62rem 0.72rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .topRow {
+    margin-bottom: 0.45rem;
+  }
+
+  .symbol {
+    font-size: 0.93rem;
+  }
+
+  .route {
+    margin-bottom: 0.58rem;
+    gap: 0.28rem;
+  }
+
+  .metrics {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.42rem 0.62rem;
+    font-size: 0.83rem;
+  }
+
+  .metricLabel,
+  .metricLabelWithHelp {
+    font-size: 0.72rem;
+  }
+
+  .expandButton {
+    margin-top: 0.35rem;
+    font-size: 0.7rem;
+  }
+
+  .details {
+    margin-top: 0.45rem;
+    padding-top: 0.45rem;
+  }
+
+  .detailRow {
+    font-size: 0.72rem;
+    padding: 0.16rem 0;
+  }
+
+  .sectionLabel {
+    margin: 0.5rem 0 0.24rem;
+    font-size: 0.66rem;
+  }
+}
