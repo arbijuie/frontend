@@ -6020,16 +6020,44 @@
       },
       "StatusExecutionHydrationDiagnostics": {
         "additionalProperties": false,
+        "description": "Restart reconciliation run (issues #166, #167).\n\n`completeness` is `complete` (every seeded attempt evaluated and resolved), `partial`\n(all evaluated, some unresolved), or `incomplete` (some not evaluated: outside the bounded\nwindow or the run aborted); null before the first run. `pending_attempts` =\n`unresolved_attempts` + `skipped_attempts` is what blocks new entries.",
         "properties": {
           "completed": {
             "default": false,
             "title": "Completed",
             "type": "boolean"
           },
+          "completeness": {
+            "anyOf": [
+              {
+                "enum": [
+                  "complete",
+                  "partial",
+                  "incomplete"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Completeness"
+          },
           "conflicts_total": {
             "default": 0,
             "title": "Conflicts Total",
             "type": "integer"
+          },
+          "duration_ms": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duration Ms"
           },
           "error": {
             "anyOf": [
@@ -6041,6 +6069,11 @@
               }
             ],
             "title": "Error"
+          },
+          "evaluated_attempts": {
+            "default": 0,
+            "title": "Evaluated Attempts",
+            "type": "integer"
           },
           "hydrated_attempts": {
             "default": 0,
@@ -6058,10 +6091,58 @@
             ],
             "title": "Last Run At"
           },
+          "pending_attempts": {
+            "default": 0,
+            "title": "Pending Attempts",
+            "type": "integer"
+          },
+          "seed_attempts": {
+            "default": 0,
+            "title": "Seed Attempts",
+            "type": "integer"
+          },
+          "skipped_attempts": {
+            "default": 0,
+            "title": "Skipped Attempts",
+            "type": "integer"
+          },
+          "skipped_by_reason": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Skipped By Reason",
+            "type": "object"
+          },
           "unresolved_attempts": {
             "default": 0,
             "title": "Unresolved Attempts",
             "type": "integer"
+          },
+          "window_lookback_s": {
+            "default": 0.0,
+            "title": "Window Lookback S",
+            "type": "number"
+          },
+          "window_max_attempts": {
+            "default": 0,
+            "title": "Window Max Attempts",
+            "type": "integer"
+          },
+          "window_start": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Window Start"
+          },
+          "window_time_budget_s": {
+            "default": 0.0,
+            "title": "Window Time Budget S",
+            "type": "number"
           }
         },
         "title": "StatusExecutionHydrationDiagnostics",

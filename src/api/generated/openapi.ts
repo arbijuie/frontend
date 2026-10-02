@@ -2723,20 +2723,37 @@ export interface components {
              */
             strict_depth: number;
         };
-        /** StatusExecutionHydrationDiagnostics */
+        /**
+         * StatusExecutionHydrationDiagnostics
+         * @description Restart reconciliation run (issues #166, #167).
+         *
+         *     `completeness` is `complete` (every seeded attempt evaluated and resolved), `partial`
+         *     (all evaluated, some unresolved), or `incomplete` (some not evaluated: outside the bounded
+         *     window or the run aborted); null before the first run. `pending_attempts` =
+         *     `unresolved_attempts` + `skipped_attempts` is what blocks new entries.
+         */
         StatusExecutionHydrationDiagnostics: {
             /**
              * Completed
              * @default false
              */
             completed: boolean;
+            /** Completeness */
+            completeness?: ("complete" | "partial" | "incomplete") | null;
             /**
              * Conflicts Total
              * @default 0
              */
             conflicts_total: number;
+            /** Duration Ms */
+            duration_ms?: number | null;
             /** Error */
             error?: string | null;
+            /**
+             * Evaluated Attempts
+             * @default 0
+             */
+            evaluated_attempts: number;
             /**
              * Hydrated Attempts
              * @default 0
@@ -2745,10 +2762,46 @@ export interface components {
             /** Last Run At */
             last_run_at?: string | null;
             /**
+             * Pending Attempts
+             * @default 0
+             */
+            pending_attempts: number;
+            /**
+             * Seed Attempts
+             * @default 0
+             */
+            seed_attempts: number;
+            /**
+             * Skipped Attempts
+             * @default 0
+             */
+            skipped_attempts: number;
+            /** Skipped By Reason */
+            skipped_by_reason?: {
+                [key: string]: number;
+            };
+            /**
              * Unresolved Attempts
              * @default 0
              */
             unresolved_attempts: number;
+            /**
+             * Window Lookback S
+             * @default 0
+             */
+            window_lookback_s: number;
+            /**
+             * Window Max Attempts
+             * @default 0
+             */
+            window_max_attempts: number;
+            /** Window Start */
+            window_start?: string | null;
+            /**
+             * Window Time Budget S
+             * @default 0
+             */
+            window_time_budget_s: number;
         };
         /** StatusExecutionPersistenceDiagnostics */
         StatusExecutionPersistenceDiagnostics: {
