@@ -46,8 +46,6 @@ function App() {
 
   useEffect(() => {
     if (!shouldBootstrapTelegramSession) {
-      setAuthReady(true);
-      setAuthError(null);
       return;
     }
 
