@@ -2784,12 +2784,13 @@ export interface components {
              * @default false
              */
             adapter_enabled: boolean;
+            adapter_health?: components["schemas"]["StatusNautilusAdapterHealth"];
             /**
              * Adapter Selection Reason
              * @default adapter_disabled
              * @enum {string}
              */
-            adapter_selection_reason: "adapter_disabled" | "migration_not_primary" | "dry_run_required" | "adapter_unavailable" | "venue_out_of_scope" | "selected";
+            adapter_selection_reason: "adapter_disabled" | "migration_not_primary" | "dry_run_required" | "adapter_unavailable" | "adapter_fallback" | "venue_out_of_scope" | "selected";
             /** Adapter Venues */
             adapter_venues?: string[];
             /**
@@ -2836,6 +2837,47 @@ export interface components {
              * @default true
              */
             observe_only: boolean;
+        };
+        /**
+         * StatusNautilusAdapterHealth
+         * @description Adapter health fail-safe (issue #164); `fallback` means deny-and-observe is latched.
+         */
+        StatusNautilusAdapterHealth: {
+            /**
+             * Consecutive Faults
+             * @default 0
+             */
+            consecutive_faults: number;
+            /** Fallback Client Order Id */
+            fallback_client_order_id?: string | null;
+            /** Fallback Engaged At */
+            fallback_engaged_at?: string | null;
+            /** Fallback Reason */
+            fallback_reason?: string | null;
+            /** Fallback Trigger */
+            fallback_trigger?: ("consecutive_faults" | "invariant_violation") | null;
+            /** Fault Counts */
+            fault_counts?: {
+                [key: string]: number;
+            };
+            /**
+             * Fault Threshold
+             * @default 3
+             */
+            fault_threshold: number;
+            /** Last Fault */
+            last_fault?: string | null;
+            /**
+             * Resets Total
+             * @default 0
+             */
+            resets_total: number;
+            /**
+             * State
+             * @default healthy
+             * @enum {string}
+             */
+            state: "healthy" | "degraded" | "fallback";
         };
         /**
          * StatusNotificationDiagnostics
