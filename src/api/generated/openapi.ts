@@ -1100,6 +1100,21 @@ export interface components {
             max_volume_fraction: number;
             /** Migration Nautilus Adapter Enabled */
             migration_nautilus_adapter_enabled: boolean;
+            /**
+             * Migration Nautilus Adapter Rollout Ledger Path
+             * @default
+             */
+            migration_nautilus_adapter_rollout_ledger_path: string;
+            /**
+             * Migration Nautilus Adapter Rollout Plan Path
+             * @default
+             */
+            migration_nautilus_adapter_rollout_plan_path: string;
+            /**
+             * Migration Nautilus Adapter Rollout Step
+             * @default S0
+             */
+            migration_nautilus_adapter_rollout_step: string;
             /** Migration Nautilus Adapter Venues */
             migration_nautilus_adapter_venues: string;
             /** Migration Nautilus Compare Enabled */
@@ -1219,6 +1234,8 @@ export interface components {
             max_volume_fraction?: number | null;
             /** Migration Nautilus Adapter Enabled */
             migration_nautilus_adapter_enabled?: boolean | null;
+            /** Migration Nautilus Adapter Rollout Step */
+            migration_nautilus_adapter_rollout_step?: string | null;
             /** Migration Nautilus Compare Enabled */
             migration_nautilus_compare_enabled?: boolean | null;
             /** Migration Nautilus Enabled */
@@ -2665,6 +2682,45 @@ export interface components {
             write_failures: number;
         };
         /**
+         * StatusAdapterRolloutDiagnostics
+         * @description Staged venue/order-type rollout of the Nautilus adapter (issue #171).
+         */
+        StatusAdapterRolloutDiagnostics: {
+            /**
+             * Active Step
+             * @default S0
+             */
+            active_step: string;
+            /** Detail */
+            detail?: string | null;
+            /** Excluded Venues */
+            excluded_venues?: string[];
+            /** Ledger Error */
+            ledger_error?: string | null;
+            /** Ledger Steps Passed */
+            ledger_steps_passed?: string[];
+            /** Order Types */
+            order_types?: string[];
+            /**
+             * Plan Version
+             * @default
+             */
+            plan_version: string;
+            /**
+             * Reason
+             * @default active
+             * @enum {string}
+             */
+            reason: "active" | "unknown_step" | "gate_missing" | "capability_missing";
+            /**
+             * Requested Step
+             * @default S0
+             */
+            requested_step: string;
+            /** Venues */
+            venues?: string[];
+        };
+        /**
          * StatusAutoEntryDiagnostics
          * @description Rule-based auto-entry (issue #193). `global_blockers` stopped every entry last pass.
          */
@@ -3047,6 +3103,7 @@ export interface components {
              */
             adapter_enabled: boolean;
             adapter_health?: components["schemas"]["StatusNautilusAdapterHealth"];
+            adapter_rollout?: components["schemas"]["StatusAdapterRolloutDiagnostics"];
             /**
              * Adapter Selection Reason
              * @default adapter_disabled

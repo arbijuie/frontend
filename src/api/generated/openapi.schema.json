@@ -1465,6 +1465,21 @@
             "title": "Migration Nautilus Adapter Enabled",
             "type": "boolean"
           },
+          "migration_nautilus_adapter_rollout_ledger_path": {
+            "default": "",
+            "title": "Migration Nautilus Adapter Rollout Ledger Path",
+            "type": "string"
+          },
+          "migration_nautilus_adapter_rollout_plan_path": {
+            "default": "",
+            "title": "Migration Nautilus Adapter Rollout Plan Path",
+            "type": "string"
+          },
+          "migration_nautilus_adapter_rollout_step": {
+            "default": "S0",
+            "title": "Migration Nautilus Adapter Rollout Step",
+            "type": "string"
+          },
           "migration_nautilus_adapter_venues": {
             "title": "Migration Nautilus Adapter Venues",
             "type": "string"
@@ -2001,6 +2016,17 @@
               }
             ],
             "title": "Migration Nautilus Adapter Enabled"
+          },
+          "migration_nautilus_adapter_rollout_step": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Migration Nautilus Adapter Rollout Step"
           },
           "migration_nautilus_compare_enabled": {
             "anyOf": [
@@ -6022,6 +6048,90 @@
         "title": "SnapshotContinuityResponse",
         "type": "object"
       },
+      "StatusAdapterRolloutDiagnostics": {
+        "additionalProperties": false,
+        "description": "Staged venue/order-type rollout of the Nautilus adapter (issue #171).",
+        "properties": {
+          "active_step": {
+            "default": "S0",
+            "title": "Active Step",
+            "type": "string"
+          },
+          "detail": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Detail"
+          },
+          "excluded_venues": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Excluded Venues",
+            "type": "array"
+          },
+          "ledger_error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ledger Error"
+          },
+          "ledger_steps_passed": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Ledger Steps Passed",
+            "type": "array"
+          },
+          "order_types": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Order Types",
+            "type": "array"
+          },
+          "plan_version": {
+            "default": "",
+            "title": "Plan Version",
+            "type": "string"
+          },
+          "reason": {
+            "default": "active",
+            "enum": [
+              "active",
+              "unknown_step",
+              "gate_missing",
+              "capability_missing"
+            ],
+            "title": "Reason",
+            "type": "string"
+          },
+          "requested_step": {
+            "default": "S0",
+            "title": "Requested Step",
+            "type": "string"
+          },
+          "venues": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Venues",
+            "type": "array"
+          }
+        },
+        "title": "StatusAdapterRolloutDiagnostics",
+        "type": "object"
+      },
       "StatusAutoEntryDiagnostics": {
         "additionalProperties": false,
         "description": "Rule-based auto-entry (issue #193). `global_blockers` stopped every entry last pass.",
@@ -6636,6 +6746,9 @@
           },
           "adapter_health": {
             "$ref": "#/components/schemas/StatusNautilusAdapterHealth"
+          },
+          "adapter_rollout": {
+            "$ref": "#/components/schemas/StatusAdapterRolloutDiagnostics"
           },
           "adapter_selection_reason": {
             "default": "adapter_disabled",
