@@ -82,6 +82,12 @@ The WS connection itself is owned by an app-level `OpportunitiesSocketProvider` 
 - A degraded-state banner with an operator hint and a manual Retry button, announced via `aria-live` for screen readers
 - This is the browser's own connection to the backend — a separate concern from the "WS Feed Reliability" section above it, which reports the backend's own connections to the exchanges
 
+Each Opportunity card's expanded ("More details") view includes:
+
+- **Score breakdown, risk, and history metrics** — visible immediately, including a **Risk Lens** block (liquidity tier, funding timing asymmetry, basis divergence, effective hold window, minimum profitable hours), each with a tap-friendly help tooltip (`HelpTooltip`) explaining the metric — works identically on desktop (click or hover) and mobile (tap), unlike a plain `title` attribute.
+- **Provenance** (per-exchange data source labels, effective taker fees, spread, depth bands, mid price for both legs) — nested behind its own "Show data provenance" toggle, since it's consulted less often than the metrics above it; keeps the default expanded view compact.
+- Nullable risk/provenance fields show an explicit, meaning-specific placeholder ("not enough data", "unknown") rather than a bare dash.
+
 Adding a section:
 
 1. Create `src/pages/<Name>Page/<Name>Page.tsx`, wrap content in the shared `.page` layout, and call `usePageTitle("<Name>")`.

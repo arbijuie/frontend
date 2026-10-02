@@ -4,6 +4,46 @@
  */
 
 export interface paths {
+    "/automation/entry/decisions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Auto Entry Decisions
+         * @description Recent auto-entry decisions (newest first) with skip reasons and entry outcomes.
+         */
+        get: operations["list_auto_entry_decisions_automation_entry_decisions_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/automation/exit/decisions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Auto Exit Decisions
+         * @description Recent auto-exit decisions (newest first) with trigger, conditions, and close outcome.
+         */
+        get: operations["list_auto_exit_decisions_automation_exit_decisions_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/backtest/gate": {
         parameters: {
             query?: never;
@@ -221,6 +261,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/execution/close": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Close Two Leg Position
+         * @description Close an open pair: both legs in parallel, then a bounded reconciliation window.
+         */
+        post: operations["close_two_leg_position_execution_close_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/execution/open": {
         parameters: {
             query?: never;
@@ -340,6 +400,66 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/positions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Positions
+         * @description Latest position monitor snapshot: margin flags, PnL, and funding per open pair.
+         */
+        get: operations["get_positions_positions_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/positions/pnl/daily": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Daily Pnl
+         * @description Daily realized/unrealized PnL with funding contribution, most recent UTC day first.
+         */
+        get: operations["get_daily_pnl_positions_pnl_daily_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/risk/guardrails": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Risk Guardrails
+         * @description Guardrail decisions, entry blocks, close history, and the active thresholds.
+         */
+        get: operations["get_risk_guardrails_risk_guardrails_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/snapshots/continuity": {
         parameters: {
             query?: never;
@@ -395,6 +515,84 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** AutoEntryDecisionItem */
+        AutoEntryDecisionItem: {
+            /**
+             * Action
+             * @enum {string}
+             */
+            action: "enter" | "skip";
+            /** Attempt Id */
+            attempt_id?: string | null;
+            /** Evaluated At */
+            evaluated_at: string;
+            /** Long Exchange */
+            long_exchange: string;
+            /** Outcome */
+            outcome?: string | null;
+            /** Reasons */
+            reasons?: string[];
+            /** Score Bps */
+            score_bps: number;
+            /** Short Exchange */
+            short_exchange: string;
+            /**
+             * Strategy Type
+             * @enum {string}
+             */
+            strategy_type: "funding_arbitrage" | "basis_convergence" | "cash_and_carry";
+            /** Symbol */
+            symbol: string;
+        };
+        /** AutoEntryDecisionListResponse */
+        AutoEntryDecisionListResponse: {
+            /** Count */
+            count: number;
+            /** Items */
+            items?: components["schemas"]["AutoEntryDecisionItem"][];
+            status: components["schemas"]["StatusAutoEntryDiagnostics"];
+        };
+        /** AutoExitDecisionItem */
+        AutoExitDecisionItem: {
+            /**
+             * Action
+             * @enum {string}
+             */
+            action: "exit" | "hold";
+            /** Attempt Id */
+            attempt_id: string;
+            /** Conditions */
+            conditions?: ("funding_flip" | "score_decay" | "time_limit")[];
+            /** Current Score Bps */
+            current_score_bps?: number | null;
+            /** Entry Score Bps */
+            entry_score_bps?: number | null;
+            /** Evaluated At */
+            evaluated_at: string;
+            /** Held Hours */
+            held_hours: number;
+            /** Net Funding Apr */
+            net_funding_apr?: number | null;
+            /** Outcome */
+            outcome?: string | null;
+            /**
+             * Reason
+             * @default
+             */
+            reason: string;
+            /** Symbol */
+            symbol: string;
+            /** Trigger */
+            trigger?: ("funding_flip" | "score_decay" | "time_limit") | null;
+        };
+        /** AutoExitDecisionListResponse */
+        AutoExitDecisionListResponse: {
+            /** Count */
+            count: number;
+            /** Items */
+            items?: components["schemas"]["AutoExitDecisionItem"][];
+            status: components["schemas"]["StatusAutoExitDiagnostics"];
+        };
         /** BacktestGateResponse */
         BacktestGateResponse: {
             /** Lock Id */
@@ -1095,18 +1293,78 @@ export interface components {
             /** Window Hours */
             window_hours: number;
         };
+        /**
+         * DailyPnlItem
+         * @description One UTC day: `total = realized + funding + unrealized_change` (mark-to-market).
+         */
+        DailyPnlItem: {
+            /** Day */
+            day: string;
+            /** Funding Pnl Usd */
+            funding_pnl_usd: number;
+            /** Positions Closed */
+            positions_closed: number;
+            /** Positions Open */
+            positions_open: number;
+            /** Realized Pnl Usd */
+            realized_pnl_usd: number;
+            /** Total Pnl Usd */
+            total_pnl_usd: number;
+            /** Unrealized Change Usd */
+            unrealized_change_usd: number;
+            /** Unrealized Pnl Usd */
+            unrealized_pnl_usd: number;
+        };
+        /** DailyPnlResponse */
+        DailyPnlResponse: {
+            /** Days */
+            days?: components["schemas"]["DailyPnlItem"][];
+            /**
+             * Funding Pnl Usd
+             * @default 0
+             */
+            funding_pnl_usd: number;
+            /**
+             * Realized Pnl Usd
+             * @default 0
+             */
+            realized_pnl_usd: number;
+            /**
+             * Total Pnl Usd
+             * @default 0
+             */
+            total_pnl_usd: number;
+        };
         /** ExecutionAttemptItem */
         ExecutionAttemptItem: {
             /** Abort Reason */
             abort_reason?: string | null;
             /** Attempt Id */
             attempt_id: string;
+            /**
+             * Close Attempts
+             * @default 0
+             */
+            close_attempts: number;
+            /** Close Orders */
+            close_orders?: components["schemas"]["ExecutionOrderItem"][];
+            /** Close Reason */
+            close_reason?: string | null;
+            close_reconciliation?: components["schemas"]["ExecutionCloseReconciliationItem"] | null;
+            /** Close Requested At */
+            close_requested_at?: string | null;
+            /** Close Trigger */
+            close_trigger?: ("manual" | "guardrail" | "signal") | null;
+            /** Closed At */
+            closed_at?: string | null;
             /** Consecutive Rollbacks */
             consecutive_rollbacks: number;
             /** Created At */
             created_at: string;
             /** Dry Run */
             dry_run: boolean;
+            /** Entry Score Bps */
+            entry_score_bps?: number | null;
             /** Error */
             error?: string | null;
             /** Events */
@@ -1186,6 +1444,51 @@ export interface components {
             items?: components["schemas"]["ExecutionAttemptItem"][];
         };
         /**
+         * ExecutionCloseReconciliationItem
+         * @description Outcome of the last bounded close run; `complete` means both legs are flat.
+         */
+        ExecutionCloseReconciliationItem: {
+            /** Complete */
+            complete: boolean;
+            /**
+             * Imbalance
+             * @default 0
+             */
+            imbalance: string;
+            /**
+             * Long Residual
+             * @default 0
+             */
+            long_residual: string;
+            /** Notes */
+            notes?: string[];
+            /** Poll S */
+            poll_s: number;
+            /** Reconciled At */
+            reconciled_at: string;
+            /** Rounds */
+            rounds: number;
+            /**
+             * Short Residual
+             * @default 0
+             */
+            short_residual: string;
+            /** Unresolved Orders */
+            unresolved_orders?: string[];
+            /** Window S */
+            window_s: number;
+        };
+        /** ExecutionCloseRequest */
+        ExecutionCloseRequest: {
+            /** Attempt Id */
+            attempt_id: string;
+            /**
+             * Reason
+             * @default manual close
+             */
+            reason: string;
+        };
+        /**
          * ExecutionGatePostureItem
          * @description Explicit Phase 4-pre gate posture, independent of the execution switches.
          *
@@ -1215,6 +1518,13 @@ export interface components {
         ExecutionLegItem: {
             /** Attempts */
             attempts: number;
+            /** Close Average Price */
+            close_average_price?: string | null;
+            /**
+             * Closed Quantity
+             * @default 0
+             */
+            closed_quantity: string;
             /** Exchange */
             exchange: string;
             fill?: components["schemas"]["ExecutionOrderItem"] | null;
@@ -1453,6 +1763,59 @@ export interface components {
              * @enum {string}
              */
             trend: "rising" | "falling" | "stable";
+        };
+        /** GuardrailCloseRecordItem */
+        GuardrailCloseRecordItem: {
+            /** At */
+            at: string;
+            /** Attempt Id */
+            attempt_id: string;
+            /** Guardrail */
+            guardrail: string;
+            /** Orders */
+            orders?: string[];
+            /** Reason */
+            reason: string;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "closed" | "failed";
+        };
+        /**
+         * GuardrailDecisionItem
+         * @description One hard-guardrail decision with the value and threshold it was compared with.
+         */
+        GuardrailDecisionItem: {
+            /**
+             * Action
+             * @enum {string}
+             */
+            action: "alert" | "block_entry" | "close_position";
+            /** Attempt Id */
+            attempt_id?: string | null;
+            /** Evaluated At */
+            evaluated_at: string;
+            /** Exchange */
+            exchange?: string | null;
+            /**
+             * Guardrail
+             * @enum {string}
+             */
+            guardrail: "margin" | "adl" | "funding_flip" | "spread_expansion" | "max_open_positions" | "max_pair_exposure" | "max_memecoin_exposure";
+            /** Observed */
+            observed?: number | null;
+            /** Reason */
+            reason: string;
+            /**
+             * Severity
+             * @enum {string}
+             */
+            severity: "info" | "warning" | "critical";
+            /** Symbol */
+            symbol?: string | null;
+            /** Threshold */
+            threshold?: number | null;
         };
         /** HTTPValidationError */
         HTTPValidationError: {
@@ -1829,6 +2192,109 @@ export interface components {
             /** Items */
             items?: components["schemas"]["PersistenceForecastItem"][];
         };
+        /** PositionAccountItem */
+        PositionAccountItem: {
+            /** Available */
+            available?: string | null;
+            /** Equity */
+            equity?: string | null;
+            /** Error */
+            error?: string | null;
+            /** Free Margin Pct */
+            free_margin_pct?: number | null;
+        };
+        /** PositionSnapshotItem */
+        PositionSnapshotItem: {
+            /** Age S */
+            age_s: number;
+            /** Attempt Id */
+            attempt_id: string;
+            /** Basis Bps */
+            basis_bps?: number | null;
+            /** Funding Accrued Usd */
+            funding_accrued_usd: number;
+            /** Health Flags */
+            health_flags?: string[];
+            /** Long Entry Price */
+            long_entry_price: string;
+            /** Long Exchange */
+            long_exchange: string;
+            /** Long Funding Apr */
+            long_funding_apr?: number | null;
+            /** Long Mark */
+            long_mark?: string | null;
+            /** Long Open Quantity */
+            long_open_quantity: string;
+            /** Net Funding Apr */
+            net_funding_apr?: number | null;
+            /** Net Pnl Usd */
+            net_pnl_usd: number;
+            /** Notional Usd */
+            notional_usd: number;
+            /** Opened At */
+            opened_at: string;
+            /** Realized Pnl Usd */
+            realized_pnl_usd: number;
+            /** Short Entry Price */
+            short_entry_price: string;
+            /** Short Exchange */
+            short_exchange: string;
+            /** Short Funding Apr */
+            short_funding_apr?: number | null;
+            /** Short Mark */
+            short_mark?: string | null;
+            /** Short Open Quantity */
+            short_open_quantity: string;
+            /** Status */
+            status: string;
+            /** Symbol */
+            symbol: string;
+            /** Unrealized Pnl Usd */
+            unrealized_pnl_usd: number;
+            /** Updated At */
+            updated_at: string;
+        };
+        /**
+         * PositionsResponse
+         * @description `GET /positions`: the latest monitor snapshot of every open pair.
+         */
+        PositionsResponse: {
+            /** Accounts */
+            accounts?: {
+                [key: string]: components["schemas"]["PositionAccountItem"];
+            };
+            /** Count */
+            count: number;
+            /**
+             * Funding Accrued Usd
+             * @default 0
+             */
+            funding_accrued_usd: number;
+            /**
+             * Net Pnl Usd
+             * @default 0
+             */
+            net_pnl_usd: number;
+            /**
+             * Notional Usd
+             * @default 0
+             */
+            notional_usd: number;
+            /** Positions */
+            positions?: components["schemas"]["PositionSnapshotItem"][];
+            /**
+             * Realized Pnl Usd
+             * @default 0
+             */
+            realized_pnl_usd: number;
+            /**
+             * Unrealized Pnl Usd
+             * @default 0
+             */
+            unrealized_pnl_usd: number;
+            /** Updated At */
+            updated_at?: string | null;
+        };
         /** PreflightParityArtifactItem */
         PreflightParityArtifactItem: {
             /** Artifact Id */
@@ -2017,6 +2483,70 @@ export interface components {
              */
             severity: "watching" | "blocked";
         };
+        /**
+         * RiskGuardrailsResponse
+         * @description `GET /risk/guardrails`: the status summary plus thresholds and close history.
+         */
+        RiskGuardrailsResponse: {
+            /** Account Sources */
+            account_sources?: string[];
+            /** Blocking Guardrails */
+            blocking_guardrails?: ("margin" | "adl" | "funding_flip" | "spread_expansion" | "max_open_positions" | "max_pair_exposure" | "max_memecoin_exposure")[];
+            /** Close Records */
+            close_records?: components["schemas"]["GuardrailCloseRecordItem"][];
+            /** Closed Attempt Ids */
+            closed_attempt_ids?: string[];
+            /**
+             * Closed Attempts
+             * @default 0
+             */
+            closed_attempts: number;
+            /** Decision Counts */
+            decision_counts?: {
+                [key: string]: number;
+            };
+            /** Decisions */
+            decisions?: components["schemas"]["GuardrailDecisionItem"][];
+            /**
+             * Entries Blocked
+             * @default false
+             */
+            entries_blocked: boolean;
+            /** Entry Blocks By Guardrail */
+            entry_blocks_by_guardrail?: {
+                [key: string]: number;
+            };
+            /**
+             * Entry Blocks Total
+             * @default 0
+             */
+            entry_blocks_total: number;
+            last_close?: components["schemas"]["GuardrailCloseRecordItem"] | null;
+            last_entry_block?: components["schemas"]["GuardrailDecisionItem"] | null;
+            /** Last Error */
+            last_error?: string | null;
+            /** Last Evaluated At */
+            last_evaluated_at?: string | null;
+            /**
+             * Monitored Positions
+             * @default 0
+             */
+            monitored_positions: number;
+            /**
+             * Recent Close Failures
+             * @default 0
+             */
+            recent_close_failures: number;
+            /**
+             * Recent Closes
+             * @default 0
+             */
+            recent_closes: number;
+            /** Thresholds */
+            thresholds?: {
+                [key: string]: number | string;
+            };
+        };
         /** SnapshotContinuityResponse */
         SnapshotContinuityResponse: {
             /** Distinct Timestamps */
@@ -2084,6 +2614,88 @@ export interface components {
             window_start_at?: string | null;
             /** Write Failures */
             write_failures: number;
+        };
+        /**
+         * StatusAutoEntryDiagnostics
+         * @description Rule-based auto-entry (issue #193). `global_blockers` stopped every entry last pass.
+         */
+        StatusAutoEntryDiagnostics: {
+            /**
+             * Enabled
+             * @default false
+             */
+            enabled: boolean;
+            /**
+             * Entries Total
+             * @default 0
+             */
+            entries_total: number;
+            /**
+             * Entry Failures Total
+             * @default 0
+             */
+            entry_failures_total: number;
+            /** Global Blockers */
+            global_blockers?: string[];
+            /** Last Entry At */
+            last_entry_at?: string | null;
+            /** Last Entry Outcome */
+            last_entry_outcome?: string | null;
+            /** Last Entry Symbol */
+            last_entry_symbol?: string | null;
+            /** Last Pass Skip Reasons */
+            last_pass_skip_reasons?: {
+                [key: string]: number;
+            };
+            /** Last Run At */
+            last_run_at?: string | null;
+            /** Strategy Types */
+            strategy_types?: string[];
+        };
+        /**
+         * StatusAutoExitDiagnostics
+         * @description Rule-based auto-exit (issue #194): last pass and exits by trigger since start.
+         */
+        StatusAutoExitDiagnostics: {
+            /**
+             * Enabled
+             * @default false
+             */
+            enabled: boolean;
+            /**
+             * Exit Failures Total
+             * @default 0
+             */
+            exit_failures_total: number;
+            /** Exits By Trigger */
+            exits_by_trigger?: {
+                [key: string]: number;
+            };
+            /**
+             * Exits Total
+             * @default 0
+             */
+            exits_total: number;
+            /** Last Exit At */
+            last_exit_at?: string | null;
+            /** Last Exit Outcome */
+            last_exit_outcome?: string | null;
+            /** Last Exit Symbol */
+            last_exit_symbol?: string | null;
+            /** Last Exit Trigger */
+            last_exit_trigger?: ("funding_flip" | "score_decay" | "time_limit") | null;
+            /** Last Run At */
+            last_run_at?: string | null;
+            /**
+             * Pairs Evaluated
+             * @default 0
+             */
+            pairs_evaluated: number;
+            /**
+             * Pairs Exiting
+             * @default 0
+             */
+            pairs_exiting: number;
         };
         /** StatusCalibrationLoaderDiagnostics */
         StatusCalibrationLoaderDiagnostics: {
@@ -2385,6 +2997,142 @@ export interface components {
              */
             observe_only: boolean;
         };
+        /**
+         * StatusNotificationDiagnostics
+         * @description Alert delivery health. `healthy` is false while any route's last delivery failed.
+         */
+        StatusNotificationDiagnostics: {
+            /** Degraded Routes */
+            degraded_routes?: string[];
+            /**
+             * Enabled
+             * @default false
+             */
+            enabled: boolean;
+            /**
+             * Failed
+             * @default 0
+             */
+            failed: number;
+            /**
+             * Filtered
+             * @default 0
+             */
+            filtered: number;
+            /**
+             * Healthy
+             * @default true
+             */
+            healthy: boolean;
+            /**
+             * Pending
+             * @default 0
+             */
+            pending: number;
+            /** Routes */
+            routes?: {
+                [key: string]: components["schemas"]["StatusNotificationRouteDiagnostics"];
+            };
+            /**
+             * Sent
+             * @default 0
+             */
+            sent: number;
+            /**
+             * Submitted
+             * @default 0
+             */
+            submitted: number;
+            /**
+             * Suppressed
+             * @default 0
+             */
+            suppressed: number;
+        };
+        /** StatusNotificationRouteDiagnostics */
+        StatusNotificationRouteDiagnostics: {
+            /**
+             * Consecutive Failures
+             * @default 0
+             */
+            consecutive_failures: number;
+            /**
+             * Degraded
+             * @default false
+             */
+            degraded: boolean;
+            /**
+             * Failed
+             * @default 0
+             */
+            failed: number;
+            /** Last Error */
+            last_error?: string | null;
+            /** Last Failure At */
+            last_failure_at?: string | null;
+            /** Last Sent At */
+            last_sent_at?: string | null;
+            /**
+             * Retries
+             * @default 0
+             */
+            retries: number;
+            /**
+             * Sent
+             * @default 0
+             */
+            sent: number;
+        };
+        /**
+         * StatusPositionMonitorDiagnostics
+         * @description Position monitor summary (issue #192); `today_*` are the current UTC day so far.
+         */
+        StatusPositionMonitorDiagnostics: {
+            /** Last Error */
+            last_error?: string | null;
+            /** Last Run At */
+            last_run_at?: string | null;
+            /**
+             * Ledger Write Failures
+             * @default 0
+             */
+            ledger_write_failures: number;
+            /**
+             * Notional Usd
+             * @default 0
+             */
+            notional_usd: number;
+            /**
+             * Open Positions
+             * @default 0
+             */
+            open_positions: number;
+            /**
+             * Positions With Flags
+             * @default 0
+             */
+            positions_with_flags: number;
+            /**
+             * Today Funding Pnl Usd
+             * @default 0
+             */
+            today_funding_pnl_usd: number;
+            /**
+             * Today Realized Pnl Usd
+             * @default 0
+             */
+            today_realized_pnl_usd: number;
+            /**
+             * Today Total Pnl Usd
+             * @default 0
+             */
+            today_total_pnl_usd: number;
+            /**
+             * Unrealized Pnl Usd
+             * @default 0
+             */
+            unrealized_pnl_usd: number;
+        };
         /** StatusReasonSeverityCounts */
         StatusReasonSeverityCounts: {
             /**
@@ -2402,6 +3150,8 @@ export interface components {
         StatusResponse: {
             /** Active Exchanges */
             active_exchanges?: string[];
+            auto_entry?: components["schemas"]["StatusAutoEntryDiagnostics"];
+            auto_exit?: components["schemas"]["StatusAutoExitDiagnostics"];
             /**
              * Backtest History Gate Enabled
              * @default false
@@ -2462,12 +3212,15 @@ export interface components {
             /** Last Updated At */
             last_updated_at?: string | null;
             migration_fallback?: components["schemas"]["StatusMigrationFallbackDiagnostics"];
+            notifications?: components["schemas"]["StatusNotificationDiagnostics"];
             /** Poll Count Failed */
             poll_count_failed: number;
             /** Poll Count Success */
             poll_count_success: number;
             /** Poll Count Total */
             poll_count_total: number;
+            position_monitor?: components["schemas"]["StatusPositionMonitorDiagnostics"];
+            risk_guardrails?: components["schemas"]["StatusRiskGuardrailsDiagnostics"];
             screener_drop_counters?: components["schemas"]["StatusDropCounters"];
             /** Screener Drop Counters By Strategy */
             screener_drop_counters_by_strategy?: {
@@ -2496,6 +3249,65 @@ export interface components {
             ws_feed_diagnostics?: {
                 [key: string]: components["schemas"]["StatusWsFeedDiagnostics"];
             };
+        };
+        /**
+         * StatusRiskGuardrailsDiagnostics
+         * @description Guardrail outcomes (issue #189).
+         *
+         *     `decisions` and `entries_blocked` describe the last continuous pass. Entry-block counters
+         *     run since process start; close counters cover the bounded recent close history.
+         */
+        StatusRiskGuardrailsDiagnostics: {
+            /** Account Sources */
+            account_sources?: string[];
+            /** Blocking Guardrails */
+            blocking_guardrails?: ("margin" | "adl" | "funding_flip" | "spread_expansion" | "max_open_positions" | "max_pair_exposure" | "max_memecoin_exposure")[];
+            /**
+             * Closed Attempts
+             * @default 0
+             */
+            closed_attempts: number;
+            /** Decision Counts */
+            decision_counts?: {
+                [key: string]: number;
+            };
+            /** Decisions */
+            decisions?: components["schemas"]["GuardrailDecisionItem"][];
+            /**
+             * Entries Blocked
+             * @default false
+             */
+            entries_blocked: boolean;
+            /** Entry Blocks By Guardrail */
+            entry_blocks_by_guardrail?: {
+                [key: string]: number;
+            };
+            /**
+             * Entry Blocks Total
+             * @default 0
+             */
+            entry_blocks_total: number;
+            last_close?: components["schemas"]["GuardrailCloseRecordItem"] | null;
+            last_entry_block?: components["schemas"]["GuardrailDecisionItem"] | null;
+            /** Last Error */
+            last_error?: string | null;
+            /** Last Evaluated At */
+            last_evaluated_at?: string | null;
+            /**
+             * Monitored Positions
+             * @default 0
+             */
+            monitored_positions: number;
+            /**
+             * Recent Close Failures
+             * @default 0
+             */
+            recent_close_failures: number;
+            /**
+             * Recent Closes
+             * @default 0
+             */
+            recent_closes: number;
         };
         /** StatusSnapshotContinuity */
         StatusSnapshotContinuity: {
@@ -2806,6 +3618,68 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    list_auto_entry_decisions_automation_entry_decisions_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AutoEntryDecisionListResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_auto_exit_decisions_automation_exit_decisions_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AutoExitDecisionListResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     get_backtest_gate_backtest_gate_get: {
         parameters: {
             query?: never;
@@ -3150,6 +4024,39 @@ export interface operations {
             };
         };
     };
+    close_two_leg_position_execution_close_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExecutionCloseRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExecutionAttemptItem"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     open_two_leg_position_execution_open_post: {
         parameters: {
             query?: never;
@@ -3371,6 +4278,77 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_positions_positions_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PositionsResponse"];
+                };
+            };
+        };
+    };
+    get_daily_pnl_positions_pnl_daily_get: {
+        parameters: {
+            query?: {
+                days?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DailyPnlResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_risk_guardrails_risk_guardrails_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RiskGuardrailsResponse"];
                 };
             };
         };

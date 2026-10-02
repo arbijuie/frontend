@@ -1,6 +1,249 @@
 {
   "components": {
     "schemas": {
+      "AutoEntryDecisionItem": {
+        "properties": {
+          "action": {
+            "enum": [
+              "enter",
+              "skip"
+            ],
+            "title": "Action",
+            "type": "string"
+          },
+          "attempt_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Attempt Id"
+          },
+          "evaluated_at": {
+            "title": "Evaluated At",
+            "type": "string"
+          },
+          "long_exchange": {
+            "title": "Long Exchange",
+            "type": "string"
+          },
+          "outcome": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Outcome"
+          },
+          "reasons": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Reasons",
+            "type": "array"
+          },
+          "score_bps": {
+            "title": "Score Bps",
+            "type": "number"
+          },
+          "short_exchange": {
+            "title": "Short Exchange",
+            "type": "string"
+          },
+          "strategy_type": {
+            "enum": [
+              "funding_arbitrage",
+              "basis_convergence",
+              "cash_and_carry"
+            ],
+            "title": "Strategy Type",
+            "type": "string"
+          },
+          "symbol": {
+            "title": "Symbol",
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "strategy_type",
+          "long_exchange",
+          "short_exchange",
+          "score_bps",
+          "action",
+          "evaluated_at"
+        ],
+        "title": "AutoEntryDecisionItem",
+        "type": "object"
+      },
+      "AutoEntryDecisionListResponse": {
+        "properties": {
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/AutoEntryDecisionItem"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "status": {
+            "$ref": "#/components/schemas/StatusAutoEntryDiagnostics"
+          }
+        },
+        "required": [
+          "count",
+          "status"
+        ],
+        "title": "AutoEntryDecisionListResponse",
+        "type": "object"
+      },
+      "AutoExitDecisionItem": {
+        "properties": {
+          "action": {
+            "enum": [
+              "exit",
+              "hold"
+            ],
+            "title": "Action",
+            "type": "string"
+          },
+          "attempt_id": {
+            "title": "Attempt Id",
+            "type": "string"
+          },
+          "conditions": {
+            "items": {
+              "enum": [
+                "funding_flip",
+                "score_decay",
+                "time_limit"
+              ],
+              "type": "string"
+            },
+            "title": "Conditions",
+            "type": "array"
+          },
+          "current_score_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Current Score Bps"
+          },
+          "entry_score_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Entry Score Bps"
+          },
+          "evaluated_at": {
+            "title": "Evaluated At",
+            "type": "string"
+          },
+          "held_hours": {
+            "title": "Held Hours",
+            "type": "number"
+          },
+          "net_funding_apr": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Net Funding Apr"
+          },
+          "outcome": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Outcome"
+          },
+          "reason": {
+            "default": "",
+            "title": "Reason",
+            "type": "string"
+          },
+          "symbol": {
+            "title": "Symbol",
+            "type": "string"
+          },
+          "trigger": {
+            "anyOf": [
+              {
+                "enum": [
+                  "funding_flip",
+                  "score_decay",
+                  "time_limit"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Trigger"
+          }
+        },
+        "required": [
+          "attempt_id",
+          "symbol",
+          "action",
+          "held_hours",
+          "evaluated_at"
+        ],
+        "title": "AutoExitDecisionItem",
+        "type": "object"
+      },
+      "AutoExitDecisionListResponse": {
+        "properties": {
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/AutoExitDecisionItem"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "status": {
+            "$ref": "#/components/schemas/StatusAutoExitDiagnostics"
+          }
+        },
+        "required": [
+          "count",
+          "status"
+        ],
+        "title": "AutoExitDecisionListResponse",
+        "type": "object"
+      },
       "BacktestGateResponse": {
         "properties": {
           "lock_id": {
@@ -2026,6 +2269,83 @@
         "title": "CorrelationResponse",
         "type": "object"
       },
+      "DailyPnlItem": {
+        "description": "One UTC day: `total = realized + funding + unrealized_change` (mark-to-market).",
+        "properties": {
+          "day": {
+            "title": "Day",
+            "type": "string"
+          },
+          "funding_pnl_usd": {
+            "title": "Funding Pnl Usd",
+            "type": "number"
+          },
+          "positions_closed": {
+            "title": "Positions Closed",
+            "type": "integer"
+          },
+          "positions_open": {
+            "title": "Positions Open",
+            "type": "integer"
+          },
+          "realized_pnl_usd": {
+            "title": "Realized Pnl Usd",
+            "type": "number"
+          },
+          "total_pnl_usd": {
+            "title": "Total Pnl Usd",
+            "type": "number"
+          },
+          "unrealized_change_usd": {
+            "title": "Unrealized Change Usd",
+            "type": "number"
+          },
+          "unrealized_pnl_usd": {
+            "title": "Unrealized Pnl Usd",
+            "type": "number"
+          }
+        },
+        "required": [
+          "day",
+          "realized_pnl_usd",
+          "funding_pnl_usd",
+          "unrealized_pnl_usd",
+          "unrealized_change_usd",
+          "total_pnl_usd",
+          "positions_open",
+          "positions_closed"
+        ],
+        "title": "DailyPnlItem",
+        "type": "object"
+      },
+      "DailyPnlResponse": {
+        "properties": {
+          "days": {
+            "items": {
+              "$ref": "#/components/schemas/DailyPnlItem"
+            },
+            "title": "Days",
+            "type": "array"
+          },
+          "funding_pnl_usd": {
+            "default": 0.0,
+            "title": "Funding Pnl Usd",
+            "type": "number"
+          },
+          "realized_pnl_usd": {
+            "default": 0.0,
+            "title": "Realized Pnl Usd",
+            "type": "number"
+          },
+          "total_pnl_usd": {
+            "default": 0.0,
+            "title": "Total Pnl Usd",
+            "type": "number"
+          }
+        },
+        "title": "DailyPnlResponse",
+        "type": "object"
+      },
       "ExecutionAttemptItem": {
         "properties": {
           "abort_reason": {
@@ -2043,6 +2363,77 @@
             "title": "Attempt Id",
             "type": "string"
           },
+          "close_attempts": {
+            "default": 0,
+            "title": "Close Attempts",
+            "type": "integer"
+          },
+          "close_orders": {
+            "items": {
+              "$ref": "#/components/schemas/ExecutionOrderItem"
+            },
+            "title": "Close Orders",
+            "type": "array"
+          },
+          "close_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Close Reason"
+          },
+          "close_reconciliation": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ExecutionCloseReconciliationItem"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "close_requested_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Close Requested At"
+          },
+          "close_trigger": {
+            "anyOf": [
+              {
+                "enum": [
+                  "manual",
+                  "guardrail",
+                  "signal"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Close Trigger"
+          },
+          "closed_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Closed At"
+          },
           "consecutive_rollbacks": {
             "title": "Consecutive Rollbacks",
             "type": "integer"
@@ -2054,6 +2445,17 @@
           "dry_run": {
             "title": "Dry Run",
             "type": "boolean"
+          },
+          "entry_score_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Entry Score Bps"
           },
           "error": {
             "anyOf": [
@@ -2280,6 +2682,88 @@
         "title": "ExecutionAttemptListResponse",
         "type": "object"
       },
+      "ExecutionCloseReconciliationItem": {
+        "description": "Outcome of the last bounded close run; `complete` means both legs are flat.",
+        "properties": {
+          "complete": {
+            "title": "Complete",
+            "type": "boolean"
+          },
+          "imbalance": {
+            "default": "0",
+            "title": "Imbalance",
+            "type": "string"
+          },
+          "long_residual": {
+            "default": "0",
+            "title": "Long Residual",
+            "type": "string"
+          },
+          "notes": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Notes",
+            "type": "array"
+          },
+          "poll_s": {
+            "title": "Poll S",
+            "type": "number"
+          },
+          "reconciled_at": {
+            "title": "Reconciled At",
+            "type": "string"
+          },
+          "rounds": {
+            "title": "Rounds",
+            "type": "integer"
+          },
+          "short_residual": {
+            "default": "0",
+            "title": "Short Residual",
+            "type": "string"
+          },
+          "unresolved_orders": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Unresolved Orders",
+            "type": "array"
+          },
+          "window_s": {
+            "title": "Window S",
+            "type": "number"
+          }
+        },
+        "required": [
+          "window_s",
+          "poll_s",
+          "rounds",
+          "complete",
+          "reconciled_at"
+        ],
+        "title": "ExecutionCloseReconciliationItem",
+        "type": "object"
+      },
+      "ExecutionCloseRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "attempt_id": {
+            "title": "Attempt Id",
+            "type": "string"
+          },
+          "reason": {
+            "default": "manual close",
+            "title": "Reason",
+            "type": "string"
+          }
+        },
+        "required": [
+          "attempt_id"
+        ],
+        "title": "ExecutionCloseRequest",
+        "type": "object"
+      },
       "ExecutionGatePostureItem": {
         "description": "Explicit Phase 4-pre gate posture, independent of the execution switches.\n\n`criteria_*` report the acceptance criteria (strategy lock plus signed acceptance\nevidence). `live_execution_allowed` is true only when execution is enabled, dry-run is\noff, and the criteria are satisfied.",
         "properties": {
@@ -2335,6 +2819,22 @@
           "attempts": {
             "title": "Attempts",
             "type": "integer"
+          },
+          "close_average_price": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Close Average Price"
+          },
+          "closed_quantity": {
+            "default": "0",
+            "title": "Closed Quantity",
+            "type": "string"
           },
           "exchange": {
             "title": "Exchange",
@@ -2971,6 +3471,160 @@
           "expected_apr"
         ],
         "title": "FundingForecastItem",
+        "type": "object"
+      },
+      "GuardrailCloseRecordItem": {
+        "additionalProperties": false,
+        "properties": {
+          "at": {
+            "title": "At",
+            "type": "string"
+          },
+          "attempt_id": {
+            "title": "Attempt Id",
+            "type": "string"
+          },
+          "guardrail": {
+            "title": "Guardrail",
+            "type": "string"
+          },
+          "orders": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Orders",
+            "type": "array"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "closed",
+              "failed"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "attempt_id",
+          "guardrail",
+          "reason",
+          "status",
+          "at"
+        ],
+        "title": "GuardrailCloseRecordItem",
+        "type": "object"
+      },
+      "GuardrailDecisionItem": {
+        "additionalProperties": false,
+        "description": "One hard-guardrail decision with the value and threshold it was compared with.",
+        "properties": {
+          "action": {
+            "enum": [
+              "alert",
+              "block_entry",
+              "close_position"
+            ],
+            "title": "Action",
+            "type": "string"
+          },
+          "attempt_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Attempt Id"
+          },
+          "evaluated_at": {
+            "title": "Evaluated At",
+            "type": "string"
+          },
+          "exchange": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Exchange"
+          },
+          "guardrail": {
+            "enum": [
+              "margin",
+              "adl",
+              "funding_flip",
+              "spread_expansion",
+              "max_open_positions",
+              "max_pair_exposure",
+              "max_memecoin_exposure"
+            ],
+            "title": "Guardrail",
+            "type": "string"
+          },
+          "observed": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Observed"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          },
+          "severity": {
+            "enum": [
+              "info",
+              "warning",
+              "critical"
+            ],
+            "title": "Severity",
+            "type": "string"
+          },
+          "symbol": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Symbol"
+          },
+          "threshold": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Threshold"
+          }
+        },
+        "required": [
+          "guardrail",
+          "action",
+          "severity",
+          "reason",
+          "evaluated_at"
+        ],
+        "title": "GuardrailDecisionItem",
         "type": "object"
       },
       "HTTPValidationError": {
@@ -4099,6 +4753,286 @@
         "title": "PersistenceForecastResponse",
         "type": "object"
       },
+      "PositionAccountItem": {
+        "properties": {
+          "available": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Available"
+          },
+          "equity": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Equity"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "free_margin_pct": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Free Margin Pct"
+          }
+        },
+        "title": "PositionAccountItem",
+        "type": "object"
+      },
+      "PositionSnapshotItem": {
+        "properties": {
+          "age_s": {
+            "title": "Age S",
+            "type": "number"
+          },
+          "attempt_id": {
+            "title": "Attempt Id",
+            "type": "string"
+          },
+          "basis_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Basis Bps"
+          },
+          "funding_accrued_usd": {
+            "title": "Funding Accrued Usd",
+            "type": "number"
+          },
+          "health_flags": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Health Flags",
+            "type": "array"
+          },
+          "long_entry_price": {
+            "title": "Long Entry Price",
+            "type": "string"
+          },
+          "long_exchange": {
+            "title": "Long Exchange",
+            "type": "string"
+          },
+          "long_funding_apr": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Long Funding Apr"
+          },
+          "long_mark": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Long Mark"
+          },
+          "long_open_quantity": {
+            "title": "Long Open Quantity",
+            "type": "string"
+          },
+          "net_funding_apr": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Net Funding Apr"
+          },
+          "net_pnl_usd": {
+            "title": "Net Pnl Usd",
+            "type": "number"
+          },
+          "notional_usd": {
+            "title": "Notional Usd",
+            "type": "number"
+          },
+          "opened_at": {
+            "title": "Opened At",
+            "type": "string"
+          },
+          "realized_pnl_usd": {
+            "title": "Realized Pnl Usd",
+            "type": "number"
+          },
+          "short_entry_price": {
+            "title": "Short Entry Price",
+            "type": "string"
+          },
+          "short_exchange": {
+            "title": "Short Exchange",
+            "type": "string"
+          },
+          "short_funding_apr": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Short Funding Apr"
+          },
+          "short_mark": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Short Mark"
+          },
+          "short_open_quantity": {
+            "title": "Short Open Quantity",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "symbol": {
+            "title": "Symbol",
+            "type": "string"
+          },
+          "unrealized_pnl_usd": {
+            "title": "Unrealized Pnl Usd",
+            "type": "number"
+          },
+          "updated_at": {
+            "title": "Updated At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "attempt_id",
+          "symbol",
+          "status",
+          "long_exchange",
+          "short_exchange",
+          "opened_at",
+          "age_s",
+          "long_open_quantity",
+          "short_open_quantity",
+          "long_entry_price",
+          "short_entry_price",
+          "notional_usd",
+          "realized_pnl_usd",
+          "unrealized_pnl_usd",
+          "funding_accrued_usd",
+          "net_pnl_usd",
+          "updated_at"
+        ],
+        "title": "PositionSnapshotItem",
+        "type": "object"
+      },
+      "PositionsResponse": {
+        "description": "`GET /positions`: the latest monitor snapshot of every open pair.",
+        "properties": {
+          "accounts": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/PositionAccountItem"
+            },
+            "title": "Accounts",
+            "type": "object"
+          },
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "funding_accrued_usd": {
+            "default": 0.0,
+            "title": "Funding Accrued Usd",
+            "type": "number"
+          },
+          "net_pnl_usd": {
+            "default": 0.0,
+            "title": "Net Pnl Usd",
+            "type": "number"
+          },
+          "notional_usd": {
+            "default": 0.0,
+            "title": "Notional Usd",
+            "type": "number"
+          },
+          "positions": {
+            "items": {
+              "$ref": "#/components/schemas/PositionSnapshotItem"
+            },
+            "title": "Positions",
+            "type": "array"
+          },
+          "realized_pnl_usd": {
+            "default": 0.0,
+            "title": "Realized Pnl Usd",
+            "type": "number"
+          },
+          "unrealized_pnl_usd": {
+            "default": 0.0,
+            "title": "Unrealized Pnl Usd",
+            "type": "number"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          }
+        },
+        "required": [
+          "count"
+        ],
+        "title": "PositionsResponse",
+        "type": "object"
+      },
       "PreflightParityArtifactItem": {
         "additionalProperties": false,
         "properties": {
@@ -4622,6 +5556,168 @@
         "title": "ReasonItem",
         "type": "object"
       },
+      "RiskGuardrailsResponse": {
+        "additionalProperties": false,
+        "description": "`GET /risk/guardrails`: the status summary plus thresholds and close history.",
+        "properties": {
+          "account_sources": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Account Sources",
+            "type": "array"
+          },
+          "blocking_guardrails": {
+            "items": {
+              "enum": [
+                "margin",
+                "adl",
+                "funding_flip",
+                "spread_expansion",
+                "max_open_positions",
+                "max_pair_exposure",
+                "max_memecoin_exposure"
+              ],
+              "type": "string"
+            },
+            "title": "Blocking Guardrails",
+            "type": "array"
+          },
+          "close_records": {
+            "items": {
+              "$ref": "#/components/schemas/GuardrailCloseRecordItem"
+            },
+            "title": "Close Records",
+            "type": "array"
+          },
+          "closed_attempt_ids": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Closed Attempt Ids",
+            "type": "array"
+          },
+          "closed_attempts": {
+            "default": 0,
+            "title": "Closed Attempts",
+            "type": "integer"
+          },
+          "decision_counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "propertyNames": {
+              "enum": [
+                "alert",
+                "block_entry",
+                "close_position"
+              ]
+            },
+            "title": "Decision Counts",
+            "type": "object"
+          },
+          "decisions": {
+            "items": {
+              "$ref": "#/components/schemas/GuardrailDecisionItem"
+            },
+            "title": "Decisions",
+            "type": "array"
+          },
+          "entries_blocked": {
+            "default": false,
+            "title": "Entries Blocked",
+            "type": "boolean"
+          },
+          "entry_blocks_by_guardrail": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Entry Blocks By Guardrail",
+            "type": "object"
+          },
+          "entry_blocks_total": {
+            "default": 0,
+            "title": "Entry Blocks Total",
+            "type": "integer"
+          },
+          "last_close": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/GuardrailCloseRecordItem"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "last_entry_block": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/GuardrailDecisionItem"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "last_error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Error"
+          },
+          "last_evaluated_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Evaluated At"
+          },
+          "monitored_positions": {
+            "default": 0,
+            "title": "Monitored Positions",
+            "type": "integer"
+          },
+          "recent_close_failures": {
+            "default": 0,
+            "title": "Recent Close Failures",
+            "type": "integer"
+          },
+          "recent_closes": {
+            "default": 0,
+            "title": "Recent Closes",
+            "type": "integer"
+          },
+          "thresholds": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            },
+            "title": "Thresholds",
+            "type": "object"
+          }
+        },
+        "title": "RiskGuardrailsResponse",
+        "type": "object"
+      },
       "SnapshotContinuityResponse": {
         "properties": {
           "distinct_timestamps": {
@@ -4813,6 +5909,194 @@
           "recovered_symbols"
         ],
         "title": "SnapshotContinuityResponse",
+        "type": "object"
+      },
+      "StatusAutoEntryDiagnostics": {
+        "additionalProperties": false,
+        "description": "Rule-based auto-entry (issue #193). `global_blockers` stopped every entry last pass.",
+        "properties": {
+          "enabled": {
+            "default": false,
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "entries_total": {
+            "default": 0,
+            "title": "Entries Total",
+            "type": "integer"
+          },
+          "entry_failures_total": {
+            "default": 0,
+            "title": "Entry Failures Total",
+            "type": "integer"
+          },
+          "global_blockers": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Global Blockers",
+            "type": "array"
+          },
+          "last_entry_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Entry At"
+          },
+          "last_entry_outcome": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Entry Outcome"
+          },
+          "last_entry_symbol": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Entry Symbol"
+          },
+          "last_pass_skip_reasons": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Last Pass Skip Reasons",
+            "type": "object"
+          },
+          "last_run_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Run At"
+          },
+          "strategy_types": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Strategy Types",
+            "type": "array"
+          }
+        },
+        "title": "StatusAutoEntryDiagnostics",
+        "type": "object"
+      },
+      "StatusAutoExitDiagnostics": {
+        "additionalProperties": false,
+        "description": "Rule-based auto-exit (issue #194): last pass and exits by trigger since start.",
+        "properties": {
+          "enabled": {
+            "default": false,
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "exit_failures_total": {
+            "default": 0,
+            "title": "Exit Failures Total",
+            "type": "integer"
+          },
+          "exits_by_trigger": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Exits By Trigger",
+            "type": "object"
+          },
+          "exits_total": {
+            "default": 0,
+            "title": "Exits Total",
+            "type": "integer"
+          },
+          "last_exit_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Exit At"
+          },
+          "last_exit_outcome": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Exit Outcome"
+          },
+          "last_exit_symbol": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Exit Symbol"
+          },
+          "last_exit_trigger": {
+            "anyOf": [
+              {
+                "enum": [
+                  "funding_flip",
+                  "score_decay",
+                  "time_limit"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Exit Trigger"
+          },
+          "last_run_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Run At"
+          },
+          "pairs_evaluated": {
+            "default": 0,
+            "title": "Pairs Evaluated",
+            "type": "integer"
+          },
+          "pairs_exiting": {
+            "default": 0,
+            "title": "Pairs Exiting",
+            "type": "integer"
+          }
+        },
+        "title": "StatusAutoExitDiagnostics",
         "type": "object"
       },
       "StatusCalibrationLoaderDiagnostics": {
@@ -5238,6 +6522,203 @@
         "title": "StatusMigrationFallbackDiagnostics",
         "type": "object"
       },
+      "StatusNotificationDiagnostics": {
+        "additionalProperties": false,
+        "description": "Alert delivery health. `healthy` is false while any route's last delivery failed.",
+        "properties": {
+          "degraded_routes": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Degraded Routes",
+            "type": "array"
+          },
+          "enabled": {
+            "default": false,
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "failed": {
+            "default": 0,
+            "title": "Failed",
+            "type": "integer"
+          },
+          "filtered": {
+            "default": 0,
+            "title": "Filtered",
+            "type": "integer"
+          },
+          "healthy": {
+            "default": true,
+            "title": "Healthy",
+            "type": "boolean"
+          },
+          "pending": {
+            "default": 0,
+            "title": "Pending",
+            "type": "integer"
+          },
+          "routes": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/StatusNotificationRouteDiagnostics"
+            },
+            "title": "Routes",
+            "type": "object"
+          },
+          "sent": {
+            "default": 0,
+            "title": "Sent",
+            "type": "integer"
+          },
+          "submitted": {
+            "default": 0,
+            "title": "Submitted",
+            "type": "integer"
+          },
+          "suppressed": {
+            "default": 0,
+            "title": "Suppressed",
+            "type": "integer"
+          }
+        },
+        "title": "StatusNotificationDiagnostics",
+        "type": "object"
+      },
+      "StatusNotificationRouteDiagnostics": {
+        "additionalProperties": false,
+        "properties": {
+          "consecutive_failures": {
+            "default": 0,
+            "title": "Consecutive Failures",
+            "type": "integer"
+          },
+          "degraded": {
+            "default": false,
+            "title": "Degraded",
+            "type": "boolean"
+          },
+          "failed": {
+            "default": 0,
+            "title": "Failed",
+            "type": "integer"
+          },
+          "last_error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Error"
+          },
+          "last_failure_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Failure At"
+          },
+          "last_sent_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Sent At"
+          },
+          "retries": {
+            "default": 0,
+            "title": "Retries",
+            "type": "integer"
+          },
+          "sent": {
+            "default": 0,
+            "title": "Sent",
+            "type": "integer"
+          }
+        },
+        "title": "StatusNotificationRouteDiagnostics",
+        "type": "object"
+      },
+      "StatusPositionMonitorDiagnostics": {
+        "additionalProperties": false,
+        "description": "Position monitor summary (issue #192); `today_*` are the current UTC day so far.",
+        "properties": {
+          "last_error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Error"
+          },
+          "last_run_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Run At"
+          },
+          "ledger_write_failures": {
+            "default": 0,
+            "title": "Ledger Write Failures",
+            "type": "integer"
+          },
+          "notional_usd": {
+            "default": 0.0,
+            "title": "Notional Usd",
+            "type": "number"
+          },
+          "open_positions": {
+            "default": 0,
+            "title": "Open Positions",
+            "type": "integer"
+          },
+          "positions_with_flags": {
+            "default": 0,
+            "title": "Positions With Flags",
+            "type": "integer"
+          },
+          "today_funding_pnl_usd": {
+            "default": 0.0,
+            "title": "Today Funding Pnl Usd",
+            "type": "number"
+          },
+          "today_realized_pnl_usd": {
+            "default": 0.0,
+            "title": "Today Realized Pnl Usd",
+            "type": "number"
+          },
+          "today_total_pnl_usd": {
+            "default": 0.0,
+            "title": "Today Total Pnl Usd",
+            "type": "number"
+          },
+          "unrealized_pnl_usd": {
+            "default": 0.0,
+            "title": "Unrealized Pnl Usd",
+            "type": "number"
+          }
+        },
+        "title": "StatusPositionMonitorDiagnostics",
+        "type": "object"
+      },
       "StatusReasonSeverityCounts": {
         "additionalProperties": false,
         "properties": {
@@ -5263,6 +6744,12 @@
             },
             "title": "Active Exchanges",
             "type": "array"
+          },
+          "auto_entry": {
+            "$ref": "#/components/schemas/StatusAutoEntryDiagnostics"
+          },
+          "auto_exit": {
+            "$ref": "#/components/schemas/StatusAutoExitDiagnostics"
           },
           "backtest_history_gate_enabled": {
             "default": false,
@@ -5459,6 +6946,9 @@
           "migration_fallback": {
             "$ref": "#/components/schemas/StatusMigrationFallbackDiagnostics"
           },
+          "notifications": {
+            "$ref": "#/components/schemas/StatusNotificationDiagnostics"
+          },
           "poll_count_failed": {
             "title": "Poll Count Failed",
             "type": "integer"
@@ -5470,6 +6960,12 @@
           "poll_count_total": {
             "title": "Poll Count Total",
             "type": "integer"
+          },
+          "position_monitor": {
+            "$ref": "#/components/schemas/StatusPositionMonitorDiagnostics"
+          },
+          "risk_guardrails": {
+            "$ref": "#/components/schemas/StatusRiskGuardrailsDiagnostics"
           },
           "screener_drop_counters": {
             "$ref": "#/components/schemas/StatusDropCounters"
@@ -5550,6 +7046,137 @@
           "execution_backtest_gate_passed"
         ],
         "title": "StatusResponse",
+        "type": "object"
+      },
+      "StatusRiskGuardrailsDiagnostics": {
+        "additionalProperties": false,
+        "description": "Guardrail outcomes (issue #189).\n\n`decisions` and `entries_blocked` describe the last continuous pass. Entry-block counters\nrun since process start; close counters cover the bounded recent close history.",
+        "properties": {
+          "account_sources": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Account Sources",
+            "type": "array"
+          },
+          "blocking_guardrails": {
+            "items": {
+              "enum": [
+                "margin",
+                "adl",
+                "funding_flip",
+                "spread_expansion",
+                "max_open_positions",
+                "max_pair_exposure",
+                "max_memecoin_exposure"
+              ],
+              "type": "string"
+            },
+            "title": "Blocking Guardrails",
+            "type": "array"
+          },
+          "closed_attempts": {
+            "default": 0,
+            "title": "Closed Attempts",
+            "type": "integer"
+          },
+          "decision_counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "propertyNames": {
+              "enum": [
+                "alert",
+                "block_entry",
+                "close_position"
+              ]
+            },
+            "title": "Decision Counts",
+            "type": "object"
+          },
+          "decisions": {
+            "items": {
+              "$ref": "#/components/schemas/GuardrailDecisionItem"
+            },
+            "title": "Decisions",
+            "type": "array"
+          },
+          "entries_blocked": {
+            "default": false,
+            "title": "Entries Blocked",
+            "type": "boolean"
+          },
+          "entry_blocks_by_guardrail": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Entry Blocks By Guardrail",
+            "type": "object"
+          },
+          "entry_blocks_total": {
+            "default": 0,
+            "title": "Entry Blocks Total",
+            "type": "integer"
+          },
+          "last_close": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/GuardrailCloseRecordItem"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "last_entry_block": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/GuardrailDecisionItem"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "last_error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Error"
+          },
+          "last_evaluated_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Evaluated At"
+          },
+          "monitored_positions": {
+            "default": 0,
+            "title": "Monitored Positions",
+            "type": "integer"
+          },
+          "recent_close_failures": {
+            "default": 0,
+            "title": "Recent Close Failures",
+            "type": "integer"
+          },
+          "recent_closes": {
+            "default": 0,
+            "title": "Recent Closes",
+            "type": "integer"
+          }
+        },
+        "title": "StatusRiskGuardrailsDiagnostics",
         "type": "object"
       },
       "StatusSnapshotContinuity": {
@@ -6067,6 +7694,92 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/automation/entry/decisions": {
+      "get": {
+        "description": "Recent auto-entry decisions (newest first) with skip reasons and entry outcomes.",
+        "operationId": "list_auto_entry_decisions_automation_entry_decisions_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AutoEntryDecisionListResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Auto Entry Decisions"
+      }
+    },
+    "/automation/exit/decisions": {
+      "get": {
+        "description": "Recent auto-exit decisions (newest first) with trigger, conditions, and close outcome.",
+        "operationId": "list_auto_exit_decisions_automation_exit_decisions_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AutoExitDecisionListResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Auto Exit Decisions"
+      }
+    },
     "/backtest/gate": {
       "get": {
         "operationId": "get_backtest_gate_backtest_gate_get",
@@ -6472,6 +8185,45 @@
         "summary": "List Execution Attempts"
       }
     },
+    "/execution/close": {
+      "post": {
+        "description": "Close an open pair: both legs in parallel, then a bounded reconciliation window.",
+        "operationId": "close_two_leg_position_execution_close_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExecutionCloseRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExecutionAttemptItem"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Close Two Leg Position"
+      }
+    },
     "/execution/open": {
       "post": {
         "operationId": "open_two_leg_position_execution_open_post",
@@ -6840,6 +8592,87 @@
           }
         },
         "summary": "Get Opportunities"
+      }
+    },
+    "/positions": {
+      "get": {
+        "description": "Latest position monitor snapshot: margin flags, PnL, and funding per open pair.",
+        "operationId": "get_positions_positions_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PositionsResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Positions"
+      }
+    },
+    "/positions/pnl/daily": {
+      "get": {
+        "description": "Daily realized/unrealized PnL with funding contribution, most recent UTC day first.",
+        "operationId": "get_daily_pnl_positions_pnl_daily_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "days",
+            "required": false,
+            "schema": {
+              "default": 7,
+              "maximum": 366,
+              "minimum": 1,
+              "title": "Days",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DailyPnlResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Daily Pnl"
+      }
+    },
+    "/risk/guardrails": {
+      "get": {
+        "description": "Guardrail decisions, entry blocks, close history, and the active thresholds.",
+        "operationId": "get_risk_guardrails_risk_guardrails_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RiskGuardrailsResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Risk Guardrails"
       }
     },
     "/snapshots/continuity": {
