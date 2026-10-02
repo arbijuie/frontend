@@ -1495,6 +1495,26 @@
             "title": "Migration Nautilus Observe Only",
             "type": "boolean"
           },
+          "migration_preflight_canary_symbols": {
+            "default": "",
+            "title": "Migration Preflight Canary Symbols",
+            "type": "string"
+          },
+          "migration_preflight_cutover_approval_path": {
+            "default": "",
+            "title": "Migration Preflight Cutover Approval Path",
+            "type": "string"
+          },
+          "migration_preflight_source": {
+            "default": "legacy",
+            "enum": [
+              "legacy",
+              "nautilus_canary",
+              "nautilus"
+            ],
+            "title": "Migration Preflight Source",
+            "type": "string"
+          },
           "min_depth_quality": {
             "title": "Min Depth Quality",
             "type": "string"
@@ -2030,6 +2050,33 @@
               }
             ],
             "title": "Migration Nautilus Observe Only"
+          },
+          "migration_preflight_canary_symbols": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Migration Preflight Canary Symbols"
+          },
+          "migration_preflight_source": {
+            "anyOf": [
+              {
+                "enum": [
+                  "legacy",
+                  "nautilus_canary",
+                  "nautilus"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Migration Preflight Source"
           },
           "min_open_interest": {
             "anyOf": [
@@ -3324,6 +3371,9 @@
           },
           "runtime": {
             "$ref": "#/components/schemas/ExecutionPreflightRuntimeItem"
+          },
+          "source": {
+            "$ref": "#/components/schemas/ExecutionPreflightSourceItem"
           }
         },
         "required": [
@@ -3416,6 +3466,67 @@
           "screener_ready_candidates"
         ],
         "title": "ExecutionPreflightRuntimeItem",
+        "type": "object"
+      },
+      "ExecutionPreflightSourceItem": {
+        "description": "Which evaluator produced this preflight decision (issue #170).",
+        "properties": {
+          "detail": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Detail"
+          },
+          "reason": {
+            "default": "legacy_configured",
+            "enum": [
+              "legacy_configured",
+              "parity_regression",
+              "cutover_not_approved",
+              "outside_canary_scope",
+              "canary",
+              "cutover"
+            ],
+            "title": "Reason",
+            "type": "string"
+          },
+          "requested": {
+            "default": "legacy",
+            "enum": [
+              "legacy",
+              "nautilus_canary",
+              "nautilus"
+            ],
+            "title": "Requested",
+            "type": "string"
+          },
+          "required_stage": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Required Stage"
+          },
+          "served_by": {
+            "default": "legacy",
+            "enum": [
+              "legacy",
+              "nautilus"
+            ],
+            "title": "Served By",
+            "type": "string"
+          }
+        },
+        "title": "ExecutionPreflightSourceItem",
         "type": "object"
       },
       "FundingForecastItem": {
@@ -6602,6 +6713,9 @@
             "default": true,
             "title": "Observe Only",
             "type": "boolean"
+          },
+          "preflight_source": {
+            "$ref": "#/components/schemas/StatusPreflightSourceDiagnostics"
           }
         },
         "title": "StatusMigrationFallbackDiagnostics",
@@ -6901,6 +7015,113 @@
           }
         },
         "title": "StatusPositionMonitorDiagnostics",
+        "type": "object"
+      },
+      "StatusPreflightSourceDiagnostics": {
+        "additionalProperties": false,
+        "description": "Preflight source-of-truth cutover (issue #170).",
+        "properties": {
+          "approval_error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Approval Error"
+          },
+          "approval_stage": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Approval Stage"
+          },
+          "canary_symbols": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Canary Symbols",
+            "type": "array"
+          },
+          "last_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Reason"
+          },
+          "last_served_by": {
+            "anyOf": [
+              {
+                "enum": [
+                  "legacy",
+                  "nautilus"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Served By"
+          },
+          "regression_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Regression At"
+          },
+          "regression_latched": {
+            "default": false,
+            "title": "Regression Latched",
+            "type": "boolean"
+          },
+          "regression_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Regression Reason"
+          },
+          "requested": {
+            "default": "legacy",
+            "enum": [
+              "legacy",
+              "nautilus_canary",
+              "nautilus"
+            ],
+            "title": "Requested",
+            "type": "string"
+          },
+          "served_total": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Served Total",
+            "type": "object"
+          }
+        },
+        "title": "StatusPreflightSourceDiagnostics",
         "type": "object"
       },
       "StatusReasonSeverityCounts": {

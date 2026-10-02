@@ -1118,6 +1118,22 @@ export interface components {
             migration_nautilus_mode: "legacy_only" | "shadow_compare" | "nautilus_primary";
             /** Migration Nautilus Observe Only */
             migration_nautilus_observe_only: boolean;
+            /**
+             * Migration Preflight Canary Symbols
+             * @default
+             */
+            migration_preflight_canary_symbols: string;
+            /**
+             * Migration Preflight Cutover Approval Path
+             * @default
+             */
+            migration_preflight_cutover_approval_path: string;
+            /**
+             * Migration Preflight Source
+             * @default legacy
+             * @enum {string}
+             */
+            migration_preflight_source: "legacy" | "nautilus_canary" | "nautilus";
             /** Min Depth Quality */
             min_depth_quality: string;
             /** Min Open Interest */
@@ -1211,6 +1227,10 @@ export interface components {
             migration_nautilus_mode?: ("legacy_only" | "shadow_compare" | "nautilus_primary") | null;
             /** Migration Nautilus Observe Only */
             migration_nautilus_observe_only?: boolean | null;
+            /** Migration Preflight Canary Symbols */
+            migration_preflight_canary_symbols?: string | null;
+            /** Migration Preflight Source */
+            migration_preflight_source?: ("legacy" | "nautilus_canary" | "nautilus") | null;
             /** Min Open Interest */
             min_open_interest?: number | null;
             /** Min Persistence Hours */
@@ -1701,6 +1721,7 @@ export interface components {
             /** Ready */
             ready: boolean;
             runtime: components["schemas"]["ExecutionPreflightRuntimeItem"];
+            source?: components["schemas"]["ExecutionPreflightSourceItem"];
         };
         /** ExecutionPreflightRuntimeItem */
         ExecutionPreflightRuntimeItem: {
@@ -1738,6 +1759,34 @@ export interface components {
             /** Shadow Preflight Last Duration Ms */
             shadow_preflight_last_duration_ms?: number | null;
             trust_diagnostics?: components["schemas"]["PreflightTrustDiagnosticsItem"];
+        };
+        /**
+         * ExecutionPreflightSourceItem
+         * @description Which evaluator produced this preflight decision (issue #170).
+         */
+        ExecutionPreflightSourceItem: {
+            /** Detail */
+            detail?: string | null;
+            /**
+             * Reason
+             * @default legacy_configured
+             * @enum {string}
+             */
+            reason: "legacy_configured" | "parity_regression" | "cutover_not_approved" | "outside_canary_scope" | "canary" | "cutover";
+            /**
+             * Requested
+             * @default legacy
+             * @enum {string}
+             */
+            requested: "legacy" | "nautilus_canary" | "nautilus";
+            /** Required Stage */
+            required_stage?: string | null;
+            /**
+             * Served By
+             * @default legacy
+             * @enum {string}
+             */
+            served_by: "legacy" | "nautilus";
         };
         /** FundingForecastItem */
         FundingForecastItem: {
@@ -3050,6 +3099,7 @@ export interface components {
              * @default true
              */
             observe_only: boolean;
+            preflight_source?: components["schemas"]["StatusPreflightSourceDiagnostics"];
         };
         /**
          * StatusNautilusAdapterHealth
@@ -3227,6 +3277,41 @@ export interface components {
              * @default 0
              */
             unrealized_pnl_usd: number;
+        };
+        /**
+         * StatusPreflightSourceDiagnostics
+         * @description Preflight source-of-truth cutover (issue #170).
+         */
+        StatusPreflightSourceDiagnostics: {
+            /** Approval Error */
+            approval_error?: string | null;
+            /** Approval Stage */
+            approval_stage?: string | null;
+            /** Canary Symbols */
+            canary_symbols?: string[];
+            /** Last Reason */
+            last_reason?: string | null;
+            /** Last Served By */
+            last_served_by?: ("legacy" | "nautilus") | null;
+            /** Regression At */
+            regression_at?: string | null;
+            /**
+             * Regression Latched
+             * @default false
+             */
+            regression_latched: boolean;
+            /** Regression Reason */
+            regression_reason?: string | null;
+            /**
+             * Requested
+             * @default legacy
+             * @enum {string}
+             */
+            requested: "legacy" | "nautilus_canary" | "nautilus";
+            /** Served Total */
+            served_total?: {
+                [key: string]: number;
+            };
         };
         /** StatusReasonSeverityCounts */
         StatusReasonSeverityCounts: {
