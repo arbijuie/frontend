@@ -6442,6 +6442,9 @@
             "title": "Adapter Enabled",
             "type": "boolean"
           },
+          "adapter_health": {
+            "$ref": "#/components/schemas/StatusNautilusAdapterHealth"
+          },
           "adapter_selection_reason": {
             "default": "adapter_disabled",
             "enum": [
@@ -6449,6 +6452,7 @@
               "migration_not_primary",
               "dry_run_required",
               "adapter_unavailable",
+              "adapter_fallback",
               "venue_out_of_scope",
               "selected"
             ],
@@ -6520,6 +6524,105 @@
           }
         },
         "title": "StatusMigrationFallbackDiagnostics",
+        "type": "object"
+      },
+      "StatusNautilusAdapterHealth": {
+        "additionalProperties": false,
+        "description": "Adapter health fail-safe (issue #164); `fallback` means deny-and-observe is latched.",
+        "properties": {
+          "consecutive_faults": {
+            "default": 0,
+            "title": "Consecutive Faults",
+            "type": "integer"
+          },
+          "fallback_client_order_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fallback Client Order Id"
+          },
+          "fallback_engaged_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fallback Engaged At"
+          },
+          "fallback_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fallback Reason"
+          },
+          "fallback_trigger": {
+            "anyOf": [
+              {
+                "enum": [
+                  "consecutive_faults",
+                  "invariant_violation"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fallback Trigger"
+          },
+          "fault_counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Fault Counts",
+            "type": "object"
+          },
+          "fault_threshold": {
+            "default": 3,
+            "title": "Fault Threshold",
+            "type": "integer"
+          },
+          "last_fault": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Fault"
+          },
+          "resets_total": {
+            "default": 0,
+            "title": "Resets Total",
+            "type": "integer"
+          },
+          "state": {
+            "default": "healthy",
+            "enum": [
+              "healthy",
+              "degraded",
+              "fallback"
+            ],
+            "title": "State",
+            "type": "string"
+          }
+        },
+        "title": "StatusNautilusAdapterHealth",
         "type": "object"
       },
       "StatusNotificationDiagnostics": {
