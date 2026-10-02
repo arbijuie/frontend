@@ -244,6 +244,331 @@
         "title": "AutoExitDecisionListResponse",
         "type": "object"
       },
+      "AutomationControlEventItem": {
+        "properties": {
+          "action": {
+            "enum": [
+              "pause",
+              "resume"
+            ],
+            "title": "Action",
+            "type": "string"
+          },
+          "actor": {
+            "title": "Actor",
+            "type": "string"
+          },
+          "at": {
+            "title": "At",
+            "type": "string"
+          },
+          "changed": {
+            "title": "Changed",
+            "type": "boolean"
+          },
+          "kind": {
+            "enum": [
+              "entry",
+              "exit"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          }
+        },
+        "required": [
+          "at",
+          "kind",
+          "action",
+          "reason",
+          "actor",
+          "changed"
+        ],
+        "title": "AutomationControlEventItem",
+        "type": "object"
+      },
+      "AutomationControlRequest": {
+        "properties": {
+          "action": {
+            "enum": [
+              "pause",
+              "resume"
+            ],
+            "title": "Action",
+            "type": "string"
+          },
+          "reason": {
+            "default": "",
+            "maxLength": 200,
+            "title": "Reason",
+            "type": "string"
+          },
+          "target": {
+            "enum": [
+              "entry",
+              "exit",
+              "all"
+            ],
+            "title": "Target",
+            "type": "string"
+          }
+        },
+        "required": [
+          "target",
+          "action"
+        ],
+        "title": "AutomationControlRequest",
+        "type": "object"
+      },
+      "AutomationModeItem": {
+        "description": "One autonomous capability (issue #195).\n\n`state`: `disabled` (not configured), `paused` (operator hold), `blocked` (configured and\nnot paused, but `blockers` stop it), or `armed` (the next pass may act).",
+        "properties": {
+          "actions_total": {
+            "default": 0,
+            "title": "Actions Total",
+            "type": "integer"
+          },
+          "blockers": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Blockers",
+            "type": "array"
+          },
+          "enabled": {
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "failures_total": {
+            "default": 0,
+            "title": "Failures Total",
+            "type": "integer"
+          },
+          "kind": {
+            "enum": [
+              "entry",
+              "exit"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "last_action_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Action At"
+          },
+          "last_action_outcome": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Action Outcome"
+          },
+          "last_action_symbol": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Action Symbol"
+          },
+          "last_run_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Run At"
+          },
+          "pause_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pause Reason"
+          },
+          "paused": {
+            "title": "Paused",
+            "type": "boolean"
+          },
+          "paused_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Paused At"
+          },
+          "paused_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Paused By"
+          },
+          "state": {
+            "enum": [
+              "disabled",
+              "paused",
+              "blocked",
+              "armed"
+            ],
+            "title": "State",
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "enabled",
+          "paused",
+          "state"
+        ],
+        "title": "AutomationModeItem",
+        "type": "object"
+      },
+      "AutomationOverviewResponse": {
+        "properties": {
+          "checked_at": {
+            "title": "Checked At",
+            "type": "string"
+          },
+          "control_log": {
+            "items": {
+              "$ref": "#/components/schemas/AutomationControlEventItem"
+            },
+            "title": "Control Log",
+            "type": "array"
+          },
+          "entry": {
+            "$ref": "#/components/schemas/AutomationModeItem"
+          },
+          "exit": {
+            "$ref": "#/components/schemas/AutomationModeItem"
+          },
+          "posture": {
+            "$ref": "#/components/schemas/AutomationPostureItem"
+          },
+          "recent_entries": {
+            "items": {
+              "$ref": "#/components/schemas/AutoEntryDecisionItem"
+            },
+            "title": "Recent Entries",
+            "type": "array"
+          },
+          "recent_exits": {
+            "items": {
+              "$ref": "#/components/schemas/AutoExitDecisionItem"
+            },
+            "title": "Recent Exits",
+            "type": "array"
+          }
+        },
+        "required": [
+          "checked_at",
+          "entry",
+          "exit",
+          "posture"
+        ],
+        "title": "AutomationOverviewResponse",
+        "type": "object"
+      },
+      "AutomationPostureItem": {
+        "properties": {
+          "consecutive_rollbacks": {
+            "title": "Consecutive Rollbacks",
+            "type": "integer"
+          },
+          "entries_stopped": {
+            "title": "Entries Stopped",
+            "type": "boolean"
+          },
+          "exec_dry_run": {
+            "title": "Exec Dry Run",
+            "type": "boolean"
+          },
+          "exec_enabled": {
+            "title": "Exec Enabled",
+            "type": "boolean"
+          },
+          "gate_passed": {
+            "title": "Gate Passed",
+            "type": "boolean"
+          },
+          "gate_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gate Reason"
+          },
+          "guardrail_entry_blocks": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Guardrail Entry Blocks",
+            "type": "array"
+          },
+          "guardrail_last_evaluated_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Guardrail Last Evaluated At"
+          },
+          "open_positions": {
+            "default": 0,
+            "title": "Open Positions",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "exec_enabled",
+          "exec_dry_run",
+          "gate_passed",
+          "entries_stopped",
+          "consecutive_rollbacks"
+        ],
+        "title": "AutomationPostureItem",
+        "type": "object"
+      },
       "BacktestGateResponse": {
         "properties": {
           "lock_id": {
@@ -6209,6 +6534,11 @@
             ],
             "title": "Last Run At"
           },
+          "paused": {
+            "default": false,
+            "title": "Paused",
+            "type": "boolean"
+          },
           "strategy_types": {
             "items": {
               "type": "string"
@@ -6315,6 +6645,11 @@
             "default": 0,
             "title": "Pairs Exiting",
             "type": "integer"
+          },
+          "paused": {
+            "default": false,
+            "title": "Paused",
+            "type": "boolean"
           }
         },
         "title": "StatusAutoExitDiagnostics",
@@ -8212,6 +8547,64 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/automation": {
+      "get": {
+        "description": "Autonomous-mode dashboard: capability states, posture, recent actions, control log.",
+        "operationId": "get_automation_overview_automation_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AutomationOverviewResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Automation Overview"
+      }
+    },
+    "/automation/controls": {
+      "post": {
+        "description": "Pause or resume auto-entry and/or auto-exit without changing configuration.",
+        "operationId": "post_automation_control_automation_controls_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AutomationControlRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AutomationOverviewResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Post Automation Control"
+      }
+    },
     "/automation/entry/decisions": {
       "get": {
         "description": "Recent auto-entry decisions (newest first) with skip reasons and entry outcomes.",

@@ -19,6 +19,9 @@ vi.mock("./pages/BacktestPage/BacktestPage", () => ({
 vi.mock("./pages/ExecutionPreflightPage/ExecutionPreflightPage", () => ({
   default: () => <h1>Execution Preflight</h1>,
 }));
+vi.mock("./pages/AutomationPage/AutomationPage", () => ({
+  default: () => <h1>Automation page mock</h1>,
+}));
 
 function renderAt(path: string) {
   return render(
@@ -34,6 +37,7 @@ describe("AppShell routing", () => {
     ["/status", "Status page mock"],
     ["/backtest", "Backtest page mock"],
     ["/execution/preflight", "Execution Preflight"],
+    ["/automation", "Automation page mock"],
   ])("renders %s by direct URL", (path, heading) => {
     renderAt(path);
     expect(screen.getByRole("heading", { level: 1, name: heading })).toBeTruthy();

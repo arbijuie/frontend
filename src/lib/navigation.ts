@@ -1,4 +1,12 @@
-import { Activity, FlaskConical, LineChart, Play, Settings, type LucideIcon } from "lucide-react";
+import {
+  Activity,
+  Bot,
+  FlaskConical,
+  LineChart,
+  Play,
+  Settings,
+  type LucideIcon,
+} from "lucide-react";
 
 export interface NavItem {
   /** Route path. Must be unique and start with "/". */
@@ -12,7 +20,7 @@ export interface NavItem {
  * Single source of truth for primary navigation.
  *
  * Order reflects operator workflow priority: find opportunities, check runtime status,
- * tune config, validate via backtest, then execute.
+ * tune config, validate via backtest, execute, then supervise automation.
  */
 export const NAV_ITEMS: readonly NavItem[] = [
   { to: "/", label: "Opportunities", icon: LineChart },
@@ -20,6 +28,7 @@ export const NAV_ITEMS: readonly NavItem[] = [
   { to: "/config", label: "Config", icon: Settings },
   { to: "/backtest", label: "Backtest", icon: FlaskConical },
   { to: "/execution/preflight", label: "Preflight", icon: Play },
+  { to: "/automation", label: "Automation", icon: Bot },
 ];
 
 export const APP_NAME = "Arbijuie";

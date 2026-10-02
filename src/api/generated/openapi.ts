@@ -4,6 +4,46 @@
  */
 
 export interface paths {
+    "/automation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Automation Overview
+         * @description Autonomous-mode dashboard: capability states, posture, recent actions, control log.
+         */
+        get: operations["get_automation_overview_automation_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/automation/controls": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Post Automation Control
+         * @description Pause or resume auto-entry and/or auto-exit without changing configuration.
+         */
+        post: operations["post_automation_control_automation_controls_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/automation/entry/decisions": {
         parameters: {
             query?: never;
@@ -592,6 +632,132 @@ export interface components {
             /** Items */
             items?: components["schemas"]["AutoExitDecisionItem"][];
             status: components["schemas"]["StatusAutoExitDiagnostics"];
+        };
+        /** AutomationControlEventItem */
+        AutomationControlEventItem: {
+            /**
+             * Action
+             * @enum {string}
+             */
+            action: "pause" | "resume";
+            /** Actor */
+            actor: string;
+            /** At */
+            at: string;
+            /** Changed */
+            changed: boolean;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "entry" | "exit";
+            /** Reason */
+            reason: string;
+        };
+        /** AutomationControlRequest */
+        AutomationControlRequest: {
+            /**
+             * Action
+             * @enum {string}
+             */
+            action: "pause" | "resume";
+            /**
+             * Reason
+             * @default
+             */
+            reason: string;
+            /**
+             * Target
+             * @enum {string}
+             */
+            target: "entry" | "exit" | "all";
+        };
+        /**
+         * AutomationModeItem
+         * @description One autonomous capability (issue #195).
+         *
+         *     `state`: `disabled` (not configured), `paused` (operator hold), `blocked` (configured and
+         *     not paused, but `blockers` stop it), or `armed` (the next pass may act).
+         */
+        AutomationModeItem: {
+            /**
+             * Actions Total
+             * @default 0
+             */
+            actions_total: number;
+            /** Blockers */
+            blockers?: string[];
+            /** Enabled */
+            enabled: boolean;
+            /**
+             * Failures Total
+             * @default 0
+             */
+            failures_total: number;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "entry" | "exit";
+            /** Last Action At */
+            last_action_at?: string | null;
+            /** Last Action Outcome */
+            last_action_outcome?: string | null;
+            /** Last Action Symbol */
+            last_action_symbol?: string | null;
+            /** Last Run At */
+            last_run_at?: string | null;
+            /** Pause Reason */
+            pause_reason?: string | null;
+            /** Paused */
+            paused: boolean;
+            /** Paused At */
+            paused_at?: string | null;
+            /** Paused By */
+            paused_by?: string | null;
+            /**
+             * State
+             * @enum {string}
+             */
+            state: "disabled" | "paused" | "blocked" | "armed";
+        };
+        /** AutomationOverviewResponse */
+        AutomationOverviewResponse: {
+            /** Checked At */
+            checked_at: string;
+            /** Control Log */
+            control_log?: components["schemas"]["AutomationControlEventItem"][];
+            entry: components["schemas"]["AutomationModeItem"];
+            exit: components["schemas"]["AutomationModeItem"];
+            posture: components["schemas"]["AutomationPostureItem"];
+            /** Recent Entries */
+            recent_entries?: components["schemas"]["AutoEntryDecisionItem"][];
+            /** Recent Exits */
+            recent_exits?: components["schemas"]["AutoExitDecisionItem"][];
+        };
+        /** AutomationPostureItem */
+        AutomationPostureItem: {
+            /** Consecutive Rollbacks */
+            consecutive_rollbacks: number;
+            /** Entries Stopped */
+            entries_stopped: boolean;
+            /** Exec Dry Run */
+            exec_dry_run: boolean;
+            /** Exec Enabled */
+            exec_enabled: boolean;
+            /** Gate Passed */
+            gate_passed: boolean;
+            /** Gate Reason */
+            gate_reason?: string | null;
+            /** Guardrail Entry Blocks */
+            guardrail_entry_blocks?: string[];
+            /** Guardrail Last Evaluated At */
+            guardrail_last_evaluated_at?: string | null;
+            /**
+             * Open Positions
+             * @default 0
+             */
+            open_positions: number;
         };
         /** BacktestGateResponse */
         BacktestGateResponse: {
@@ -2754,6 +2920,11 @@ export interface components {
             };
             /** Last Run At */
             last_run_at?: string | null;
+            /**
+             * Paused
+             * @default false
+             */
+            paused: boolean;
             /** Strategy Types */
             strategy_types?: string[];
         };
@@ -2801,6 +2972,11 @@ export interface components {
              * @default 0
              */
             pairs_exiting: number;
+            /**
+             * Paused
+             * @default false
+             */
+            paused: boolean;
         };
         /** StatusCalibrationLoaderDiagnostics */
         StatusCalibrationLoaderDiagnostics: {
@@ -3855,6 +4031,59 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    get_automation_overview_automation_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AutomationOverviewResponse"];
+                };
+            };
+        };
+    };
+    post_automation_control_automation_controls_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AutomationControlRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AutomationOverviewResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     list_auto_entry_decisions_automation_entry_decisions_get: {
         parameters: {
             query?: {

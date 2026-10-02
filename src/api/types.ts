@@ -53,3 +53,7 @@ export const TEST_TAKER_FEE_BY_EXCHANGE: Record<string, number> = {
   hyperliquid: TEST_HYPERLIQUID_TAKER_FEE,
   lighter: TEST_LIGHTER_TAKER_FEE,
 };
+
+export type AutomationOverviewResponse = ApiSchemas["AutomationOverviewResponse"];
+export type AutomationModeItem = ApiSchemas["AutomationModeItem"];
+export type AutomationControlRequest = ApiSchemas["AutomationControlRequest"];

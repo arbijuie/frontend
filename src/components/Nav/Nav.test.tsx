@@ -23,6 +23,7 @@ describe("Nav", () => {
       "Config",
       "Backtest",
       "Preflight",
+      "Automation",
     ]);
     expect(links.map((link) => link.getAttribute("href"))).toEqual([
       "/",
@@ -30,6 +31,7 @@ describe("Nav", () => {
       "/config",
       "/backtest",
       "/execution/preflight",
+      "/automation",
     ]);
     expect(new Set(NAV_ITEMS.map((item) => item.to)).size).toBe(NAV_ITEMS.length);
   });
