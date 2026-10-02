@@ -13,12 +13,10 @@ vi.mock("../api/ws", async () => {
     ...actual,
     fetchWsAuthTicket: vi.fn(),
     getWsUrl: vi.fn(() => "ws://test/ws/opportunities"),
+    shouldUseWsTicketAuth: vi.fn(() => true),
+    buildWsAuthPayload: vi.fn((ticket: string) => ({ type: "auth", ticket })),
   };
 });
-
-vi.mock("../api/config", () => ({
-  API_TOKEN: "secret-token",
-}));
 
 const mockedUseQueryClient = vi.mocked(useQueryClient);
 const mockedFetchWsAuthTicket = vi.mocked(fetchWsAuthTicket);

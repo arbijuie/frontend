@@ -4,6 +4,23 @@
  */
 
 export interface paths {
+    "/auth/telegram/session": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Issue Telegram Session */
+        post: operations["issue_telegram_session_auth_telegram_session_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/automation": {
         parameters: {
             query?: never;
@@ -3869,6 +3886,22 @@ export interface components {
             /** T S */
             t_s: number;
         };
+        /** TelegramSessionRequest */
+        TelegramSessionRequest: {
+            /** Init Data */
+            init_data: string;
+        };
+        /** TelegramSessionResponse */
+        TelegramSessionResponse: {
+            /** Expires At */
+            expires_at: string;
+            /** Principal Id */
+            principal_id: string;
+            /** Session Token */
+            session_token: string;
+            /** Ttl S */
+            ttl_s: number;
+        };
         /** TrustConfidenceDistributionItem */
         TrustConfidenceDistributionItem: {
             /**
@@ -4031,6 +4064,39 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    issue_telegram_session_auth_telegram_session_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TelegramSessionRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TelegramSessionResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     get_automation_overview_automation_get: {
         parameters: {
             query?: never;

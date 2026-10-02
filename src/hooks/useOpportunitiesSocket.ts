@@ -1,7 +1,12 @@
 import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { fetchWsAuthTicket, getWsUrl, WsAuthTicketRequestError } from "../api/ws";
-import { API_TOKEN } from "../api/config";
+import {
+  buildWsAuthPayload,
+  fetchWsAuthTicket,
+  getWsUrl,
+  shouldUseWsTicketAuth,
+  WsAuthTicketRequestError,
+} from "../api/ws";
 import { getBackoffDelayMs, shouldGiveUp } from "../lib/wsBackoff";
 import type { OpportunitiesResponse } from "../api/types";
 
@@ -185,7 +190,7 @@ export function useOpportunitiesSocket(options?: UseOpportunitiesSocketOptions) 
       let waitingForTicketAuth = false;
       let socketOpened = false;
       pendingRejectReasonRef.current = null;
-      if (API_TOKEN) {
+      if (shouldUseWsTicketAuth()) {
         try {
           const ticketResponse = await fetchWsAuthTicket();
           ticket = ticketResponse.ticket;
@@ -223,7 +228,7 @@ export function useOpportunitiesSocket(options?: UseOpportunitiesSocketOptions) 
         }
         socketOpened = true;
         if (ticket) {
-          ws.send(JSON.stringify({ type: "auth", ticket }));
+          ws.send(JSON.stringify(buildWsAuthPayload(ticket)));
         }
         attemptRef.current = 0;
         setReconnectAttempt(0);
@@ -269,7 +274,7 @@ export function useOpportunitiesSocket(options?: UseOpportunitiesSocketOptions) 
         wsRef.current = null;
         clearStallTimer();
         if (!stoppedRef.current) {
-          if (API_TOKEN && waitingForTicketAuth && socketOpened && isUnauthorizedWsClose(event)) {
+          if (waitingForTicketAuth && socketOpened && isUnauthorizedWsClose(event)) {
             const reason = pendingRejectReasonRef.current;
             pendingRejectReasonRef.current = null;
             const detail =

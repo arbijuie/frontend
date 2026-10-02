@@ -35,6 +35,7 @@ export type ConfigUpdateRequest = _ConfigUpdateRequest;
 
 export type StatusResponse = ApiSchemas["StatusResponse"];
 export type WsAuthTicketResponse = ApiSchemas["WsAuthTicketResponse"];
+export type TelegramSessionResponse = ApiSchemas["TelegramSessionResponse"];
 export type CorrelationResponse = ApiSchemas["CorrelationResponse"];
 export type ExecutionPreflightResponse = ApiSchemas["ExecutionPreflightResponse"];
 

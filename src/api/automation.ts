@@ -1,8 +1,8 @@
-import { API_URL, authHeaders } from "./config";
+import { API_URL, authFetch } from "./config";
 import type { AutomationControlRequest, AutomationOverviewResponse } from "./types";
 
 export async function fetchAutomation(): Promise<AutomationOverviewResponse> {
-  const res = await fetch(`${API_URL}/automation`, { headers: authHeaders() });
+  const res = await authFetch(`${API_URL}/automation`);
   if (!res.ok) {
     throw new Error(`GET /automation failed: ${res.status}`);
   }
@@ -12,12 +12,9 @@ export async function fetchAutomation(): Promise<AutomationOverviewResponse> {
 export async function postAutomationControl(
   payload: AutomationControlRequest
 ): Promise<AutomationOverviewResponse> {
-  const res = await fetch(`${API_URL}/automation/controls`, {
+  const res = await authFetch(`${API_URL}/automation/controls`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      ...authHeaders(),
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
   if (!res.ok) {

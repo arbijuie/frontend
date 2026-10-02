@@ -8304,6 +8304,47 @@
         "title": "SurvivalPoint",
         "type": "object"
       },
+      "TelegramSessionRequest": {
+        "properties": {
+          "init_data": {
+            "title": "Init Data",
+            "type": "string"
+          }
+        },
+        "required": [
+          "init_data"
+        ],
+        "title": "TelegramSessionRequest",
+        "type": "object"
+      },
+      "TelegramSessionResponse": {
+        "properties": {
+          "expires_at": {
+            "title": "Expires At",
+            "type": "string"
+          },
+          "principal_id": {
+            "title": "Principal Id",
+            "type": "string"
+          },
+          "session_token": {
+            "title": "Session Token",
+            "type": "string"
+          },
+          "ttl_s": {
+            "title": "Ttl S",
+            "type": "number"
+          }
+        },
+        "required": [
+          "session_token",
+          "principal_id",
+          "expires_at",
+          "ttl_s"
+        ],
+        "title": "TelegramSessionResponse",
+        "type": "object"
+      },
       "TrustConfidenceDistributionItem": {
         "additionalProperties": false,
         "properties": {
@@ -8547,6 +8588,44 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/auth/telegram/session": {
+      "post": {
+        "operationId": "issue_telegram_session_auth_telegram_session_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TelegramSessionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TelegramSessionResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Issue Telegram Session"
+      }
+    },
     "/automation": {
       "get": {
         "description": "Autonomous-mode dashboard: capability states, posture, recent actions, control log.",

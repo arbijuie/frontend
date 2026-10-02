@@ -41,14 +41,19 @@ Configure backend endpoint in `.env.local`:
 VITE_ARB_API_URL=http://127.0.0.1:8000
 VITE_ARB_WS_URL=
 VITE_ARB_API_TOKEN=
+VITE_ARB_TELEGRAM_SESSION_HEADER_NAME=X-Arb-Telegram-Session
 ```
 
 Notes:
 
 - `VITE_ARB_WS_URL` is optional. When empty, the frontend derives WS URL from `VITE_ARB_API_URL`.
+- `VITE_ARB_TELEGRAM_SESSION_HEADER_NAME` is optional and should match backend
+  `ARB_API_TELEGRAM_SESSION_HEADER_NAME` when overridden.
 - `VITE_` values are bundled into browser assets. Treat `VITE_ARB_API_TOKEN` as non-secret in
   browser threat models, or avoid setting it in public builds.
 - For production builds, use `frontend/.env.production.example` as a template.
+- For Telegram Mini App mode, open the app from Telegram so `window.Telegram.WebApp.initData`
+  is available for runtime session bootstrap.
 
 ## Navigation
 
@@ -75,7 +80,8 @@ The Status page includes a Deep Pipeline Diagnostics section with:
 The Opportunities page consumes `/ws/opportunities` as its primary data source, with automatic fallback to REST polling:
 
 - Connects on load; a transport indicator near the title shows `live (WS)`, `connecting...`, `reconnecting transport (attempt N)...`, `reissuing auth ticket (attempt N)...`, or `polling fallback`, with a manual retry button in fallback mode.
-- If a bearer token is configured, a short-lived ticket (`POST /ws/auth-ticket`) is sent as the first WS message — the token itself is never sent over the socket.
+- When runtime auth is available (bearer token or Telegram session), a short-lived ticket (`POST /ws/auth-ticket`) is sent as the first WS message.
+- In Telegram mode, the first WS auth message carries both ticket and runtime session id; the bearer token itself is never sent over the socket.
 - Ticket auth failures are surfaced in the transport indicator: 429 responses show Retry-After guidance; if Retry-After is missing/invalid or below the safe minimum, the UI explicitly notes delay clamping/default usage; rejected tickets trigger bounded automatic reissue attempts, and repeated failures switch to polling fallback with explicit status text.
 - When available, the indicator distinguishes `expired` vs `reused` rejects using diagnostics from the next authenticated `POST /ws/auth-ticket` response.
 - Reconnects with exponential backoff (1s–16s, 5 attempts) and a 60s stall timeout before permanently falling back to REST polling.

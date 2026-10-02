@@ -10,10 +10,8 @@ vi.mock("@tanstack/react-query", () => ({
 vi.mock("../api/ws", () => ({
   fetchWsAuthTicket: vi.fn(),
   getWsUrl: vi.fn(() => "ws://test/ws/opportunities"),
-}));
-
-vi.mock("../api/config", () => ({
-  API_TOKEN: undefined,
+  shouldUseWsTicketAuth: vi.fn(() => false),
+  buildWsAuthPayload: vi.fn((ticket: string) => ({ type: "auth", ticket })),
 }));
 
 const mockedUseQueryClient = vi.mocked(useQueryClient);

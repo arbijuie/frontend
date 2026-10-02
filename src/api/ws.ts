@@ -1,4 +1,10 @@
-import { API_URL, WS_URL_OVERRIDE, authHeaders } from "./config";
+import {
+  API_URL,
+  WS_URL_OVERRIDE,
+  authFetch,
+  getTelegramSessionToken,
+  hasRuntimeAuth,
+} from "./config";
 import type { WsAuthTicketResponse } from "./types";
 
 export class WsAuthTicketRequestError extends Error {
@@ -25,9 +31,8 @@ function parseRetryAfterSeconds(value: string | null): number | null {
 }
 
 export async function fetchWsAuthTicket(): Promise<WsAuthTicketResponse> {
-  const res = await fetch(`${API_URL}/ws/auth-ticket`, {
+  const res = await authFetch(`${API_URL}/ws/auth-ticket`, {
     method: "POST",
-    headers: authHeaders(),
   });
   if (!res.ok) {
     throw new WsAuthTicketRequestError(
@@ -36,6 +41,26 @@ export async function fetchWsAuthTicket(): Promise<WsAuthTicketResponse> {
     );
   }
   return res.json();
+}
+
+export type WsAuthPayload = {
+  type: "auth";
+  ticket: string;
+  token?: string;
+  session?: string;
+};
+
+export function buildWsAuthPayload(ticket: string): WsAuthPayload {
+  const payload: WsAuthPayload = { type: "auth", ticket };
+  const sessionToken = getTelegramSessionToken();
+  if (sessionToken) {
+    payload.session = sessionToken;
+  }
+  return payload;
+}
+
+export function shouldUseWsTicketAuth(): boolean {
+  return hasRuntimeAuth();
 }
 
 export function getWsUrl(): string {

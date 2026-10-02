@@ -1,4 +1,4 @@
-import { API_URL, authHeaders } from "./config";
+import { API_URL, authFetch } from "./config";
 import type {
   OpportunitiesResponse,
   OpportunityStrategyType as ApiOpportunityStrategyType,
@@ -48,7 +48,7 @@ export async function fetchOpportunities(
   for (const strategyType of normalized) {
     url.searchParams.append("strategy_type", strategyType);
   }
-  const res = await fetch(url.toString(), { headers: authHeaders() });
+  const res = await authFetch(url.toString());
   if (!res.ok) {
     throw new Error(`GET /opportunities failed: ${res.status}`);
   }
