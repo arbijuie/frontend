@@ -1,7 +1,7 @@
 .page {
-  padding: 1rem 0.75rem;
+  width: min(100%, var(--app-max-width, 48rem));
+  padding: 1rem var(--app-horizontal-padding, 0.8rem);
   padding-bottom: 5rem;
-  max-width: 30rem;
   margin: 0 auto;
 }
 
@@ -28,4 +28,10 @@
   color: v.$text-muted;
   margin-bottom: 0.5rem;
   text-align: right;
+}
+
+@media (min-width: 960px) {
+  .page {
+    padding-top: 1.15rem;
+  }
 }

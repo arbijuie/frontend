@@ -97,6 +97,12 @@ function makeConfig(): ConfigResponse {
     backtest_gate_min_win_rate: 0.55,
     backtest_gate_min_total_pnl_bps: 0,
     backtest_gate_max_drawdown_bps: 50,
+    durable_snapshots_enabled: true,
+    durable_snapshots_db_path: "data/market_snapshots.sqlite3",
+    durable_snapshots_retention_days: 7,
+    durable_snapshots_prune_interval_s: 300,
+    durable_snapshots_recover_on_startup: true,
+    durable_snapshots_recover_max_rows: 100000,
     backtest_history_gate_enabled: false,
     backtest_history_lookback_days: 90,
     backtest_history_min_win_rate: 0.6,
@@ -108,7 +114,7 @@ function makeConfig(): ConfigResponse {
         min_score_bps: 8,
       },
     },
-  };
+  } as unknown as ConfigResponse;
 }
 
 describe("ConfigAccordion", () => {

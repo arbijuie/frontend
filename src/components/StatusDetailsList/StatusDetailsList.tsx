@@ -7,6 +7,7 @@ interface StatusDetailsListProps {
 }
 
 const StatusDetailsList = ({ status }: StatusDetailsListProps) => {
+  const continuity = status.snapshot_continuity;
   const rows = [
     { label: "Started at", value: formatDateTime(status.started_at) },
     { label: "Last updated", value: formatDateTime(status.last_updated_at ?? null) },
@@ -22,6 +23,29 @@ const StatusDetailsList = ({ status }: StatusDetailsListProps) => {
       value: String(status.screener_validated_candidates),
     },
     { label: "Screener ready candidates", value: String(status.screener_ready_candidates) },
+    {
+      label: "Snapshot recovery attempted",
+      value: continuity?.recovery_attempted ? "yes" : "no",
+    },
+    {
+      label: "Snapshot recovery result",
+      value: continuity?.recovery_result ?? "not_attempted",
+    },
+    {
+      label: "Snapshot recovery max rows",
+      value: String(continuity?.recovery_max_rows ?? 0),
+    },
+    {
+      label: "Snapshot recovery scanned rows",
+      value: String(continuity?.last_recovery_scanned_rows ?? 0),
+    },
+    {
+      label: "Snapshot recovery duration",
+      value:
+        continuity?.last_recovery_duration_ms != null
+          ? `${Math.round(continuity.last_recovery_duration_ms)} ms`
+          : "-",
+    },
   ];
 
   return (

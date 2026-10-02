@@ -1,6 +1,11 @@
 import styles from "./OpportunitiesPage.module.scss";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useOpportunities } from "../../hooks/useOpportunities";
+import {
+  OPPORTUNITY_STRATEGY_LABEL,
+  OPPORTUNITY_STRATEGY_TYPES,
+  type OpportunityStrategyType,
+} from "../../api/opportunities";
 import { useStatus } from "../../hooks/useStatus";
 import { useConfig } from "../../hooks/useConfig";
 import OpportunitiesList from "../../components/OpportunitiesList/OpportunitiesList";
@@ -14,10 +19,27 @@ import { useNow } from "../../hooks/useNow";
 import { useTransientFlag } from "../../hooks/useTransientFlag";
 import { POLL_INTERVAL_MS } from "../../api/config";
 import { usePageTitle } from "../../hooks/usePageTitle";
+import TransportIndicator from "../../components/TransportIndicator/TransportIndicator";
 
 export default function OpportunitiesPage() {
   usePageTitle("Opportunities");
-  const { data, error, loading, fetching, refetch } = useOpportunities();
+  const [strategyFilter, setStrategyFilter] = useState<"all" | OpportunityStrategyType>("all");
+  const usesLiveTransport = strategyFilter === "all";
+  const strategyTypes = strategyFilter === "all" ? undefined : [strategyFilter];
+  const {
+    data,
+    error,
+    loading,
+    fetching,
+    refetch,
+    transportState,
+    reconnectAttempt,
+    authRetryAttempt,
+    authStatus,
+    authRetryAfterSeconds,
+    authDetail,
+    retryConnection,
+  } = useOpportunities({ strategyTypes });
   const { data: status } = useStatus();
   const { data: config } = useConfig({
     staleTime: 0,
@@ -44,16 +66,51 @@ export default function OpportunitiesPage() {
       <div className={styles.header}>
         <div>
           <h1 className={styles.title}>Opportunities</h1>
+          <div className={styles.filterRow}>
+            <label htmlFor="opportunities-strategy-filter" className={styles.filterLabel}>
+              Strategy
+            </label>
+            <select
+              id="opportunities-strategy-filter"
+              className={styles.filterSelect}
+              value={strategyFilter}
+              onChange={(event) =>
+                setStrategyFilter(event.target.value as "all" | OpportunityStrategyType)
+              }
+              aria-label="Filter opportunities by strategy"
+            >
+              <option value="all">All strategies</option>
+              {OPPORTUNITY_STRATEGY_TYPES.map((strategyType) => (
+                <option key={strategyType} value={strategyType}>
+                  {OPPORTUNITY_STRATEGY_LABEL[strategyType]}
+                </option>
+              ))}
+            </select>
+          </div>
           <div className={styles.liveRow}>
-            <span className={styles.liveDot} />
-            live
+            {usesLiveTransport ? (
+              <TransportIndicator
+                state={transportState}
+                reconnectAttempt={reconnectAttempt}
+                authRetryAttempt={authRetryAttempt}
+                authStatus={authStatus}
+                authRetryAfterSeconds={authRetryAfterSeconds}
+                authDetail={authDetail}
+                onRetry={retryConnection}
+              />
+            ) : (
+              <div className={styles.hint}>HTTP polling (strategy filter active)</div>
+            )}
             {data?.updated_at && (
-              <span>· updated {new Date(data.updated_at).toLocaleTimeString()}</span>
+              <div className={styles.hint}>
+                updated {new Date(data.updated_at).toLocaleTimeString()}
+              </div>
             )}
           </div>
           <div className={styles.summaryRow}>
             <span className={styles.summaryPill}>count: {data?.count ?? "—"}</span>
             <span className={styles.summaryPill}>ready: {data?.ready_count ?? "—"}</span>
+            <span className={styles.summaryPill}>strategy: {strategyFilter}</span>
             <span className={styles.summaryPill}>raw: {rawCandidates ?? "—"}</span>
             <span className={styles.summaryPill}>post-cost: {postCostCandidates ?? "—"}</span>
           </div>

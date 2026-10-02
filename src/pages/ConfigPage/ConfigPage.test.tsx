@@ -29,7 +29,7 @@ vi.mock("../../components/ConfigAccordion/ConfigAccordion", () => ({
 const mockedUseConfig = vi.mocked(useConfig);
 const mockedUseUpdateConfig = vi.mocked(useUpdateConfig);
 
-function makeConfig(): ConfigResponse {
+function makeConfig(overrides: Partial<ConfigResponse> = {}): ConfigResponse {
   return {
     api_host: "127.0.0.1",
     api_port: 8000,
@@ -118,6 +118,12 @@ function makeConfig(): ConfigResponse {
     backtest_gate_min_win_rate: 0.55,
     backtest_gate_min_total_pnl_bps: 0,
     backtest_gate_max_drawdown_bps: 50,
+    durable_snapshots_enabled: true,
+    durable_snapshots_db_path: "data/market_snapshots.sqlite3",
+    durable_snapshots_retention_days: 7,
+    durable_snapshots_prune_interval_s: 300,
+    durable_snapshots_recover_on_startup: true,
+    durable_snapshots_recover_max_rows: 100000,
     backtest_history_gate_enabled: false,
     backtest_history_lookback_days: 90,
     backtest_history_min_win_rate: 0.6,
@@ -129,10 +135,13 @@ function makeConfig(): ConfigResponse {
         min_score_bps: 8,
       },
     },
-  };
+    ...overrides,
+  } as unknown as ConfigResponse;
 }
 
 describe("ConfigPage", () => {
+  const refetch = vi.fn();
+
   beforeEach(() => {
     vi.resetAllMocks();
   });
@@ -145,7 +154,7 @@ describe("ConfigPage", () => {
       error: null,
       loading: false,
       fetching: false,
-      refetch: vi.fn(),
+      refetch,
     });
     mockedUseUpdateConfig.mockReturnValue({
       mutateAsync,
@@ -156,7 +165,8 @@ describe("ConfigPage", () => {
 
     const input = screen.getByLabelText("Min Score (bps)");
     fireEvent.change(input, { target: { value: "9" } });
-    fireEvent.click(screen.getByRole("button", { name: /save \(/i }));
+    fireEvent.click(screen.getByRole("button", { name: /preview changes/i }));
+    fireEvent.click(screen.getByRole("button", { name: /confirm & save/i }));
 
     await waitFor(() => {
       expect(mutateAsync).toHaveBeenCalledTimes(1);
@@ -167,5 +177,308 @@ describe("ConfigPage", () => {
     expect(payload.min_score_bps).toBe(9);
     expect("hl_fee_per_side" in payload).toBe(false);
     expect("lighter_fee_per_side" in payload).toBe(false);
+  });
+
+  it("disables the preview button until a field actually changes", () => {
+    mockedUseConfig.mockReturnValue({
+      data: makeConfig(),
+      error: null,
+      loading: false,
+      fetching: false,
+      refetch,
+    });
+    mockedUseUpdateConfig.mockReturnValue({ mutateAsync: vi.fn(), isPending: false } as never);
+
+    render(<ConfigPage />);
+
+    expect(screen.getByRole("button", { name: /preview changes \(0\)/i })).toBeTruthy();
+
+    fireEvent.change(screen.getByLabelText("Min Score (bps)"), { target: { value: "9" } });
+
+    expect(screen.getByRole("button", { name: /preview changes \(1\)/i })).toBeTruthy();
+  });
+
+  it("shows a diff preview with old/new values and the persist flag before saving", () => {
+    mockedUseConfig.mockReturnValue({
+      data: makeConfig(),
+      error: null,
+      loading: false,
+      fetching: false,
+      refetch,
+    });
+    mockedUseUpdateConfig.mockReturnValue({ mutateAsync: vi.fn(), isPending: false } as never);
+
+    render(<ConfigPage />);
+
+    fireEvent.change(screen.getByLabelText("Min Score (bps)"), { target: { value: "9" } });
+    fireEvent.click(screen.getByRole("button", { name: /preview changes/i }));
+
+    expect(screen.getByRole("dialog", { name: /preview config changes/i })).toBeTruthy();
+    expect(screen.getByText("5")).toBeTruthy();
+    expect(screen.getByText("9")).toBeTruthy();
+    expect(screen.getByText(/persist:/i).textContent).toContain("true");
+  });
+
+  it("reflects persist: false in the preview and in the submitted payload", async () => {
+    const mutateAsync = vi.fn().mockResolvedValue(makeConfig());
+    mockedUseConfig.mockReturnValue({
+      data: makeConfig(),
+      error: null,
+      loading: false,
+      fetching: false,
+      refetch,
+    });
+    mockedUseUpdateConfig.mockReturnValue({ mutateAsync, isPending: false } as never);
+
+    render(<ConfigPage />);
+
+    fireEvent.click(screen.getByLabelText(/persist to \.env/i));
+    fireEvent.change(screen.getByLabelText("Min Score (bps)"), { target: { value: "9" } });
+    fireEvent.click(screen.getByRole("button", { name: /preview changes/i }));
+
+    expect(screen.getByText(/persist:/i).textContent).toContain("false");
+
+    fireEvent.click(screen.getByRole("button", { name: /confirm & save/i }));
+
+    await waitFor(() => {
+      expect(mutateAsync).toHaveBeenCalledWith({ persist: false, min_score_bps: 9 });
+    });
+  });
+
+  it("loads preset values into the draft without submitting on revert-to-preset", () => {
+    const mutateAsync = vi.fn();
+    mockedUseConfig.mockReturnValue({
+      data: makeConfig(),
+      error: null,
+      loading: false,
+      fetching: false,
+      refetch,
+    });
+    mockedUseUpdateConfig.mockReturnValue({ mutateAsync, isPending: false } as never);
+
+    render(<ConfigPage />);
+
+    fireEvent.click(screen.getByRole("button", { name: /^balanced$/i }));
+
+    expect(mutateAsync).not.toHaveBeenCalled();
+    const scoreInput = screen.getByLabelText("Min Score (bps)") as HTMLInputElement;
+    expect(scoreInput.value).toBe("8");
+    expect(screen.getByRole("button", { name: /preview changes \(1\)/i })).toBeTruthy();
+  });
+
+  it("shows a conflict banner when the live config changes after the draft started", () => {
+    mockedUseUpdateConfig.mockReturnValue({ mutateAsync: vi.fn(), isPending: false } as never);
+    mockedUseConfig.mockReturnValue({
+      data: makeConfig(),
+      error: null,
+      loading: false,
+      fetching: false,
+      refetch,
+    });
+
+    const { rerender } = render(<ConfigPage />);
+
+    fireEvent.change(screen.getByLabelText("Min Score (bps)"), { target: { value: "9" } });
+
+    mockedUseConfig.mockReturnValue({
+      data: makeConfig({ min_score_bps: 7 }),
+      error: null,
+      loading: false,
+      fetching: false,
+      refetch,
+    });
+    rerender(<ConfigPage />);
+
+    expect(screen.getByRole("alert")).toBeTruthy();
+    expect(screen.getByText(/live config changed while you were editing/i)).toBeTruthy();
+  });
+
+  it("resets the draft and clears the conflict banner on Reset", () => {
+    mockedUseUpdateConfig.mockReturnValue({ mutateAsync: vi.fn(), isPending: false } as never);
+    mockedUseConfig.mockReturnValue({
+      data: makeConfig(),
+      error: null,
+      loading: false,
+      fetching: false,
+      refetch,
+    });
+
+    const { rerender } = render(<ConfigPage />);
+
+    fireEvent.change(screen.getByLabelText("Min Score (bps)"), { target: { value: "9" } });
+    mockedUseConfig.mockReturnValue({
+      data: makeConfig({ min_score_bps: 7 }),
+      error: null,
+      loading: false,
+      fetching: false,
+      refetch,
+    });
+    rerender(<ConfigPage />);
+    expect(screen.getByRole("alert")).toBeTruthy();
+
+    fireEvent.click(screen.getByRole("button", { name: /^reset$/i }));
+
+    expect(screen.queryByRole("alert")).toBeNull();
+    const scoreInput = screen.getByLabelText("Min Score (bps)") as HTMLInputElement;
+    expect(scoreInput.value).toBe("7");
+  });
+
+  it("renders a checkbox for a boolean runbook field and submits its toggled value", async () => {
+    const mutateAsync = vi.fn().mockResolvedValue(makeConfig());
+    mockedUseConfig.mockReturnValue({
+      data: makeConfig({
+        runbook_config_fields: ["min_score_bps", "require_isolated_margin"],
+      }),
+      error: null,
+      loading: false,
+      fetching: false,
+      refetch,
+    });
+    mockedUseUpdateConfig.mockReturnValue({ mutateAsync, isPending: false } as never);
+
+    render(<ConfigPage />);
+
+    const marginCheckbox = screen.getByLabelText(/require isolated margin/i) as HTMLInputElement;
+    expect(marginCheckbox.type).toBe("checkbox");
+    expect(marginCheckbox.checked).toBe(true);
+
+    fireEvent.click(marginCheckbox);
+    fireEvent.click(screen.getByRole("button", { name: /preview changes/i }));
+
+    expect(screen.getByText("true")).toBeTruthy();
+    expect(screen.getByText("false")).toBeTruthy();
+
+    fireEvent.click(screen.getByRole("button", { name: /confirm & save/i }));
+
+    await waitFor(() => {
+      expect(mutateAsync).toHaveBeenCalledWith({
+        persist: true,
+        require_isolated_margin: false,
+      });
+    });
+  });
+
+  it("shows an invalid-value error and does not open the preview when a numeric field is cleared", () => {
+    mockedUseConfig.mockReturnValue({
+      data: makeConfig(),
+      error: null,
+      loading: false,
+      fetching: false,
+      refetch,
+    });
+    mockedUseUpdateConfig.mockReturnValue({ mutateAsync: vi.fn(), isPending: false } as never);
+
+    render(<ConfigPage />);
+
+    fireEvent.change(screen.getByLabelText("Min Score (bps)"), {
+      target: { value: "not-a-number" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: /preview changes/i }));
+
+    expect(screen.queryByRole("dialog", { name: /preview config changes/i })).toBeNull();
+    expect(screen.getByText(/invalid value for: min score \(bps\)/i)).toBeTruthy();
+  });
+
+  it("shows a hint instead of opening the preview when there are no changes to save", () => {
+    mockedUseConfig.mockReturnValue({
+      data: makeConfig(),
+      error: null,
+      loading: false,
+      fetching: false,
+      refetch,
+    });
+    mockedUseUpdateConfig.mockReturnValue({ mutateAsync: vi.fn(), isPending: false } as never);
+
+    render(<ConfigPage />);
+
+    fireEvent.click(screen.getByRole("button", { name: /preview changes/i }));
+
+    expect(screen.queryByRole("dialog", { name: /preview config changes/i })).toBeNull();
+    expect(screen.getByText(/no changes to save/i)).toBeTruthy();
+  });
+
+  it("closes the preview and keeps the draft unsaved when Cancel is clicked", () => {
+    const mutateAsync = vi.fn();
+    mockedUseConfig.mockReturnValue({
+      data: makeConfig(),
+      error: null,
+      loading: false,
+      fetching: false,
+      refetch,
+    });
+    mockedUseUpdateConfig.mockReturnValue({ mutateAsync, isPending: false } as never);
+
+    render(<ConfigPage />);
+
+    fireEvent.change(screen.getByLabelText("Min Score (bps)"), { target: { value: "9" } });
+    fireEvent.click(screen.getByRole("button", { name: /preview changes/i }));
+    fireEvent.click(screen.getByRole("button", { name: /^cancel$/i }));
+
+    expect(screen.queryByRole("dialog", { name: /preview config changes/i })).toBeNull();
+    expect(mutateAsync).not.toHaveBeenCalled();
+    const scoreInput = screen.getByLabelText("Min Score (bps)") as HTMLInputElement;
+    expect(scoreInput.value).toBe("9");
+  });
+
+  it("shows a local error and keeps the draft when the save request fails", async () => {
+    const mutateAsync = vi.fn().mockRejectedValue(new Error("Network error"));
+    mockedUseConfig.mockReturnValue({
+      data: makeConfig(),
+      error: null,
+      loading: false,
+      fetching: false,
+      refetch,
+    });
+    mockedUseUpdateConfig.mockReturnValue({ mutateAsync, isPending: false } as never);
+
+    render(<ConfigPage />);
+
+    fireEvent.change(screen.getByLabelText("Min Score (bps)"), { target: { value: "9" } });
+    fireEvent.click(screen.getByRole("button", { name: /preview changes/i }));
+    fireEvent.click(screen.getByRole("button", { name: /confirm & save/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText(/network error/i)).toBeTruthy();
+    });
+    const scoreInput = screen.getByLabelText("Min Score (bps)") as HTMLInputElement;
+    expect(scoreInput.value).toBe("9");
+  });
+
+  it("re-closes an open preview when the draft changes again after it was opened", () => {
+    mockedUseConfig.mockReturnValue({
+      data: makeConfig(),
+      error: null,
+      loading: false,
+      fetching: false,
+      refetch,
+    });
+    mockedUseUpdateConfig.mockReturnValue({ mutateAsync: vi.fn(), isPending: false } as never);
+
+    render(<ConfigPage />);
+
+    fireEvent.change(screen.getByLabelText("Min Score (bps)"), { target: { value: "9" } });
+    fireEvent.click(screen.getByRole("button", { name: /preview changes/i }));
+    expect(screen.getByRole("dialog", { name: /preview config changes/i })).toBeTruthy();
+
+    fireEvent.change(screen.getByLabelText("Min Score (bps)"), { target: { value: "11" } });
+
+    expect(screen.queryByRole("dialog", { name: /preview config changes/i })).toBeNull();
+  });
+
+  it("calls refetch when Refresh Live is clicked", () => {
+    mockedUseConfig.mockReturnValue({
+      data: makeConfig(),
+      error: null,
+      loading: false,
+      fetching: false,
+      refetch,
+    });
+    mockedUseUpdateConfig.mockReturnValue({ mutateAsync: vi.fn(), isPending: false } as never);
+
+    render(<ConfigPage />);
+
+    fireEvent.click(screen.getByRole("button", { name: /refresh live/i }));
+
+    expect(refetch).toHaveBeenCalledTimes(1);
   });
 });

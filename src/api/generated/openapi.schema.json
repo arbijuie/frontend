@@ -1,6 +1,574 @@
 {
   "components": {
     "schemas": {
+      "AutoEntryDecisionItem": {
+        "properties": {
+          "action": {
+            "enum": [
+              "enter",
+              "skip"
+            ],
+            "title": "Action",
+            "type": "string"
+          },
+          "attempt_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Attempt Id"
+          },
+          "evaluated_at": {
+            "title": "Evaluated At",
+            "type": "string"
+          },
+          "long_exchange": {
+            "title": "Long Exchange",
+            "type": "string"
+          },
+          "outcome": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Outcome"
+          },
+          "reasons": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Reasons",
+            "type": "array"
+          },
+          "score_bps": {
+            "title": "Score Bps",
+            "type": "number"
+          },
+          "short_exchange": {
+            "title": "Short Exchange",
+            "type": "string"
+          },
+          "strategy_type": {
+            "enum": [
+              "funding_arbitrage",
+              "basis_convergence",
+              "cash_and_carry"
+            ],
+            "title": "Strategy Type",
+            "type": "string"
+          },
+          "symbol": {
+            "title": "Symbol",
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "strategy_type",
+          "long_exchange",
+          "short_exchange",
+          "score_bps",
+          "action",
+          "evaluated_at"
+        ],
+        "title": "AutoEntryDecisionItem",
+        "type": "object"
+      },
+      "AutoEntryDecisionListResponse": {
+        "properties": {
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/AutoEntryDecisionItem"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "status": {
+            "$ref": "#/components/schemas/StatusAutoEntryDiagnostics"
+          }
+        },
+        "required": [
+          "count",
+          "status"
+        ],
+        "title": "AutoEntryDecisionListResponse",
+        "type": "object"
+      },
+      "AutoExitDecisionItem": {
+        "properties": {
+          "action": {
+            "enum": [
+              "exit",
+              "hold"
+            ],
+            "title": "Action",
+            "type": "string"
+          },
+          "attempt_id": {
+            "title": "Attempt Id",
+            "type": "string"
+          },
+          "conditions": {
+            "items": {
+              "enum": [
+                "funding_flip",
+                "score_decay",
+                "time_limit"
+              ],
+              "type": "string"
+            },
+            "title": "Conditions",
+            "type": "array"
+          },
+          "current_score_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Current Score Bps"
+          },
+          "entry_score_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Entry Score Bps"
+          },
+          "evaluated_at": {
+            "title": "Evaluated At",
+            "type": "string"
+          },
+          "held_hours": {
+            "title": "Held Hours",
+            "type": "number"
+          },
+          "net_funding_apr": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Net Funding Apr"
+          },
+          "outcome": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Outcome"
+          },
+          "reason": {
+            "default": "",
+            "title": "Reason",
+            "type": "string"
+          },
+          "symbol": {
+            "title": "Symbol",
+            "type": "string"
+          },
+          "trigger": {
+            "anyOf": [
+              {
+                "enum": [
+                  "funding_flip",
+                  "score_decay",
+                  "time_limit"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Trigger"
+          }
+        },
+        "required": [
+          "attempt_id",
+          "symbol",
+          "action",
+          "held_hours",
+          "evaluated_at"
+        ],
+        "title": "AutoExitDecisionItem",
+        "type": "object"
+      },
+      "AutoExitDecisionListResponse": {
+        "properties": {
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/AutoExitDecisionItem"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "status": {
+            "$ref": "#/components/schemas/StatusAutoExitDiagnostics"
+          }
+        },
+        "required": [
+          "count",
+          "status"
+        ],
+        "title": "AutoExitDecisionListResponse",
+        "type": "object"
+      },
+      "AutomationControlEventItem": {
+        "properties": {
+          "action": {
+            "enum": [
+              "pause",
+              "resume"
+            ],
+            "title": "Action",
+            "type": "string"
+          },
+          "actor": {
+            "title": "Actor",
+            "type": "string"
+          },
+          "at": {
+            "title": "At",
+            "type": "string"
+          },
+          "changed": {
+            "title": "Changed",
+            "type": "boolean"
+          },
+          "kind": {
+            "enum": [
+              "entry",
+              "exit"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          }
+        },
+        "required": [
+          "at",
+          "kind",
+          "action",
+          "reason",
+          "actor",
+          "changed"
+        ],
+        "title": "AutomationControlEventItem",
+        "type": "object"
+      },
+      "AutomationControlRequest": {
+        "properties": {
+          "action": {
+            "enum": [
+              "pause",
+              "resume"
+            ],
+            "title": "Action",
+            "type": "string"
+          },
+          "reason": {
+            "default": "",
+            "maxLength": 200,
+            "title": "Reason",
+            "type": "string"
+          },
+          "target": {
+            "enum": [
+              "entry",
+              "exit",
+              "all"
+            ],
+            "title": "Target",
+            "type": "string"
+          }
+        },
+        "required": [
+          "target",
+          "action"
+        ],
+        "title": "AutomationControlRequest",
+        "type": "object"
+      },
+      "AutomationModeItem": {
+        "description": "One autonomous capability (issue #195).\n\n`state`: `disabled` (not configured), `paused` (operator hold), `blocked` (configured and\nnot paused, but `blockers` stop it), or `armed` (the next pass may act).",
+        "properties": {
+          "actions_total": {
+            "default": 0,
+            "title": "Actions Total",
+            "type": "integer"
+          },
+          "blockers": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Blockers",
+            "type": "array"
+          },
+          "enabled": {
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "failures_total": {
+            "default": 0,
+            "title": "Failures Total",
+            "type": "integer"
+          },
+          "kind": {
+            "enum": [
+              "entry",
+              "exit"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "last_action_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Action At"
+          },
+          "last_action_outcome": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Action Outcome"
+          },
+          "last_action_symbol": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Action Symbol"
+          },
+          "last_run_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Run At"
+          },
+          "pause_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pause Reason"
+          },
+          "paused": {
+            "title": "Paused",
+            "type": "boolean"
+          },
+          "paused_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Paused At"
+          },
+          "paused_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Paused By"
+          },
+          "state": {
+            "enum": [
+              "disabled",
+              "paused",
+              "blocked",
+              "armed"
+            ],
+            "title": "State",
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "enabled",
+          "paused",
+          "state"
+        ],
+        "title": "AutomationModeItem",
+        "type": "object"
+      },
+      "AutomationOverviewResponse": {
+        "properties": {
+          "checked_at": {
+            "title": "Checked At",
+            "type": "string"
+          },
+          "control_log": {
+            "items": {
+              "$ref": "#/components/schemas/AutomationControlEventItem"
+            },
+            "title": "Control Log",
+            "type": "array"
+          },
+          "entry": {
+            "$ref": "#/components/schemas/AutomationModeItem"
+          },
+          "exit": {
+            "$ref": "#/components/schemas/AutomationModeItem"
+          },
+          "posture": {
+            "$ref": "#/components/schemas/AutomationPostureItem"
+          },
+          "recent_entries": {
+            "items": {
+              "$ref": "#/components/schemas/AutoEntryDecisionItem"
+            },
+            "title": "Recent Entries",
+            "type": "array"
+          },
+          "recent_exits": {
+            "items": {
+              "$ref": "#/components/schemas/AutoExitDecisionItem"
+            },
+            "title": "Recent Exits",
+            "type": "array"
+          }
+        },
+        "required": [
+          "checked_at",
+          "entry",
+          "exit",
+          "posture"
+        ],
+        "title": "AutomationOverviewResponse",
+        "type": "object"
+      },
+      "AutomationPostureItem": {
+        "properties": {
+          "consecutive_rollbacks": {
+            "title": "Consecutive Rollbacks",
+            "type": "integer"
+          },
+          "entries_stopped": {
+            "title": "Entries Stopped",
+            "type": "boolean"
+          },
+          "exec_dry_run": {
+            "title": "Exec Dry Run",
+            "type": "boolean"
+          },
+          "exec_enabled": {
+            "title": "Exec Enabled",
+            "type": "boolean"
+          },
+          "gate_passed": {
+            "title": "Gate Passed",
+            "type": "boolean"
+          },
+          "gate_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gate Reason"
+          },
+          "guardrail_entry_blocks": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Guardrail Entry Blocks",
+            "type": "array"
+          },
+          "guardrail_last_evaluated_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Guardrail Last Evaluated At"
+          },
+          "open_positions": {
+            "default": 0,
+            "title": "Open Positions",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "exec_enabled",
+          "exec_dry_run",
+          "gate_passed",
+          "entries_stopped",
+          "consecutive_rollbacks"
+        ],
+        "title": "AutomationPostureItem",
+        "type": "object"
+      },
       "BacktestGateResponse": {
         "properties": {
           "lock_id": {
@@ -17,6 +585,9 @@
           "passed": {
             "title": "Passed",
             "type": "boolean"
+          },
+          "posture": {
+            "$ref": "#/components/schemas/ExecutionGatePostureItem"
           },
           "reason": {
             "anyOf": [
@@ -111,9 +682,34 @@
       },
       "BacktestLockListItem": {
         "properties": {
+          "basis_carry_pnl_bps": {
+            "default": 0.0,
+            "title": "Basis Carry Pnl Bps",
+            "type": "number"
+          },
           "created_at": {
             "title": "Created At",
             "type": "string"
+          },
+          "entries": {
+            "default": 0,
+            "title": "Entries",
+            "type": "integer"
+          },
+          "entry_cost_bps": {
+            "default": 0.0,
+            "title": "Entry Cost Bps",
+            "type": "number"
+          },
+          "exits": {
+            "default": 0,
+            "title": "Exits",
+            "type": "integer"
+          },
+          "funding_carry_pnl_bps": {
+            "default": 0.0,
+            "title": "Funding Carry Pnl Bps",
+            "type": "number"
           },
           "gate_passed": {
             "title": "Gate Passed",
@@ -231,6 +827,11 @@
       },
       "BacktestMetricsItem": {
         "properties": {
+          "basis_carry_pnl_bps": {
+            "default": 0.0,
+            "title": "Basis Carry Pnl Bps",
+            "type": "number"
+          },
           "closed_trades": {
             "title": "Closed Trades",
             "type": "integer"
@@ -238,6 +839,18 @@
           "entries": {
             "title": "Entries",
             "type": "integer"
+          },
+          "entries_by_strategy_type": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Entries By Strategy Type",
+            "type": "object"
+          },
+          "entry_cost_bps": {
+            "default": 0.0,
+            "title": "Entry Cost Bps",
+            "type": "number"
           },
           "exit_reasons": {
             "additionalProperties": {
@@ -249,6 +862,18 @@
           "exits": {
             "title": "Exits",
             "type": "integer"
+          },
+          "exits_by_strategy_type": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Exits By Strategy Type",
+            "type": "object"
+          },
+          "funding_carry_pnl_bps": {
+            "default": 0.0,
+            "title": "Funding Carry Pnl Bps",
+            "type": "number"
           },
           "max_drawdown_bps": {
             "title": "Max Drawdown Bps",
@@ -374,6 +999,28 @@
       },
       "BacktestReplayRequest": {
         "properties": {
+          "basis_exit_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Basis Exit Bps"
+          },
+          "basis_max_hold_multiplier": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Basis Max Hold Multiplier"
+          },
           "basis_reversal_exit": {
             "anyOf": [
               {
@@ -552,6 +1199,172 @@
         "title": "BacktestSummaryResponse",
         "type": "object"
       },
+      "BacktestSurvivalGroupItem": {
+        "description": "Kaplan-Meier summary for one episode group (`all`, `strategy:*`, `score:*`).",
+        "properties": {
+          "censored": {
+            "title": "Censored",
+            "type": "integer"
+          },
+          "curve": {
+            "items": {
+              "$ref": "#/components/schemas/SurvivalPoint"
+            },
+            "title": "Curve",
+            "type": "array"
+          },
+          "episodes": {
+            "title": "Episodes",
+            "type": "integer"
+          },
+          "events": {
+            "title": "Events",
+            "type": "integer"
+          },
+          "group": {
+            "title": "Group",
+            "type": "string"
+          },
+          "hazard": {
+            "items": {
+              "$ref": "#/components/schemas/HazardBucket"
+            },
+            "title": "Hazard",
+            "type": "array"
+          },
+          "max_observed_s": {
+            "title": "Max Observed S",
+            "type": "number"
+          },
+          "median_s": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Median S"
+          },
+          "p25_s": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "P25 S"
+          },
+          "p75_s": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "P75 S"
+          },
+          "restricted_horizon_s": {
+            "title": "Restricted Horizon S",
+            "type": "number"
+          },
+          "restricted_mean_s": {
+            "title": "Restricted Mean S",
+            "type": "number"
+          }
+        },
+        "required": [
+          "group",
+          "episodes",
+          "events",
+          "censored",
+          "restricted_mean_s",
+          "restricted_horizon_s",
+          "max_observed_s"
+        ],
+        "title": "BacktestSurvivalGroupItem",
+        "type": "object"
+      },
+      "BacktestSurvivalResponse": {
+        "description": "`GET /backtest/survival`: READY-episode persistence survival analysis (issue #196).",
+        "properties": {
+          "censored_total": {
+            "title": "Censored Total",
+            "type": "integer"
+          },
+          "end_reasons": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "End Reasons",
+            "type": "object"
+          },
+          "episodes_total": {
+            "title": "Episodes Total",
+            "type": "integer"
+          },
+          "events_total": {
+            "title": "Events Total",
+            "type": "integer"
+          },
+          "gap_tolerance_s": {
+            "title": "Gap Tolerance S",
+            "type": "number"
+          },
+          "generated_at": {
+            "title": "Generated At",
+            "type": "string"
+          },
+          "groups": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/BacktestSurvivalGroupItem"
+            },
+            "title": "Groups",
+            "type": "object"
+          },
+          "lookback_days": {
+            "title": "Lookback Days",
+            "type": "number"
+          },
+          "window_end": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Window End"
+          },
+          "window_start": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Window Start"
+          }
+        },
+        "required": [
+          "generated_at",
+          "lookback_days",
+          "gap_tolerance_s",
+          "episodes_total",
+          "events_total",
+          "censored_total"
+        ],
+        "title": "BacktestSurvivalResponse",
+        "type": "object"
+      },
       "ConfigResponse": {
         "properties": {
           "active_exchanges": {
@@ -673,8 +1486,24 @@
             "title": "Basis Divergence Threshold Bps",
             "type": "number"
           },
+          "basis_entry_bps": {
+            "title": "Basis Entry Bps",
+            "type": "number"
+          },
+          "basis_exit_bps": {
+            "title": "Basis Exit Bps",
+            "type": "number"
+          },
           "basis_expansion_penalty_bps_per_hour": {
             "title": "Basis Expansion Penalty Bps Per Hour",
+            "type": "number"
+          },
+          "basis_funding_penalty_weight": {
+            "title": "Basis Funding Penalty Weight",
+            "type": "number"
+          },
+          "basis_max_hold_multiplier": {
+            "title": "Basis Max Hold Multiplier",
             "type": "number"
           },
           "basis_weight": {
@@ -685,12 +1514,40 @@
             "title": "Binance Base Url",
             "type": "string"
           },
+          "borrow_rate_apr": {
+            "title": "Borrow Rate Apr",
+            "type": "number"
+          },
           "bybit_base_url": {
             "title": "Bybit Base Url",
             "type": "string"
           },
+          "calibration_artifact_path": {
+            "title": "Calibration Artifact Path",
+            "type": "string"
+          },
+          "calibration_artifact_rollback_path": {
+            "title": "Calibration Artifact Rollback Path",
+            "type": "string"
+          },
+          "cash_and_carry_entry_bps": {
+            "title": "Cash And Carry Entry Bps",
+            "type": "number"
+          },
           "correlation_bucket_s": {
             "title": "Correlation Bucket S",
+            "type": "number"
+          },
+          "correlation_concentration_block_ratio": {
+            "title": "Correlation Concentration Block Ratio",
+            "type": "number"
+          },
+          "correlation_concentration_min_ready_candidates": {
+            "title": "Correlation Concentration Min Ready Candidates",
+            "type": "integer"
+          },
+          "correlation_concentration_watch_ratio": {
+            "title": "Correlation Concentration Watch Ratio",
             "type": "number"
           },
           "correlation_min_samples": {
@@ -707,6 +1564,30 @@
           },
           "default_order_size_usd": {
             "title": "Default Order Size Usd",
+            "type": "number"
+          },
+          "durable_snapshots_db_path": {
+            "title": "Durable Snapshots Db Path",
+            "type": "string"
+          },
+          "durable_snapshots_enabled": {
+            "title": "Durable Snapshots Enabled",
+            "type": "boolean"
+          },
+          "durable_snapshots_prune_interval_s": {
+            "title": "Durable Snapshots Prune Interval S",
+            "type": "number"
+          },
+          "durable_snapshots_recover_max_rows": {
+            "title": "Durable Snapshots Recover Max Rows",
+            "type": "integer"
+          },
+          "durable_snapshots_recover_on_startup": {
+            "title": "Durable Snapshots Recover On Startup",
+            "type": "boolean"
+          },
+          "durable_snapshots_retention_days": {
+            "title": "Durable Snapshots Retention Days",
             "type": "number"
           },
           "dydx_indexer_url": {
@@ -747,6 +1628,22 @@
           },
           "exec_margin_force_close_pct": {
             "title": "Exec Margin Force Close Pct",
+            "type": "number"
+          },
+          "exec_max_unhedged_duration_s": {
+            "title": "Exec Max Unhedged Duration S",
+            "type": "number"
+          },
+          "exec_min_partial_fill_pct": {
+            "title": "Exec Min Partial Fill Pct",
+            "type": "number"
+          },
+          "exec_partial_fill_poll_s": {
+            "title": "Exec Partial Fill Poll S",
+            "type": "number"
+          },
+          "exec_partial_fill_timeout_s": {
+            "title": "Exec Partial Fill Timeout S",
             "type": "number"
           },
           "exec_recovery_cooldown_s": {
@@ -829,6 +1726,10 @@
             "title": "Hold Window Instability Scale",
             "type": "number"
           },
+          "lending_yield_apr": {
+            "title": "Lending Yield Apr",
+            "type": "number"
+          },
           "lighter_maker_fee_per_side": {
             "title": "Lighter Maker Fee Per Side",
             "type": "number"
@@ -885,6 +1786,75 @@
             "title": "Max Volume Fraction",
             "type": "number"
           },
+          "migration_nautilus_adapter_enabled": {
+            "title": "Migration Nautilus Adapter Enabled",
+            "type": "boolean"
+          },
+          "migration_nautilus_adapter_rollout_ledger_path": {
+            "default": "",
+            "title": "Migration Nautilus Adapter Rollout Ledger Path",
+            "type": "string"
+          },
+          "migration_nautilus_adapter_rollout_plan_path": {
+            "default": "",
+            "title": "Migration Nautilus Adapter Rollout Plan Path",
+            "type": "string"
+          },
+          "migration_nautilus_adapter_rollout_step": {
+            "default": "S0",
+            "title": "Migration Nautilus Adapter Rollout Step",
+            "type": "string"
+          },
+          "migration_nautilus_adapter_venues": {
+            "title": "Migration Nautilus Adapter Venues",
+            "type": "string"
+          },
+          "migration_nautilus_compare_enabled": {
+            "title": "Migration Nautilus Compare Enabled",
+            "type": "boolean"
+          },
+          "migration_nautilus_enabled": {
+            "title": "Migration Nautilus Enabled",
+            "type": "boolean"
+          },
+          "migration_nautilus_fallback_policy": {
+            "const": "deny_and_observe",
+            "title": "Migration Nautilus Fallback Policy",
+            "type": "string"
+          },
+          "migration_nautilus_mode": {
+            "enum": [
+              "legacy_only",
+              "shadow_compare",
+              "nautilus_primary"
+            ],
+            "title": "Migration Nautilus Mode",
+            "type": "string"
+          },
+          "migration_nautilus_observe_only": {
+            "title": "Migration Nautilus Observe Only",
+            "type": "boolean"
+          },
+          "migration_preflight_canary_symbols": {
+            "default": "",
+            "title": "Migration Preflight Canary Symbols",
+            "type": "string"
+          },
+          "migration_preflight_cutover_approval_path": {
+            "default": "",
+            "title": "Migration Preflight Cutover Approval Path",
+            "type": "string"
+          },
+          "migration_preflight_source": {
+            "default": "legacy",
+            "enum": [
+              "legacy",
+              "nautilus_canary",
+              "nautilus"
+            ],
+            "title": "Migration Preflight Source",
+            "type": "string"
+          },
           "min_depth_quality": {
             "title": "Min Depth Quality",
             "type": "string"
@@ -929,6 +1899,9 @@
                   },
                   {
                     "type": "boolean"
+                  },
+                  {
+                    "type": "string"
                   }
                 ]
               },
@@ -975,10 +1948,17 @@
           "max_volume_fraction",
           "expected_hold_hours",
           "basis_weight",
+          "basis_entry_bps",
+          "basis_exit_bps",
+          "basis_max_hold_multiplier",
+          "basis_funding_penalty_weight",
           "basis_bonus_cap_bps",
           "basis_divergence_threshold_bps",
           "max_basis_divergence_hours",
           "basis_expansion_penalty_bps_per_hour",
+          "cash_and_carry_entry_bps",
+          "borrow_rate_apr",
+          "lending_yield_apr",
           "hold_window_instability_scale",
           "liquidity_weight",
           "timing_penalty_bps_per_hour",
@@ -1000,6 +1980,9 @@
           "correlation_window_hours",
           "correlation_bucket_s",
           "correlation_min_samples",
+          "correlation_concentration_watch_ratio",
+          "correlation_concentration_block_ratio",
+          "correlation_concentration_min_ready_candidates",
           "loop_interval_s",
           "stale_data_s",
           "exec_enabled",
@@ -1008,6 +1991,10 @@
           "exec_leg_retry_attempts",
           "exec_leg_retry_interval_s",
           "exec_stop_on_consecutive_rollbacks",
+          "exec_partial_fill_timeout_s",
+          "exec_partial_fill_poll_s",
+          "exec_max_unhedged_duration_s",
+          "exec_min_partial_fill_pct",
           "exec_stop_on_api_errors_per_window",
           "exec_api_error_window_s",
           "exec_stop_on_median_slippage_bps",
@@ -1019,6 +2006,13 @@
           "exec_adl_critical_quantile",
           "exec_recovery_cooldown_s",
           "exec_recovery_require_manual_ack",
+          "migration_nautilus_enabled",
+          "migration_nautilus_mode",
+          "migration_nautilus_compare_enabled",
+          "migration_nautilus_observe_only",
+          "migration_nautilus_fallback_policy",
+          "migration_nautilus_adapter_enabled",
+          "migration_nautilus_adapter_venues",
           "extra_exchanges",
           "binance_base_url",
           "aster_base_url",
@@ -1027,6 +2021,12 @@
           "extended_base_url",
           "backtest_capture_enabled",
           "backtest_db_path",
+          "durable_snapshots_enabled",
+          "durable_snapshots_db_path",
+          "durable_snapshots_retention_days",
+          "durable_snapshots_prune_interval_s",
+          "durable_snapshots_recover_on_startup",
+          "durable_snapshots_recover_max_rows",
           "backtest_entry_score_bps",
           "backtest_exit_score_bps",
           "backtest_replay_cycle_hours",
@@ -1045,6 +2045,8 @@
           "backtest_history_min_win_rate",
           "backtest_history_min_closed_trades",
           "backtest_history_refresh_s",
+          "calibration_artifact_path",
+          "calibration_artifact_rollback_path",
           "runbook_config_fields",
           "runbook_presets"
         ],
@@ -1109,6 +2111,28 @@
             ],
             "title": "Basis Divergence Threshold Bps"
           },
+          "basis_entry_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Basis Entry Bps"
+          },
+          "basis_exit_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Basis Exit Bps"
+          },
           "basis_expansion_penalty_bps_per_hour": {
             "anyOf": [
               {
@@ -1120,6 +2144,28 @@
             ],
             "title": "Basis Expansion Penalty Bps Per Hour"
           },
+          "basis_funding_penalty_weight": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Basis Funding Penalty Weight"
+          },
+          "basis_max_hold_multiplier": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Basis Max Hold Multiplier"
+          },
           "basis_weight": {
             "anyOf": [
               {
@@ -1130,6 +2176,28 @@
               }
             ],
             "title": "Basis Weight"
+          },
+          "borrow_rate_apr": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Borrow Rate Apr"
+          },
+          "cash_and_carry_entry_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cash And Carry Entry Bps"
           },
           "correlation_threshold": {
             "anyOf": [
@@ -1174,6 +2242,17 @@
               }
             ],
             "title": "Hold Window Instability Scale"
+          },
+          "lending_yield_apr": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lending Yield Apr"
           },
           "max_basis_divergence_hours": {
             "anyOf": [
@@ -1251,6 +2330,104 @@
               }
             ],
             "title": "Max Volume Fraction"
+          },
+          "migration_nautilus_adapter_enabled": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Migration Nautilus Adapter Enabled"
+          },
+          "migration_nautilus_adapter_rollout_step": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Migration Nautilus Adapter Rollout Step"
+          },
+          "migration_nautilus_compare_enabled": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Migration Nautilus Compare Enabled"
+          },
+          "migration_nautilus_enabled": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Migration Nautilus Enabled"
+          },
+          "migration_nautilus_mode": {
+            "anyOf": [
+              {
+                "enum": [
+                  "legacy_only",
+                  "shadow_compare",
+                  "nautilus_primary"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Migration Nautilus Mode"
+          },
+          "migration_nautilus_observe_only": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Migration Nautilus Observe Only"
+          },
+          "migration_preflight_canary_symbols": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Migration Preflight Canary Symbols"
+          },
+          "migration_preflight_source": {
+            "anyOf": [
+              {
+                "enum": [
+                  "legacy",
+                  "nautilus_canary",
+                  "nautilus"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Migration Preflight Source"
           },
           "min_open_interest": {
             "anyOf": [
@@ -1355,6 +2532,45 @@
         "title": "ConfigUpdateRequest",
         "type": "object"
       },
+      "CorrelationConcentrationItem": {
+        "additionalProperties": false,
+        "properties": {
+          "largest_cluster_ratio": {
+            "default": 0.0,
+            "title": "Largest Cluster Ratio",
+            "type": "number"
+          },
+          "largest_cluster_size": {
+            "default": 0,
+            "title": "Largest Cluster Size",
+            "type": "integer"
+          },
+          "largest_cluster_symbols": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Largest Cluster Symbols",
+            "type": "array"
+          },
+          "level": {
+            "default": "ok",
+            "enum": [
+              "ok",
+              "watching",
+              "blocked"
+            ],
+            "title": "Level",
+            "type": "string"
+          },
+          "ready_count": {
+            "default": 0,
+            "title": "Ready Count",
+            "type": "integer"
+          }
+        },
+        "title": "CorrelationConcentrationItem",
+        "type": "object"
+      },
       "CorrelationPairItem": {
         "properties": {
           "above_threshold": {
@@ -1451,11 +2667,170 @@
         "title": "CorrelationResponse",
         "type": "object"
       },
+      "DailyPnlItem": {
+        "description": "One UTC day: `total = realized + funding + unrealized_change` (mark-to-market).",
+        "properties": {
+          "day": {
+            "title": "Day",
+            "type": "string"
+          },
+          "funding_pnl_usd": {
+            "title": "Funding Pnl Usd",
+            "type": "number"
+          },
+          "positions_closed": {
+            "title": "Positions Closed",
+            "type": "integer"
+          },
+          "positions_open": {
+            "title": "Positions Open",
+            "type": "integer"
+          },
+          "realized_pnl_usd": {
+            "title": "Realized Pnl Usd",
+            "type": "number"
+          },
+          "total_pnl_usd": {
+            "title": "Total Pnl Usd",
+            "type": "number"
+          },
+          "unrealized_change_usd": {
+            "title": "Unrealized Change Usd",
+            "type": "number"
+          },
+          "unrealized_pnl_usd": {
+            "title": "Unrealized Pnl Usd",
+            "type": "number"
+          }
+        },
+        "required": [
+          "day",
+          "realized_pnl_usd",
+          "funding_pnl_usd",
+          "unrealized_pnl_usd",
+          "unrealized_change_usd",
+          "total_pnl_usd",
+          "positions_open",
+          "positions_closed"
+        ],
+        "title": "DailyPnlItem",
+        "type": "object"
+      },
+      "DailyPnlResponse": {
+        "properties": {
+          "days": {
+            "items": {
+              "$ref": "#/components/schemas/DailyPnlItem"
+            },
+            "title": "Days",
+            "type": "array"
+          },
+          "funding_pnl_usd": {
+            "default": 0.0,
+            "title": "Funding Pnl Usd",
+            "type": "number"
+          },
+          "realized_pnl_usd": {
+            "default": 0.0,
+            "title": "Realized Pnl Usd",
+            "type": "number"
+          },
+          "total_pnl_usd": {
+            "default": 0.0,
+            "title": "Total Pnl Usd",
+            "type": "number"
+          }
+        },
+        "title": "DailyPnlResponse",
+        "type": "object"
+      },
       "ExecutionAttemptItem": {
         "properties": {
+          "abort_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Abort Reason"
+          },
           "attempt_id": {
             "title": "Attempt Id",
             "type": "string"
+          },
+          "close_attempts": {
+            "default": 0,
+            "title": "Close Attempts",
+            "type": "integer"
+          },
+          "close_orders": {
+            "items": {
+              "$ref": "#/components/schemas/ExecutionOrderItem"
+            },
+            "title": "Close Orders",
+            "type": "array"
+          },
+          "close_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Close Reason"
+          },
+          "close_reconciliation": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ExecutionCloseReconciliationItem"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "close_requested_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Close Requested At"
+          },
+          "close_trigger": {
+            "anyOf": [
+              {
+                "enum": [
+                  "manual",
+                  "guardrail",
+                  "signal"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Close Trigger"
+          },
+          "closed_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Closed At"
           },
           "consecutive_rollbacks": {
             "title": "Consecutive Rollbacks",
@@ -1468,6 +2843,17 @@
           "dry_run": {
             "title": "Dry Run",
             "type": "boolean"
+          },
+          "entry_score_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Entry Score Bps"
           },
           "error": {
             "anyOf": [
@@ -1487,12 +2873,74 @@
             "title": "Events",
             "type": "array"
           },
+          "expected_slippage_bps": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "title": "Expected Slippage Bps",
+            "type": "object"
+          },
+          "filled_quantity": {
+            "default": "0",
+            "title": "Filled Quantity",
+            "type": "string"
+          },
           "first_leg": {
             "$ref": "#/components/schemas/ExecutionLegItem"
+          },
+          "first_leg_slippage_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "First Leg Slippage Bps"
+          },
+          "hedge_leg": {
+            "default": "long",
+            "enum": [
+              "long",
+              "short"
+            ],
+            "title": "Hedge Leg",
+            "type": "string"
+          },
+          "hydrated_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hydrated At"
+          },
+          "hydration_conflicts": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Hydration Conflicts",
+            "type": "array"
           },
           "long_exchange": {
             "title": "Long Exchange",
             "type": "string"
+          },
+          "partial_fill": {
+            "default": false,
+            "title": "Partial Fill",
+            "type": "boolean"
           },
           "quantity": {
             "title": "Quantity",
@@ -1501,6 +2949,21 @@
           "residual_exposure": {
             "title": "Residual Exposure",
             "type": "boolean"
+          },
+          "residual_trim_order": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ExecutionOrderItem"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "residual_trim_quantity": {
+            "default": "0",
+            "title": "Residual Trim Quantity",
+            "type": "string"
           },
           "rollback_attempts": {
             "title": "Rollback Attempts",
@@ -1534,6 +2997,17 @@
             "title": "Second Leg Attempts",
             "type": "integer"
           },
+          "second_leg_slippage_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Second Leg Slippage Bps"
+          },
           "short_exchange": {
             "title": "Short Exchange",
             "type": "string"
@@ -1549,6 +3023,11 @@
           "symbol": {
             "title": "Symbol",
             "type": "string"
+          },
+          "unhedged_timeout": {
+            "default": false,
+            "title": "Unhedged Timeout",
+            "type": "boolean"
           }
         },
         "required": [
@@ -1601,11 +3080,159 @@
         "title": "ExecutionAttemptListResponse",
         "type": "object"
       },
+      "ExecutionCloseReconciliationItem": {
+        "description": "Outcome of the last bounded close run; `complete` means both legs are flat.",
+        "properties": {
+          "complete": {
+            "title": "Complete",
+            "type": "boolean"
+          },
+          "imbalance": {
+            "default": "0",
+            "title": "Imbalance",
+            "type": "string"
+          },
+          "long_residual": {
+            "default": "0",
+            "title": "Long Residual",
+            "type": "string"
+          },
+          "notes": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Notes",
+            "type": "array"
+          },
+          "poll_s": {
+            "title": "Poll S",
+            "type": "number"
+          },
+          "reconciled_at": {
+            "title": "Reconciled At",
+            "type": "string"
+          },
+          "rounds": {
+            "title": "Rounds",
+            "type": "integer"
+          },
+          "short_residual": {
+            "default": "0",
+            "title": "Short Residual",
+            "type": "string"
+          },
+          "unresolved_orders": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Unresolved Orders",
+            "type": "array"
+          },
+          "window_s": {
+            "title": "Window S",
+            "type": "number"
+          }
+        },
+        "required": [
+          "window_s",
+          "poll_s",
+          "rounds",
+          "complete",
+          "reconciled_at"
+        ],
+        "title": "ExecutionCloseReconciliationItem",
+        "type": "object"
+      },
+      "ExecutionCloseRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "attempt_id": {
+            "title": "Attempt Id",
+            "type": "string"
+          },
+          "reason": {
+            "default": "manual close",
+            "title": "Reason",
+            "type": "string"
+          }
+        },
+        "required": [
+          "attempt_id"
+        ],
+        "title": "ExecutionCloseRequest",
+        "type": "object"
+      },
+      "ExecutionGatePostureItem": {
+        "description": "Explicit Phase 4-pre gate posture, independent of the execution switches.\n\n`criteria_*` report the acceptance criteria (strategy lock plus signed acceptance\nevidence). `live_execution_allowed` is true only when execution is enabled, dry-run is\noff, and the criteria are satisfied.",
+        "properties": {
+          "acceptance_matrix_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Acceptance Matrix Version"
+          },
+          "acceptance_record_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Acceptance Record Id"
+          },
+          "criteria_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Criteria Reason"
+          },
+          "criteria_satisfied": {
+            "default": false,
+            "title": "Criteria Satisfied",
+            "type": "boolean"
+          },
+          "live_execution_allowed": {
+            "default": false,
+            "title": "Live Execution Allowed",
+            "type": "boolean"
+          }
+        },
+        "title": "ExecutionGatePostureItem",
+        "type": "object"
+      },
       "ExecutionLegItem": {
         "properties": {
           "attempts": {
             "title": "Attempts",
             "type": "integer"
+          },
+          "close_average_price": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Close Average Price"
+          },
+          "closed_quantity": {
+            "default": "0",
+            "title": "Closed Quantity",
+            "type": "string"
           },
           "exchange": {
             "title": "Exchange",
@@ -1620,6 +3247,11 @@
                 "type": "null"
               }
             ]
+          },
+          "filled_quantity": {
+            "default": "0",
+            "title": "Filled Quantity",
+            "type": "string"
           },
           "intended_price": {
             "title": "Intended Price",
@@ -1689,6 +3321,22 @@
             ],
             "title": "Size Usd"
           },
+          "strategy_type": {
+            "anyOf": [
+              {
+                "enum": [
+                  "funding_arbitrage",
+                  "basis_convergence",
+                  "cash_and_carry"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Strategy Type"
+          },
           "symbol": {
             "title": "Symbol",
             "type": "string"
@@ -1702,6 +3350,17 @@
       },
       "ExecutionOrderItem": {
         "properties": {
+          "average_fill_price": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Average Fill Price"
+          },
           "client_order_id": {
             "title": "Client Order Id",
             "type": "string"
@@ -1719,6 +3378,11 @@
           },
           "exchange": {
             "title": "Exchange",
+            "type": "string"
+          },
+          "filled_quantity": {
+            "default": "0",
+            "title": "Filled Quantity",
             "type": "string"
           },
           "price": {
@@ -1740,6 +3404,11 @@
             "default": false,
             "title": "Reduce Only",
             "type": "boolean"
+          },
+          "remaining_quantity": {
+            "default": "0",
+            "title": "Remaining Quantity",
+            "type": "string"
           },
           "side": {
             "enum": [
@@ -1775,9 +3444,21 @@
             "title": "Combined Score",
             "type": "number"
           },
-          "long_exchange": {
-            "title": "Long Exchange",
-            "type": "string"
+          "correlated_ready_count": {
+            "default": 0,
+            "title": "Correlated Ready Count",
+            "type": "integer"
+          },
+          "execution_adjusted_score_bps": {
+            "title": "Execution Adjusted Score Bps",
+            "type": "number"
+          },
+          "legs": {
+            "items": {
+              "$ref": "#/components/schemas/LegItem"
+            },
+            "title": "Legs",
+            "type": "array"
           },
           "reasons": {
             "items": {
@@ -1786,9 +3467,9 @@
             "title": "Reasons",
             "type": "array"
           },
-          "short_exchange": {
-            "title": "Short Exchange",
-            "type": "string"
+          "signal_score_bps": {
+            "title": "Signal Score Bps",
+            "type": "number"
           },
           "status": {
             "enum": [
@@ -1799,6 +3480,19 @@
             "title": "Status",
             "type": "string"
           },
+          "strategy_profile_id": {
+            "title": "Strategy Profile Id",
+            "type": "string"
+          },
+          "strategy_type": {
+            "enum": [
+              "funding_arbitrage",
+              "basis_convergence",
+              "cash_and_carry"
+            ],
+            "title": "Strategy Type",
+            "type": "string"
+          },
           "symbol": {
             "title": "Symbol",
             "type": "string"
@@ -1806,8 +3500,10 @@
         },
         "required": [
           "symbol",
-          "long_exchange",
-          "short_exchange",
+          "strategy_type",
+          "strategy_profile_id",
+          "signal_score_bps",
+          "execution_adjusted_score_bps",
           "combined_score",
           "status"
         ],
@@ -1857,6 +3553,9 @@
           "passed": {
             "title": "Passed",
             "type": "boolean"
+          },
+          "posture": {
+            "$ref": "#/components/schemas/ExecutionGatePostureItem"
           },
           "reason": {
             "anyOf": [
@@ -2023,6 +3722,9 @@
           },
           "runtime": {
             "$ref": "#/components/schemas/ExecutionPreflightRuntimeItem"
+          },
+          "source": {
+            "$ref": "#/components/schemas/ExecutionPreflightSourceItem"
           }
         },
         "required": [
@@ -2042,6 +3744,9 @@
             "default": 0,
             "title": "Consecutive Rollbacks",
             "type": "integer"
+          },
+          "correlation_concentration": {
+            "$ref": "#/components/schemas/CorrelationConcentrationItem"
           },
           "entries_stopped": {
             "default": false,
@@ -2080,6 +3785,30 @@
           "screener_ready_candidates": {
             "title": "Screener Ready Candidates",
             "type": "integer"
+          },
+          "shadow_preflight_capture_count": {
+            "default": 0,
+            "title": "Shadow Preflight Capture Count",
+            "type": "integer"
+          },
+          "shadow_preflight_capture_failures": {
+            "default": 0,
+            "title": "Shadow Preflight Capture Failures",
+            "type": "integer"
+          },
+          "shadow_preflight_last_duration_ms": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shadow Preflight Last Duration Ms"
+          },
+          "trust_diagnostics": {
+            "$ref": "#/components/schemas/PreflightTrustDiagnosticsItem"
           }
         },
         "required": [
@@ -2088,6 +3817,67 @@
           "screener_ready_candidates"
         ],
         "title": "ExecutionPreflightRuntimeItem",
+        "type": "object"
+      },
+      "ExecutionPreflightSourceItem": {
+        "description": "Which evaluator produced this preflight decision (issue #170).",
+        "properties": {
+          "detail": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Detail"
+          },
+          "reason": {
+            "default": "legacy_configured",
+            "enum": [
+              "legacy_configured",
+              "parity_regression",
+              "cutover_not_approved",
+              "outside_canary_scope",
+              "canary",
+              "cutover"
+            ],
+            "title": "Reason",
+            "type": "string"
+          },
+          "requested": {
+            "default": "legacy",
+            "enum": [
+              "legacy",
+              "nautilus_canary",
+              "nautilus"
+            ],
+            "title": "Requested",
+            "type": "string"
+          },
+          "required_stage": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Required Stage"
+          },
+          "served_by": {
+            "default": "legacy",
+            "enum": [
+              "legacy",
+              "nautilus"
+            ],
+            "title": "Served By",
+            "type": "string"
+          }
+        },
+        "title": "ExecutionPreflightSourceItem",
         "type": "object"
       },
       "FundingForecastItem": {
@@ -2145,6 +3935,160 @@
         "title": "FundingForecastItem",
         "type": "object"
       },
+      "GuardrailCloseRecordItem": {
+        "additionalProperties": false,
+        "properties": {
+          "at": {
+            "title": "At",
+            "type": "string"
+          },
+          "attempt_id": {
+            "title": "Attempt Id",
+            "type": "string"
+          },
+          "guardrail": {
+            "title": "Guardrail",
+            "type": "string"
+          },
+          "orders": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Orders",
+            "type": "array"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "closed",
+              "failed"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "attempt_id",
+          "guardrail",
+          "reason",
+          "status",
+          "at"
+        ],
+        "title": "GuardrailCloseRecordItem",
+        "type": "object"
+      },
+      "GuardrailDecisionItem": {
+        "additionalProperties": false,
+        "description": "One hard-guardrail decision with the value and threshold it was compared with.",
+        "properties": {
+          "action": {
+            "enum": [
+              "alert",
+              "block_entry",
+              "close_position"
+            ],
+            "title": "Action",
+            "type": "string"
+          },
+          "attempt_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Attempt Id"
+          },
+          "evaluated_at": {
+            "title": "Evaluated At",
+            "type": "string"
+          },
+          "exchange": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Exchange"
+          },
+          "guardrail": {
+            "enum": [
+              "margin",
+              "adl",
+              "funding_flip",
+              "spread_expansion",
+              "max_open_positions",
+              "max_pair_exposure",
+              "max_memecoin_exposure"
+            ],
+            "title": "Guardrail",
+            "type": "string"
+          },
+          "observed": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Observed"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          },
+          "severity": {
+            "enum": [
+              "info",
+              "warning",
+              "critical"
+            ],
+            "title": "Severity",
+            "type": "string"
+          },
+          "symbol": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Symbol"
+          },
+          "threshold": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Threshold"
+          }
+        },
+        "required": [
+          "guardrail",
+          "action",
+          "severity",
+          "reason",
+          "evaluated_at"
+        ],
+        "title": "GuardrailDecisionItem",
+        "type": "object"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -2156,6 +4100,598 @@
           }
         },
         "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "HazardBucket": {
+        "description": "Life-table hazard: events per second at risk inside [start_s, end_s).",
+        "properties": {
+          "at_risk": {
+            "title": "At Risk",
+            "type": "integer"
+          },
+          "censored": {
+            "title": "Censored",
+            "type": "integer"
+          },
+          "end_s": {
+            "title": "End S",
+            "type": "number"
+          },
+          "events": {
+            "title": "Events",
+            "type": "integer"
+          },
+          "hazard_per_hour": {
+            "title": "Hazard Per Hour",
+            "type": "number"
+          },
+          "start_s": {
+            "title": "Start S",
+            "type": "number"
+          }
+        },
+        "required": [
+          "start_s",
+          "end_s",
+          "at_risk",
+          "events",
+          "censored",
+          "hazard_per_hour"
+        ],
+        "title": "HazardBucket",
+        "type": "object"
+      },
+      "LegItem": {
+        "properties": {
+          "borrow_rate": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Borrow Rate"
+          },
+          "fee_maker": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fee Maker"
+          },
+          "fee_taker": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fee Taker"
+          },
+          "funding_rate": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Funding Rate"
+          },
+          "index_price": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Index Price"
+          },
+          "instrument_kind": {
+            "enum": [
+              "perp",
+              "spot",
+              "future"
+            ],
+            "title": "Instrument Kind",
+            "type": "string"
+          },
+          "margin_mode": {
+            "anyOf": [
+              {
+                "enum": [
+                  "isolated",
+                  "cross",
+                  "unknown"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Margin Mode"
+          },
+          "mark_price": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mark Price"
+          },
+          "normalized_symbol": {
+            "title": "Normalized Symbol",
+            "type": "string"
+          },
+          "quote_asset": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Quote Asset"
+          },
+          "settlement_ccy": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Settlement Ccy"
+          },
+          "side": {
+            "enum": [
+              "long",
+              "short"
+            ],
+            "title": "Side",
+            "type": "string"
+          },
+          "venue": {
+            "title": "Venue",
+            "type": "string"
+          },
+          "venue_native_symbol": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Venue Native Symbol"
+          }
+        },
+        "required": [
+          "instrument_kind",
+          "venue",
+          "normalized_symbol",
+          "side"
+        ],
+        "title": "LegItem",
+        "type": "object"
+      },
+      "MicrostructureSnapshotItem": {
+        "properties": {
+          "best_ask": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Best Ask"
+          },
+          "best_bid": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Best Bid"
+          },
+          "depth_band_10bps_usd": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Depth Band 10Bps Usd"
+          },
+          "depth_band_20bps_usd": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Depth Band 20Bps Usd"
+          },
+          "depth_band_5bps_usd": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Depth Band 5Bps Usd"
+          },
+          "depth_source": {
+            "enum": [
+              "real_ws",
+              "real_rest",
+              "derived",
+              "config",
+              "unavailable"
+            ],
+            "title": "Depth Source",
+            "type": "string"
+          },
+          "fee_source": {
+            "enum": [
+              "real_ws",
+              "real_rest",
+              "derived",
+              "config",
+              "unavailable"
+            ],
+            "title": "Fee Source",
+            "type": "string"
+          },
+          "imbalance": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Imbalance"
+          },
+          "mid": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mid"
+          },
+          "price_source": {
+            "enum": [
+              "real_ws",
+              "real_rest",
+              "derived",
+              "config",
+              "unavailable"
+            ],
+            "title": "Price Source",
+            "type": "string"
+          },
+          "quality": {
+            "anyOf": [
+              {
+                "enum": [
+                  "A",
+                  "B",
+                  "C",
+                  "D"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Quality"
+          },
+          "spread_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Spread Bps"
+          }
+        },
+        "required": [
+          "price_source",
+          "depth_source",
+          "fee_source"
+        ],
+        "title": "MicrostructureSnapshotItem",
+        "type": "object"
+      },
+      "MigrationParityArtifactItem": {
+        "additionalProperties": false,
+        "properties": {
+          "attempt_id": {
+            "title": "Attempt Id",
+            "type": "string"
+          },
+          "diffs": {
+            "items": {
+              "$ref": "#/components/schemas/MigrationParityDiffItem"
+            },
+            "title": "Diffs",
+            "type": "array"
+          },
+          "evaluation_status": {
+            "enum": [
+              "evaluated",
+              "not_evaluated"
+            ],
+            "title": "Evaluation Status",
+            "type": "string"
+          },
+          "generated_at": {
+            "title": "Generated At",
+            "type": "string"
+          },
+          "joinable": {
+            "title": "Joinable",
+            "type": "boolean"
+          },
+          "legacy_conflict_count": {
+            "title": "Legacy Conflict Count",
+            "type": "integer"
+          },
+          "legacy_event_count": {
+            "title": "Legacy Event Count",
+            "type": "integer"
+          },
+          "parity_status": {
+            "enum": [
+              "pass",
+              "watching",
+              "fail",
+              "not_evaluated"
+            ],
+            "title": "Parity Status",
+            "type": "string"
+          },
+          "schema_version": {
+            "title": "Schema Version",
+            "type": "string"
+          },
+          "shadow_conflict_count": {
+            "title": "Shadow Conflict Count",
+            "type": "integer"
+          },
+          "shadow_correlation_group_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shadow Correlation Group Id"
+          },
+          "shadow_correlation_version": {
+            "title": "Shadow Correlation Version",
+            "type": "string"
+          },
+          "shadow_event_count": {
+            "title": "Shadow Event Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "schema_version",
+          "generated_at",
+          "attempt_id",
+          "shadow_correlation_version",
+          "evaluation_status",
+          "joinable",
+          "parity_status",
+          "legacy_event_count",
+          "shadow_event_count",
+          "legacy_conflict_count",
+          "shadow_conflict_count"
+        ],
+        "title": "MigrationParityArtifactItem",
+        "type": "object"
+      },
+      "MigrationParityArtifactListResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/MigrationParityArtifactItem"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "count"
+        ],
+        "title": "MigrationParityArtifactListResponse",
+        "type": "object"
+      },
+      "MigrationParityDiffItem": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "dimension": {
+            "title": "Dimension",
+            "type": "string"
+          },
+          "legacy_value": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Legacy Value"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "severity": {
+            "enum": [
+              "ok",
+              "watching",
+              "blocked"
+            ],
+            "title": "Severity",
+            "type": "string"
+          },
+          "shadow_value": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shadow Value"
+          }
+        },
+        "required": [
+          "dimension",
+          "code",
+          "severity",
+          "message"
+        ],
+        "title": "MigrationParityDiffItem",
+        "type": "object"
+      },
+      "MigrationParityReportResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "attempts_analyzed": {
+            "title": "Attempts Analyzed",
+            "type": "integer"
+          },
+          "generated_at": {
+            "title": "Generated At",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/MigrationParityArtifactItem"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "not_evaluated_count": {
+            "default": 0,
+            "title": "Not Evaluated Count",
+            "type": "integer"
+          },
+          "parity_passed": {
+            "title": "Parity Passed",
+            "type": "boolean"
+          },
+          "reason_counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Reason Counts",
+            "type": "object"
+          },
+          "schema_version": {
+            "title": "Schema Version",
+            "type": "string"
+          },
+          "severity_counts": {
+            "$ref": "#/components/schemas/MigrationParitySeverityCountsItem"
+          },
+          "window_end": {
+            "title": "Window End",
+            "type": "string"
+          },
+          "window_start": {
+            "title": "Window Start",
+            "type": "string"
+          }
+        },
+        "required": [
+          "schema_version",
+          "generated_at",
+          "window_start",
+          "window_end",
+          "attempts_analyzed",
+          "parity_passed"
+        ],
+        "title": "MigrationParityReportResponse",
+        "type": "object"
+      },
+      "MigrationParitySeverityCountsItem": {
+        "additionalProperties": false,
+        "properties": {
+          "blocked": {
+            "default": 0,
+            "title": "Blocked",
+            "type": "integer"
+          },
+          "ok": {
+            "default": 0,
+            "title": "Ok",
+            "type": "integer"
+          },
+          "watching": {
+            "default": 0,
+            "title": "Watching",
+            "type": "integer"
+          }
+        },
+        "title": "MigrationParitySeverityCountsItem",
         "type": "object"
       },
       "OpportunitiesResponse": {
@@ -2260,15 +4796,18 @@
             ],
             "title": "Depth Quality"
           },
-          "depth_source_by_exchange": {
+          "depth_source_state_by_exchange": {
             "additionalProperties": {
               "enum": [
-                "real",
-                "none"
+                "real_ws",
+                "real_rest",
+                "derived",
+                "config",
+                "unavailable"
               ],
               "type": "string"
             },
-            "title": "Depth Source By Exchange",
+            "title": "Depth Source State By Exchange",
             "type": "object"
           },
           "effective_hold_hours": {
@@ -2289,19 +4828,26 @@
             "title": "Effective Taker Fee By Exchange",
             "type": "object"
           },
+          "execution_adjusted_score_bps": {
+            "title": "Execution Adjusted Score Bps",
+            "type": "number"
+          },
           "fee_impact_bps": {
             "title": "Fee Impact Bps",
             "type": "number"
           },
-          "fee_source_by_exchange": {
+          "fee_source_state_by_exchange": {
             "additionalProperties": {
               "enum": [
-                "real",
-                "config"
+                "real_ws",
+                "real_rest",
+                "derived",
+                "config",
+                "unavailable"
               ],
               "type": "string"
             },
-            "title": "Fee Source By Exchange",
+            "title": "Fee Source State By Exchange",
             "type": "object"
           },
           "funding_diff_apr": {
@@ -2365,6 +4911,13 @@
             ],
             "title": "Hours To Breakeven"
           },
+          "legs": {
+            "items": {
+              "$ref": "#/components/schemas/LegItem"
+            },
+            "title": "Legs",
+            "type": "array"
+          },
           "liquidity_tier": {
             "anyOf": [
               {
@@ -2380,10 +4933,6 @@
               }
             ],
             "title": "Liquidity Tier"
-          },
-          "long_exchange": {
-            "title": "Long Exchange",
-            "type": "string"
           },
           "long_forecast": {
             "anyOf": [
@@ -2410,6 +4959,13 @@
             "title": "Long Rate Apr",
             "type": "number"
           },
+          "microstructure_by_exchange": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/MicrostructureSnapshotItem"
+            },
+            "title": "Microstructure By Exchange",
+            "type": "object"
+          },
           "min_profitable_hours": {
             "anyOf": [
               {
@@ -2420,6 +4976,11 @@
               }
             ],
             "title": "Min Profitable Hours"
+          },
+          "negative_funding_penalty_bps": {
+            "default": 0.0,
+            "title": "Negative Funding Penalty Bps",
+            "type": "number"
           },
           "persistence_hours": {
             "anyOf": [
@@ -2450,10 +5011,6 @@
             ],
             "title": "Recommended Size Usd"
           },
-          "short_exchange": {
-            "title": "Short Exchange",
-            "type": "string"
-          },
           "short_forecast": {
             "anyOf": [
               {
@@ -2479,9 +5036,18 @@
             "title": "Short Rate Apr",
             "type": "number"
           },
+          "signal_score_bps": {
+            "title": "Signal Score Bps",
+            "type": "number"
+          },
           "slippage_impact_bps": {
             "default": 0.0,
             "title": "Slippage Impact Bps",
+            "type": "number"
+          },
+          "source_penalty_bps": {
+            "default": 0.0,
+            "title": "Source Penalty Bps",
             "type": "number"
           },
           "status": {
@@ -2491,6 +5057,19 @@
               "blocked"
             ],
             "title": "Status",
+            "type": "string"
+          },
+          "strategy_profile_id": {
+            "title": "Strategy Profile Id",
+            "type": "string"
+          },
+          "strategy_type": {
+            "enum": [
+              "funding_arbitrage",
+              "basis_convergence",
+              "cash_and_carry"
+            ],
+            "title": "Strategy Type",
             "type": "string"
           },
           "symbol": {
@@ -2505,8 +5084,8 @@
         },
         "required": [
           "symbol",
-          "long_exchange",
-          "short_exchange",
+          "strategy_type",
+          "strategy_profile_id",
           "long_rate_apr",
           "short_rate_apr",
           "funding_diff_apr",
@@ -2515,16 +5094,881 @@
           "basis_bonus_bps",
           "fee_impact_bps",
           "funding_timing_penalty_bps",
+          "signal_score_bps",
+          "execution_adjusted_score_bps",
           "combined_score",
           "status"
         ],
         "title": "OpportunityItem",
         "type": "object"
       },
+      "PersistenceForecastItem": {
+        "properties": {
+          "age_s": {
+            "title": "Age S",
+            "type": "number"
+          },
+          "episodes": {
+            "default": 0,
+            "title": "Episodes",
+            "type": "integer"
+          },
+          "group": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Group"
+          },
+          "long_exchange": {
+            "title": "Long Exchange",
+            "type": "string"
+          },
+          "median_remaining_s": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Median Remaining S"
+          },
+          "score_bps": {
+            "title": "Score Bps",
+            "type": "number"
+          },
+          "short_exchange": {
+            "title": "Short Exchange",
+            "type": "string"
+          },
+          "strategy_type": {
+            "enum": [
+              "funding_arbitrage",
+              "basis_convergence",
+              "cash_and_carry"
+            ],
+            "title": "Strategy Type",
+            "type": "string"
+          },
+          "survival_at_age": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Survival At Age"
+          },
+          "survive_probability": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "title": "Survive Probability",
+            "type": "object"
+          },
+          "symbol": {
+            "title": "Symbol",
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol",
+          "strategy_type",
+          "long_exchange",
+          "short_exchange",
+          "score_bps",
+          "age_s"
+        ],
+        "title": "PersistenceForecastItem",
+        "type": "object"
+      },
+      "PersistenceForecastResponse": {
+        "properties": {
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "generated_at": {
+            "title": "Generated At",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/PersistenceForecastItem"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "generated_at",
+          "count"
+        ],
+        "title": "PersistenceForecastResponse",
+        "type": "object"
+      },
+      "PositionAccountItem": {
+        "properties": {
+          "available": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Available"
+          },
+          "equity": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Equity"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "free_margin_pct": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Free Margin Pct"
+          }
+        },
+        "title": "PositionAccountItem",
+        "type": "object"
+      },
+      "PositionSnapshotItem": {
+        "properties": {
+          "age_s": {
+            "title": "Age S",
+            "type": "number"
+          },
+          "attempt_id": {
+            "title": "Attempt Id",
+            "type": "string"
+          },
+          "basis_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Basis Bps"
+          },
+          "funding_accrued_usd": {
+            "title": "Funding Accrued Usd",
+            "type": "number"
+          },
+          "health_flags": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Health Flags",
+            "type": "array"
+          },
+          "long_entry_price": {
+            "title": "Long Entry Price",
+            "type": "string"
+          },
+          "long_exchange": {
+            "title": "Long Exchange",
+            "type": "string"
+          },
+          "long_funding_apr": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Long Funding Apr"
+          },
+          "long_mark": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Long Mark"
+          },
+          "long_open_quantity": {
+            "title": "Long Open Quantity",
+            "type": "string"
+          },
+          "net_funding_apr": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Net Funding Apr"
+          },
+          "net_pnl_usd": {
+            "title": "Net Pnl Usd",
+            "type": "number"
+          },
+          "notional_usd": {
+            "title": "Notional Usd",
+            "type": "number"
+          },
+          "opened_at": {
+            "title": "Opened At",
+            "type": "string"
+          },
+          "realized_pnl_usd": {
+            "title": "Realized Pnl Usd",
+            "type": "number"
+          },
+          "short_entry_price": {
+            "title": "Short Entry Price",
+            "type": "string"
+          },
+          "short_exchange": {
+            "title": "Short Exchange",
+            "type": "string"
+          },
+          "short_funding_apr": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Short Funding Apr"
+          },
+          "short_mark": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Short Mark"
+          },
+          "short_open_quantity": {
+            "title": "Short Open Quantity",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "symbol": {
+            "title": "Symbol",
+            "type": "string"
+          },
+          "unrealized_pnl_usd": {
+            "title": "Unrealized Pnl Usd",
+            "type": "number"
+          },
+          "updated_at": {
+            "title": "Updated At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "attempt_id",
+          "symbol",
+          "status",
+          "long_exchange",
+          "short_exchange",
+          "opened_at",
+          "age_s",
+          "long_open_quantity",
+          "short_open_quantity",
+          "long_entry_price",
+          "short_entry_price",
+          "notional_usd",
+          "realized_pnl_usd",
+          "unrealized_pnl_usd",
+          "funding_accrued_usd",
+          "net_pnl_usd",
+          "updated_at"
+        ],
+        "title": "PositionSnapshotItem",
+        "type": "object"
+      },
+      "PositionsResponse": {
+        "description": "`GET /positions`: the latest monitor snapshot of every open pair.",
+        "properties": {
+          "accounts": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/PositionAccountItem"
+            },
+            "title": "Accounts",
+            "type": "object"
+          },
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "funding_accrued_usd": {
+            "default": 0.0,
+            "title": "Funding Accrued Usd",
+            "type": "number"
+          },
+          "net_pnl_usd": {
+            "default": 0.0,
+            "title": "Net Pnl Usd",
+            "type": "number"
+          },
+          "notional_usd": {
+            "default": 0.0,
+            "title": "Notional Usd",
+            "type": "number"
+          },
+          "positions": {
+            "items": {
+              "$ref": "#/components/schemas/PositionSnapshotItem"
+            },
+            "title": "Positions",
+            "type": "array"
+          },
+          "realized_pnl_usd": {
+            "default": 0.0,
+            "title": "Realized Pnl Usd",
+            "type": "number"
+          },
+          "unrealized_pnl_usd": {
+            "default": 0.0,
+            "title": "Unrealized Pnl Usd",
+            "type": "number"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          }
+        },
+        "required": [
+          "count"
+        ],
+        "title": "PositionsResponse",
+        "type": "object"
+      },
+      "PreflightParityArtifactItem": {
+        "additionalProperties": false,
+        "properties": {
+          "artifact_id": {
+            "title": "Artifact Id",
+            "type": "string"
+          },
+          "diffs": {
+            "items": {
+              "$ref": "#/components/schemas/PreflightParityDiffItem"
+            },
+            "title": "Diffs",
+            "type": "array"
+          },
+          "evaluation_status": {
+            "enum": [
+              "evaluated",
+              "not_evaluated"
+            ],
+            "title": "Evaluation Status",
+            "type": "string"
+          },
+          "generated_at": {
+            "title": "Generated At",
+            "type": "string"
+          },
+          "legacy_blocker_codes": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Legacy Blocker Codes",
+            "type": "array"
+          },
+          "legacy_candidate_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Legacy Candidate Status"
+          },
+          "legacy_candidate_symbol": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Legacy Candidate Symbol"
+          },
+          "legacy_decision": {
+            "enum": [
+              "ready",
+              "watching",
+              "blocked"
+            ],
+            "title": "Legacy Decision",
+            "type": "string"
+          },
+          "legacy_gate_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Legacy Gate Reason"
+          },
+          "legacy_payload_hash": {
+            "title": "Legacy Payload Hash",
+            "type": "string"
+          },
+          "parity_status": {
+            "enum": [
+              "pass",
+              "watching",
+              "fail",
+              "not_evaluated"
+            ],
+            "title": "Parity Status",
+            "type": "string"
+          },
+          "reason_groups": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Reason Groups",
+            "type": "object"
+          },
+          "schema_version": {
+            "title": "Schema Version",
+            "type": "string"
+          },
+          "shadow_blocker_codes": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Shadow Blocker Codes",
+            "type": "array"
+          },
+          "shadow_candidate_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shadow Candidate Status"
+          },
+          "shadow_candidate_symbol": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shadow Candidate Symbol"
+          },
+          "shadow_decision": {
+            "anyOf": [
+              {
+                "enum": [
+                  "ready",
+                  "watching",
+                  "blocked"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shadow Decision"
+          },
+          "shadow_gate_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shadow Gate Reason"
+          },
+          "shadow_payload_hash": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shadow Payload Hash"
+          },
+          "symbol_filter": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Symbol Filter"
+          }
+        },
+        "required": [
+          "schema_version",
+          "artifact_id",
+          "generated_at",
+          "evaluation_status",
+          "parity_status",
+          "legacy_decision",
+          "legacy_payload_hash"
+        ],
+        "title": "PreflightParityArtifactItem",
+        "type": "object"
+      },
+      "PreflightParityArtifactListResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/PreflightParityArtifactItem"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "count"
+        ],
+        "title": "PreflightParityArtifactListResponse",
+        "type": "object"
+      },
+      "PreflightParityDiffItem": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "group": {
+            "enum": [
+              "decision",
+              "gate",
+              "blockers",
+              "candidate"
+            ],
+            "title": "Group",
+            "type": "string"
+          },
+          "legacy_value": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Legacy Value"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "severity": {
+            "enum": [
+              "ok",
+              "watching",
+              "blocked"
+            ],
+            "title": "Severity",
+            "type": "string"
+          },
+          "shadow_value": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shadow Value"
+          }
+        },
+        "required": [
+          "group",
+          "code",
+          "severity",
+          "message"
+        ],
+        "title": "PreflightParityDiffItem",
+        "type": "object"
+      },
+      "PreflightParityPromotionPolicyItem": {
+        "additionalProperties": false,
+        "properties": {
+          "policy_hash": {
+            "title": "Policy Hash",
+            "type": "string"
+          },
+          "policy_schema_version": {
+            "title": "Policy Schema Version",
+            "type": "string"
+          },
+          "policy_version": {
+            "title": "Policy Version",
+            "type": "string"
+          },
+          "thresholds": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Thresholds",
+            "type": "object"
+          }
+        },
+        "required": [
+          "policy_schema_version",
+          "policy_version",
+          "policy_hash"
+        ],
+        "title": "PreflightParityPromotionPolicyItem",
+        "type": "object"
+      },
+      "PreflightParityPromotionRecommendationItem": {
+        "additionalProperties": false,
+        "properties": {
+          "decision": {
+            "enum": [
+              "pass",
+              "fail"
+            ],
+            "title": "Decision",
+            "type": "string"
+          },
+          "evaluated_at": {
+            "title": "Evaluated At",
+            "type": "string"
+          },
+          "metrics": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Metrics",
+            "type": "object"
+          },
+          "policy": {
+            "$ref": "#/components/schemas/PreflightParityPromotionPolicyItem"
+          },
+          "reasons": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Reasons",
+            "type": "array"
+          }
+        },
+        "required": [
+          "evaluated_at",
+          "decision",
+          "policy"
+        ],
+        "title": "PreflightParityPromotionRecommendationItem",
+        "type": "object"
+      },
+      "PreflightParityReportResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "artifacts_analyzed": {
+            "title": "Artifacts Analyzed",
+            "type": "integer"
+          },
+          "generated_at": {
+            "title": "Generated At",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/PreflightParityArtifactItem"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "not_evaluated_count": {
+            "default": 0,
+            "title": "Not Evaluated Count",
+            "type": "integer"
+          },
+          "parity_passed": {
+            "title": "Parity Passed",
+            "type": "boolean"
+          },
+          "promotion_recommendation": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PreflightParityPromotionRecommendationItem"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "reason_counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Reason Counts",
+            "type": "object"
+          },
+          "reason_group_counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Reason Group Counts",
+            "type": "object"
+          },
+          "schema_version": {
+            "title": "Schema Version",
+            "type": "string"
+          },
+          "severity_counts": {
+            "$ref": "#/components/schemas/PreflightParitySeverityCountsItem"
+          },
+          "window_end": {
+            "title": "Window End",
+            "type": "string"
+          },
+          "window_start": {
+            "title": "Window Start",
+            "type": "string"
+          }
+        },
+        "required": [
+          "schema_version",
+          "generated_at",
+          "window_start",
+          "window_end",
+          "artifacts_analyzed",
+          "parity_passed"
+        ],
+        "title": "PreflightParityReportResponse",
+        "type": "object"
+      },
+      "PreflightParitySeverityCountsItem": {
+        "additionalProperties": false,
+        "properties": {
+          "blocked": {
+            "default": 0,
+            "title": "Blocked",
+            "type": "integer"
+          },
+          "ok": {
+            "default": 0,
+            "title": "Ok",
+            "type": "integer"
+          },
+          "watching": {
+            "default": 0,
+            "title": "Watching",
+            "type": "integer"
+          }
+        },
+        "title": "PreflightParitySeverityCountsItem",
+        "type": "object"
+      },
+      "PreflightTrustDiagnosticsItem": {
+        "additionalProperties": false,
+        "properties": {
+          "confidence_distribution": {
+            "$ref": "#/components/schemas/TrustConfidenceDistributionItem"
+          },
+          "fallback_risk_by_exchange": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/TrustExchangeFallbackRiskItem"
+            },
+            "title": "Fallback Risk By Exchange",
+            "type": "object"
+          },
+          "fallback_risk_counters": {
+            "$ref": "#/components/schemas/TrustFallbackRiskCountersItem"
+          },
+          "provenance_coverage": {
+            "$ref": "#/components/schemas/TrustProvenanceCoverageItem"
+          }
+        },
+        "title": "PreflightTrustDiagnosticsItem",
+        "type": "object"
+      },
       "ReasonCode": {
         "enum": [
           "persistence_insufficient",
           "historical_win_rate_low",
+          "historical_win_rate_unavailable",
           "break_even_window",
           "score_below_min",
           "funding_flips",
@@ -2574,6 +6018,720 @@
         "title": "ReasonItem",
         "type": "object"
       },
+      "RiskGuardrailsResponse": {
+        "additionalProperties": false,
+        "description": "`GET /risk/guardrails`: the status summary plus thresholds and close history.",
+        "properties": {
+          "account_sources": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Account Sources",
+            "type": "array"
+          },
+          "blocking_guardrails": {
+            "items": {
+              "enum": [
+                "margin",
+                "adl",
+                "funding_flip",
+                "spread_expansion",
+                "max_open_positions",
+                "max_pair_exposure",
+                "max_memecoin_exposure"
+              ],
+              "type": "string"
+            },
+            "title": "Blocking Guardrails",
+            "type": "array"
+          },
+          "close_records": {
+            "items": {
+              "$ref": "#/components/schemas/GuardrailCloseRecordItem"
+            },
+            "title": "Close Records",
+            "type": "array"
+          },
+          "closed_attempt_ids": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Closed Attempt Ids",
+            "type": "array"
+          },
+          "closed_attempts": {
+            "default": 0,
+            "title": "Closed Attempts",
+            "type": "integer"
+          },
+          "decision_counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "propertyNames": {
+              "enum": [
+                "alert",
+                "block_entry",
+                "close_position"
+              ]
+            },
+            "title": "Decision Counts",
+            "type": "object"
+          },
+          "decisions": {
+            "items": {
+              "$ref": "#/components/schemas/GuardrailDecisionItem"
+            },
+            "title": "Decisions",
+            "type": "array"
+          },
+          "entries_blocked": {
+            "default": false,
+            "title": "Entries Blocked",
+            "type": "boolean"
+          },
+          "entry_blocks_by_guardrail": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Entry Blocks By Guardrail",
+            "type": "object"
+          },
+          "entry_blocks_total": {
+            "default": 0,
+            "title": "Entry Blocks Total",
+            "type": "integer"
+          },
+          "last_close": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/GuardrailCloseRecordItem"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "last_entry_block": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/GuardrailDecisionItem"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "last_error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Error"
+          },
+          "last_evaluated_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Evaluated At"
+          },
+          "monitored_positions": {
+            "default": 0,
+            "title": "Monitored Positions",
+            "type": "integer"
+          },
+          "recent_close_failures": {
+            "default": 0,
+            "title": "Recent Close Failures",
+            "type": "integer"
+          },
+          "recent_closes": {
+            "default": 0,
+            "title": "Recent Closes",
+            "type": "integer"
+          },
+          "thresholds": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            },
+            "title": "Thresholds",
+            "type": "object"
+          }
+        },
+        "title": "RiskGuardrailsResponse",
+        "type": "object"
+      },
+      "SnapshotContinuityResponse": {
+        "properties": {
+          "distinct_timestamps": {
+            "title": "Distinct Timestamps",
+            "type": "integer"
+          },
+          "exchanges_covered": {
+            "title": "Exchanges Covered",
+            "type": "integer"
+          },
+          "expected_interval_s": {
+            "title": "Expected Interval S",
+            "type": "number"
+          },
+          "gap_count": {
+            "title": "Gap Count",
+            "type": "integer"
+          },
+          "generated_at": {
+            "title": "Generated At",
+            "type": "string"
+          },
+          "largest_gap_s": {
+            "title": "Largest Gap S",
+            "type": "number"
+          },
+          "last_pruned_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Pruned At"
+          },
+          "last_pruned_rows": {
+            "title": "Last Pruned Rows",
+            "type": "integer"
+          },
+          "last_recovered_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Recovered At"
+          },
+          "last_recovery_duration_ms": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Recovery Duration Ms"
+          },
+          "last_recovery_scanned_rows": {
+            "default": 0,
+            "title": "Last Recovery Scanned Rows",
+            "type": "integer"
+          },
+          "last_write_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Write At"
+          },
+          "last_write_error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Write Error"
+          },
+          "oldest_retained_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Oldest Retained At"
+          },
+          "pruned_rows_total": {
+            "title": "Pruned Rows Total",
+            "type": "integer"
+          },
+          "recovered_rows": {
+            "title": "Recovered Rows",
+            "type": "integer"
+          },
+          "recovered_symbols": {
+            "title": "Recovered Symbols",
+            "type": "integer"
+          },
+          "recovery_attempted": {
+            "default": false,
+            "title": "Recovery Attempted",
+            "type": "boolean"
+          },
+          "recovery_max_rows": {
+            "default": 0,
+            "title": "Recovery Max Rows",
+            "type": "integer"
+          },
+          "recovery_result": {
+            "default": "not_attempted",
+            "enum": [
+              "not_attempted",
+              "completed",
+              "failed",
+              "recovery_skipped_missing_schema",
+              "recovery_skipped_incompatible_schema"
+            ],
+            "title": "Recovery Result",
+            "type": "string"
+          },
+          "retention_days": {
+            "title": "Retention Days",
+            "type": "number"
+          },
+          "rows_total": {
+            "title": "Rows Total",
+            "type": "integer"
+          },
+          "symbols_covered": {
+            "title": "Symbols Covered",
+            "type": "integer"
+          },
+          "window_end_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Window End At"
+          },
+          "window_start_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Window Start At"
+          },
+          "write_failures": {
+            "title": "Write Failures",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "generated_at",
+          "expected_interval_s",
+          "retention_days",
+          "rows_total",
+          "symbols_covered",
+          "exchanges_covered",
+          "distinct_timestamps",
+          "gap_count",
+          "largest_gap_s",
+          "write_failures",
+          "pruned_rows_total",
+          "last_pruned_rows",
+          "recovered_rows",
+          "recovered_symbols"
+        ],
+        "title": "SnapshotContinuityResponse",
+        "type": "object"
+      },
+      "StatusAdapterRolloutDiagnostics": {
+        "additionalProperties": false,
+        "description": "Staged venue/order-type rollout of the Nautilus adapter (issue #171).",
+        "properties": {
+          "active_step": {
+            "default": "S0",
+            "title": "Active Step",
+            "type": "string"
+          },
+          "detail": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Detail"
+          },
+          "excluded_venues": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Excluded Venues",
+            "type": "array"
+          },
+          "ledger_error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ledger Error"
+          },
+          "ledger_steps_passed": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Ledger Steps Passed",
+            "type": "array"
+          },
+          "order_types": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Order Types",
+            "type": "array"
+          },
+          "plan_version": {
+            "default": "",
+            "title": "Plan Version",
+            "type": "string"
+          },
+          "reason": {
+            "default": "active",
+            "enum": [
+              "active",
+              "unknown_step",
+              "gate_missing",
+              "capability_missing"
+            ],
+            "title": "Reason",
+            "type": "string"
+          },
+          "requested_step": {
+            "default": "S0",
+            "title": "Requested Step",
+            "type": "string"
+          },
+          "venues": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Venues",
+            "type": "array"
+          }
+        },
+        "title": "StatusAdapterRolloutDiagnostics",
+        "type": "object"
+      },
+      "StatusAutoEntryDiagnostics": {
+        "additionalProperties": false,
+        "description": "Rule-based auto-entry (issue #193). `global_blockers` stopped every entry last pass.",
+        "properties": {
+          "enabled": {
+            "default": false,
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "entries_total": {
+            "default": 0,
+            "title": "Entries Total",
+            "type": "integer"
+          },
+          "entry_failures_total": {
+            "default": 0,
+            "title": "Entry Failures Total",
+            "type": "integer"
+          },
+          "global_blockers": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Global Blockers",
+            "type": "array"
+          },
+          "last_entry_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Entry At"
+          },
+          "last_entry_outcome": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Entry Outcome"
+          },
+          "last_entry_symbol": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Entry Symbol"
+          },
+          "last_pass_skip_reasons": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Last Pass Skip Reasons",
+            "type": "object"
+          },
+          "last_run_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Run At"
+          },
+          "paused": {
+            "default": false,
+            "title": "Paused",
+            "type": "boolean"
+          },
+          "strategy_types": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Strategy Types",
+            "type": "array"
+          }
+        },
+        "title": "StatusAutoEntryDiagnostics",
+        "type": "object"
+      },
+      "StatusAutoExitDiagnostics": {
+        "additionalProperties": false,
+        "description": "Rule-based auto-exit (issue #194): last pass and exits by trigger since start.",
+        "properties": {
+          "enabled": {
+            "default": false,
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "exit_failures_total": {
+            "default": 0,
+            "title": "Exit Failures Total",
+            "type": "integer"
+          },
+          "exits_by_trigger": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Exits By Trigger",
+            "type": "object"
+          },
+          "exits_total": {
+            "default": 0,
+            "title": "Exits Total",
+            "type": "integer"
+          },
+          "last_exit_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Exit At"
+          },
+          "last_exit_outcome": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Exit Outcome"
+          },
+          "last_exit_symbol": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Exit Symbol"
+          },
+          "last_exit_trigger": {
+            "anyOf": [
+              {
+                "enum": [
+                  "funding_flip",
+                  "score_decay",
+                  "time_limit"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Exit Trigger"
+          },
+          "last_run_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Run At"
+          },
+          "pairs_evaluated": {
+            "default": 0,
+            "title": "Pairs Evaluated",
+            "type": "integer"
+          },
+          "pairs_exiting": {
+            "default": 0,
+            "title": "Pairs Exiting",
+            "type": "integer"
+          },
+          "paused": {
+            "default": false,
+            "title": "Paused",
+            "type": "boolean"
+          }
+        },
+        "title": "StatusAutoExitDiagnostics",
+        "type": "object"
+      },
+      "StatusCalibrationLoaderDiagnostics": {
+        "additionalProperties": false,
+        "properties": {
+          "active_path": {
+            "default": "",
+            "title": "Active Path",
+            "type": "string"
+          },
+          "base_path": {
+            "default": "",
+            "title": "Base Path",
+            "type": "string"
+          },
+          "last_error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Error"
+          },
+          "loaded_artifact_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Loaded Artifact Id"
+          },
+          "loaded_schema_version": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Loaded Schema Version"
+          },
+          "rollback_active": {
+            "default": false,
+            "title": "Rollback Active",
+            "type": "boolean"
+          },
+          "rollback_path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rollback Path"
+          },
+          "status": {
+            "default": "missing",
+            "enum": [
+              "loaded",
+              "missing",
+              "path_error",
+              "load_failed"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "title": "StatusCalibrationLoaderDiagnostics",
+        "type": "object"
+      },
       "StatusDropCounters": {
         "additionalProperties": false,
         "properties": {
@@ -2597,9 +6755,29 @@
             "title": "Basis Divergence Penalty",
             "type": "integer"
           },
+          "basis_entry_gate": {
+            "default": 0,
+            "title": "Basis Entry Gate",
+            "type": "integer"
+          },
           "basis_gate": {
             "default": 0,
             "title": "Basis Gate",
+            "type": "integer"
+          },
+          "cash_and_carry_entry_gate": {
+            "default": 0,
+            "title": "Cash And Carry Entry Gate",
+            "type": "integer"
+          },
+          "cash_and_carry_funding_gate": {
+            "default": 0,
+            "title": "Cash And Carry Funding Gate",
+            "type": "integer"
+          },
+          "l2_book_fetch_error": {
+            "default": 0,
+            "title": "L2 Book Fetch Error",
             "type": "integer"
           },
           "l2_book_fetch_error_hyperliquid": {
@@ -2714,6 +6892,686 @@
         "title": "StatusExchangeDiagnostics",
         "type": "object"
       },
+      "StatusExecutionHydrationDiagnostics": {
+        "additionalProperties": false,
+        "description": "Restart reconciliation run (issues #166, #167).\n\n`completeness` is `complete` (every seeded attempt evaluated and resolved), `partial`\n(all evaluated, some unresolved), or `incomplete` (some not evaluated: outside the bounded\nwindow or the run aborted); null before the first run. `pending_attempts` =\n`unresolved_attempts` + `skipped_attempts` is what blocks new entries.",
+        "properties": {
+          "completed": {
+            "default": false,
+            "title": "Completed",
+            "type": "boolean"
+          },
+          "completeness": {
+            "anyOf": [
+              {
+                "enum": [
+                  "complete",
+                  "partial",
+                  "incomplete"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Completeness"
+          },
+          "conflicts_total": {
+            "default": 0,
+            "title": "Conflicts Total",
+            "type": "integer"
+          },
+          "duration_ms": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duration Ms"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "evaluated_attempts": {
+            "default": 0,
+            "title": "Evaluated Attempts",
+            "type": "integer"
+          },
+          "hydrated_attempts": {
+            "default": 0,
+            "title": "Hydrated Attempts",
+            "type": "integer"
+          },
+          "last_run_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Run At"
+          },
+          "pending_attempts": {
+            "default": 0,
+            "title": "Pending Attempts",
+            "type": "integer"
+          },
+          "seed_attempts": {
+            "default": 0,
+            "title": "Seed Attempts",
+            "type": "integer"
+          },
+          "skipped_attempts": {
+            "default": 0,
+            "title": "Skipped Attempts",
+            "type": "integer"
+          },
+          "skipped_by_reason": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Skipped By Reason",
+            "type": "object"
+          },
+          "unresolved_attempts": {
+            "default": 0,
+            "title": "Unresolved Attempts",
+            "type": "integer"
+          },
+          "window_lookback_s": {
+            "default": 0.0,
+            "title": "Window Lookback S",
+            "type": "number"
+          },
+          "window_max_attempts": {
+            "default": 0,
+            "title": "Window Max Attempts",
+            "type": "integer"
+          },
+          "window_start": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Window Start"
+          },
+          "window_time_budget_s": {
+            "default": 0.0,
+            "title": "Window Time Budget S",
+            "type": "number"
+          }
+        },
+        "title": "StatusExecutionHydrationDiagnostics",
+        "type": "object"
+      },
+      "StatusExecutionPersistenceDiagnostics": {
+        "additionalProperties": false,
+        "properties": {
+          "enabled": {
+            "default": false,
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "last_write_error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Write Error"
+          },
+          "restart_open_attempts": {
+            "default": 0,
+            "title": "Restart Open Attempts",
+            "type": "integer"
+          },
+          "restart_open_orders": {
+            "default": 0,
+            "title": "Restart Open Orders",
+            "type": "integer"
+          },
+          "restore_error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Restore Error"
+          },
+          "write_failures": {
+            "default": 0,
+            "title": "Write Failures",
+            "type": "integer"
+          }
+        },
+        "title": "StatusExecutionPersistenceDiagnostics",
+        "type": "object"
+      },
+      "StatusMigrationFallbackDiagnostics": {
+        "additionalProperties": false,
+        "properties": {
+          "adapter_enabled": {
+            "default": false,
+            "title": "Adapter Enabled",
+            "type": "boolean"
+          },
+          "adapter_health": {
+            "$ref": "#/components/schemas/StatusNautilusAdapterHealth"
+          },
+          "adapter_rollout": {
+            "$ref": "#/components/schemas/StatusAdapterRolloutDiagnostics"
+          },
+          "adapter_selection_reason": {
+            "default": "adapter_disabled",
+            "enum": [
+              "adapter_disabled",
+              "migration_not_primary",
+              "dry_run_required",
+              "adapter_unavailable",
+              "adapter_fallback",
+              "venue_out_of_scope",
+              "selected"
+            ],
+            "title": "Adapter Selection Reason",
+            "type": "string"
+          },
+          "adapter_venues": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Adapter Venues",
+            "type": "array"
+          },
+          "compare_enabled": {
+            "default": false,
+            "title": "Compare Enabled",
+            "type": "boolean"
+          },
+          "enabled": {
+            "default": false,
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "execution_provider": {
+            "default": "legacy",
+            "enum": [
+              "legacy",
+              "nautilus"
+            ],
+            "title": "Execution Provider",
+            "type": "string"
+          },
+          "fallback_engaged": {
+            "default": true,
+            "title": "Fallback Engaged",
+            "type": "boolean"
+          },
+          "fallback_policy": {
+            "const": "deny_and_observe",
+            "default": "deny_and_observe",
+            "title": "Fallback Policy",
+            "type": "string"
+          },
+          "fallback_reason": {
+            "default": "migration_disabled",
+            "enum": [
+              "migration_disabled",
+              "legacy_only_mode",
+              "observe_only_mode",
+              "compare_disabled"
+            ],
+            "title": "Fallback Reason",
+            "type": "string"
+          },
+          "mode": {
+            "default": "legacy_only",
+            "enum": [
+              "legacy_only",
+              "shadow_compare",
+              "nautilus_primary"
+            ],
+            "title": "Mode",
+            "type": "string"
+          },
+          "observe_only": {
+            "default": true,
+            "title": "Observe Only",
+            "type": "boolean"
+          },
+          "preflight_source": {
+            "$ref": "#/components/schemas/StatusPreflightSourceDiagnostics"
+          }
+        },
+        "title": "StatusMigrationFallbackDiagnostics",
+        "type": "object"
+      },
+      "StatusNautilusAdapterHealth": {
+        "additionalProperties": false,
+        "description": "Adapter health fail-safe (issue #164); `fallback` means deny-and-observe is latched.",
+        "properties": {
+          "consecutive_faults": {
+            "default": 0,
+            "title": "Consecutive Faults",
+            "type": "integer"
+          },
+          "fallback_client_order_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fallback Client Order Id"
+          },
+          "fallback_engaged_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fallback Engaged At"
+          },
+          "fallback_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fallback Reason"
+          },
+          "fallback_trigger": {
+            "anyOf": [
+              {
+                "enum": [
+                  "consecutive_faults",
+                  "invariant_violation"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fallback Trigger"
+          },
+          "fault_counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Fault Counts",
+            "type": "object"
+          },
+          "fault_threshold": {
+            "default": 3,
+            "title": "Fault Threshold",
+            "type": "integer"
+          },
+          "last_fault": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Fault"
+          },
+          "resets_total": {
+            "default": 0,
+            "title": "Resets Total",
+            "type": "integer"
+          },
+          "state": {
+            "default": "healthy",
+            "enum": [
+              "healthy",
+              "degraded",
+              "fallback"
+            ],
+            "title": "State",
+            "type": "string"
+          }
+        },
+        "title": "StatusNautilusAdapterHealth",
+        "type": "object"
+      },
+      "StatusNotificationDiagnostics": {
+        "additionalProperties": false,
+        "description": "Alert delivery health. `healthy` is false while any route's last delivery failed.",
+        "properties": {
+          "degraded_routes": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Degraded Routes",
+            "type": "array"
+          },
+          "enabled": {
+            "default": false,
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "failed": {
+            "default": 0,
+            "title": "Failed",
+            "type": "integer"
+          },
+          "filtered": {
+            "default": 0,
+            "title": "Filtered",
+            "type": "integer"
+          },
+          "healthy": {
+            "default": true,
+            "title": "Healthy",
+            "type": "boolean"
+          },
+          "pending": {
+            "default": 0,
+            "title": "Pending",
+            "type": "integer"
+          },
+          "routes": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/StatusNotificationRouteDiagnostics"
+            },
+            "title": "Routes",
+            "type": "object"
+          },
+          "sent": {
+            "default": 0,
+            "title": "Sent",
+            "type": "integer"
+          },
+          "submitted": {
+            "default": 0,
+            "title": "Submitted",
+            "type": "integer"
+          },
+          "suppressed": {
+            "default": 0,
+            "title": "Suppressed",
+            "type": "integer"
+          }
+        },
+        "title": "StatusNotificationDiagnostics",
+        "type": "object"
+      },
+      "StatusNotificationRouteDiagnostics": {
+        "additionalProperties": false,
+        "properties": {
+          "consecutive_failures": {
+            "default": 0,
+            "title": "Consecutive Failures",
+            "type": "integer"
+          },
+          "degraded": {
+            "default": false,
+            "title": "Degraded",
+            "type": "boolean"
+          },
+          "failed": {
+            "default": 0,
+            "title": "Failed",
+            "type": "integer"
+          },
+          "last_error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Error"
+          },
+          "last_failure_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Failure At"
+          },
+          "last_sent_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Sent At"
+          },
+          "retries": {
+            "default": 0,
+            "title": "Retries",
+            "type": "integer"
+          },
+          "sent": {
+            "default": 0,
+            "title": "Sent",
+            "type": "integer"
+          }
+        },
+        "title": "StatusNotificationRouteDiagnostics",
+        "type": "object"
+      },
+      "StatusPositionMonitorDiagnostics": {
+        "additionalProperties": false,
+        "description": "Position monitor summary (issue #192); `today_*` are the current UTC day so far.",
+        "properties": {
+          "last_error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Error"
+          },
+          "last_run_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Run At"
+          },
+          "ledger_write_failures": {
+            "default": 0,
+            "title": "Ledger Write Failures",
+            "type": "integer"
+          },
+          "notional_usd": {
+            "default": 0.0,
+            "title": "Notional Usd",
+            "type": "number"
+          },
+          "open_positions": {
+            "default": 0,
+            "title": "Open Positions",
+            "type": "integer"
+          },
+          "positions_with_flags": {
+            "default": 0,
+            "title": "Positions With Flags",
+            "type": "integer"
+          },
+          "today_funding_pnl_usd": {
+            "default": 0.0,
+            "title": "Today Funding Pnl Usd",
+            "type": "number"
+          },
+          "today_realized_pnl_usd": {
+            "default": 0.0,
+            "title": "Today Realized Pnl Usd",
+            "type": "number"
+          },
+          "today_total_pnl_usd": {
+            "default": 0.0,
+            "title": "Today Total Pnl Usd",
+            "type": "number"
+          },
+          "unrealized_pnl_usd": {
+            "default": 0.0,
+            "title": "Unrealized Pnl Usd",
+            "type": "number"
+          }
+        },
+        "title": "StatusPositionMonitorDiagnostics",
+        "type": "object"
+      },
+      "StatusPreflightSourceDiagnostics": {
+        "additionalProperties": false,
+        "description": "Preflight source-of-truth cutover (issue #170).",
+        "properties": {
+          "approval_error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Approval Error"
+          },
+          "approval_stage": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Approval Stage"
+          },
+          "canary_symbols": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Canary Symbols",
+            "type": "array"
+          },
+          "last_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Reason"
+          },
+          "last_served_by": {
+            "anyOf": [
+              {
+                "enum": [
+                  "legacy",
+                  "nautilus"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Served By"
+          },
+          "regression_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Regression At"
+          },
+          "regression_latched": {
+            "default": false,
+            "title": "Regression Latched",
+            "type": "boolean"
+          },
+          "regression_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Regression Reason"
+          },
+          "requested": {
+            "default": "legacy",
+            "enum": [
+              "legacy",
+              "nautilus_canary",
+              "nautilus"
+            ],
+            "title": "Requested",
+            "type": "string"
+          },
+          "served_total": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Served Total",
+            "type": "object"
+          }
+        },
+        "title": "StatusPreflightSourceDiagnostics",
+        "type": "object"
+      },
       "StatusReasonSeverityCounts": {
         "additionalProperties": false,
         "properties": {
@@ -2740,6 +7598,12 @@
             "title": "Active Exchanges",
             "type": "array"
           },
+          "auto_entry": {
+            "$ref": "#/components/schemas/StatusAutoEntryDiagnostics"
+          },
+          "auto_exit": {
+            "$ref": "#/components/schemas/StatusAutoExitDiagnostics"
+          },
           "backtest_history_gate_enabled": {
             "default": false,
             "title": "Backtest History Gate Enabled",
@@ -2760,6 +7624,12 @@
               }
             ],
             "title": "Backtest History Refreshed At"
+          },
+          "calibration_loader": {
+            "$ref": "#/components/schemas/StatusCalibrationLoaderDiagnostics"
+          },
+          "correlation_concentration": {
+            "$ref": "#/components/schemas/CorrelationConcentrationItem"
           },
           "exchange_diagnostics": {
             "additionalProperties": {
@@ -2807,6 +7677,12 @@
             "title": "Execution Entries Stopped",
             "type": "boolean"
           },
+          "execution_gate": {
+            "$ref": "#/components/schemas/ExecutionGatePostureItem"
+          },
+          "execution_hydration": {
+            "$ref": "#/components/schemas/StatusExecutionHydrationDiagnostics"
+          },
           "execution_last_attempt_id": {
             "anyOf": [
               {
@@ -2839,6 +7715,9 @@
               }
             ],
             "title": "Execution Last Rollback Slippage Bps"
+          },
+          "execution_persistence": {
+            "$ref": "#/components/schemas/StatusExecutionPersistenceDiagnostics"
           },
           "execution_strategy_id": {
             "anyOf": [
@@ -2917,6 +7796,12 @@
             ],
             "title": "Last Updated At"
           },
+          "migration_fallback": {
+            "$ref": "#/components/schemas/StatusMigrationFallbackDiagnostics"
+          },
+          "notifications": {
+            "$ref": "#/components/schemas/StatusNotificationDiagnostics"
+          },
           "poll_count_failed": {
             "title": "Poll Count Failed",
             "type": "integer"
@@ -2929,8 +7814,28 @@
             "title": "Poll Count Total",
             "type": "integer"
           },
+          "position_monitor": {
+            "$ref": "#/components/schemas/StatusPositionMonitorDiagnostics"
+          },
+          "risk_guardrails": {
+            "$ref": "#/components/schemas/StatusRiskGuardrailsDiagnostics"
+          },
           "screener_drop_counters": {
             "$ref": "#/components/schemas/StatusDropCounters"
+          },
+          "screener_drop_counters_by_strategy": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/StatusDropCounters"
+            },
+            "propertyNames": {
+              "enum": [
+                "funding_arbitrage",
+                "basis_convergence",
+                "cash_and_carry"
+              ]
+            },
+            "title": "Screener Drop Counters By Strategy",
+            "type": "object"
           },
           "screener_post_cost_candidates": {
             "title": "Screener Post Cost Candidates",
@@ -2958,13 +7863,26 @@
             "title": "Screener Validated Candidates",
             "type": "integer"
           },
+          "snapshot_continuity": {
+            "$ref": "#/components/schemas/StatusSnapshotContinuity"
+          },
           "started_at": {
             "title": "Started At",
             "type": "string"
           },
+          "trust_diagnostics": {
+            "$ref": "#/components/schemas/StatusTrustDiagnosticsItem"
+          },
           "uptime_s": {
             "title": "Uptime S",
             "type": "number"
+          },
+          "ws_feed_diagnostics": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/StatusWsFeedDiagnostics"
+            },
+            "title": "Ws Feed Diagnostics",
+            "type": "object"
           }
         },
         "required": [
@@ -2981,6 +7899,607 @@
           "execution_backtest_gate_passed"
         ],
         "title": "StatusResponse",
+        "type": "object"
+      },
+      "StatusRiskGuardrailsDiagnostics": {
+        "additionalProperties": false,
+        "description": "Guardrail outcomes (issue #189).\n\n`decisions` and `entries_blocked` describe the last continuous pass. Entry-block counters\nrun since process start; close counters cover the bounded recent close history.",
+        "properties": {
+          "account_sources": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Account Sources",
+            "type": "array"
+          },
+          "blocking_guardrails": {
+            "items": {
+              "enum": [
+                "margin",
+                "adl",
+                "funding_flip",
+                "spread_expansion",
+                "max_open_positions",
+                "max_pair_exposure",
+                "max_memecoin_exposure"
+              ],
+              "type": "string"
+            },
+            "title": "Blocking Guardrails",
+            "type": "array"
+          },
+          "closed_attempts": {
+            "default": 0,
+            "title": "Closed Attempts",
+            "type": "integer"
+          },
+          "decision_counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "propertyNames": {
+              "enum": [
+                "alert",
+                "block_entry",
+                "close_position"
+              ]
+            },
+            "title": "Decision Counts",
+            "type": "object"
+          },
+          "decisions": {
+            "items": {
+              "$ref": "#/components/schemas/GuardrailDecisionItem"
+            },
+            "title": "Decisions",
+            "type": "array"
+          },
+          "entries_blocked": {
+            "default": false,
+            "title": "Entries Blocked",
+            "type": "boolean"
+          },
+          "entry_blocks_by_guardrail": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Entry Blocks By Guardrail",
+            "type": "object"
+          },
+          "entry_blocks_total": {
+            "default": 0,
+            "title": "Entry Blocks Total",
+            "type": "integer"
+          },
+          "last_close": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/GuardrailCloseRecordItem"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "last_entry_block": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/GuardrailDecisionItem"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "last_error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Error"
+          },
+          "last_evaluated_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Evaluated At"
+          },
+          "monitored_positions": {
+            "default": 0,
+            "title": "Monitored Positions",
+            "type": "integer"
+          },
+          "recent_close_failures": {
+            "default": 0,
+            "title": "Recent Close Failures",
+            "type": "integer"
+          },
+          "recent_closes": {
+            "default": 0,
+            "title": "Recent Closes",
+            "type": "integer"
+          }
+        },
+        "title": "StatusRiskGuardrailsDiagnostics",
+        "type": "object"
+      },
+      "StatusSnapshotContinuity": {
+        "additionalProperties": false,
+        "properties": {
+          "enabled": {
+            "default": false,
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "exchanges_covered": {
+            "default": 0,
+            "title": "Exchanges Covered",
+            "type": "integer"
+          },
+          "gap_count": {
+            "default": 0,
+            "title": "Gap Count",
+            "type": "integer"
+          },
+          "largest_gap_s": {
+            "default": 0.0,
+            "title": "Largest Gap S",
+            "type": "number"
+          },
+          "last_pruned_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Pruned At"
+          },
+          "last_recovered_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Recovered At"
+          },
+          "last_recovery_duration_ms": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Recovery Duration Ms"
+          },
+          "last_recovery_scanned_rows": {
+            "default": 0,
+            "title": "Last Recovery Scanned Rows",
+            "type": "integer"
+          },
+          "recover_on_startup": {
+            "default": false,
+            "title": "Recover On Startup",
+            "type": "boolean"
+          },
+          "recovery_attempted": {
+            "default": false,
+            "title": "Recovery Attempted",
+            "type": "boolean"
+          },
+          "recovery_max_rows": {
+            "default": 0,
+            "title": "Recovery Max Rows",
+            "type": "integer"
+          },
+          "recovery_result": {
+            "default": "not_attempted",
+            "enum": [
+              "not_attempted",
+              "completed",
+              "failed",
+              "recovery_skipped_missing_schema",
+              "recovery_skipped_incompatible_schema"
+            ],
+            "title": "Recovery Result",
+            "type": "string"
+          },
+          "recovery_warning": {
+            "default": false,
+            "title": "Recovery Warning",
+            "type": "boolean"
+          },
+          "retention_days": {
+            "default": 0.0,
+            "title": "Retention Days",
+            "type": "number"
+          },
+          "rows_total": {
+            "default": 0,
+            "title": "Rows Total",
+            "type": "integer"
+          },
+          "symbols_covered": {
+            "default": 0,
+            "title": "Symbols Covered",
+            "type": "integer"
+          },
+          "write_failures": {
+            "default": 0,
+            "title": "Write Failures",
+            "type": "integer"
+          }
+        },
+        "title": "StatusSnapshotContinuity",
+        "type": "object"
+      },
+      "StatusTrustDiagnosticsItem": {
+        "additionalProperties": false,
+        "properties": {
+          "confidence_distribution": {
+            "$ref": "#/components/schemas/TrustConfidenceDistributionItem"
+          },
+          "fallback_risk_by_exchange": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/TrustExchangeFallbackRiskItem"
+            },
+            "title": "Fallback Risk By Exchange",
+            "type": "object"
+          },
+          "fallback_risk_counters": {
+            "$ref": "#/components/schemas/TrustFallbackRiskCountersItem"
+          },
+          "provenance_coverage": {
+            "$ref": "#/components/schemas/TrustProvenanceCoverageItem"
+          }
+        },
+        "title": "StatusTrustDiagnosticsItem",
+        "type": "object"
+      },
+      "StatusWsFeedDiagnostics": {
+        "additionalProperties": false,
+        "properties": {
+          "connected": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Connected"
+          },
+          "healthy": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Healthy"
+          },
+          "last_message_age_s": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Message Age S"
+          },
+          "last_reconnect_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Reconnect At"
+          },
+          "last_reconnect_delay_s": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Reconnect Delay S"
+          },
+          "reconnect_attempt": {
+            "default": 0,
+            "title": "Reconnect Attempt",
+            "type": "integer"
+          },
+          "reconnect_storm_level": {
+            "default": "n/a",
+            "enum": [
+              "ok",
+              "warn",
+              "critical",
+              "n/a"
+            ],
+            "title": "Reconnect Storm Level",
+            "type": "string"
+          },
+          "reconnect_total": {
+            "default": 0,
+            "title": "Reconnect Total",
+            "type": "integer"
+          },
+          "reconnect_window_s": {
+            "default": 0.0,
+            "title": "Reconnect Window S",
+            "type": "number"
+          },
+          "reconnects_in_window": {
+            "default": 0,
+            "title": "Reconnects In Window",
+            "type": "integer"
+          }
+        },
+        "title": "StatusWsFeedDiagnostics",
+        "type": "object"
+      },
+      "SurvivalPoint": {
+        "description": "Kaplan-Meier step at time `t_s`; `std_error` is Greenwood's estimate.",
+        "properties": {
+          "at_risk": {
+            "title": "At Risk",
+            "type": "integer"
+          },
+          "censored": {
+            "title": "Censored",
+            "type": "integer"
+          },
+          "events": {
+            "title": "Events",
+            "type": "integer"
+          },
+          "std_error": {
+            "title": "Std Error",
+            "type": "number"
+          },
+          "survival": {
+            "title": "Survival",
+            "type": "number"
+          },
+          "t_s": {
+            "title": "T S",
+            "type": "number"
+          }
+        },
+        "required": [
+          "t_s",
+          "at_risk",
+          "events",
+          "censored",
+          "survival",
+          "std_error"
+        ],
+        "title": "SurvivalPoint",
+        "type": "object"
+      },
+      "TelegramSessionRequest": {
+        "properties": {
+          "init_data": {
+            "title": "Init Data",
+            "type": "string"
+          }
+        },
+        "required": [
+          "init_data"
+        ],
+        "title": "TelegramSessionRequest",
+        "type": "object"
+      },
+      "TelegramSessionResponse": {
+        "properties": {
+          "expires_at": {
+            "title": "Expires At",
+            "type": "string"
+          },
+          "principal_id": {
+            "title": "Principal Id",
+            "type": "string"
+          },
+          "session_token": {
+            "title": "Session Token",
+            "type": "string"
+          },
+          "ttl_s": {
+            "title": "Ttl S",
+            "type": "number"
+          }
+        },
+        "required": [
+          "session_token",
+          "principal_id",
+          "expires_at",
+          "ttl_s"
+        ],
+        "title": "TelegramSessionResponse",
+        "type": "object"
+      },
+      "TrustConfidenceDistributionItem": {
+        "additionalProperties": false,
+        "properties": {
+          "blocked": {
+            "default": 0,
+            "title": "Blocked",
+            "type": "integer"
+          },
+          "candidate_block": {
+            "default": 0,
+            "title": "Candidate Block",
+            "type": "integer"
+          },
+          "candidate_watch": {
+            "default": 0,
+            "title": "Candidate Watch",
+            "type": "integer"
+          },
+          "gate_block": {
+            "default": 0,
+            "title": "Gate Block",
+            "type": "integer"
+          },
+          "gate_watch": {
+            "default": 0,
+            "title": "Gate Watch",
+            "type": "integer"
+          },
+          "ready": {
+            "default": 0,
+            "title": "Ready",
+            "type": "integer"
+          },
+          "runtime_block": {
+            "default": 0,
+            "title": "Runtime Block",
+            "type": "integer"
+          },
+          "runtime_watch": {
+            "default": 0,
+            "title": "Runtime Watch",
+            "type": "integer"
+          },
+          "watching": {
+            "default": 0,
+            "title": "Watching",
+            "type": "integer"
+          }
+        },
+        "title": "TrustConfidenceDistributionItem",
+        "type": "object"
+      },
+      "TrustExchangeFallbackRiskItem": {
+        "additionalProperties": false,
+        "properties": {
+          "missing_calibration": {
+            "default": 0,
+            "title": "Missing Calibration",
+            "type": "integer"
+          },
+          "missing_depth": {
+            "default": 0,
+            "title": "Missing Depth",
+            "type": "integer"
+          },
+          "missing_fee": {
+            "default": 0,
+            "title": "Missing Fee",
+            "type": "integer"
+          },
+          "missing_spread": {
+            "default": 0,
+            "title": "Missing Spread",
+            "type": "integer"
+          }
+        },
+        "title": "TrustExchangeFallbackRiskItem",
+        "type": "object"
+      },
+      "TrustFallbackRiskCountersItem": {
+        "additionalProperties": false,
+        "properties": {
+          "missing_calibration": {
+            "default": 0,
+            "title": "Missing Calibration",
+            "type": "integer"
+          },
+          "missing_depth": {
+            "default": 0,
+            "title": "Missing Depth",
+            "type": "integer"
+          },
+          "missing_fee": {
+            "default": 0,
+            "title": "Missing Fee",
+            "type": "integer"
+          },
+          "missing_spread": {
+            "default": 0,
+            "title": "Missing Spread",
+            "type": "integer"
+          }
+        },
+        "title": "TrustFallbackRiskCountersItem",
+        "type": "object"
+      },
+      "TrustProvenanceCoverageItem": {
+        "additionalProperties": false,
+        "properties": {
+          "depth": {
+            "$ref": "#/components/schemas/TrustProvenanceTermCoverageItem"
+          },
+          "fee": {
+            "$ref": "#/components/schemas/TrustProvenanceTermCoverageItem"
+          },
+          "funding": {
+            "$ref": "#/components/schemas/TrustProvenanceTermCoverageItem"
+          },
+          "mark": {
+            "$ref": "#/components/schemas/TrustProvenanceTermCoverageItem"
+          }
+        },
+        "title": "TrustProvenanceCoverageItem",
+        "type": "object"
+      },
+      "TrustProvenanceTermCoverageItem": {
+        "additionalProperties": false,
+        "properties": {
+          "config": {
+            "default": 0,
+            "title": "Config",
+            "type": "integer"
+          },
+          "derived": {
+            "default": 0,
+            "title": "Derived",
+            "type": "integer"
+          },
+          "real_rest": {
+            "default": 0,
+            "title": "Real Rest",
+            "type": "integer"
+          },
+          "real_ws": {
+            "default": 0,
+            "title": "Real Ws",
+            "type": "integer"
+          },
+          "unavailable": {
+            "default": 0,
+            "title": "Unavailable",
+            "type": "integer"
+          }
+        },
+        "title": "TrustProvenanceTermCoverageItem",
         "type": "object"
       },
       "ValidationError": {
@@ -3029,6 +8548,21 @@
             "title": "Expires At",
             "type": "string"
           },
+          "last_reject_reason": {
+            "anyOf": [
+              {
+                "enum": [
+                  "expired",
+                  "reused"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Reject Reason"
+          },
           "ticket": {
             "title": "Ticket",
             "type": "string"
@@ -3054,6 +8588,188 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/auth/telegram/session": {
+      "post": {
+        "operationId": "issue_telegram_session_auth_telegram_session_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TelegramSessionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TelegramSessionResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Issue Telegram Session"
+      }
+    },
+    "/automation": {
+      "get": {
+        "description": "Autonomous-mode dashboard: capability states, posture, recent actions, control log.",
+        "operationId": "get_automation_overview_automation_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AutomationOverviewResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Automation Overview"
+      }
+    },
+    "/automation/controls": {
+      "post": {
+        "description": "Pause or resume auto-entry and/or auto-exit without changing configuration.",
+        "operationId": "post_automation_control_automation_controls_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AutomationControlRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AutomationOverviewResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Post Automation Control"
+      }
+    },
+    "/automation/entry/decisions": {
+      "get": {
+        "description": "Recent auto-entry decisions (newest first) with skip reasons and entry outcomes.",
+        "operationId": "list_auto_entry_decisions_automation_entry_decisions_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AutoEntryDecisionListResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Auto Entry Decisions"
+      }
+    },
+    "/automation/exit/decisions": {
+      "get": {
+        "description": "Recent auto-exit decisions (newest first) with trigger, conditions, and close outcome.",
+        "operationId": "list_auto_exit_decisions_automation_exit_decisions_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AutoExitDecisionListResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Auto Exit Decisions"
+      }
+    },
     "/backtest/gate": {
       "get": {
         "operationId": "get_backtest_gate_backtest_gate_get",
@@ -3266,6 +8982,84 @@
         "summary": "Get Backtest Summary"
       }
     },
+    "/backtest/survival": {
+      "get": {
+        "description": "Kaplan-Meier persistence of READY episodes and life-table hazards per group.",
+        "operationId": "get_backtest_survival_backtest_survival_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "lookback_days",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "exclusiveMinimum": 0,
+                  "maximum": 366,
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Lookback Days"
+            }
+          },
+          {
+            "in": "query",
+            "name": "refresh",
+            "required": false,
+            "schema": {
+              "default": false,
+              "title": "Refresh",
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BacktestSurvivalResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Backtest Survival"
+      }
+    },
+    "/backtest/survival/forecast": {
+      "get": {
+        "description": "Expected persistence window of each READY candidate, given how long it has been READY.",
+        "operationId": "get_persistence_forecast_backtest_survival_forecast_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersistenceForecastResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Persistence Forecast"
+      }
+    },
     "/config": {
       "get": {
         "operationId": "get_config_config_get",
@@ -3381,6 +9175,45 @@
         "summary": "List Execution Attempts"
       }
     },
+    "/execution/close": {
+      "post": {
+        "description": "Close an open pair: both legs in parallel, then a bounded reconciliation window.",
+        "operationId": "close_two_leg_position_execution_close_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExecutionCloseRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExecutionAttemptItem"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Close Two Leg Position"
+      }
+    },
     "/execution/open": {
       "post": {
         "operationId": "open_two_leg_position_execution_open_post",
@@ -3485,9 +9318,247 @@
         "summary": "Get Execution Preflight"
       }
     },
+    "/migration/parity/artifacts": {
+      "get": {
+        "operationId": "list_migration_parity_artifacts_migration_parity_artifacts_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MigrationParityArtifactListResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Migration Parity Artifacts"
+      }
+    },
+    "/migration/parity/report": {
+      "get": {
+        "operationId": "get_migration_parity_report_migration_parity_report_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "window_s",
+            "required": false,
+            "schema": {
+              "default": 3600.0,
+              "maximum": 604800.0,
+              "minimum": 60.0,
+              "title": "Window S",
+              "type": "number"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 200,
+              "maximum": 500,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "include_artifacts",
+            "required": false,
+            "schema": {
+              "default": false,
+              "title": "Include Artifacts",
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MigrationParityReportResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Migration Parity Report"
+      }
+    },
+    "/migration/preflight-parity/artifacts": {
+      "get": {
+        "operationId": "list_migration_preflight_parity_artifacts_migration_preflight_parity_artifacts_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 200,
+              "maximum": 1000,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PreflightParityArtifactListResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Migration Preflight Parity Artifacts"
+      }
+    },
+    "/migration/preflight-parity/report": {
+      "get": {
+        "operationId": "get_migration_preflight_parity_report_migration_preflight_parity_report_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "window_s",
+            "required": false,
+            "schema": {
+              "default": 3600.0,
+              "maximum": 604800.0,
+              "minimum": 60.0,
+              "title": "Window S",
+              "type": "number"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 500,
+              "maximum": 2000,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "include_artifacts",
+            "required": false,
+            "schema": {
+              "default": false,
+              "title": "Include Artifacts",
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PreflightParityReportResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Migration Preflight Parity Report"
+      }
+    },
     "/opportunities": {
       "get": {
         "operationId": "get_opportunities_opportunities_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "strategy_type",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "enum": [
+                      "funding_arbitrage",
+                      "basis_convergence",
+                      "cash_and_carry"
+                    ],
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Strategy Type"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "content": {
@@ -3498,9 +9569,118 @@
               }
             },
             "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
           }
         },
         "summary": "Get Opportunities"
+      }
+    },
+    "/positions": {
+      "get": {
+        "description": "Latest position monitor snapshot: margin flags, PnL, and funding per open pair.",
+        "operationId": "get_positions_positions_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PositionsResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Positions"
+      }
+    },
+    "/positions/pnl/daily": {
+      "get": {
+        "description": "Daily realized/unrealized PnL with funding contribution, most recent UTC day first.",
+        "operationId": "get_daily_pnl_positions_pnl_daily_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "days",
+            "required": false,
+            "schema": {
+              "default": 7,
+              "maximum": 366,
+              "minimum": 1,
+              "title": "Days",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DailyPnlResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Daily Pnl"
+      }
+    },
+    "/risk/guardrails": {
+      "get": {
+        "description": "Guardrail decisions, entry blocks, close history, and the active thresholds.",
+        "operationId": "get_risk_guardrails_risk_guardrails_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RiskGuardrailsResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Risk Guardrails"
+      }
+    },
+    "/snapshots/continuity": {
+      "get": {
+        "operationId": "get_snapshots_continuity_snapshots_continuity_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SnapshotContinuityResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Snapshots Continuity"
       }
     },
     "/status": {

@@ -9,8 +9,15 @@ interface PresetCardProps {
   onApply: (preset: Preset) => void;
 }
 
-function asNumber(value: number | boolean | undefined): number {
-  return typeof value === "number" ? value : 0;
+function asNumber(value: number | boolean | string | undefined): number {
+  if (typeof value === "number") {
+    return value;
+  }
+  if (typeof value === "string") {
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : 0;
+  }
+  return 0;
 }
 
 const PresetCard = ({ preset, isActive, isApplying, isDisabled, onApply }: PresetCardProps) => {

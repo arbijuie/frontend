@@ -21,6 +21,7 @@ const PipelineDiagnosticsHint = ({ status }: PipelineDiagnosticsHintProps) => {
   const basisBonusCapped = drops?.basis_bonus_capped ?? 0;
   const adaptiveHoldApplied = drops?.adaptive_hold_applied ?? 0;
   const basisDivergencePenalty = drops?.basis_divergence_penalty ?? 0;
+  const concentration = status.correlation_concentration;
   const downExchanges = Object.values(status.exchange_last_ok).filter((v) => v === false).length;
   const unknownExchanges = Object.values(status.exchange_last_ok).filter((v) => v === null).length;
 
@@ -99,6 +100,26 @@ const PipelineDiagnosticsHint = ({ status }: PipelineDiagnosticsHintProps) => {
   }
 
   if (ready > 0) {
+    if (concentration?.level === "blocked") {
+      return (
+        <div className={styles.warnBox}>
+          <span className={`${styles.badge} ${styles.warnBadge}`}>warn</span>
+          Correlation concentration is blocking preflight decision: largest cluster{" "}
+          {concentration.largest_cluster_size}/{concentration.ready_count} ({" "}
+          {concentration.largest_cluster_ratio.toFixed(2)}).
+        </div>
+      );
+    }
+    if (concentration?.level === "watching") {
+      return (
+        <div className={styles.infoBox}>
+          <span className={`${styles.badge} ${styles.infoBadge}`}>info</span>
+          Correlation concentration is elevated: largest cluster{" "}
+          {concentration.largest_cluster_size}/{concentration.ready_count} ({" "}
+          {concentration.largest_cluster_ratio.toFixed(2)}).
+        </div>
+      );
+    }
     return (
       <div className={styles.okBox}>
         <span className={`${styles.badge} ${styles.okBadge}`}>ok</span>

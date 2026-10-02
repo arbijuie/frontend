@@ -26,3 +26,24 @@
   color: v.$text-secondary;
   background: v.$bg-card;
 }
+
+@media (min-width: 960px) {
+  .card {
+    margin-bottom: 0.55rem;
+    padding: 0.5rem;
+  }
+
+  .title {
+    font-size: 0.74rem;
+  }
+
+  .row {
+    margin-top: 0.35rem;
+    gap: 0.35rem;
+  }
+
+  .pill {
+    font-size: 0.7rem;
+    padding: 0.16rem 0.42rem;
+  }
+}

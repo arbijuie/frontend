@@ -4,6 +4,103 @@
  */
 
 export interface paths {
+    "/auth/telegram/session": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Issue Telegram Session */
+        post: operations["issue_telegram_session_auth_telegram_session_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/automation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Automation Overview
+         * @description Autonomous-mode dashboard: capability states, posture, recent actions, control log.
+         */
+        get: operations["get_automation_overview_automation_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/automation/controls": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Post Automation Control
+         * @description Pause or resume auto-entry and/or auto-exit without changing configuration.
+         */
+        post: operations["post_automation_control_automation_controls_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/automation/entry/decisions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Auto Entry Decisions
+         * @description Recent auto-entry decisions (newest first) with skip reasons and entry outcomes.
+         */
+        get: operations["list_auto_entry_decisions_automation_entry_decisions_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/automation/exit/decisions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Auto Exit Decisions
+         * @description Recent auto-exit decisions (newest first) with trigger, conditions, and close outcome.
+         */
+        get: operations["list_auto_exit_decisions_automation_exit_decisions_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/backtest/gate": {
         parameters: {
             query?: never;
@@ -126,6 +223,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/backtest/survival": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Backtest Survival
+         * @description Kaplan-Meier persistence of READY episodes and life-table hazards per group.
+         */
+        get: operations["get_backtest_survival_backtest_survival_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/backtest/survival/forecast": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Persistence Forecast
+         * @description Expected persistence window of each READY candidate, given how long it has been READY.
+         */
+        get: operations["get_persistence_forecast_backtest_survival_forecast_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/config": {
         parameters: {
             query?: never;
@@ -181,6 +318,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/execution/close": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Close Two Leg Position
+         * @description Close an open pair: both legs in parallel, then a bounded reconciliation window.
+         */
+        post: operations["close_two_leg_position_execution_close_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/execution/open": {
         parameters: {
             query?: never;
@@ -215,6 +372,74 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/migration/parity/artifacts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Migration Parity Artifacts */
+        get: operations["list_migration_parity_artifacts_migration_parity_artifacts_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/migration/parity/report": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Migration Parity Report */
+        get: operations["get_migration_parity_report_migration_parity_report_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/migration/preflight-parity/artifacts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Migration Preflight Parity Artifacts */
+        get: operations["list_migration_preflight_parity_artifacts_migration_preflight_parity_artifacts_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/migration/preflight-parity/report": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Migration Preflight Parity Report */
+        get: operations["get_migration_preflight_parity_report_migration_preflight_parity_report_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/opportunities": {
         parameters: {
             query?: never;
@@ -224,6 +449,83 @@ export interface paths {
         };
         /** Get Opportunities */
         get: operations["get_opportunities_opportunities_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/positions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Positions
+         * @description Latest position monitor snapshot: margin flags, PnL, and funding per open pair.
+         */
+        get: operations["get_positions_positions_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/positions/pnl/daily": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Daily Pnl
+         * @description Daily realized/unrealized PnL with funding contribution, most recent UTC day first.
+         */
+        get: operations["get_daily_pnl_positions_pnl_daily_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/risk/guardrails": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Risk Guardrails
+         * @description Guardrail decisions, entry blocks, close history, and the active thresholds.
+         */
+        get: operations["get_risk_guardrails_risk_guardrails_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/snapshots/continuity": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Snapshots Continuity */
+        get: operations["get_snapshots_continuity_snapshots_continuity_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -270,12 +572,217 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** AutoEntryDecisionItem */
+        AutoEntryDecisionItem: {
+            /**
+             * Action
+             * @enum {string}
+             */
+            action: "enter" | "skip";
+            /** Attempt Id */
+            attempt_id?: string | null;
+            /** Evaluated At */
+            evaluated_at: string;
+            /** Long Exchange */
+            long_exchange: string;
+            /** Outcome */
+            outcome?: string | null;
+            /** Reasons */
+            reasons?: string[];
+            /** Score Bps */
+            score_bps: number;
+            /** Short Exchange */
+            short_exchange: string;
+            /**
+             * Strategy Type
+             * @enum {string}
+             */
+            strategy_type: "funding_arbitrage" | "basis_convergence" | "cash_and_carry";
+            /** Symbol */
+            symbol: string;
+        };
+        /** AutoEntryDecisionListResponse */
+        AutoEntryDecisionListResponse: {
+            /** Count */
+            count: number;
+            /** Items */
+            items?: components["schemas"]["AutoEntryDecisionItem"][];
+            status: components["schemas"]["StatusAutoEntryDiagnostics"];
+        };
+        /** AutoExitDecisionItem */
+        AutoExitDecisionItem: {
+            /**
+             * Action
+             * @enum {string}
+             */
+            action: "exit" | "hold";
+            /** Attempt Id */
+            attempt_id: string;
+            /** Conditions */
+            conditions?: ("funding_flip" | "score_decay" | "time_limit")[];
+            /** Current Score Bps */
+            current_score_bps?: number | null;
+            /** Entry Score Bps */
+            entry_score_bps?: number | null;
+            /** Evaluated At */
+            evaluated_at: string;
+            /** Held Hours */
+            held_hours: number;
+            /** Net Funding Apr */
+            net_funding_apr?: number | null;
+            /** Outcome */
+            outcome?: string | null;
+            /**
+             * Reason
+             * @default
+             */
+            reason: string;
+            /** Symbol */
+            symbol: string;
+            /** Trigger */
+            trigger?: ("funding_flip" | "score_decay" | "time_limit") | null;
+        };
+        /** AutoExitDecisionListResponse */
+        AutoExitDecisionListResponse: {
+            /** Count */
+            count: number;
+            /** Items */
+            items?: components["schemas"]["AutoExitDecisionItem"][];
+            status: components["schemas"]["StatusAutoExitDiagnostics"];
+        };
+        /** AutomationControlEventItem */
+        AutomationControlEventItem: {
+            /**
+             * Action
+             * @enum {string}
+             */
+            action: "pause" | "resume";
+            /** Actor */
+            actor: string;
+            /** At */
+            at: string;
+            /** Changed */
+            changed: boolean;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "entry" | "exit";
+            /** Reason */
+            reason: string;
+        };
+        /** AutomationControlRequest */
+        AutomationControlRequest: {
+            /**
+             * Action
+             * @enum {string}
+             */
+            action: "pause" | "resume";
+            /**
+             * Reason
+             * @default
+             */
+            reason: string;
+            /**
+             * Target
+             * @enum {string}
+             */
+            target: "entry" | "exit" | "all";
+        };
+        /**
+         * AutomationModeItem
+         * @description One autonomous capability (issue #195).
+         *
+         *     `state`: `disabled` (not configured), `paused` (operator hold), `blocked` (configured and
+         *     not paused, but `blockers` stop it), or `armed` (the next pass may act).
+         */
+        AutomationModeItem: {
+            /**
+             * Actions Total
+             * @default 0
+             */
+            actions_total: number;
+            /** Blockers */
+            blockers?: string[];
+            /** Enabled */
+            enabled: boolean;
+            /**
+             * Failures Total
+             * @default 0
+             */
+            failures_total: number;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "entry" | "exit";
+            /** Last Action At */
+            last_action_at?: string | null;
+            /** Last Action Outcome */
+            last_action_outcome?: string | null;
+            /** Last Action Symbol */
+            last_action_symbol?: string | null;
+            /** Last Run At */
+            last_run_at?: string | null;
+            /** Pause Reason */
+            pause_reason?: string | null;
+            /** Paused */
+            paused: boolean;
+            /** Paused At */
+            paused_at?: string | null;
+            /** Paused By */
+            paused_by?: string | null;
+            /**
+             * State
+             * @enum {string}
+             */
+            state: "disabled" | "paused" | "blocked" | "armed";
+        };
+        /** AutomationOverviewResponse */
+        AutomationOverviewResponse: {
+            /** Checked At */
+            checked_at: string;
+            /** Control Log */
+            control_log?: components["schemas"]["AutomationControlEventItem"][];
+            entry: components["schemas"]["AutomationModeItem"];
+            exit: components["schemas"]["AutomationModeItem"];
+            posture: components["schemas"]["AutomationPostureItem"];
+            /** Recent Entries */
+            recent_entries?: components["schemas"]["AutoEntryDecisionItem"][];
+            /** Recent Exits */
+            recent_exits?: components["schemas"]["AutoExitDecisionItem"][];
+        };
+        /** AutomationPostureItem */
+        AutomationPostureItem: {
+            /** Consecutive Rollbacks */
+            consecutive_rollbacks: number;
+            /** Entries Stopped */
+            entries_stopped: boolean;
+            /** Exec Dry Run */
+            exec_dry_run: boolean;
+            /** Exec Enabled */
+            exec_enabled: boolean;
+            /** Gate Passed */
+            gate_passed: boolean;
+            /** Gate Reason */
+            gate_reason?: string | null;
+            /** Guardrail Entry Blocks */
+            guardrail_entry_blocks?: string[];
+            /** Guardrail Last Evaluated At */
+            guardrail_last_evaluated_at?: string | null;
+            /**
+             * Open Positions
+             * @default 0
+             */
+            open_positions: number;
+        };
         /** BacktestGateResponse */
         BacktestGateResponse: {
             /** Lock Id */
             lock_id?: string | null;
             /** Passed */
             passed: boolean;
+            posture?: components["schemas"]["ExecutionGatePostureItem"];
             /** Reason */
             reason?: string | null;
             /** Strategy Id */
@@ -302,8 +809,33 @@ export interface components {
         };
         /** BacktestLockListItem */
         BacktestLockListItem: {
+            /**
+             * Basis Carry Pnl Bps
+             * @default 0
+             */
+            basis_carry_pnl_bps: number;
             /** Created At */
             created_at: string;
+            /**
+             * Entries
+             * @default 0
+             */
+            entries: number;
+            /**
+             * Entry Cost Bps
+             * @default 0
+             */
+            entry_cost_bps: number;
+            /**
+             * Exits
+             * @default 0
+             */
+            exits: number;
+            /**
+             * Funding Carry Pnl Bps
+             * @default 0
+             */
+            funding_carry_pnl_bps: number;
             /** Gate Passed */
             gate_passed: boolean;
             /** Lock Id */
@@ -348,16 +880,39 @@ export interface components {
         };
         /** BacktestMetricsItem */
         BacktestMetricsItem: {
+            /**
+             * Basis Carry Pnl Bps
+             * @default 0
+             */
+            basis_carry_pnl_bps: number;
             /** Closed Trades */
             closed_trades: number;
             /** Entries */
             entries: number;
+            /** Entries By Strategy Type */
+            entries_by_strategy_type?: {
+                [key: string]: number;
+            };
+            /**
+             * Entry Cost Bps
+             * @default 0
+             */
+            entry_cost_bps: number;
             /** Exit Reasons */
             exit_reasons?: {
                 [key: string]: number;
             };
             /** Exits */
             exits: number;
+            /** Exits By Strategy Type */
+            exits_by_strategy_type?: {
+                [key: string]: number;
+            };
+            /**
+             * Funding Carry Pnl Bps
+             * @default 0
+             */
+            funding_carry_pnl_bps: number;
             /** Max Drawdown Bps */
             max_drawdown_bps: number;
             /** Median Trade Pnl Bps */
@@ -409,6 +964,10 @@ export interface components {
         };
         /** BacktestReplayRequest */
         BacktestReplayRequest: {
+            /** Basis Exit Bps */
+            basis_exit_bps?: number | null;
+            /** Basis Max Hold Multiplier */
+            basis_max_hold_multiplier?: number | null;
             /** Basis Reversal Exit */
             basis_reversal_exit?: boolean | null;
             /** Cycle Hours */
@@ -451,6 +1010,66 @@ export interface components {
             symbols_covered: number;
             /** Total Snapshots */
             total_snapshots: number;
+        };
+        /**
+         * BacktestSurvivalGroupItem
+         * @description Kaplan-Meier summary for one episode group (`all`, `strategy:*`, `score:*`).
+         */
+        BacktestSurvivalGroupItem: {
+            /** Censored */
+            censored: number;
+            /** Curve */
+            curve?: components["schemas"]["SurvivalPoint"][];
+            /** Episodes */
+            episodes: number;
+            /** Events */
+            events: number;
+            /** Group */
+            group: string;
+            /** Hazard */
+            hazard?: components["schemas"]["HazardBucket"][];
+            /** Max Observed S */
+            max_observed_s: number;
+            /** Median S */
+            median_s?: number | null;
+            /** P25 S */
+            p25_s?: number | null;
+            /** P75 S */
+            p75_s?: number | null;
+            /** Restricted Horizon S */
+            restricted_horizon_s: number;
+            /** Restricted Mean S */
+            restricted_mean_s: number;
+        };
+        /**
+         * BacktestSurvivalResponse
+         * @description `GET /backtest/survival`: READY-episode persistence survival analysis (issue #196).
+         */
+        BacktestSurvivalResponse: {
+            /** Censored Total */
+            censored_total: number;
+            /** End Reasons */
+            end_reasons?: {
+                [key: string]: number;
+            };
+            /** Episodes Total */
+            episodes_total: number;
+            /** Events Total */
+            events_total: number;
+            /** Gap Tolerance S */
+            gap_tolerance_s: number;
+            /** Generated At */
+            generated_at: string;
+            /** Groups */
+            groups?: {
+                [key: string]: components["schemas"]["BacktestSurvivalGroupItem"];
+            };
+            /** Lookback Days */
+            lookback_days: number;
+            /** Window End */
+            window_end?: string | null;
+            /** Window Start */
+            window_start?: string | null;
         };
         /** ConfigResponse */
         ConfigResponse: {
@@ -512,16 +1131,38 @@ export interface components {
             basis_bonus_cap_bps: number;
             /** Basis Divergence Threshold Bps */
             basis_divergence_threshold_bps: number;
+            /** Basis Entry Bps */
+            basis_entry_bps: number;
+            /** Basis Exit Bps */
+            basis_exit_bps: number;
             /** Basis Expansion Penalty Bps Per Hour */
             basis_expansion_penalty_bps_per_hour: number;
+            /** Basis Funding Penalty Weight */
+            basis_funding_penalty_weight: number;
+            /** Basis Max Hold Multiplier */
+            basis_max_hold_multiplier: number;
             /** Basis Weight */
             basis_weight: number;
             /** Binance Base Url */
             binance_base_url: string;
+            /** Borrow Rate Apr */
+            borrow_rate_apr: number;
             /** Bybit Base Url */
             bybit_base_url: string;
+            /** Calibration Artifact Path */
+            calibration_artifact_path: string;
+            /** Calibration Artifact Rollback Path */
+            calibration_artifact_rollback_path: string;
+            /** Cash And Carry Entry Bps */
+            cash_and_carry_entry_bps: number;
             /** Correlation Bucket S */
             correlation_bucket_s: number;
+            /** Correlation Concentration Block Ratio */
+            correlation_concentration_block_ratio: number;
+            /** Correlation Concentration Min Ready Candidates */
+            correlation_concentration_min_ready_candidates: number;
+            /** Correlation Concentration Watch Ratio */
+            correlation_concentration_watch_ratio: number;
             /** Correlation Min Samples */
             correlation_min_samples: number;
             /** Correlation Threshold */
@@ -530,6 +1171,18 @@ export interface components {
             correlation_window_hours: number;
             /** Default Order Size Usd */
             default_order_size_usd: number;
+            /** Durable Snapshots Db Path */
+            durable_snapshots_db_path: string;
+            /** Durable Snapshots Enabled */
+            durable_snapshots_enabled: boolean;
+            /** Durable Snapshots Prune Interval S */
+            durable_snapshots_prune_interval_s: number;
+            /** Durable Snapshots Recover Max Rows */
+            durable_snapshots_recover_max_rows: number;
+            /** Durable Snapshots Recover On Startup */
+            durable_snapshots_recover_on_startup: boolean;
+            /** Durable Snapshots Retention Days */
+            durable_snapshots_retention_days: number;
             /** Dydx Indexer Url */
             dydx_indexer_url: string;
             /** Exec Adl Critical Quantile */
@@ -550,6 +1203,14 @@ export interface components {
             exec_margin_alert_pct: number;
             /** Exec Margin Force Close Pct */
             exec_margin_force_close_pct: number;
+            /** Exec Max Unhedged Duration S */
+            exec_max_unhedged_duration_s: number;
+            /** Exec Min Partial Fill Pct */
+            exec_min_partial_fill_pct: number;
+            /** Exec Partial Fill Poll S */
+            exec_partial_fill_poll_s: number;
+            /** Exec Partial Fill Timeout S */
+            exec_partial_fill_timeout_s: number;
             /** Exec Recovery Cooldown S */
             exec_recovery_cooldown_s: number;
             /** Exec Recovery Require Manual Ack */
@@ -590,6 +1251,8 @@ export interface components {
             hl_taker_fee_per_side: number;
             /** Hold Window Instability Scale */
             hold_window_instability_scale: number;
+            /** Lending Yield Apr */
+            lending_yield_apr: number;
             /** Lighter Maker Fee Per Side */
             lighter_maker_fee_per_side: number;
             /** Lighter Taker Fee Per Side */
@@ -618,6 +1281,57 @@ export interface components {
             max_reasonable_apr: number;
             /** Max Volume Fraction */
             max_volume_fraction: number;
+            /** Migration Nautilus Adapter Enabled */
+            migration_nautilus_adapter_enabled: boolean;
+            /**
+             * Migration Nautilus Adapter Rollout Ledger Path
+             * @default
+             */
+            migration_nautilus_adapter_rollout_ledger_path: string;
+            /**
+             * Migration Nautilus Adapter Rollout Plan Path
+             * @default
+             */
+            migration_nautilus_adapter_rollout_plan_path: string;
+            /**
+             * Migration Nautilus Adapter Rollout Step
+             * @default S0
+             */
+            migration_nautilus_adapter_rollout_step: string;
+            /** Migration Nautilus Adapter Venues */
+            migration_nautilus_adapter_venues: string;
+            /** Migration Nautilus Compare Enabled */
+            migration_nautilus_compare_enabled: boolean;
+            /** Migration Nautilus Enabled */
+            migration_nautilus_enabled: boolean;
+            /**
+             * Migration Nautilus Fallback Policy
+             * @constant
+             */
+            migration_nautilus_fallback_policy: "deny_and_observe";
+            /**
+             * Migration Nautilus Mode
+             * @enum {string}
+             */
+            migration_nautilus_mode: "legacy_only" | "shadow_compare" | "nautilus_primary";
+            /** Migration Nautilus Observe Only */
+            migration_nautilus_observe_only: boolean;
+            /**
+             * Migration Preflight Canary Symbols
+             * @default
+             */
+            migration_preflight_canary_symbols: string;
+            /**
+             * Migration Preflight Cutover Approval Path
+             * @default
+             */
+            migration_preflight_cutover_approval_path: string;
+            /**
+             * Migration Preflight Source
+             * @default legacy
+             * @enum {string}
+             */
+            migration_preflight_source: "legacy" | "nautilus_canary" | "nautilus";
             /** Min Depth Quality */
             min_depth_quality: string;
             /** Min Open Interest */
@@ -637,7 +1351,7 @@ export interface components {
             /** Runbook Presets */
             runbook_presets: {
                 [key: string]: {
-                    [key: string]: number | boolean;
+                    [key: string]: number | boolean | string;
                 };
             };
             /** Stale Data S */
@@ -661,10 +1375,22 @@ export interface components {
             basis_bonus_cap_bps?: number | null;
             /** Basis Divergence Threshold Bps */
             basis_divergence_threshold_bps?: number | null;
+            /** Basis Entry Bps */
+            basis_entry_bps?: number | null;
+            /** Basis Exit Bps */
+            basis_exit_bps?: number | null;
             /** Basis Expansion Penalty Bps Per Hour */
             basis_expansion_penalty_bps_per_hour?: number | null;
+            /** Basis Funding Penalty Weight */
+            basis_funding_penalty_weight?: number | null;
+            /** Basis Max Hold Multiplier */
+            basis_max_hold_multiplier?: number | null;
             /** Basis Weight */
             basis_weight?: number | null;
+            /** Borrow Rate Apr */
+            borrow_rate_apr?: number | null;
+            /** Cash And Carry Entry Bps */
+            cash_and_carry_entry_bps?: number | null;
             /** Correlation Threshold */
             correlation_threshold?: number | null;
             /** Default Order Size Usd */
@@ -673,6 +1399,8 @@ export interface components {
             expected_hold_hours?: number | null;
             /** Hold Window Instability Scale */
             hold_window_instability_scale?: number | null;
+            /** Lending Yield Apr */
+            lending_yield_apr?: number | null;
             /** Max Basis Divergence Hours */
             max_basis_divergence_hours?: number | null;
             /** Max Correlated Positions */
@@ -687,6 +1415,22 @@ export interface components {
             max_reasonable_apr?: number | null;
             /** Max Volume Fraction */
             max_volume_fraction?: number | null;
+            /** Migration Nautilus Adapter Enabled */
+            migration_nautilus_adapter_enabled?: boolean | null;
+            /** Migration Nautilus Adapter Rollout Step */
+            migration_nautilus_adapter_rollout_step?: string | null;
+            /** Migration Nautilus Compare Enabled */
+            migration_nautilus_compare_enabled?: boolean | null;
+            /** Migration Nautilus Enabled */
+            migration_nautilus_enabled?: boolean | null;
+            /** Migration Nautilus Mode */
+            migration_nautilus_mode?: ("legacy_only" | "shadow_compare" | "nautilus_primary") | null;
+            /** Migration Nautilus Observe Only */
+            migration_nautilus_observe_only?: boolean | null;
+            /** Migration Preflight Canary Symbols */
+            migration_preflight_canary_symbols?: string | null;
+            /** Migration Preflight Source */
+            migration_preflight_source?: ("legacy" | "nautilus_canary" | "nautilus") | null;
             /** Min Open Interest */
             min_open_interest?: number | null;
             /** Min Persistence Hours */
@@ -708,6 +1452,32 @@ export interface components {
             require_isolated_margin?: boolean | null;
             /** Stale Data S */
             stale_data_s?: number | null;
+        };
+        /** CorrelationConcentrationItem */
+        CorrelationConcentrationItem: {
+            /**
+             * Largest Cluster Ratio
+             * @default 0
+             */
+            largest_cluster_ratio: number;
+            /**
+             * Largest Cluster Size
+             * @default 0
+             */
+            largest_cluster_size: number;
+            /** Largest Cluster Symbols */
+            largest_cluster_symbols?: string[];
+            /**
+             * Level
+             * @default ok
+             * @enum {string}
+             */
+            level: "ok" | "watching" | "blocked";
+            /**
+             * Ready Count
+             * @default 0
+             */
+            ready_count: number;
         };
         /** CorrelationPairItem */
         CorrelationPairItem: {
@@ -743,27 +1513,121 @@ export interface components {
             /** Window Hours */
             window_hours: number;
         };
+        /**
+         * DailyPnlItem
+         * @description One UTC day: `total = realized + funding + unrealized_change` (mark-to-market).
+         */
+        DailyPnlItem: {
+            /** Day */
+            day: string;
+            /** Funding Pnl Usd */
+            funding_pnl_usd: number;
+            /** Positions Closed */
+            positions_closed: number;
+            /** Positions Open */
+            positions_open: number;
+            /** Realized Pnl Usd */
+            realized_pnl_usd: number;
+            /** Total Pnl Usd */
+            total_pnl_usd: number;
+            /** Unrealized Change Usd */
+            unrealized_change_usd: number;
+            /** Unrealized Pnl Usd */
+            unrealized_pnl_usd: number;
+        };
+        /** DailyPnlResponse */
+        DailyPnlResponse: {
+            /** Days */
+            days?: components["schemas"]["DailyPnlItem"][];
+            /**
+             * Funding Pnl Usd
+             * @default 0
+             */
+            funding_pnl_usd: number;
+            /**
+             * Realized Pnl Usd
+             * @default 0
+             */
+            realized_pnl_usd: number;
+            /**
+             * Total Pnl Usd
+             * @default 0
+             */
+            total_pnl_usd: number;
+        };
         /** ExecutionAttemptItem */
         ExecutionAttemptItem: {
+            /** Abort Reason */
+            abort_reason?: string | null;
             /** Attempt Id */
             attempt_id: string;
+            /**
+             * Close Attempts
+             * @default 0
+             */
+            close_attempts: number;
+            /** Close Orders */
+            close_orders?: components["schemas"]["ExecutionOrderItem"][];
+            /** Close Reason */
+            close_reason?: string | null;
+            close_reconciliation?: components["schemas"]["ExecutionCloseReconciliationItem"] | null;
+            /** Close Requested At */
+            close_requested_at?: string | null;
+            /** Close Trigger */
+            close_trigger?: ("manual" | "guardrail" | "signal") | null;
+            /** Closed At */
+            closed_at?: string | null;
             /** Consecutive Rollbacks */
             consecutive_rollbacks: number;
             /** Created At */
             created_at: string;
             /** Dry Run */
             dry_run: boolean;
+            /** Entry Score Bps */
+            entry_score_bps?: number | null;
             /** Error */
             error?: string | null;
             /** Events */
             events?: string[];
+            /** Expected Slippage Bps */
+            expected_slippage_bps?: {
+                [key: string]: number | null;
+            };
+            /**
+             * Filled Quantity
+             * @default 0
+             */
+            filled_quantity: string;
             first_leg: components["schemas"]["ExecutionLegItem"];
+            /** First Leg Slippage Bps */
+            first_leg_slippage_bps?: number | null;
+            /**
+             * Hedge Leg
+             * @default long
+             * @enum {string}
+             */
+            hedge_leg: "long" | "short";
+            /** Hydrated At */
+            hydrated_at?: string | null;
+            /** Hydration Conflicts */
+            hydration_conflicts?: string[];
             /** Long Exchange */
             long_exchange: string;
+            /**
+             * Partial Fill
+             * @default false
+             */
+            partial_fill: boolean;
             /** Quantity */
             quantity: string;
             /** Residual Exposure */
             residual_exposure: boolean;
+            residual_trim_order?: components["schemas"]["ExecutionOrderItem"] | null;
+            /**
+             * Residual Trim Quantity
+             * @default 0
+             */
+            residual_trim_quantity: string;
             /** Rollback Attempts */
             rollback_attempts: number;
             rollback_order?: components["schemas"]["ExecutionOrderItem"] | null;
@@ -772,6 +1636,8 @@ export interface components {
             second_leg: components["schemas"]["ExecutionLegItem"];
             /** Second Leg Attempts */
             second_leg_attempts: number;
+            /** Second Leg Slippage Bps */
+            second_leg_slippage_bps?: number | null;
             /** Short Exchange */
             short_exchange: string;
             /** Size Usd */
@@ -780,6 +1646,11 @@ export interface components {
             status: string;
             /** Symbol */
             symbol: string;
+            /**
+             * Unhedged Timeout
+             * @default false
+             */
+            unhedged_timeout: boolean;
         };
         /** ExecutionAttemptListResponse */
         ExecutionAttemptListResponse: {
@@ -792,13 +1663,96 @@ export interface components {
             /** Items */
             items?: components["schemas"]["ExecutionAttemptItem"][];
         };
+        /**
+         * ExecutionCloseReconciliationItem
+         * @description Outcome of the last bounded close run; `complete` means both legs are flat.
+         */
+        ExecutionCloseReconciliationItem: {
+            /** Complete */
+            complete: boolean;
+            /**
+             * Imbalance
+             * @default 0
+             */
+            imbalance: string;
+            /**
+             * Long Residual
+             * @default 0
+             */
+            long_residual: string;
+            /** Notes */
+            notes?: string[];
+            /** Poll S */
+            poll_s: number;
+            /** Reconciled At */
+            reconciled_at: string;
+            /** Rounds */
+            rounds: number;
+            /**
+             * Short Residual
+             * @default 0
+             */
+            short_residual: string;
+            /** Unresolved Orders */
+            unresolved_orders?: string[];
+            /** Window S */
+            window_s: number;
+        };
+        /** ExecutionCloseRequest */
+        ExecutionCloseRequest: {
+            /** Attempt Id */
+            attempt_id: string;
+            /**
+             * Reason
+             * @default manual close
+             */
+            reason: string;
+        };
+        /**
+         * ExecutionGatePostureItem
+         * @description Explicit Phase 4-pre gate posture, independent of the execution switches.
+         *
+         *     `criteria_*` report the acceptance criteria (strategy lock plus signed acceptance
+         *     evidence). `live_execution_allowed` is true only when execution is enabled, dry-run is
+         *     off, and the criteria are satisfied.
+         */
+        ExecutionGatePostureItem: {
+            /** Acceptance Matrix Version */
+            acceptance_matrix_version?: string | null;
+            /** Acceptance Record Id */
+            acceptance_record_id?: string | null;
+            /** Criteria Reason */
+            criteria_reason?: string | null;
+            /**
+             * Criteria Satisfied
+             * @default false
+             */
+            criteria_satisfied: boolean;
+            /**
+             * Live Execution Allowed
+             * @default false
+             */
+            live_execution_allowed: boolean;
+        };
         /** ExecutionLegItem */
         ExecutionLegItem: {
             /** Attempts */
             attempts: number;
+            /** Close Average Price */
+            close_average_price?: string | null;
+            /**
+             * Closed Quantity
+             * @default 0
+             */
+            closed_quantity: string;
             /** Exchange */
             exchange: string;
             fill?: components["schemas"]["ExecutionOrderItem"] | null;
+            /**
+             * Filled Quantity
+             * @default 0
+             */
+            filled_quantity: string;
             /** Intended Price */
             intended_price: string;
             /** Quantity */
@@ -819,17 +1773,26 @@ export interface components {
             short_exchange?: string | null;
             /** Size Usd */
             size_usd?: number | null;
+            /** Strategy Type */
+            strategy_type?: ("funding_arbitrage" | "basis_convergence" | "cash_and_carry") | null;
             /** Symbol */
             symbol: string;
         };
         /** ExecutionOrderItem */
         ExecutionOrderItem: {
+            /** Average Fill Price */
+            average_fill_price?: string | null;
             /** Client Order Id */
             client_order_id: string;
             /** Error */
             error?: string | null;
             /** Exchange */
             exchange: string;
+            /**
+             * Filled Quantity
+             * @default 0
+             */
+            filled_quantity: string;
             /** Price */
             price?: string | null;
             /** Quantity */
@@ -839,6 +1802,11 @@ export interface components {
              * @default false
              */
             reduce_only: boolean;
+            /**
+             * Remaining Quantity
+             * @default 0
+             */
+            remaining_quantity: string;
             /**
              * Side
              * @enum {string}
@@ -853,17 +1821,31 @@ export interface components {
         ExecutionPreflightCandidateItem: {
             /** Combined Score */
             combined_score: number;
-            /** Long Exchange */
-            long_exchange: string;
+            /**
+             * Correlated Ready Count
+             * @default 0
+             */
+            correlated_ready_count: number;
+            /** Execution Adjusted Score Bps */
+            execution_adjusted_score_bps: number;
+            /** Legs */
+            legs?: components["schemas"]["LegItem"][];
             /** Reasons */
             reasons?: components["schemas"]["ExecutionPreflightCandidateReasonItem"][];
-            /** Short Exchange */
-            short_exchange: string;
+            /** Signal Score Bps */
+            signal_score_bps: number;
             /**
              * Status
              * @enum {string}
              */
             status: "ready" | "watching" | "blocked";
+            /** Strategy Profile Id */
+            strategy_profile_id: string;
+            /**
+             * Strategy Type
+             * @enum {string}
+             */
+            strategy_type: "funding_arbitrage" | "basis_convergence" | "cash_and_carry";
             /** Symbol */
             symbol: string;
         };
@@ -885,6 +1867,7 @@ export interface components {
             lock_id?: string | null;
             /** Passed */
             passed: boolean;
+            posture?: components["schemas"]["ExecutionGatePostureItem"];
             /** Reason */
             reason?: string | null;
             /** Strategy Id */
@@ -938,6 +1921,7 @@ export interface components {
             /** Ready */
             ready: boolean;
             runtime: components["schemas"]["ExecutionPreflightRuntimeItem"];
+            source?: components["schemas"]["ExecutionPreflightSourceItem"];
         };
         /** ExecutionPreflightRuntimeItem */
         ExecutionPreflightRuntimeItem: {
@@ -946,6 +1930,7 @@ export interface components {
              * @default 0
              */
             consecutive_rollbacks: number;
+            correlation_concentration?: components["schemas"]["CorrelationConcentrationItem"];
             /**
              * Entries Stopped
              * @default false
@@ -961,6 +1946,47 @@ export interface components {
             poll_count_success: number;
             /** Screener Ready Candidates */
             screener_ready_candidates: number;
+            /**
+             * Shadow Preflight Capture Count
+             * @default 0
+             */
+            shadow_preflight_capture_count: number;
+            /**
+             * Shadow Preflight Capture Failures
+             * @default 0
+             */
+            shadow_preflight_capture_failures: number;
+            /** Shadow Preflight Last Duration Ms */
+            shadow_preflight_last_duration_ms?: number | null;
+            trust_diagnostics?: components["schemas"]["PreflightTrustDiagnosticsItem"];
+        };
+        /**
+         * ExecutionPreflightSourceItem
+         * @description Which evaluator produced this preflight decision (issue #170).
+         */
+        ExecutionPreflightSourceItem: {
+            /** Detail */
+            detail?: string | null;
+            /**
+             * Reason
+             * @default legacy_configured
+             * @enum {string}
+             */
+            reason: "legacy_configured" | "parity_regression" | "cutover_not_approved" | "outside_canary_scope" | "canary" | "cutover";
+            /**
+             * Requested
+             * @default legacy
+             * @enum {string}
+             */
+            requested: "legacy" | "nautilus_canary" | "nautilus";
+            /** Required Stage */
+            required_stage?: string | null;
+            /**
+             * Served By
+             * @default legacy
+             * @enum {string}
+             */
+            served_by: "legacy" | "nautilus";
         };
         /** FundingForecastItem */
         FundingForecastItem: {
@@ -987,10 +2013,259 @@ export interface components {
              */
             trend: "rising" | "falling" | "stable";
         };
+        /** GuardrailCloseRecordItem */
+        GuardrailCloseRecordItem: {
+            /** At */
+            at: string;
+            /** Attempt Id */
+            attempt_id: string;
+            /** Guardrail */
+            guardrail: string;
+            /** Orders */
+            orders?: string[];
+            /** Reason */
+            reason: string;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "closed" | "failed";
+        };
+        /**
+         * GuardrailDecisionItem
+         * @description One hard-guardrail decision with the value and threshold it was compared with.
+         */
+        GuardrailDecisionItem: {
+            /**
+             * Action
+             * @enum {string}
+             */
+            action: "alert" | "block_entry" | "close_position";
+            /** Attempt Id */
+            attempt_id?: string | null;
+            /** Evaluated At */
+            evaluated_at: string;
+            /** Exchange */
+            exchange?: string | null;
+            /**
+             * Guardrail
+             * @enum {string}
+             */
+            guardrail: "margin" | "adl" | "funding_flip" | "spread_expansion" | "max_open_positions" | "max_pair_exposure" | "max_memecoin_exposure";
+            /** Observed */
+            observed?: number | null;
+            /** Reason */
+            reason: string;
+            /**
+             * Severity
+             * @enum {string}
+             */
+            severity: "info" | "warning" | "critical";
+            /** Symbol */
+            symbol?: string | null;
+            /** Threshold */
+            threshold?: number | null;
+        };
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
+        };
+        /**
+         * HazardBucket
+         * @description Life-table hazard: events per second at risk inside [start_s, end_s).
+         */
+        HazardBucket: {
+            /** At Risk */
+            at_risk: number;
+            /** Censored */
+            censored: number;
+            /** End S */
+            end_s: number;
+            /** Events */
+            events: number;
+            /** Hazard Per Hour */
+            hazard_per_hour: number;
+            /** Start S */
+            start_s: number;
+        };
+        /** LegItem */
+        LegItem: {
+            /** Borrow Rate */
+            borrow_rate?: number | null;
+            /** Fee Maker */
+            fee_maker?: number | null;
+            /** Fee Taker */
+            fee_taker?: number | null;
+            /** Funding Rate */
+            funding_rate?: number | null;
+            /** Index Price */
+            index_price?: string | null;
+            /**
+             * Instrument Kind
+             * @enum {string}
+             */
+            instrument_kind: "perp" | "spot" | "future";
+            /** Margin Mode */
+            margin_mode?: ("isolated" | "cross" | "unknown") | null;
+            /** Mark Price */
+            mark_price?: string | null;
+            /** Normalized Symbol */
+            normalized_symbol: string;
+            /** Quote Asset */
+            quote_asset?: string | null;
+            /** Settlement Ccy */
+            settlement_ccy?: string | null;
+            /**
+             * Side
+             * @enum {string}
+             */
+            side: "long" | "short";
+            /** Venue */
+            venue: string;
+            /** Venue Native Symbol */
+            venue_native_symbol?: string | null;
+        };
+        /** MicrostructureSnapshotItem */
+        MicrostructureSnapshotItem: {
+            /** Best Ask */
+            best_ask?: string | null;
+            /** Best Bid */
+            best_bid?: string | null;
+            /** Depth Band 10Bps Usd */
+            depth_band_10bps_usd?: number | null;
+            /** Depth Band 20Bps Usd */
+            depth_band_20bps_usd?: number | null;
+            /** Depth Band 5Bps Usd */
+            depth_band_5bps_usd?: number | null;
+            /**
+             * Depth Source
+             * @enum {string}
+             */
+            depth_source: "real_ws" | "real_rest" | "derived" | "config" | "unavailable";
+            /**
+             * Fee Source
+             * @enum {string}
+             */
+            fee_source: "real_ws" | "real_rest" | "derived" | "config" | "unavailable";
+            /** Imbalance */
+            imbalance?: number | null;
+            /** Mid */
+            mid?: string | null;
+            /**
+             * Price Source
+             * @enum {string}
+             */
+            price_source: "real_ws" | "real_rest" | "derived" | "config" | "unavailable";
+            /** Quality */
+            quality?: ("A" | "B" | "C" | "D") | null;
+            /** Spread Bps */
+            spread_bps?: number | null;
+        };
+        /** MigrationParityArtifactItem */
+        MigrationParityArtifactItem: {
+            /** Attempt Id */
+            attempt_id: string;
+            /** Diffs */
+            diffs?: components["schemas"]["MigrationParityDiffItem"][];
+            /**
+             * Evaluation Status
+             * @enum {string}
+             */
+            evaluation_status: "evaluated" | "not_evaluated";
+            /** Generated At */
+            generated_at: string;
+            /** Joinable */
+            joinable: boolean;
+            /** Legacy Conflict Count */
+            legacy_conflict_count: number;
+            /** Legacy Event Count */
+            legacy_event_count: number;
+            /**
+             * Parity Status
+             * @enum {string}
+             */
+            parity_status: "pass" | "watching" | "fail" | "not_evaluated";
+            /** Schema Version */
+            schema_version: string;
+            /** Shadow Conflict Count */
+            shadow_conflict_count: number;
+            /** Shadow Correlation Group Id */
+            shadow_correlation_group_id?: string | null;
+            /** Shadow Correlation Version */
+            shadow_correlation_version: string;
+            /** Shadow Event Count */
+            shadow_event_count: number;
+        };
+        /** MigrationParityArtifactListResponse */
+        MigrationParityArtifactListResponse: {
+            /** Count */
+            count: number;
+            /** Items */
+            items?: components["schemas"]["MigrationParityArtifactItem"][];
+        };
+        /** MigrationParityDiffItem */
+        MigrationParityDiffItem: {
+            /** Code */
+            code: string;
+            /** Dimension */
+            dimension: string;
+            /** Legacy Value */
+            legacy_value?: string | null;
+            /** Message */
+            message: string;
+            /**
+             * Severity
+             * @enum {string}
+             */
+            severity: "ok" | "watching" | "blocked";
+            /** Shadow Value */
+            shadow_value?: string | null;
+        };
+        /** MigrationParityReportResponse */
+        MigrationParityReportResponse: {
+            /** Attempts Analyzed */
+            attempts_analyzed: number;
+            /** Generated At */
+            generated_at: string;
+            /** Items */
+            items?: components["schemas"]["MigrationParityArtifactItem"][];
+            /**
+             * Not Evaluated Count
+             * @default 0
+             */
+            not_evaluated_count: number;
+            /** Parity Passed */
+            parity_passed: boolean;
+            /** Reason Counts */
+            reason_counts?: {
+                [key: string]: number;
+            };
+            /** Schema Version */
+            schema_version: string;
+            severity_counts?: components["schemas"]["MigrationParitySeverityCountsItem"];
+            /** Window End */
+            window_end: string;
+            /** Window Start */
+            window_start: string;
+        };
+        /** MigrationParitySeverityCountsItem */
+        MigrationParitySeverityCountsItem: {
+            /**
+             * Blocked
+             * @default 0
+             */
+            blocked: number;
+            /**
+             * Ok
+             * @default 0
+             */
+            ok: number;
+            /**
+             * Watching
+             * @default 0
+             */
+            watching: number;
         };
         /** OpportunitiesResponse */
         OpportunitiesResponse: {
@@ -1024,9 +2299,9 @@ export interface components {
             correlated_with?: string[];
             /** Depth Quality */
             depth_quality?: ("A" | "B" | "C" | "D") | null;
-            /** Depth Source By Exchange */
-            depth_source_by_exchange?: {
-                [key: string]: "real" | "none";
+            /** Depth Source State By Exchange */
+            depth_source_state_by_exchange?: {
+                [key: string]: "real_ws" | "real_rest" | "derived" | "config" | "unavailable";
             };
             /** Effective Hold Hours */
             effective_hold_hours?: number | null;
@@ -1034,11 +2309,13 @@ export interface components {
             effective_taker_fee_by_exchange?: {
                 [key: string]: number;
             };
+            /** Execution Adjusted Score Bps */
+            execution_adjusted_score_bps: number;
             /** Fee Impact Bps */
             fee_impact_bps: number;
-            /** Fee Source By Exchange */
-            fee_source_by_exchange?: {
-                [key: string]: "real" | "config";
+            /** Fee Source State By Exchange */
+            fee_source_state_by_exchange?: {
+                [key: string]: "real_ws" | "real_rest" | "derived" | "config" | "unavailable";
             };
             /** Funding Diff Apr */
             funding_diff_apr: number;
@@ -1059,40 +2336,61 @@ export interface components {
             historical_win_rate?: number | null;
             /** Hours To Breakeven */
             hours_to_breakeven?: number | null;
+            /** Legs */
+            legs?: components["schemas"]["LegItem"][];
             /** Liquidity Tier */
             liquidity_tier?: ("H" | "M" | "L") | null;
-            /** Long Exchange */
-            long_exchange: string;
             long_forecast?: components["schemas"]["FundingForecastItem"] | null;
             /** Long Hours To Next Funding */
             long_hours_to_next_funding?: number | null;
             /** Long Rate Apr */
             long_rate_apr: number;
+            /** Microstructure By Exchange */
+            microstructure_by_exchange?: {
+                [key: string]: components["schemas"]["MicrostructureSnapshotItem"];
+            };
             /** Min Profitable Hours */
             min_profitable_hours?: number | null;
+            /**
+             * Negative Funding Penalty Bps
+             * @default 0
+             */
+            negative_funding_penalty_bps: number;
             /** Persistence Hours */
             persistence_hours?: number | null;
             /** Reasons */
             reasons?: components["schemas"]["ReasonItem"][];
             /** Recommended Size Usd */
             recommended_size_usd?: number | null;
-            /** Short Exchange */
-            short_exchange: string;
             short_forecast?: components["schemas"]["FundingForecastItem"] | null;
             /** Short Hours To Next Funding */
             short_hours_to_next_funding?: number | null;
             /** Short Rate Apr */
             short_rate_apr: number;
+            /** Signal Score Bps */
+            signal_score_bps: number;
             /**
              * Slippage Impact Bps
              * @default 0
              */
             slippage_impact_bps: number;
             /**
+             * Source Penalty Bps
+             * @default 0
+             */
+            source_penalty_bps: number;
+            /**
              * Status
              * @enum {string}
              */
             status: "ready" | "watching" | "blocked";
+            /** Strategy Profile Id */
+            strategy_profile_id: string;
+            /**
+             * Strategy Type
+             * @enum {string}
+             */
+            strategy_type: "funding_arbitrage" | "basis_convergence" | "cash_and_carry";
             /** Symbol */
             symbol: string;
             /**
@@ -1101,11 +2399,328 @@ export interface components {
              */
             total_cost_bps: number;
         };
+        /** PersistenceForecastItem */
+        PersistenceForecastItem: {
+            /** Age S */
+            age_s: number;
+            /**
+             * Episodes
+             * @default 0
+             */
+            episodes: number;
+            /** Group */
+            group?: string | null;
+            /** Long Exchange */
+            long_exchange: string;
+            /** Median Remaining S */
+            median_remaining_s?: number | null;
+            /** Score Bps */
+            score_bps: number;
+            /** Short Exchange */
+            short_exchange: string;
+            /**
+             * Strategy Type
+             * @enum {string}
+             */
+            strategy_type: "funding_arbitrage" | "basis_convergence" | "cash_and_carry";
+            /** Survival At Age */
+            survival_at_age?: number | null;
+            /** Survive Probability */
+            survive_probability?: {
+                [key: string]: number;
+            };
+            /** Symbol */
+            symbol: string;
+        };
+        /** PersistenceForecastResponse */
+        PersistenceForecastResponse: {
+            /** Count */
+            count: number;
+            /** Generated At */
+            generated_at: string;
+            /** Items */
+            items?: components["schemas"]["PersistenceForecastItem"][];
+        };
+        /** PositionAccountItem */
+        PositionAccountItem: {
+            /** Available */
+            available?: string | null;
+            /** Equity */
+            equity?: string | null;
+            /** Error */
+            error?: string | null;
+            /** Free Margin Pct */
+            free_margin_pct?: number | null;
+        };
+        /** PositionSnapshotItem */
+        PositionSnapshotItem: {
+            /** Age S */
+            age_s: number;
+            /** Attempt Id */
+            attempt_id: string;
+            /** Basis Bps */
+            basis_bps?: number | null;
+            /** Funding Accrued Usd */
+            funding_accrued_usd: number;
+            /** Health Flags */
+            health_flags?: string[];
+            /** Long Entry Price */
+            long_entry_price: string;
+            /** Long Exchange */
+            long_exchange: string;
+            /** Long Funding Apr */
+            long_funding_apr?: number | null;
+            /** Long Mark */
+            long_mark?: string | null;
+            /** Long Open Quantity */
+            long_open_quantity: string;
+            /** Net Funding Apr */
+            net_funding_apr?: number | null;
+            /** Net Pnl Usd */
+            net_pnl_usd: number;
+            /** Notional Usd */
+            notional_usd: number;
+            /** Opened At */
+            opened_at: string;
+            /** Realized Pnl Usd */
+            realized_pnl_usd: number;
+            /** Short Entry Price */
+            short_entry_price: string;
+            /** Short Exchange */
+            short_exchange: string;
+            /** Short Funding Apr */
+            short_funding_apr?: number | null;
+            /** Short Mark */
+            short_mark?: string | null;
+            /** Short Open Quantity */
+            short_open_quantity: string;
+            /** Status */
+            status: string;
+            /** Symbol */
+            symbol: string;
+            /** Unrealized Pnl Usd */
+            unrealized_pnl_usd: number;
+            /** Updated At */
+            updated_at: string;
+        };
+        /**
+         * PositionsResponse
+         * @description `GET /positions`: the latest monitor snapshot of every open pair.
+         */
+        PositionsResponse: {
+            /** Accounts */
+            accounts?: {
+                [key: string]: components["schemas"]["PositionAccountItem"];
+            };
+            /** Count */
+            count: number;
+            /**
+             * Funding Accrued Usd
+             * @default 0
+             */
+            funding_accrued_usd: number;
+            /**
+             * Net Pnl Usd
+             * @default 0
+             */
+            net_pnl_usd: number;
+            /**
+             * Notional Usd
+             * @default 0
+             */
+            notional_usd: number;
+            /** Positions */
+            positions?: components["schemas"]["PositionSnapshotItem"][];
+            /**
+             * Realized Pnl Usd
+             * @default 0
+             */
+            realized_pnl_usd: number;
+            /**
+             * Unrealized Pnl Usd
+             * @default 0
+             */
+            unrealized_pnl_usd: number;
+            /** Updated At */
+            updated_at?: string | null;
+        };
+        /** PreflightParityArtifactItem */
+        PreflightParityArtifactItem: {
+            /** Artifact Id */
+            artifact_id: string;
+            /** Diffs */
+            diffs?: components["schemas"]["PreflightParityDiffItem"][];
+            /**
+             * Evaluation Status
+             * @enum {string}
+             */
+            evaluation_status: "evaluated" | "not_evaluated";
+            /** Generated At */
+            generated_at: string;
+            /** Legacy Blocker Codes */
+            legacy_blocker_codes?: string[];
+            /** Legacy Candidate Status */
+            legacy_candidate_status?: string | null;
+            /** Legacy Candidate Symbol */
+            legacy_candidate_symbol?: string | null;
+            /**
+             * Legacy Decision
+             * @enum {string}
+             */
+            legacy_decision: "ready" | "watching" | "blocked";
+            /** Legacy Gate Reason */
+            legacy_gate_reason?: string | null;
+            /** Legacy Payload Hash */
+            legacy_payload_hash: string;
+            /**
+             * Parity Status
+             * @enum {string}
+             */
+            parity_status: "pass" | "watching" | "fail" | "not_evaluated";
+            /** Reason Groups */
+            reason_groups?: {
+                [key: string]: number;
+            };
+            /** Schema Version */
+            schema_version: string;
+            /** Shadow Blocker Codes */
+            shadow_blocker_codes?: string[];
+            /** Shadow Candidate Status */
+            shadow_candidate_status?: string | null;
+            /** Shadow Candidate Symbol */
+            shadow_candidate_symbol?: string | null;
+            /** Shadow Decision */
+            shadow_decision?: ("ready" | "watching" | "blocked") | null;
+            /** Shadow Gate Reason */
+            shadow_gate_reason?: string | null;
+            /** Shadow Payload Hash */
+            shadow_payload_hash?: string | null;
+            /** Symbol Filter */
+            symbol_filter?: string | null;
+        };
+        /** PreflightParityArtifactListResponse */
+        PreflightParityArtifactListResponse: {
+            /** Count */
+            count: number;
+            /** Items */
+            items?: components["schemas"]["PreflightParityArtifactItem"][];
+        };
+        /** PreflightParityDiffItem */
+        PreflightParityDiffItem: {
+            /** Code */
+            code: string;
+            /**
+             * Group
+             * @enum {string}
+             */
+            group: "decision" | "gate" | "blockers" | "candidate";
+            /** Legacy Value */
+            legacy_value?: string | null;
+            /** Message */
+            message: string;
+            /**
+             * Severity
+             * @enum {string}
+             */
+            severity: "ok" | "watching" | "blocked";
+            /** Shadow Value */
+            shadow_value?: string | null;
+        };
+        /** PreflightParityPromotionPolicyItem */
+        PreflightParityPromotionPolicyItem: {
+            /** Policy Hash */
+            policy_hash: string;
+            /** Policy Schema Version */
+            policy_schema_version: string;
+            /** Policy Version */
+            policy_version: string;
+            /** Thresholds */
+            thresholds?: {
+                [key: string]: number;
+            };
+        };
+        /** PreflightParityPromotionRecommendationItem */
+        PreflightParityPromotionRecommendationItem: {
+            /**
+             * Decision
+             * @enum {string}
+             */
+            decision: "pass" | "fail";
+            /** Evaluated At */
+            evaluated_at: string;
+            /** Metrics */
+            metrics?: {
+                [key: string]: number;
+            };
+            policy: components["schemas"]["PreflightParityPromotionPolicyItem"];
+            /** Reasons */
+            reasons?: string[];
+        };
+        /** PreflightParityReportResponse */
+        PreflightParityReportResponse: {
+            /** Artifacts Analyzed */
+            artifacts_analyzed: number;
+            /** Generated At */
+            generated_at: string;
+            /** Items */
+            items?: components["schemas"]["PreflightParityArtifactItem"][];
+            /**
+             * Not Evaluated Count
+             * @default 0
+             */
+            not_evaluated_count: number;
+            /** Parity Passed */
+            parity_passed: boolean;
+            promotion_recommendation?: components["schemas"]["PreflightParityPromotionRecommendationItem"] | null;
+            /** Reason Counts */
+            reason_counts?: {
+                [key: string]: number;
+            };
+            /** Reason Group Counts */
+            reason_group_counts?: {
+                [key: string]: number;
+            };
+            /** Schema Version */
+            schema_version: string;
+            severity_counts?: components["schemas"]["PreflightParitySeverityCountsItem"];
+            /** Window End */
+            window_end: string;
+            /** Window Start */
+            window_start: string;
+        };
+        /** PreflightParitySeverityCountsItem */
+        PreflightParitySeverityCountsItem: {
+            /**
+             * Blocked
+             * @default 0
+             */
+            blocked: number;
+            /**
+             * Ok
+             * @default 0
+             */
+            ok: number;
+            /**
+             * Watching
+             * @default 0
+             */
+            watching: number;
+        };
+        /** PreflightTrustDiagnosticsItem */
+        PreflightTrustDiagnosticsItem: {
+            confidence_distribution?: components["schemas"]["TrustConfidenceDistributionItem"];
+            /** Fallback Risk By Exchange */
+            fallback_risk_by_exchange?: {
+                [key: string]: components["schemas"]["TrustExchangeFallbackRiskItem"];
+            };
+            fallback_risk_counters?: components["schemas"]["TrustFallbackRiskCountersItem"];
+            provenance_coverage?: components["schemas"]["TrustProvenanceCoverageItem"];
+        };
         /**
          * ReasonCode
          * @enum {string}
          */
-        ReasonCode: "persistence_insufficient" | "historical_win_rate_low" | "break_even_window" | "score_below_min" | "funding_flips" | "basis_limit" | "basis_trend_unstable" | "basis_divergence_hard" | "basis_divergence_window" | "funding_timing_asymmetry" | "funding_unstable" | "funding_trend_thin_edge" | "stale_data" | "real_depth_unavailable" | "depth_quality_below_min" | "real_fee_unavailable" | "margin_mode_unknown" | "adl_limit" | "margin_mode_cross" | "anti_churn_cooldown" | "correlation_limit";
+        ReasonCode: "persistence_insufficient" | "historical_win_rate_low" | "historical_win_rate_unavailable" | "break_even_window" | "score_below_min" | "funding_flips" | "basis_limit" | "basis_trend_unstable" | "basis_divergence_hard" | "basis_divergence_window" | "funding_timing_asymmetry" | "funding_unstable" | "funding_trend_thin_edge" | "stale_data" | "real_depth_unavailable" | "depth_quality_below_min" | "real_fee_unavailable" | "margin_mode_unknown" | "adl_limit" | "margin_mode_cross" | "anti_churn_cooldown" | "correlation_limit";
         /** ReasonItem */
         ReasonItem: {
             code: components["schemas"]["ReasonCode"];
@@ -1116,6 +2731,301 @@ export interface components {
              * @enum {string}
              */
             severity: "watching" | "blocked";
+        };
+        /**
+         * RiskGuardrailsResponse
+         * @description `GET /risk/guardrails`: the status summary plus thresholds and close history.
+         */
+        RiskGuardrailsResponse: {
+            /** Account Sources */
+            account_sources?: string[];
+            /** Blocking Guardrails */
+            blocking_guardrails?: ("margin" | "adl" | "funding_flip" | "spread_expansion" | "max_open_positions" | "max_pair_exposure" | "max_memecoin_exposure")[];
+            /** Close Records */
+            close_records?: components["schemas"]["GuardrailCloseRecordItem"][];
+            /** Closed Attempt Ids */
+            closed_attempt_ids?: string[];
+            /**
+             * Closed Attempts
+             * @default 0
+             */
+            closed_attempts: number;
+            /** Decision Counts */
+            decision_counts?: {
+                [key: string]: number;
+            };
+            /** Decisions */
+            decisions?: components["schemas"]["GuardrailDecisionItem"][];
+            /**
+             * Entries Blocked
+             * @default false
+             */
+            entries_blocked: boolean;
+            /** Entry Blocks By Guardrail */
+            entry_blocks_by_guardrail?: {
+                [key: string]: number;
+            };
+            /**
+             * Entry Blocks Total
+             * @default 0
+             */
+            entry_blocks_total: number;
+            last_close?: components["schemas"]["GuardrailCloseRecordItem"] | null;
+            last_entry_block?: components["schemas"]["GuardrailDecisionItem"] | null;
+            /** Last Error */
+            last_error?: string | null;
+            /** Last Evaluated At */
+            last_evaluated_at?: string | null;
+            /**
+             * Monitored Positions
+             * @default 0
+             */
+            monitored_positions: number;
+            /**
+             * Recent Close Failures
+             * @default 0
+             */
+            recent_close_failures: number;
+            /**
+             * Recent Closes
+             * @default 0
+             */
+            recent_closes: number;
+            /** Thresholds */
+            thresholds?: {
+                [key: string]: number | string;
+            };
+        };
+        /** SnapshotContinuityResponse */
+        SnapshotContinuityResponse: {
+            /** Distinct Timestamps */
+            distinct_timestamps: number;
+            /** Exchanges Covered */
+            exchanges_covered: number;
+            /** Expected Interval S */
+            expected_interval_s: number;
+            /** Gap Count */
+            gap_count: number;
+            /** Generated At */
+            generated_at: string;
+            /** Largest Gap S */
+            largest_gap_s: number;
+            /** Last Pruned At */
+            last_pruned_at?: string | null;
+            /** Last Pruned Rows */
+            last_pruned_rows: number;
+            /** Last Recovered At */
+            last_recovered_at?: string | null;
+            /** Last Recovery Duration Ms */
+            last_recovery_duration_ms?: number | null;
+            /**
+             * Last Recovery Scanned Rows
+             * @default 0
+             */
+            last_recovery_scanned_rows: number;
+            /** Last Write At */
+            last_write_at?: string | null;
+            /** Last Write Error */
+            last_write_error?: string | null;
+            /** Oldest Retained At */
+            oldest_retained_at?: string | null;
+            /** Pruned Rows Total */
+            pruned_rows_total: number;
+            /** Recovered Rows */
+            recovered_rows: number;
+            /** Recovered Symbols */
+            recovered_symbols: number;
+            /**
+             * Recovery Attempted
+             * @default false
+             */
+            recovery_attempted: boolean;
+            /**
+             * Recovery Max Rows
+             * @default 0
+             */
+            recovery_max_rows: number;
+            /**
+             * Recovery Result
+             * @default not_attempted
+             * @enum {string}
+             */
+            recovery_result: "not_attempted" | "completed" | "failed" | "recovery_skipped_missing_schema" | "recovery_skipped_incompatible_schema";
+            /** Retention Days */
+            retention_days: number;
+            /** Rows Total */
+            rows_total: number;
+            /** Symbols Covered */
+            symbols_covered: number;
+            /** Window End At */
+            window_end_at?: string | null;
+            /** Window Start At */
+            window_start_at?: string | null;
+            /** Write Failures */
+            write_failures: number;
+        };
+        /**
+         * StatusAdapterRolloutDiagnostics
+         * @description Staged venue/order-type rollout of the Nautilus adapter (issue #171).
+         */
+        StatusAdapterRolloutDiagnostics: {
+            /**
+             * Active Step
+             * @default S0
+             */
+            active_step: string;
+            /** Detail */
+            detail?: string | null;
+            /** Excluded Venues */
+            excluded_venues?: string[];
+            /** Ledger Error */
+            ledger_error?: string | null;
+            /** Ledger Steps Passed */
+            ledger_steps_passed?: string[];
+            /** Order Types */
+            order_types?: string[];
+            /**
+             * Plan Version
+             * @default
+             */
+            plan_version: string;
+            /**
+             * Reason
+             * @default active
+             * @enum {string}
+             */
+            reason: "active" | "unknown_step" | "gate_missing" | "capability_missing";
+            /**
+             * Requested Step
+             * @default S0
+             */
+            requested_step: string;
+            /** Venues */
+            venues?: string[];
+        };
+        /**
+         * StatusAutoEntryDiagnostics
+         * @description Rule-based auto-entry (issue #193). `global_blockers` stopped every entry last pass.
+         */
+        StatusAutoEntryDiagnostics: {
+            /**
+             * Enabled
+             * @default false
+             */
+            enabled: boolean;
+            /**
+             * Entries Total
+             * @default 0
+             */
+            entries_total: number;
+            /**
+             * Entry Failures Total
+             * @default 0
+             */
+            entry_failures_total: number;
+            /** Global Blockers */
+            global_blockers?: string[];
+            /** Last Entry At */
+            last_entry_at?: string | null;
+            /** Last Entry Outcome */
+            last_entry_outcome?: string | null;
+            /** Last Entry Symbol */
+            last_entry_symbol?: string | null;
+            /** Last Pass Skip Reasons */
+            last_pass_skip_reasons?: {
+                [key: string]: number;
+            };
+            /** Last Run At */
+            last_run_at?: string | null;
+            /**
+             * Paused
+             * @default false
+             */
+            paused: boolean;
+            /** Strategy Types */
+            strategy_types?: string[];
+        };
+        /**
+         * StatusAutoExitDiagnostics
+         * @description Rule-based auto-exit (issue #194): last pass and exits by trigger since start.
+         */
+        StatusAutoExitDiagnostics: {
+            /**
+             * Enabled
+             * @default false
+             */
+            enabled: boolean;
+            /**
+             * Exit Failures Total
+             * @default 0
+             */
+            exit_failures_total: number;
+            /** Exits By Trigger */
+            exits_by_trigger?: {
+                [key: string]: number;
+            };
+            /**
+             * Exits Total
+             * @default 0
+             */
+            exits_total: number;
+            /** Last Exit At */
+            last_exit_at?: string | null;
+            /** Last Exit Outcome */
+            last_exit_outcome?: string | null;
+            /** Last Exit Symbol */
+            last_exit_symbol?: string | null;
+            /** Last Exit Trigger */
+            last_exit_trigger?: ("funding_flip" | "score_decay" | "time_limit") | null;
+            /** Last Run At */
+            last_run_at?: string | null;
+            /**
+             * Pairs Evaluated
+             * @default 0
+             */
+            pairs_evaluated: number;
+            /**
+             * Pairs Exiting
+             * @default 0
+             */
+            pairs_exiting: number;
+            /**
+             * Paused
+             * @default false
+             */
+            paused: boolean;
+        };
+        /** StatusCalibrationLoaderDiagnostics */
+        StatusCalibrationLoaderDiagnostics: {
+            /**
+             * Active Path
+             * @default
+             */
+            active_path: string;
+            /**
+             * Base Path
+             * @default
+             */
+            base_path: string;
+            /** Last Error */
+            last_error?: string | null;
+            /** Loaded Artifact Id */
+            loaded_artifact_id?: string | null;
+            /** Loaded Schema Version */
+            loaded_schema_version?: number | null;
+            /**
+             * Rollback Active
+             * @default false
+             */
+            rollback_active: boolean;
+            /** Rollback Path */
+            rollback_path?: string | null;
+            /**
+             * Status
+             * @default missing
+             * @enum {string}
+             */
+            status: "loaded" | "missing" | "path_error" | "load_failed";
         };
         /** StatusDropCounters */
         StatusDropCounters: {
@@ -1140,10 +3050,30 @@ export interface components {
              */
             basis_divergence_penalty: number;
             /**
+             * Basis Entry Gate
+             * @default 0
+             */
+            basis_entry_gate: number;
+            /**
              * Basis Gate
              * @default 0
              */
             basis_gate: number;
+            /**
+             * Cash And Carry Entry Gate
+             * @default 0
+             */
+            cash_and_carry_entry_gate: number;
+            /**
+             * Cash And Carry Funding Gate
+             * @default 0
+             */
+            cash_and_carry_funding_gate: number;
+            /**
+             * L2 Book Fetch Error
+             * @default 0
+             */
+            l2_book_fetch_error: number;
             /**
              * L2 Book Fetch Error Hyperliquid
              * @default 0
@@ -1251,6 +3181,388 @@ export interface components {
              */
             strict_depth: number;
         };
+        /**
+         * StatusExecutionHydrationDiagnostics
+         * @description Restart reconciliation run (issues #166, #167).
+         *
+         *     `completeness` is `complete` (every seeded attempt evaluated and resolved), `partial`
+         *     (all evaluated, some unresolved), or `incomplete` (some not evaluated: outside the bounded
+         *     window or the run aborted); null before the first run. `pending_attempts` =
+         *     `unresolved_attempts` + `skipped_attempts` is what blocks new entries.
+         */
+        StatusExecutionHydrationDiagnostics: {
+            /**
+             * Completed
+             * @default false
+             */
+            completed: boolean;
+            /** Completeness */
+            completeness?: ("complete" | "partial" | "incomplete") | null;
+            /**
+             * Conflicts Total
+             * @default 0
+             */
+            conflicts_total: number;
+            /** Duration Ms */
+            duration_ms?: number | null;
+            /** Error */
+            error?: string | null;
+            /**
+             * Evaluated Attempts
+             * @default 0
+             */
+            evaluated_attempts: number;
+            /**
+             * Hydrated Attempts
+             * @default 0
+             */
+            hydrated_attempts: number;
+            /** Last Run At */
+            last_run_at?: string | null;
+            /**
+             * Pending Attempts
+             * @default 0
+             */
+            pending_attempts: number;
+            /**
+             * Seed Attempts
+             * @default 0
+             */
+            seed_attempts: number;
+            /**
+             * Skipped Attempts
+             * @default 0
+             */
+            skipped_attempts: number;
+            /** Skipped By Reason */
+            skipped_by_reason?: {
+                [key: string]: number;
+            };
+            /**
+             * Unresolved Attempts
+             * @default 0
+             */
+            unresolved_attempts: number;
+            /**
+             * Window Lookback S
+             * @default 0
+             */
+            window_lookback_s: number;
+            /**
+             * Window Max Attempts
+             * @default 0
+             */
+            window_max_attempts: number;
+            /** Window Start */
+            window_start?: string | null;
+            /**
+             * Window Time Budget S
+             * @default 0
+             */
+            window_time_budget_s: number;
+        };
+        /** StatusExecutionPersistenceDiagnostics */
+        StatusExecutionPersistenceDiagnostics: {
+            /**
+             * Enabled
+             * @default false
+             */
+            enabled: boolean;
+            /** Last Write Error */
+            last_write_error?: string | null;
+            /**
+             * Restart Open Attempts
+             * @default 0
+             */
+            restart_open_attempts: number;
+            /**
+             * Restart Open Orders
+             * @default 0
+             */
+            restart_open_orders: number;
+            /** Restore Error */
+            restore_error?: string | null;
+            /**
+             * Write Failures
+             * @default 0
+             */
+            write_failures: number;
+        };
+        /** StatusMigrationFallbackDiagnostics */
+        StatusMigrationFallbackDiagnostics: {
+            /**
+             * Adapter Enabled
+             * @default false
+             */
+            adapter_enabled: boolean;
+            adapter_health?: components["schemas"]["StatusNautilusAdapterHealth"];
+            adapter_rollout?: components["schemas"]["StatusAdapterRolloutDiagnostics"];
+            /**
+             * Adapter Selection Reason
+             * @default adapter_disabled
+             * @enum {string}
+             */
+            adapter_selection_reason: "adapter_disabled" | "migration_not_primary" | "dry_run_required" | "adapter_unavailable" | "adapter_fallback" | "venue_out_of_scope" | "selected";
+            /** Adapter Venues */
+            adapter_venues?: string[];
+            /**
+             * Compare Enabled
+             * @default false
+             */
+            compare_enabled: boolean;
+            /**
+             * Enabled
+             * @default false
+             */
+            enabled: boolean;
+            /**
+             * Execution Provider
+             * @default legacy
+             * @enum {string}
+             */
+            execution_provider: "legacy" | "nautilus";
+            /**
+             * Fallback Engaged
+             * @default true
+             */
+            fallback_engaged: boolean;
+            /**
+             * Fallback Policy
+             * @default deny_and_observe
+             * @constant
+             */
+            fallback_policy: "deny_and_observe";
+            /**
+             * Fallback Reason
+             * @default migration_disabled
+             * @enum {string}
+             */
+            fallback_reason: "migration_disabled" | "legacy_only_mode" | "observe_only_mode" | "compare_disabled";
+            /**
+             * Mode
+             * @default legacy_only
+             * @enum {string}
+             */
+            mode: "legacy_only" | "shadow_compare" | "nautilus_primary";
+            /**
+             * Observe Only
+             * @default true
+             */
+            observe_only: boolean;
+            preflight_source?: components["schemas"]["StatusPreflightSourceDiagnostics"];
+        };
+        /**
+         * StatusNautilusAdapterHealth
+         * @description Adapter health fail-safe (issue #164); `fallback` means deny-and-observe is latched.
+         */
+        StatusNautilusAdapterHealth: {
+            /**
+             * Consecutive Faults
+             * @default 0
+             */
+            consecutive_faults: number;
+            /** Fallback Client Order Id */
+            fallback_client_order_id?: string | null;
+            /** Fallback Engaged At */
+            fallback_engaged_at?: string | null;
+            /** Fallback Reason */
+            fallback_reason?: string | null;
+            /** Fallback Trigger */
+            fallback_trigger?: ("consecutive_faults" | "invariant_violation") | null;
+            /** Fault Counts */
+            fault_counts?: {
+                [key: string]: number;
+            };
+            /**
+             * Fault Threshold
+             * @default 3
+             */
+            fault_threshold: number;
+            /** Last Fault */
+            last_fault?: string | null;
+            /**
+             * Resets Total
+             * @default 0
+             */
+            resets_total: number;
+            /**
+             * State
+             * @default healthy
+             * @enum {string}
+             */
+            state: "healthy" | "degraded" | "fallback";
+        };
+        /**
+         * StatusNotificationDiagnostics
+         * @description Alert delivery health. `healthy` is false while any route's last delivery failed.
+         */
+        StatusNotificationDiagnostics: {
+            /** Degraded Routes */
+            degraded_routes?: string[];
+            /**
+             * Enabled
+             * @default false
+             */
+            enabled: boolean;
+            /**
+             * Failed
+             * @default 0
+             */
+            failed: number;
+            /**
+             * Filtered
+             * @default 0
+             */
+            filtered: number;
+            /**
+             * Healthy
+             * @default true
+             */
+            healthy: boolean;
+            /**
+             * Pending
+             * @default 0
+             */
+            pending: number;
+            /** Routes */
+            routes?: {
+                [key: string]: components["schemas"]["StatusNotificationRouteDiagnostics"];
+            };
+            /**
+             * Sent
+             * @default 0
+             */
+            sent: number;
+            /**
+             * Submitted
+             * @default 0
+             */
+            submitted: number;
+            /**
+             * Suppressed
+             * @default 0
+             */
+            suppressed: number;
+        };
+        /** StatusNotificationRouteDiagnostics */
+        StatusNotificationRouteDiagnostics: {
+            /**
+             * Consecutive Failures
+             * @default 0
+             */
+            consecutive_failures: number;
+            /**
+             * Degraded
+             * @default false
+             */
+            degraded: boolean;
+            /**
+             * Failed
+             * @default 0
+             */
+            failed: number;
+            /** Last Error */
+            last_error?: string | null;
+            /** Last Failure At */
+            last_failure_at?: string | null;
+            /** Last Sent At */
+            last_sent_at?: string | null;
+            /**
+             * Retries
+             * @default 0
+             */
+            retries: number;
+            /**
+             * Sent
+             * @default 0
+             */
+            sent: number;
+        };
+        /**
+         * StatusPositionMonitorDiagnostics
+         * @description Position monitor summary (issue #192); `today_*` are the current UTC day so far.
+         */
+        StatusPositionMonitorDiagnostics: {
+            /** Last Error */
+            last_error?: string | null;
+            /** Last Run At */
+            last_run_at?: string | null;
+            /**
+             * Ledger Write Failures
+             * @default 0
+             */
+            ledger_write_failures: number;
+            /**
+             * Notional Usd
+             * @default 0
+             */
+            notional_usd: number;
+            /**
+             * Open Positions
+             * @default 0
+             */
+            open_positions: number;
+            /**
+             * Positions With Flags
+             * @default 0
+             */
+            positions_with_flags: number;
+            /**
+             * Today Funding Pnl Usd
+             * @default 0
+             */
+            today_funding_pnl_usd: number;
+            /**
+             * Today Realized Pnl Usd
+             * @default 0
+             */
+            today_realized_pnl_usd: number;
+            /**
+             * Today Total Pnl Usd
+             * @default 0
+             */
+            today_total_pnl_usd: number;
+            /**
+             * Unrealized Pnl Usd
+             * @default 0
+             */
+            unrealized_pnl_usd: number;
+        };
+        /**
+         * StatusPreflightSourceDiagnostics
+         * @description Preflight source-of-truth cutover (issue #170).
+         */
+        StatusPreflightSourceDiagnostics: {
+            /** Approval Error */
+            approval_error?: string | null;
+            /** Approval Stage */
+            approval_stage?: string | null;
+            /** Canary Symbols */
+            canary_symbols?: string[];
+            /** Last Reason */
+            last_reason?: string | null;
+            /** Last Served By */
+            last_served_by?: ("legacy" | "nautilus") | null;
+            /** Regression At */
+            regression_at?: string | null;
+            /**
+             * Regression Latched
+             * @default false
+             */
+            regression_latched: boolean;
+            /** Regression Reason */
+            regression_reason?: string | null;
+            /**
+             * Requested
+             * @default legacy
+             * @enum {string}
+             */
+            requested: "legacy" | "nautilus_canary" | "nautilus";
+            /** Served Total */
+            served_total?: {
+                [key: string]: number;
+            };
+        };
         /** StatusReasonSeverityCounts */
         StatusReasonSeverityCounts: {
             /**
@@ -1268,6 +3580,8 @@ export interface components {
         StatusResponse: {
             /** Active Exchanges */
             active_exchanges?: string[];
+            auto_entry?: components["schemas"]["StatusAutoEntryDiagnostics"];
+            auto_exit?: components["schemas"]["StatusAutoExitDiagnostics"];
             /**
              * Backtest History Gate Enabled
              * @default false
@@ -1280,6 +3594,8 @@ export interface components {
             backtest_history_pairs: number;
             /** Backtest History Refreshed At */
             backtest_history_refreshed_at?: string | null;
+            calibration_loader?: components["schemas"]["StatusCalibrationLoaderDiagnostics"];
+            correlation_concentration?: components["schemas"]["CorrelationConcentrationItem"];
             /** Exchange Diagnostics */
             exchange_diagnostics?: {
                 [key: string]: components["schemas"]["StatusExchangeDiagnostics"];
@@ -1302,12 +3618,15 @@ export interface components {
              * @default false
              */
             execution_entries_stopped: boolean;
+            execution_gate?: components["schemas"]["ExecutionGatePostureItem"];
+            execution_hydration?: components["schemas"]["StatusExecutionHydrationDiagnostics"];
             /** Execution Last Attempt Id */
             execution_last_attempt_id?: string | null;
             /** Execution Last Attempt Status */
             execution_last_attempt_status?: string | null;
             /** Execution Last Rollback Slippage Bps */
             execution_last_rollback_slippage_bps?: number | null;
+            execution_persistence?: components["schemas"]["StatusExecutionPersistenceDiagnostics"];
             /** Execution Strategy Id */
             execution_strategy_id?: string | null;
             /** Execution Strategy Lock Id */
@@ -1322,13 +3641,21 @@ export interface components {
             last_poll_started_at?: string | null;
             /** Last Updated At */
             last_updated_at?: string | null;
+            migration_fallback?: components["schemas"]["StatusMigrationFallbackDiagnostics"];
+            notifications?: components["schemas"]["StatusNotificationDiagnostics"];
             /** Poll Count Failed */
             poll_count_failed: number;
             /** Poll Count Success */
             poll_count_success: number;
             /** Poll Count Total */
             poll_count_total: number;
+            position_monitor?: components["schemas"]["StatusPositionMonitorDiagnostics"];
+            risk_guardrails?: components["schemas"]["StatusRiskGuardrailsDiagnostics"];
             screener_drop_counters?: components["schemas"]["StatusDropCounters"];
+            /** Screener Drop Counters By Strategy */
+            screener_drop_counters_by_strategy?: {
+                [key: string]: components["schemas"]["StatusDropCounters"];
+            };
             /** Screener Post Cost Candidates */
             screener_post_cost_candidates: number;
             /** Screener Raw Candidates */
@@ -1342,10 +3669,367 @@ export interface components {
             screener_reason_severity_counts?: components["schemas"]["StatusReasonSeverityCounts"];
             /** Screener Validated Candidates */
             screener_validated_candidates: number;
+            snapshot_continuity?: components["schemas"]["StatusSnapshotContinuity"];
             /** Started At */
             started_at: string;
+            trust_diagnostics?: components["schemas"]["StatusTrustDiagnosticsItem"];
             /** Uptime S */
             uptime_s: number;
+            /** Ws Feed Diagnostics */
+            ws_feed_diagnostics?: {
+                [key: string]: components["schemas"]["StatusWsFeedDiagnostics"];
+            };
+        };
+        /**
+         * StatusRiskGuardrailsDiagnostics
+         * @description Guardrail outcomes (issue #189).
+         *
+         *     `decisions` and `entries_blocked` describe the last continuous pass. Entry-block counters
+         *     run since process start; close counters cover the bounded recent close history.
+         */
+        StatusRiskGuardrailsDiagnostics: {
+            /** Account Sources */
+            account_sources?: string[];
+            /** Blocking Guardrails */
+            blocking_guardrails?: ("margin" | "adl" | "funding_flip" | "spread_expansion" | "max_open_positions" | "max_pair_exposure" | "max_memecoin_exposure")[];
+            /**
+             * Closed Attempts
+             * @default 0
+             */
+            closed_attempts: number;
+            /** Decision Counts */
+            decision_counts?: {
+                [key: string]: number;
+            };
+            /** Decisions */
+            decisions?: components["schemas"]["GuardrailDecisionItem"][];
+            /**
+             * Entries Blocked
+             * @default false
+             */
+            entries_blocked: boolean;
+            /** Entry Blocks By Guardrail */
+            entry_blocks_by_guardrail?: {
+                [key: string]: number;
+            };
+            /**
+             * Entry Blocks Total
+             * @default 0
+             */
+            entry_blocks_total: number;
+            last_close?: components["schemas"]["GuardrailCloseRecordItem"] | null;
+            last_entry_block?: components["schemas"]["GuardrailDecisionItem"] | null;
+            /** Last Error */
+            last_error?: string | null;
+            /** Last Evaluated At */
+            last_evaluated_at?: string | null;
+            /**
+             * Monitored Positions
+             * @default 0
+             */
+            monitored_positions: number;
+            /**
+             * Recent Close Failures
+             * @default 0
+             */
+            recent_close_failures: number;
+            /**
+             * Recent Closes
+             * @default 0
+             */
+            recent_closes: number;
+        };
+        /** StatusSnapshotContinuity */
+        StatusSnapshotContinuity: {
+            /**
+             * Enabled
+             * @default false
+             */
+            enabled: boolean;
+            /**
+             * Exchanges Covered
+             * @default 0
+             */
+            exchanges_covered: number;
+            /**
+             * Gap Count
+             * @default 0
+             */
+            gap_count: number;
+            /**
+             * Largest Gap S
+             * @default 0
+             */
+            largest_gap_s: number;
+            /** Last Pruned At */
+            last_pruned_at?: string | null;
+            /** Last Recovered At */
+            last_recovered_at?: string | null;
+            /** Last Recovery Duration Ms */
+            last_recovery_duration_ms?: number | null;
+            /**
+             * Last Recovery Scanned Rows
+             * @default 0
+             */
+            last_recovery_scanned_rows: number;
+            /**
+             * Recover On Startup
+             * @default false
+             */
+            recover_on_startup: boolean;
+            /**
+             * Recovery Attempted
+             * @default false
+             */
+            recovery_attempted: boolean;
+            /**
+             * Recovery Max Rows
+             * @default 0
+             */
+            recovery_max_rows: number;
+            /**
+             * Recovery Result
+             * @default not_attempted
+             * @enum {string}
+             */
+            recovery_result: "not_attempted" | "completed" | "failed" | "recovery_skipped_missing_schema" | "recovery_skipped_incompatible_schema";
+            /**
+             * Recovery Warning
+             * @default false
+             */
+            recovery_warning: boolean;
+            /**
+             * Retention Days
+             * @default 0
+             */
+            retention_days: number;
+            /**
+             * Rows Total
+             * @default 0
+             */
+            rows_total: number;
+            /**
+             * Symbols Covered
+             * @default 0
+             */
+            symbols_covered: number;
+            /**
+             * Write Failures
+             * @default 0
+             */
+            write_failures: number;
+        };
+        /** StatusTrustDiagnosticsItem */
+        StatusTrustDiagnosticsItem: {
+            confidence_distribution?: components["schemas"]["TrustConfidenceDistributionItem"];
+            /** Fallback Risk By Exchange */
+            fallback_risk_by_exchange?: {
+                [key: string]: components["schemas"]["TrustExchangeFallbackRiskItem"];
+            };
+            fallback_risk_counters?: components["schemas"]["TrustFallbackRiskCountersItem"];
+            provenance_coverage?: components["schemas"]["TrustProvenanceCoverageItem"];
+        };
+        /** StatusWsFeedDiagnostics */
+        StatusWsFeedDiagnostics: {
+            /** Connected */
+            connected?: boolean | null;
+            /** Healthy */
+            healthy?: boolean | null;
+            /** Last Message Age S */
+            last_message_age_s?: number | null;
+            /** Last Reconnect At */
+            last_reconnect_at?: string | null;
+            /** Last Reconnect Delay S */
+            last_reconnect_delay_s?: number | null;
+            /**
+             * Reconnect Attempt
+             * @default 0
+             */
+            reconnect_attempt: number;
+            /**
+             * Reconnect Storm Level
+             * @default n/a
+             * @enum {string}
+             */
+            reconnect_storm_level: "ok" | "warn" | "critical" | "n/a";
+            /**
+             * Reconnect Total
+             * @default 0
+             */
+            reconnect_total: number;
+            /**
+             * Reconnect Window S
+             * @default 0
+             */
+            reconnect_window_s: number;
+            /**
+             * Reconnects In Window
+             * @default 0
+             */
+            reconnects_in_window: number;
+        };
+        /**
+         * SurvivalPoint
+         * @description Kaplan-Meier step at time `t_s`; `std_error` is Greenwood's estimate.
+         */
+        SurvivalPoint: {
+            /** At Risk */
+            at_risk: number;
+            /** Censored */
+            censored: number;
+            /** Events */
+            events: number;
+            /** Std Error */
+            std_error: number;
+            /** Survival */
+            survival: number;
+            /** T S */
+            t_s: number;
+        };
+        /** TelegramSessionRequest */
+        TelegramSessionRequest: {
+            /** Init Data */
+            init_data: string;
+        };
+        /** TelegramSessionResponse */
+        TelegramSessionResponse: {
+            /** Expires At */
+            expires_at: string;
+            /** Principal Id */
+            principal_id: string;
+            /** Session Token */
+            session_token: string;
+            /** Ttl S */
+            ttl_s: number;
+        };
+        /** TrustConfidenceDistributionItem */
+        TrustConfidenceDistributionItem: {
+            /**
+             * Blocked
+             * @default 0
+             */
+            blocked: number;
+            /**
+             * Candidate Block
+             * @default 0
+             */
+            candidate_block: number;
+            /**
+             * Candidate Watch
+             * @default 0
+             */
+            candidate_watch: number;
+            /**
+             * Gate Block
+             * @default 0
+             */
+            gate_block: number;
+            /**
+             * Gate Watch
+             * @default 0
+             */
+            gate_watch: number;
+            /**
+             * Ready
+             * @default 0
+             */
+            ready: number;
+            /**
+             * Runtime Block
+             * @default 0
+             */
+            runtime_block: number;
+            /**
+             * Runtime Watch
+             * @default 0
+             */
+            runtime_watch: number;
+            /**
+             * Watching
+             * @default 0
+             */
+            watching: number;
+        };
+        /** TrustExchangeFallbackRiskItem */
+        TrustExchangeFallbackRiskItem: {
+            /**
+             * Missing Calibration
+             * @default 0
+             */
+            missing_calibration: number;
+            /**
+             * Missing Depth
+             * @default 0
+             */
+            missing_depth: number;
+            /**
+             * Missing Fee
+             * @default 0
+             */
+            missing_fee: number;
+            /**
+             * Missing Spread
+             * @default 0
+             */
+            missing_spread: number;
+        };
+        /** TrustFallbackRiskCountersItem */
+        TrustFallbackRiskCountersItem: {
+            /**
+             * Missing Calibration
+             * @default 0
+             */
+            missing_calibration: number;
+            /**
+             * Missing Depth
+             * @default 0
+             */
+            missing_depth: number;
+            /**
+             * Missing Fee
+             * @default 0
+             */
+            missing_fee: number;
+            /**
+             * Missing Spread
+             * @default 0
+             */
+            missing_spread: number;
+        };
+        /** TrustProvenanceCoverageItem */
+        TrustProvenanceCoverageItem: {
+            depth?: components["schemas"]["TrustProvenanceTermCoverageItem"];
+            fee?: components["schemas"]["TrustProvenanceTermCoverageItem"];
+            funding?: components["schemas"]["TrustProvenanceTermCoverageItem"];
+            mark?: components["schemas"]["TrustProvenanceTermCoverageItem"];
+        };
+        /** TrustProvenanceTermCoverageItem */
+        TrustProvenanceTermCoverageItem: {
+            /**
+             * Config
+             * @default 0
+             */
+            config: number;
+            /**
+             * Derived
+             * @default 0
+             */
+            derived: number;
+            /**
+             * Real Rest
+             * @default 0
+             */
+            real_rest: number;
+            /**
+             * Real Ws
+             * @default 0
+             */
+            real_ws: number;
+            /**
+             * Unavailable
+             * @default 0
+             */
+            unavailable: number;
         };
         /** ValidationError */
         ValidationError: {
@@ -1364,6 +4048,8 @@ export interface components {
         WsAuthTicketResponse: {
             /** Expires At */
             expires_at: string;
+            /** Last Reject Reason */
+            last_reject_reason?: ("expired" | "reused") | null;
             /** Ticket */
             ticket: string;
             /** Ttl S */
@@ -1378,6 +4064,154 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    issue_telegram_session_auth_telegram_session_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TelegramSessionRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TelegramSessionResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_automation_overview_automation_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AutomationOverviewResponse"];
+                };
+            };
+        };
+    };
+    post_automation_control_automation_controls_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AutomationControlRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AutomationOverviewResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_auto_entry_decisions_automation_entry_decisions_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AutoEntryDecisionListResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_auto_exit_decisions_automation_exit_decisions_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AutoExitDecisionListResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     get_backtest_gate_backtest_gate_get: {
         parameters: {
             query?: never;
@@ -1566,6 +4400,58 @@ export interface operations {
             };
         };
     };
+    get_backtest_survival_backtest_survival_get: {
+        parameters: {
+            query?: {
+                lookback_days?: number | null;
+                refresh?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BacktestSurvivalResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_persistence_forecast_backtest_survival_forecast_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PersistenceForecastResponse"];
+                };
+            };
+        };
+    };
     get_config_config_get: {
         parameters: {
             query?: never;
@@ -1670,6 +4556,39 @@ export interface operations {
             };
         };
     };
+    close_two_leg_position_execution_close_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExecutionCloseRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExecutionAttemptItem"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     open_two_leg_position_execution_open_post: {
         parameters: {
             query?: never;
@@ -1736,7 +4655,166 @@ export interface operations {
             };
         };
     };
+    list_migration_parity_artifacts_migration_parity_artifacts_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MigrationParityArtifactListResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_migration_parity_report_migration_parity_report_get: {
+        parameters: {
+            query?: {
+                window_s?: number;
+                limit?: number;
+                include_artifacts?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MigrationParityReportResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_migration_preflight_parity_artifacts_migration_preflight_parity_artifacts_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PreflightParityArtifactListResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_migration_preflight_parity_report_migration_preflight_parity_report_get: {
+        parameters: {
+            query?: {
+                window_s?: number;
+                limit?: number;
+                include_artifacts?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PreflightParityReportResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     get_opportunities_opportunities_get: {
+        parameters: {
+            query?: {
+                strategy_type?: ("funding_arbitrage" | "basis_convergence" | "cash_and_carry")[] | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OpportunitiesResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_positions_positions_get: {
         parameters: {
             query?: never;
             header?: never;
@@ -1751,7 +4829,78 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["OpportunitiesResponse"];
+                    "application/json": components["schemas"]["PositionsResponse"];
+                };
+            };
+        };
+    };
+    get_daily_pnl_positions_pnl_daily_get: {
+        parameters: {
+            query?: {
+                days?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DailyPnlResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_risk_guardrails_risk_guardrails_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RiskGuardrailsResponse"];
+                };
+            };
+        };
+    };
+    get_snapshots_continuity_snapshots_continuity_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SnapshotContinuityResponse"];
                 };
             };
         };

@@ -7,12 +7,16 @@ import ExchangeHealthList from "../../components/ExchangeHealthList/ExchangeHeal
 import FloatingRefreshButton from "../../components/FloatingRefreshButton/FloatingRefreshButton";
 import RuntimeKnobsCard from "../../components/RuntimeKnobsCard/RuntimeKnobsCard";
 import PipelineDiagnosticsHint from "../../components/PipelineDiagnosticsHint/PipelineDiagnosticsHint";
+import DeepPipelineDiagnostics from "../../components/DeepPipelineDiagnostics/DeepPipelineDiagnostics";
+import WsFeedReliabilityList from "../../components/WsFeedReliabilityList/WsFeedReliabilityList";
+import RecoveryHealthCard from "../../components/RecoveryHealthCard/RecoveryHealthCard";
 import { useNow } from "../../hooks/useNow";
 import { useTransientFlag } from "../../hooks/useTransientFlag";
 import { getLiveUptimeSeconds } from "../../lib/format";
 import { useConfig } from "../../hooks/useConfig";
 import { POLL_INTERVAL_MS } from "../../api/config";
 import { usePageTitle } from "../../hooks/usePageTitle";
+import WsTransportHealthCard from "../../components/WsTransportHealthCard/WsTransportHealthCard";
 
 const StatusPage = () => {
   usePageTitle("Status");
@@ -55,6 +59,9 @@ const StatusPage = () => {
 
       {data && <PipelineDiagnosticsHint status={data} />}
 
+      <h2 className={styles.sectionTitle}>Live Transport</h2>
+      <WsTransportHealthCard />
+
       {justChecked && <div className={styles.hint}>Already up to date</div>}
 
       {error && <div className={styles.errorBox}>Error: {error}</div>}
@@ -65,6 +72,12 @@ const StatusPage = () => {
           <StatusStatCards status={data} liveUptimeSeconds={liveUptimeSeconds} />
           <h2 className={styles.sectionTitle}>Details</h2>
           <StatusDetailsList status={data} />
+          <h2 className={styles.sectionTitle}>Pipeline Diagnostics</h2>
+          <DeepPipelineDiagnostics status={data} />
+          <h2 className={styles.sectionTitle}>WS Feed Reliability</h2>
+          <WsFeedReliabilityList status={data} />
+          <h2 className={styles.sectionTitle}>Recovery Health</h2>
+          <RecoveryHealthCard status={data} />
           <h2 className={styles.sectionTitle}>Exchange Health</h2>
           <ExchangeHealthList exchangeStatus={data.exchange_last_ok} />
         </>

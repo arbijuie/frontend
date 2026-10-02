@@ -30,7 +30,7 @@ export interface Preset {
   key: ConfigPresetName;
   name: string;
   description: string;
-  values: Record<string, number | boolean>;
+  values: Record<string, number | boolean | string>;
 }
 
 function prettifyPresetName(value: string): string {
@@ -69,6 +69,9 @@ export function findMatchingPreset(config: ConfigResponse, presets: Preset[]): P
           return nearlyEqual(configValue, presetValue);
         }
         if (typeof configValue === "boolean" && typeof presetValue === "boolean") {
+          return configValue === presetValue;
+        }
+        if (typeof configValue === "string" && typeof presetValue === "string") {
           return configValue === presetValue;
         }
         return false;

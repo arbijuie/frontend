@@ -4,10 +4,53 @@
   box-sizing: border-box;
 }
 
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   background: v.$bg-primary;
   color: v.$text-primary;
-  padding-bottom: v.$nav-height;
+  min-height: 100dvh;
+  --app-font-size: clamp(0.93rem, 0.24vw + 0.87rem, 1rem);
+  --app-max-width: 48rem;
+  --app-horizontal-padding: 0.8rem;
+  --app-nav-max-width: 48rem;
+  font-size: var(--app-font-size);
+  padding-bottom: calc(v.$nav-height + env(safe-area-inset-bottom, 0px) + 0.75rem);
   overflow-x: hidden;
+}
+
+@media (max-width: 380px) {
+  body {
+    --app-horizontal-padding: 0.65rem;
+  }
+}
+
+@media (min-width: 700px) {
+  body {
+    --app-max-width: 56rem;
+    --app-horizontal-padding: 0.95rem;
+    --app-nav-max-width: 54rem;
+  }
+}
+
+@media (min-width: 960px) {
+  body {
+    --app-max-width: 64rem;
+    --app-horizontal-padding: 1.25rem;
+    --app-nav-max-width: 60rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  body {
+    --app-max-width: 72rem;
+    --app-horizontal-padding: 1.4rem;
+    --app-nav-max-width: 66rem;
+  }
 }

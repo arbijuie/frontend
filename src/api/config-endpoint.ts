@@ -1,8 +1,8 @@
-import { API_URL, authHeaders } from "./config";
+import { API_URL, authFetch } from "./config";
 import type { ConfigResponse, ConfigUpdateRequest } from "./types";
 
 export async function fetchConfig(): Promise<ConfigResponse> {
-  const res = await fetch(`${API_URL}/config`, { headers: authHeaders() });
+  const res = await authFetch(`${API_URL}/config`);
   if (!res.ok) {
     throw new Error(`GET /config failed: ${res.status}`);
   }
@@ -10,12 +10,9 @@ export async function fetchConfig(): Promise<ConfigResponse> {
 }
 
 export async function patchConfig(payload: ConfigUpdateRequest): Promise<ConfigResponse> {
-  const res = await fetch(`${API_URL}/config`, {
+  const res = await authFetch(`${API_URL}/config`, {
     method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-      ...authHeaders(),
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
 

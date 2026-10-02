@@ -6,8 +6,42 @@ import { type OpportunityItem, TEST_TAKER_FEE_BY_EXCHANGE } from "../../api/type
 function makeItem(): OpportunityItem {
   return {
     symbol: "BTC",
-    long_exchange: "hyperliquid",
-    short_exchange: "lighter",
+    strategy_type: "funding_arbitrage",
+    strategy_profile_id: "baseline-v1",
+    legs: [
+      {
+        instrument_kind: "perp",
+        venue: "hyperliquid",
+        venue_native_symbol: "BTC",
+        normalized_symbol: "BTC",
+        side: "long",
+        mark_price: "100",
+        index_price: "100",
+        funding_rate: 5,
+        borrow_rate: null,
+        fee_taker: 0.035,
+        fee_maker: null,
+        margin_mode: null,
+        settlement_ccy: "USDC",
+        quote_asset: "USDC",
+      },
+      {
+        instrument_kind: "perp",
+        venue: "lighter",
+        venue_native_symbol: "BTC",
+        normalized_symbol: "BTC",
+        side: "short",
+        mark_price: "101",
+        index_price: "101",
+        funding_rate: 20,
+        borrow_rate: null,
+        fee_taker: 0.001,
+        fee_maker: null,
+        margin_mode: null,
+        settlement_ccy: "USDC",
+        quote_asset: "USDC",
+      },
+    ],
     persistence_hours: 2,
     long_rate_apr: 5,
     short_rate_apr: 20,
@@ -17,10 +51,15 @@ function makeItem(): OpportunityItem {
     basis_bonus_bps: 4,
     fee_impact_bps: 2,
     slippage_impact_bps: 1,
+    source_penalty_bps: 0,
     total_cost_bps: 3,
-    depth_source_by_exchange: {
-      hyperliquid: "real",
-      lighter: "real",
+    depth_source_state_by_exchange: {
+      hyperliquid: "real_rest",
+      lighter: "real_rest",
+    },
+    fee_source_state_by_exchange: {
+      hyperliquid: "real_rest",
+      lighter: "real_rest",
     },
     effective_taker_fee_by_exchange: TEST_TAKER_FEE_BY_EXCHANGE,
     long_hours_to_next_funding: 0.5,
@@ -28,9 +67,12 @@ function makeItem(): OpportunityItem {
     funding_timing_asymmetry_hours: 0.3,
     funding_timing_penalty_bps: 0.0,
     basis_expansion_penalty_bps: 0,
+    negative_funding_penalty_bps: 0,
     min_profitable_hours: 10,
     hours_to_breakeven: null,
     effective_hold_hours: 72,
+    signal_score_bps: 16,
+    execution_adjusted_score_bps: 13,
     combined_score: 13,
     long_forecast: null,
     short_forecast: null,
@@ -79,45 +121,234 @@ describe("OpportunityCard", () => {
     expect(screen.getByText(/-1\.00/)).toBeTruthy();
   });
 
-  it('shows historical win rate with closed trade count when available', () => {
+  it("shows historical win rate with closed trade count when available", () => {
     const item = makeItem();
     item.historical_win_rate = 0.5;
     item.historical_closed_trades = 20;
 
-    render(<OpportunityCard item={item} updatedAt={'2026-01-01T00:00:00Z'} now={new Date()} />);
+    render(<OpportunityCard item={item} updatedAt={"2026-01-01T00:00:00Z"} now={new Date()} />);
 
-    fireEvent.click(screen.getByRole('button', { name: /more details/i }));
+    fireEvent.click(screen.getByRole("button", { name: /more details/i }));
 
     expect(screen.getByText(/historical win rate/i)).toBeTruthy();
-    expect(screen.getByText('50% (20 trades)')).toBeTruthy();
+    expect(screen.getByText("50% (20 trades)")).toBeTruthy();
   });
 
-  it('shows a placeholder when no historical win rate is known', () => {
-    render(<OpportunityCard item={makeItem()} updatedAt={'2026-01-01T00:00:00Z'} now={new Date()} />);
+  it("shows a placeholder when no historical win rate is known", () => {
+    render(
+      <OpportunityCard item={makeItem()} updatedAt={"2026-01-01T00:00:00Z"} now={new Date()} />
+    );
 
-    fireEvent.click(screen.getByRole('button', { name: /more details/i }));
+    fireEvent.click(screen.getByRole("button", { name: /more details/i }));
 
     const label = screen.getByText(/historical win rate/i);
-    expect(label.nextElementSibling?.textContent).toBe('—');
+    expect(label.nextElementSibling?.textContent).toBe("—");
   });
 
-  it('lists correlated symbols when the cluster cap recorded them', () => {
+  it("shows source penalty and canonical source states in provenance", () => {
     const item = makeItem();
-    item.correlated_with = ['MEME1', 'MEME2', 'MEME3'];
+    item.source_penalty_bps = 3;
+    item.depth_source_state_by_exchange = {
+      hyperliquid: "real_rest",
+      lighter: "unavailable",
+    };
+    item.fee_source_state_by_exchange = {
+      hyperliquid: "real_rest",
+      lighter: "config",
+    };
 
-    render(<OpportunityCard item={item} updatedAt={'2026-01-01T00:00:00Z'} now={new Date()} />);
+    render(<OpportunityCard item={item} updatedAt={"2026-01-01T00:00:00Z"} now={new Date()} />);
 
-    fireEvent.click(screen.getByRole('button', { name: /more details/i }));
+    fireEvent.click(screen.getByRole("button", { name: /more details/i }));
+    expect(screen.getByText("Total cost (fees + slippage + source penalty)")).toBeTruthy();
+    expect(screen.getByText(/^source penalty$/i)).toBeTruthy();
+
+    fireEvent.click(screen.getByRole("button", { name: /show data provenance/i }));
+
+    expect(screen.getByText("real_rest / unavailable")).toBeTruthy();
+    expect(screen.getByText("real_rest / config")).toBeTruthy();
+  });
+
+  it("shows canonical microstructure values for both legs in provenance", () => {
+    const item = makeItem();
+    item.microstructure_by_exchange = {
+      hyperliquid: {
+        best_ask: "100.20",
+        best_bid: "100.00",
+        mid: "100.10",
+        spread_bps: 2.0,
+        depth_band_5bps_usd: 60000,
+        depth_band_10bps_usd: 120000,
+        depth_band_20bps_usd: 240000,
+        imbalance: 0.1,
+        quality: "A",
+        price_source: "real_rest",
+        depth_source: "real_rest",
+        fee_source: "real_rest",
+      },
+      lighter: {
+        best_ask: "101.40",
+        best_bid: "101.00",
+        mid: "101.20",
+        spread_bps: 3.95,
+        depth_band_5bps_usd: 45000,
+        depth_band_10bps_usd: 90000,
+        depth_band_20bps_usd: 180000,
+        imbalance: -0.05,
+        quality: "B",
+        price_source: "real_ws",
+        depth_source: "real_ws",
+        fee_source: "config",
+      },
+    };
+
+    render(<OpportunityCard item={item} updatedAt={"2026-01-01T00:00:00Z"} now={new Date()} />);
+
+    fireEvent.click(screen.getByRole("button", { name: /more details/i }));
+    fireEvent.click(screen.getByRole("button", { name: /show data provenance/i }));
+
+    expect(screen.getByText("2.00 / 3.95")).toBeTruthy();
+    expect(screen.getByText("120000 / 90000")).toBeTruthy();
+    expect(screen.getByText("240000 / 180000")).toBeTruthy();
+    expect(screen.getByText("100.10 / 101.20")).toBeTruthy();
+    expect(screen.getAllByText("real_rest / real_ws").length).toBeGreaterThanOrEqual(2);
+    expect(screen.getByText("real_rest / config")).toBeTruthy();
+  });
+
+  it("renders unavailable depth bands as placeholders in provenance", () => {
+    const item = makeItem();
+    item.microstructure_by_exchange = {
+      hyperliquid: {
+        best_ask: null,
+        best_bid: null,
+        mid: null,
+        spread_bps: null,
+        depth_band_5bps_usd: null,
+        depth_band_10bps_usd: null,
+        depth_band_20bps_usd: null,
+        imbalance: null,
+        quality: null,
+        price_source: "unavailable",
+        depth_source: "unavailable",
+        fee_source: "config",
+      },
+      lighter: {
+        best_ask: null,
+        best_bid: null,
+        mid: null,
+        spread_bps: null,
+        depth_band_5bps_usd: null,
+        depth_band_10bps_usd: null,
+        depth_band_20bps_usd: null,
+        imbalance: null,
+        quality: null,
+        price_source: "unavailable",
+        depth_source: "unavailable",
+        fee_source: "config",
+      },
+    };
+
+    render(<OpportunityCard item={item} updatedAt={"2026-01-01T00:00:00Z"} now={new Date()} />);
+
+    fireEvent.click(screen.getByRole("button", { name: /more details/i }));
+    fireEvent.click(screen.getByRole("button", { name: /show data provenance/i }));
+
+    expect(screen.getAllByText("— / —").length).toBeGreaterThan(0);
+  });
+
+  it("lists correlated symbols when the cluster cap recorded them", () => {
+    const item = makeItem();
+    item.correlated_with = ["MEME1", "MEME2", "MEME3"];
+
+    render(<OpportunityCard item={item} updatedAt={"2026-01-01T00:00:00Z"} now={new Date()} />);
+
+    fireEvent.click(screen.getByRole("button", { name: /more details/i }));
 
     expect(screen.getByText(/correlated with/i)).toBeTruthy();
-    expect(screen.getByText('MEME1, MEME2, MEME3')).toBeTruthy();
+    expect(screen.getByText("MEME1, MEME2, MEME3")).toBeTruthy();
   });
 
-  it('omits the correlated row when there are no correlated symbols', () => {
-    render(<OpportunityCard item={makeItem()} updatedAt={'2026-01-01T00:00:00Z'} now={new Date()} />);
+  it("omits the correlated row when there are no correlated symbols", () => {
+    render(
+      <OpportunityCard item={makeItem()} updatedAt={"2026-01-01T00:00:00Z"} now={new Date()} />
+    );
 
-    fireEvent.click(screen.getByRole('button', { name: /more details/i }));
+    fireEvent.click(screen.getByRole("button", { name: /more details/i }));
 
     expect(screen.queryByText(/correlated with/i)).toBeNull();
+  });
+
+  it("shows fallback placeholders when risk lens fields are null", () => {
+    const item = makeItem();
+    item.liquidity_tier = null;
+    item.funding_timing_asymmetry_hours = null;
+    item.basis_divergence_hours = null;
+    item.effective_hold_hours = null;
+    item.min_profitable_hours = null;
+
+    render(<OpportunityCard item={item} updatedAt={"2026-01-01T00:00:00Z"} now={new Date()} />);
+
+    fireEvent.click(screen.getByRole("button", { name: /more details/i }));
+
+    expect(screen.getByText("unknown")).toBeTruthy();
+    expect(screen.getByText("n/a (different funding intervals)")).toBeTruthy();
+    expect(screen.getByText("not profitable on funding")).toBeTruthy();
+    expect(screen.getAllByText("not enough data")).toHaveLength(2);
+  });
+
+  it("renders risk lens values when present", () => {
+    const item = makeItem();
+    item.liquidity_tier = "H";
+    item.funding_timing_asymmetry_hours = 2.5;
+    item.basis_divergence_hours = 1.2;
+    item.effective_hold_hours = 48;
+    item.min_profitable_hours = 6;
+
+    render(<OpportunityCard item={item} updatedAt={"2026-01-01T00:00:00Z"} now={new Date()} />);
+
+    fireEvent.click(screen.getByRole("button", { name: /more details/i }));
+
+    expect(screen.getByText("High")).toBeTruthy();
+    expect(screen.getByText("2.5h")).toBeTruthy();
+    expect(screen.getByText("1.2h")).toBeTruthy();
+    expect(screen.getByText("48.0h")).toBeTruthy();
+    expect(screen.getByText("6.0h")).toBeTruthy();
+  });
+
+  it("shows provenance section with effective taker fees after expanding it", () => {
+    const item = makeItem();
+    item.effective_taker_fee_by_exchange = { hyperliquid: 0.00035, lighter: 0.0001 };
+
+    render(<OpportunityCard item={item} updatedAt={"2026-01-01T00:00:00Z"} now={new Date()} />);
+
+    fireEvent.click(screen.getByRole("button", { name: /more details/i }));
+    expect(screen.queryByText("Provenance")).toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: /show data provenance/i }));
+
+    expect(screen.getByText("Provenance")).toBeTruthy();
+    expect(screen.getByText("0.035% / 0.010%")).toBeTruthy();
+  });
+
+  it("shows the Risk Lens section header right after More details", () => {
+    render(
+      <OpportunityCard item={makeItem()} updatedAt={"2026-01-01T00:00:00Z"} now={new Date()} />
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /more details/i }));
+
+    expect(screen.getByText("Risk Lens")).toBeTruthy();
+  });
+
+  it("toggles the provenance button label between show and hide", () => {
+    render(
+      <OpportunityCard item={makeItem()} updatedAt={"2026-01-01T00:00:00Z"} now={new Date()} />
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /more details/i }));
+    expect(screen.getByRole("button", { name: /show data provenance/i })).toBeTruthy();
+
+    fireEvent.click(screen.getByRole("button", { name: /show data provenance/i }));
+    expect(screen.getByRole("button", { name: /hide data provenance/i })).toBeTruthy();
   });
 });

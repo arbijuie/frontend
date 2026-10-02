@@ -1,12 +1,35 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchOpportunities } from "../api/opportunities";
+import {
+  fetchOpportunities,
+  opportunitiesQueryKey,
+  type OpportunityStrategyType,
+} from "../api/opportunities";
 import { POLL_INTERVAL_MS } from "../api/config";
+import { useOpportunitiesTransport } from "./useOpportunitiesTransport";
 
-export function useOpportunities() {
+type UseOpportunitiesOptions = {
+  strategyTypes?: OpportunityStrategyType[];
+};
+
+export function useOpportunities(options?: UseOpportunitiesOptions) {
+  const strategyTypes = options?.strategyTypes;
+  const isFiltered = !!strategyTypes && strategyTypes.length > 0;
+  const {
+    transportState,
+    reconnectAttempt,
+    authRetryAttempt,
+    authStatus,
+    authRetryAfterSeconds,
+    authDetail,
+    retryNow,
+  } = useOpportunitiesTransport();
+  const isLive = transportState === "connected";
+
   const query = useQuery({
-    queryKey: ["opportunities"],
-    queryFn: fetchOpportunities,
-    refetchInterval: POLL_INTERVAL_MS,
+    queryKey: opportunitiesQueryKey({ strategyTypes }),
+    queryFn: () => fetchOpportunities({ strategyTypes }),
+    // Filtered strategy views rely on HTTP polling to avoid cache mixing with WS unfiltered frames.
+    refetchInterval: isLive && !isFiltered ? false : POLL_INTERVAL_MS,
   });
 
   return {
@@ -15,5 +38,12 @@ export function useOpportunities() {
     loading: query.isLoading,
     fetching: query.isFetching,
     refetch: query.refetch,
+    transportState,
+    reconnectAttempt,
+    authRetryAttempt,
+    authStatus,
+    authRetryAfterSeconds,
+    authDetail,
+    retryConnection: retryNow,
   };
 }

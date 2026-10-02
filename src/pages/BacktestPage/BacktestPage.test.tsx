@@ -69,6 +69,11 @@ const mockMetrics = {
   max_drawdown_bps: 30,
   strategy_id: "baseline-v1",
   exit_reasons: { funding_decay: 6, time_stop: 4 },
+  funding_carry_pnl_bps: 138,
+  basis_carry_pnl_bps: 4,
+  entry_cost_bps: 22,
+  entries_by_strategy_type: { funding_arbitrage: 8, basis_convergence: 2 },
+  exits_by_strategy_type: { funding_arbitrage: 7, basis_convergence: 3 },
 };
 
 const mockLock = {
@@ -92,6 +97,11 @@ const mockLockListItem = {
   gate_passed: true,
   total_pnl_bps: 120,
   max_drawdown_bps: 50,
+  funding_carry_pnl_bps: 138,
+  basis_carry_pnl_bps: 4,
+  entry_cost_bps: 22,
+  entries: 10,
+  exits: 10,
 };
 
 describe("BacktestPage", () => {
@@ -187,6 +197,9 @@ describe("BacktestPage", () => {
     await waitFor(() => expect(runReplayMutateAsync).toHaveBeenCalled());
     expect(await screen.findByText("funding_decay")).not.toBeNull();
     expect(await screen.findByText("time_stop")).not.toBeNull();
+    expect(await screen.findByText(/pnl diagnostics/i)).not.toBeNull();
+    expect(await screen.findByText(/funding_arbitrage entries/i)).not.toBeNull();
+    expect(await screen.findByText(/basis_convergence exits/i)).not.toBeNull();
   });
 
   it("error path: 422 shows field-aware error message", async () => {

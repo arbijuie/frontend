@@ -13,6 +13,9 @@ function makeDropCounters(
     apr_cap: 0,
     non_positive_funding_edge: 0,
     basis_gate: 0,
+    basis_entry_gate: 0,
+    cash_and_carry_entry_gate: 0,
+    cash_and_carry_funding_gate: 0,
     min_score: 0,
     basis_bonus_capped: 0,
     adaptive_hold_applied: 0,
@@ -20,6 +23,7 @@ function makeDropCounters(
     strict_depth: 0,
     strict_depth_by_exchange_hyperliquid: 0,
     strict_depth_by_exchange_lighter: 0,
+    l2_book_fetch_error: 0,
     l2_book_fetch_error_hyperliquid: 0,
     missing_real_depth: 0,
     missing_real_depth_hyperliquid: 0,
@@ -148,6 +152,44 @@ describe("PipelineDiagnosticsHint", () => {
     render(<PipelineDiagnosticsHint status={makeStatus({ screener_ready_candidates: 2 })} />);
 
     expect(screen.getByText(/ready opportunities are currently available/i)).toBeTruthy();
+  });
+
+  it("shows warn when correlation concentration blocks preflight decision", () => {
+    render(
+      <PipelineDiagnosticsHint
+        status={makeStatus({
+          screener_ready_candidates: 2,
+          correlation_concentration: {
+            level: "blocked",
+            ready_count: 2,
+            largest_cluster_size: 2,
+            largest_cluster_ratio: 1,
+            largest_cluster_symbols: ["BTC", "ETH"],
+          },
+        })}
+      />
+    );
+
+    expect(screen.getByText(/blocking preflight decision/i)).toBeTruthy();
+  });
+
+  it("shows info when correlation concentration is elevated", () => {
+    render(
+      <PipelineDiagnosticsHint
+        status={makeStatus({
+          screener_ready_candidates: 2,
+          correlation_concentration: {
+            level: "watching",
+            ready_count: 2,
+            largest_cluster_size: 2,
+            largest_cluster_ratio: 1,
+            largest_cluster_symbols: ["BTC", "ETH"],
+          },
+        })}
+      />
+    );
+
+    expect(screen.getByText(/concentration is elevated/i)).toBeTruthy();
   });
 
   it("shows info when candidates are validated but none are ready", () => {

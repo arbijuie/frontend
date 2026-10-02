@@ -1,0 +1,50 @@
+.card {
+  background: v.$bg-card;
+  border: 1px solid v.$border-color;
+  border-radius: 0.75rem;
+  padding: 0.75rem 0.875rem;
+  margin-bottom: 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem;
+}
+
+.feedBlock {
+  border: 1px solid v.$border-color;
+  border-radius: 0.625rem;
+  padding: 0.625rem;
+  background: color-mix(in srgb, v.$bg-card 88%, transparent);
+}
+
+.feedHeader {
+  color: v.$text-primary;
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+  text-transform: capitalize;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  font-size: 0.85rem;
+  padding: 0.25rem 0;
+}
+
+.label {
+  color: v.$text-muted;
+}
+
+.value {
+  color: v.$text-primary;
+  text-align: right;
+}
+
+.empty {
+  background: v.$bg-card;
+  border: 1px solid v.$border-color;
+  border-radius: 0.75rem;
+  padding: 0.75rem 0.875rem;
+  margin-bottom: 1rem;
+  color: v.$text-muted;
+}

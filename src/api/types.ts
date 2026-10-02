@@ -16,7 +16,18 @@ export type OpportunityReasonCode = ApiSchemas["ReasonCode"];
 export type OpportunityReason = ApiSchemas["ReasonItem"];
 export type FundingForecast = _FundingForecastItem;
 export type OpportunityItem = _OpportunityItem;
+export type OpportunityStrategyType = NonNullable<OpportunityItem["strategy_type"]>;
 export type OpportunitiesResponse = ApiSchemas["OpportunitiesResponse"];
+export type SourceState = NonNullable<
+  NonNullable<OpportunityItem["microstructure_by_exchange"]>[string]
+>["price_source"];
+export const SOURCE_STATE_SET: Record<SourceState, true> = {
+  real_ws: true,
+  real_rest: true,
+  derived: true,
+  config: true,
+  unavailable: true,
+};
 
 export type ConfigResponse = ApiSchemas["ConfigResponse"];
 export type ConfigPresetName = Exclude<NonNullable<_ConfigUpdateRequest["preset"]>, null>;
@@ -24,6 +35,9 @@ export type ConfigUpdateRequest = _ConfigUpdateRequest;
 
 export type StatusResponse = ApiSchemas["StatusResponse"];
 export type WsAuthTicketResponse = ApiSchemas["WsAuthTicketResponse"];
+export type TelegramSessionResponse = ApiSchemas["TelegramSessionResponse"];
+export type CorrelationResponse = ApiSchemas["CorrelationResponse"];
+export type ExecutionPreflightResponse = ApiSchemas["ExecutionPreflightResponse"];
 
 export type BacktestSummaryResponse = components["schemas"]["BacktestSummaryResponse"];
 export type BacktestReplayRequest = components["schemas"]["BacktestReplayRequest"];
@@ -40,3 +54,7 @@ export const TEST_TAKER_FEE_BY_EXCHANGE: Record<string, number> = {
   hyperliquid: TEST_HYPERLIQUID_TAKER_FEE,
   lighter: TEST_LIGHTER_TAKER_FEE,
 };
+
+export type AutomationOverviewResponse = ApiSchemas["AutomationOverviewResponse"];
+export type AutomationModeItem = ApiSchemas["AutomationModeItem"];
+export type AutomationControlRequest = ApiSchemas["AutomationControlRequest"];
