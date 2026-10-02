@@ -39,21 +39,15 @@ export function AppShell() {
 
 function App() {
   const hasTelegramContext = hasTelegramWebAppContext();
-  const [authReady, setAuthReady] = useState(Boolean(API_TOKEN));
-  const [authError, setAuthError] = useState<string | null>(() => {
-    if (API_TOKEN) {
-      return null;
-    }
-    return hasTelegramContext ? null : "Open this app from Telegram to authenticate.";
-  });
+  const shouldBootstrapTelegramSession = !API_TOKEN && hasTelegramContext;
+  const [authReady, setAuthReady] = useState(!shouldBootstrapTelegramSession);
+  const [authError, setAuthError] = useState<string | null>(null);
   const [bootstrapAttempt, setBootstrapAttempt] = useState(0);
 
   useEffect(() => {
-    if (API_TOKEN) {
-      return;
-    }
-
-    if (!hasTelegramContext) {
+    if (!shouldBootstrapTelegramSession) {
+      setAuthReady(true);
+      setAuthError(null);
       return;
     }
 
@@ -73,6 +67,12 @@ function App() {
           return;
         }
         if (error instanceof TelegramSessionBootstrapError) {
+          if (error.status === 404) {
+            // Older backends may not expose Telegram session bootstrap yet.
+            setAuthReady(true);
+            setAuthError(null);
+            return;
+          }
           setAuthError(formatTelegramBootstrapErrorForDisplay(error));
           return;
         }
@@ -82,7 +82,7 @@ function App() {
     return () => {
       cancelled = true;
     };
-  }, [bootstrapAttempt, hasTelegramContext]);
+  }, [bootstrapAttempt, shouldBootstrapTelegramSession]);
 
   const retryBootstrap = () => {
     setAuthError(null);
@@ -93,7 +93,7 @@ function App() {
     return (
       <div role="alert">
         <p>{authError}</p>
-        {hasTelegramContext ? <button onClick={retryBootstrap}>Retry</button> : null}
+        {shouldBootstrapTelegramSession ? <button onClick={retryBootstrap}>Retry</button> : null}
       </div>
     );
   }
