@@ -51,7 +51,6 @@ function App() {
 
     let cancelled = false;
     window.Telegram?.WebApp?.ready?.();
-    window.Telegram?.WebApp?.expand?.();
 
     void bootstrapTelegramSession()
       .then(() => {
