@@ -39,8 +39,16 @@ Configure backend endpoint in `.env.local`:
 
 ```bash
 VITE_ARB_API_URL=http://127.0.0.1:8000
+VITE_ARB_WS_URL=
 VITE_ARB_API_TOKEN=
 ```
+
+Notes:
+
+- `VITE_ARB_WS_URL` is optional. When empty, the frontend derives WS URL from `VITE_ARB_API_URL`.
+- `VITE_` values are bundled into browser assets. Treat `VITE_ARB_API_TOKEN` as non-secret in
+  browser threat models, or avoid setting it in public builds.
+- For production builds, use `frontend/.env.production.example` as a template.
 
 ## Navigation
 
