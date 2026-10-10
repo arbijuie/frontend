@@ -1,5 +1,5 @@
 import pageStyles from "../../styles/Page.module.scss";
-import { useState } from "react";
+import { useId, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   useBacktestSummary,
@@ -16,6 +16,7 @@ import BacktestLockList from "../../components/BacktestLockList/BacktestLockList
 import BacktestLockDetail from "../../components/BacktestLockDetail/BacktestLockDetail";
 import FloatingRefreshButton from "../../components/FloatingRefreshButton/FloatingRefreshButton";
 import { ApiValidationError } from "../../lib/api-errors";
+import { tabId, tabPanelId } from "../../lib/tabIds";
 import type { BacktestReplayRequest, BacktestMetrics } from "../../api/types";
 import { usePageTitle } from "../../hooks/usePageTitle";
 
@@ -42,6 +43,7 @@ const BacktestPage = () => {
     loading: gateLoading,
     refetch: refetchGate,
   } = useBacktestGate();
+  const tabsId = useId();
   const runReplay = useRunBacktestReplay();
   const createLock = useCreateBacktestLock();
   const queryClient = useQueryClient();
@@ -105,61 +107,89 @@ const BacktestPage = () => {
   return (
     <div className={pageStyles.page}>
       <h1 className={pageStyles.title}>Backtest</h1>
-      {lastRefreshedAt && (
-        <div className={pageStyles.hint}>Last refreshed {lastRefreshedAt.toLocaleTimeString()}</div>
-      )}
-      <Tabs tabs={TABS} activeKey={activeTab} onChange={setActiveTab} />
+      <div className={pageStyles.hint} role="status">
+        {lastRefreshedAt ? `Last refreshed ${lastRefreshedAt.toLocaleTimeString()}` : ""}
+      </div>
+      <Tabs
+        tabs={TABS}
+        activeKey={activeTab}
+        onChange={setActiveTab}
+        label="Backtest sections"
+        idPrefix={tabsId}
+      />
 
-      {activeTab === "summary" && (
-        <>
-          {summaryError && <div className={pageStyles.errorBox}>Error: {summaryError}</div>}
-          {summaryLoading && !summary && <div>Loading summary...</div>}
-          {summary && (
-            <>
-              <BacktestSummaryCards summary={summary} />
-              {summary.total_snapshots === 0 && (
-                <div className={pageStyles.hint}>
-                  No snapshot data captured yet — results will appear once the backend accumulates
-                  enough runtime history.
-                </div>
-              )}
-            </>
-          )}
-        </>
-      )}
+      <div
+        role="tabpanel"
+        id={tabPanelId(tabsId, activeTab)}
+        aria-labelledby={tabId(tabsId, activeTab)}
+      >
+        {activeTab === "summary" && (
+          <>
+            {summaryError && (
+              <div className={pageStyles.errorBox} role="alert">
+                Error: {summaryError}
+              </div>
+            )}
+            {summaryLoading && !summary && <div role="status">Loading summary...</div>}
+            {summary && (
+              <>
+                <BacktestSummaryCards summary={summary} />
+                {summary.total_snapshots === 0 && (
+                  <div className={pageStyles.hint}>
+                    No snapshot data captured yet — results will appear once the backend accumulates
+                    enough runtime history.
+                  </div>
+                )}
+              </>
+            )}
+          </>
+        )}
 
-      {activeTab === "replay" && (
-        <>
-          <ReplayForm
-            onSubmit={handleRunReplay}
-            submitting={runReplay.isPending}
-            fieldErrors={fieldErrors}
-          />
-          {replayError && <div className={pageStyles.errorBox}>Error: {replayError}</div>}
-          {lockHint && <div className={pageStyles.hint}>{lockHint}</div>}
-          {lastResult && (
-            <ReplayResultPanel
-              metrics={lastResult}
-              usedRequest={lastRequest}
-              onCreateLock={handleCreateLock}
-              creatingLock={createLock.isPending}
-              lockCreated={lockCreatedForResult}
+        {activeTab === "replay" && (
+          <>
+            <ReplayForm
+              onSubmit={handleRunReplay}
+              submitting={runReplay.isPending}
+              fieldErrors={fieldErrors}
             />
-          )}
-        </>
-      )}
+            {replayError && (
+              <div className={pageStyles.errorBox} role="alert">
+                Error: {replayError}
+              </div>
+            )}
+            {lockHint && (
+              <div className={pageStyles.hint} role="status">
+                {lockHint}
+              </div>
+            )}
+            {lastResult && (
+              <ReplayResultPanel
+                metrics={lastResult}
+                usedRequest={lastRequest}
+                onCreateLock={handleCreateLock}
+                creatingLock={createLock.isPending}
+                lockCreated={lockCreatedForResult}
+              />
+            )}
+          </>
+        )}
 
-      {activeTab === "gate" && (
-        <>
-          {gateError && <div className={pageStyles.errorBox}>Error: {gateError}</div>}
-          {gateLoading && !gate && <div>Loading gate status...</div>}
-          {gate && <GateStatusBanner gate={gate} />}
-        </>
-      )}
+        {activeTab === "gate" && (
+          <>
+            {gateError && (
+              <div className={pageStyles.errorBox} role="alert">
+                Error: {gateError}
+              </div>
+            )}
+            {gateLoading && !gate && <div role="status">Loading gate status...</div>}
+            {gate && <GateStatusBanner gate={gate} />}
+          </>
+        )}
 
-      {activeTab === "locks" && <BacktestLockList onSelectLock={handleSelectLock} />}
+        {activeTab === "locks" && <BacktestLockList onSelectLock={handleSelectLock} />}
 
-      {activeTab === "lock-detail" && <BacktestLockDetail lockId={selectedLockId} />}
+        {activeTab === "lock-detail" && <BacktestLockDetail lockId={selectedLockId} />}
+      </div>
 
       <FloatingRefreshButton
         fetching={summaryFetching}

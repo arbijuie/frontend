@@ -46,7 +46,7 @@ function makeOverview(
       exec_enabled: true,
       exec_dry_run: true,
       gate_passed: true,
-      gate_reason: null,
+      gate_reason: "",
       entries_stopped: false,
       consecutive_rollbacks: 0,
       guardrail_entry_blocks: [],

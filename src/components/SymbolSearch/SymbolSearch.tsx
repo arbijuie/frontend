@@ -8,7 +8,9 @@ interface SymbolSearchProps {
 const SymbolSearch = ({ value, onChange }: SymbolSearchProps) => {
   return (
     <div className={styles.wrapper}>
-      <span className={styles.icon}>⌕</span>
+      <span className={styles.icon} aria-hidden="true">
+        ⌕
+      </span>
       <input
         className={styles.input}
         type="text"

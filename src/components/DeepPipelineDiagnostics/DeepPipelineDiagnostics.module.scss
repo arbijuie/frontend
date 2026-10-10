@@ -80,9 +80,13 @@
 }
 
 .label,
-.summaryLabel,
-.heatLabel {
+.summaryLabel {
   color: v.$text-secondary;
+  text-transform: capitalize;
+}
+
+.heatLabel {
+  color: v.$text-primary;
   text-transform: capitalize;
 }
 
@@ -137,6 +141,11 @@
 
 .tableWrap {
   overflow-x: auto;
+
+  &:focus-visible {
+    outline: 2px solid rgba(56, 189, 248, 0.7);
+    outline-offset: 1px;
+  }
 }
 
 .table {

@@ -5,7 +5,7 @@
   position: sticky;
   top: 0;
   background: v.$bg-primary;
-  padding: 0.5rem 0;
+  padding: 0.5rem 0.25rem;
   margin-bottom: 0.5rem;
   z-index: 10;
   scrollbar-width: none;
@@ -28,7 +28,7 @@
 }
 
 .active {
-  background: v.$accent-purple;
+  background: v.$accent-purple-bg;
   color: #fff;
-  border-color: v.$accent-purple;
+  border-color: v.$accent-purple-bg;
 }

@@ -63,8 +63,8 @@ const BacktestLockList = ({ onSelectLock }: BacktestLockListProps) => {
   const [sortKey, setSortKey] = useState<SortKey>(loadSortKey);
   const sortedLocks = useMemo(() => sortLocks(data?.items ?? [], sortKey), [data?.items, sortKey]);
 
-  if (loading) return <div>Loading locks...</div>;
-  if (error) return <div>Error: {error}</div>;
+  if (loading) return <div role="status">Loading locks...</div>;
+  if (error) return <div role="alert">Error: {error}</div>;
   if (!data?.items || data.items.length === 0) {
     return (
       <EmptyState

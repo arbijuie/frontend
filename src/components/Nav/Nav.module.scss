@@ -28,7 +28,6 @@
   text-decoration: none;
   padding: 0.35rem 0.25rem;
   border-bottom: 0.125rem solid transparent;
-  outline: none;
 
   &:hover {
     color: v.$text-secondary;
@@ -36,8 +35,9 @@
 
   &:focus-visible {
     color: v.$text-primary;
-    box-shadow: 0 0 0 0.125rem v.$accent-purple;
-    border-radius: 0.25rem;
+    outline: 0.125rem solid v.$accent-purple;
+    outline-offset: -0.125rem;
+    border-radius: 0.5rem;
   }
 }
 

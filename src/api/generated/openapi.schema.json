@@ -123,14 +123,31 @@
           "conditions": {
             "items": {
               "enum": [
+                "stop_loss",
+                "adverse_spread",
+                "time_limit",
+                "spread_target",
                 "funding_flip",
-                "score_decay",
-                "time_limit"
+                "funding_reversal",
+                "funding_decline",
+                "low_funding",
+                "score_decay"
               ],
               "type": "string"
             },
             "title": "Conditions",
             "type": "array"
+          },
+          "current_basis_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Current Basis Bps"
           },
           "current_score_bps": {
             "anyOf": [
@@ -142,6 +159,17 @@
               }
             ],
             "title": "Current Score Bps"
+          },
+          "entry_basis_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Entry Basis Bps"
           },
           "entry_score_bps": {
             "anyOf": [
@@ -158,9 +186,26 @@
             "title": "Evaluated At",
             "type": "string"
           },
+          "funding_breakeven": {
+            "default": false,
+            "title": "Funding Breakeven",
+            "type": "boolean"
+          },
+          "funding_samples": {
+            "items": {
+              "type": "number"
+            },
+            "title": "Funding Samples",
+            "type": "array"
+          },
           "held_hours": {
             "title": "Held Hours",
             "type": "number"
+          },
+          "min_hold_gated": {
+            "default": false,
+            "title": "Min Hold Gated",
+            "type": "boolean"
           },
           "net_funding_apr": {
             "anyOf": [
@@ -172,6 +217,17 @@
               }
             ],
             "title": "Net Funding Apr"
+          },
+          "net_pnl_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Net Pnl Bps"
           },
           "outcome": {
             "anyOf": [
@@ -189,6 +245,22 @@
             "title": "Reason",
             "type": "string"
           },
+          "strategy_type": {
+            "anyOf": [
+              {
+                "enum": [
+                  "funding_arbitrage",
+                  "basis_convergence",
+                  "cash_and_carry"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Strategy Type"
+          },
           "symbol": {
             "title": "Symbol",
             "type": "string"
@@ -197,9 +269,15 @@
             "anyOf": [
               {
                 "enum": [
+                  "stop_loss",
+                  "adverse_spread",
+                  "time_limit",
+                  "spread_target",
                   "funding_flip",
-                  "score_decay",
-                  "time_limit"
+                  "funding_reversal",
+                  "funding_decline",
+                  "low_funding",
+                  "score_decay"
                 ],
                 "type": "string"
               },
@@ -245,6 +323,7 @@
         "type": "object"
       },
       "AutomationControlEventItem": {
+        "additionalProperties": false,
         "properties": {
           "action": {
             "enum": [
@@ -291,6 +370,7 @@
         "type": "object"
       },
       "AutomationControlRequest": {
+        "additionalProperties": false,
         "properties": {
           "action": {
             "enum": [
@@ -302,7 +382,6 @@
           },
           "reason": {
             "default": "",
-            "maxLength": 200,
             "title": "Reason",
             "type": "string"
           },
@@ -324,7 +403,7 @@
         "type": "object"
       },
       "AutomationModeItem": {
-        "description": "One autonomous capability (issue #195).\n\n`state`: `disabled` (not configured), `paused` (operator hold), `blocked` (configured and\nnot paused, but `blockers` stop it), or `armed` (the next pass may act).",
+        "additionalProperties": false,
         "properties": {
           "actions_total": {
             "default": 0,
@@ -457,6 +536,7 @@
         "type": "object"
       },
       "AutomationOverviewResponse": {
+        "additionalProperties": false,
         "properties": {
           "checked_at": {
             "title": "Checked At",
@@ -503,6 +583,7 @@
         "type": "object"
       },
       "AutomationPostureItem": {
+        "additionalProperties": false,
         "properties": {
           "consecutive_rollbacks": {
             "title": "Consecutive Rollbacks",
@@ -525,15 +606,8 @@
             "type": "boolean"
           },
           "gate_reason": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Gate Reason"
+            "title": "Gate Reason",
+            "type": "string"
           },
           "guardrail_entry_blocks": {
             "items": {
@@ -563,6 +637,7 @@
           "exec_enabled",
           "exec_dry_run",
           "gate_passed",
+          "gate_reason",
           "entries_stopped",
           "consecutive_rollbacks"
         ],
@@ -835,6 +910,9 @@
           "closed_trades": {
             "title": "Closed Trades",
             "type": "integer"
+          },
+          "diagnostics": {
+            "$ref": "#/components/schemas/ReplayDiagnosticsItem"
           },
           "entries": {
             "title": "Entries",
@@ -1365,6 +1443,240 @@
         "title": "BacktestSurvivalResponse",
         "type": "object"
       },
+      "CapitalAllocationDecisionItem": {
+        "additionalProperties": false,
+        "description": "Capital-aware sizing outcome for one entry; `reason_code` is set when rejected.",
+        "properties": {
+          "approved": {
+            "title": "Approved",
+            "type": "boolean"
+          },
+          "binding_exchange": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Binding Exchange"
+          },
+          "binding_limit": {
+            "enum": [
+              "requested_notional",
+              "trade_capital",
+              "total_exposure",
+              "venue_exposure",
+              "venue_balance",
+              "trade_loss",
+              "daily_loss",
+              "venue_minimum"
+            ],
+            "title": "Binding Limit",
+            "type": "string"
+          },
+          "committed_capital_usd": {
+            "title": "Committed Capital Usd",
+            "type": "number"
+          },
+          "daily_loss_limit_usd": {
+            "title": "Daily Loss Limit Usd",
+            "type": "number"
+          },
+          "daily_pnl_usd": {
+            "title": "Daily Pnl Usd",
+            "type": "number"
+          },
+          "evaluated_at": {
+            "title": "Evaluated At",
+            "type": "string"
+          },
+          "legs": {
+            "items": {
+              "$ref": "#/components/schemas/CapitalLegAllocationItem"
+            },
+            "title": "Legs",
+            "type": "array"
+          },
+          "long_exchange": {
+            "title": "Long Exchange",
+            "type": "string"
+          },
+          "max_loss_usd": {
+            "title": "Max Loss Usd",
+            "type": "number"
+          },
+          "notional_usd": {
+            "title": "Notional Usd",
+            "type": "number"
+          },
+          "quantity": {
+            "title": "Quantity",
+            "type": "string"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          },
+          "reason_code": {
+            "anyOf": [
+              {
+                "enum": [
+                  "daily_loss_limit",
+                  "insufficient_capital",
+                  "below_venue_minimum"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason Code"
+          },
+          "requested_notional_usd": {
+            "title": "Requested Notional Usd",
+            "type": "number"
+          },
+          "required_capital_usd": {
+            "title": "Required Capital Usd",
+            "type": "number"
+          },
+          "safe_capacity_usd": {
+            "title": "Safe Capacity Usd",
+            "type": "number"
+          },
+          "short_exchange": {
+            "title": "Short Exchange",
+            "type": "string"
+          },
+          "symbol": {
+            "title": "Symbol",
+            "type": "string"
+          },
+          "venue_committed_usd": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "title": "Venue Committed Usd",
+            "type": "object"
+          }
+        },
+        "required": [
+          "approved",
+          "reason",
+          "symbol",
+          "long_exchange",
+          "short_exchange",
+          "requested_notional_usd",
+          "quantity",
+          "notional_usd",
+          "required_capital_usd",
+          "max_loss_usd",
+          "safe_capacity_usd",
+          "binding_limit",
+          "committed_capital_usd",
+          "daily_pnl_usd",
+          "daily_loss_limit_usd",
+          "evaluated_at"
+        ],
+        "title": "CapitalAllocationDecisionItem",
+        "type": "object"
+      },
+      "CapitalLegAllocationItem": {
+        "additionalProperties": false,
+        "description": "One leg of a capital-aware sizing decision (issue #292). Prices/sizes are decimals.",
+        "properties": {
+          "exchange": {
+            "title": "Exchange",
+            "type": "string"
+          },
+          "lot_size": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lot Size"
+          },
+          "margin_usd": {
+            "title": "Margin Usd",
+            "type": "number"
+          },
+          "min_notional_usd": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Min Notional Usd"
+          },
+          "min_quantity": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Min Quantity"
+          },
+          "notional_usd": {
+            "title": "Notional Usd",
+            "type": "number"
+          },
+          "price": {
+            "title": "Price",
+            "type": "string"
+          },
+          "quantity": {
+            "title": "Quantity",
+            "type": "string"
+          },
+          "reserve_usd": {
+            "title": "Reserve Usd",
+            "type": "number"
+          },
+          "side": {
+            "enum": [
+              "buy",
+              "sell"
+            ],
+            "title": "Side",
+            "type": "string"
+          },
+          "tick_size": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tick Size"
+          }
+        },
+        "required": [
+          "exchange",
+          "side",
+          "price",
+          "quantity",
+          "notional_usd",
+          "margin_usd",
+          "reserve_usd"
+        ],
+        "title": "CapitalLegAllocationItem",
+        "type": "object"
+      },
       "ConfigResponse": {
         "properties": {
           "active_exchanges": {
@@ -1686,10 +1998,6 @@
             "title": "Extended Base Url",
             "type": "string"
           },
-          "extra_exchanges": {
-            "title": "Extra Exchanges",
-            "type": "string"
-          },
           "funding_avg_long_hours": {
             "title": "Funding Avg Long Hours",
             "type": "number"
@@ -1834,26 +2142,6 @@
           "migration_nautilus_observe_only": {
             "title": "Migration Nautilus Observe Only",
             "type": "boolean"
-          },
-          "migration_preflight_canary_symbols": {
-            "default": "",
-            "title": "Migration Preflight Canary Symbols",
-            "type": "string"
-          },
-          "migration_preflight_cutover_approval_path": {
-            "default": "",
-            "title": "Migration Preflight Cutover Approval Path",
-            "type": "string"
-          },
-          "migration_preflight_source": {
-            "default": "legacy",
-            "enum": [
-              "legacy",
-              "nautilus_canary",
-              "nautilus"
-            ],
-            "title": "Migration Preflight Source",
-            "type": "string"
           },
           "min_depth_quality": {
             "title": "Min Depth Quality",
@@ -2013,7 +2301,6 @@
           "migration_nautilus_fallback_policy",
           "migration_nautilus_adapter_enabled",
           "migration_nautilus_adapter_venues",
-          "extra_exchanges",
           "binance_base_url",
           "aster_base_url",
           "bybit_base_url",
@@ -2401,33 +2688,6 @@
               }
             ],
             "title": "Migration Nautilus Observe Only"
-          },
-          "migration_preflight_canary_symbols": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Migration Preflight Canary Symbols"
-          },
-          "migration_preflight_source": {
-            "anyOf": [
-              {
-                "enum": [
-                  "legacy",
-                  "nautilus_canary",
-                  "nautilus"
-                ],
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Migration Preflight Source"
           },
           "min_open_interest": {
             "anyOf": [
@@ -2840,6 +3100,13 @@
             "title": "Created At",
             "type": "string"
           },
+          "depth_reason_codes": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Depth Reason Codes",
+            "type": "object"
+          },
           "dry_run": {
             "title": "Dry Run",
             "type": "boolean"
@@ -2872,6 +3139,16 @@
             },
             "title": "Events",
             "type": "array"
+          },
+          "expected_pnl": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/NetPnlBreakdownItem"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "expected_slippage_bps": {
             "additionalProperties": {
@@ -2906,6 +3183,13 @@
             ],
             "title": "First Leg Slippage Bps"
           },
+          "hedge_failure_venues": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Hedge Failure Venues",
+            "type": "array"
+          },
           "hedge_leg": {
             "default": "long",
             "enum": [
@@ -2913,6 +3197,18 @@
               "short"
             ],
             "title": "Hedge Leg",
+            "type": "string"
+          },
+          "hedge_state": {
+            "default": "flat",
+            "enum": [
+              "flat",
+              "unhedged",
+              "partially_hedged",
+              "hedged",
+              "unwinding"
+            ],
+            "title": "Hedge State",
             "type": "string"
           },
           "hydrated_at": {
@@ -2933,8 +3229,35 @@
             "title": "Hydration Conflicts",
             "type": "array"
           },
+          "latency_ms": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "title": "Latency Ms",
+            "type": "object"
+          },
+          "leg_gap_ms": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Leg Gap Ms"
+          },
           "long_exchange": {
             "title": "Long Exchange",
+            "type": "string"
+          },
+          "open_mode": {
+            "default": "hedge_first",
+            "enum": [
+              "hedge_first",
+              "parallel"
+            ],
+            "title": "Open Mode",
             "type": "string"
           },
           "partial_fill": {
@@ -2945,6 +3268,16 @@
           "quantity": {
             "title": "Quantity",
             "type": "string"
+          },
+          "realized_pnl": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/NetPnlBreakdownItem"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "residual_exposure": {
             "title": "Residual Exposure",
@@ -3024,10 +3357,39 @@
             "title": "Symbol",
             "type": "string"
           },
+          "unhedged_duration_s": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unhedged Duration S"
+          },
+          "unhedged_since": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unhedged Since"
+          },
           "unhedged_timeout": {
             "default": false,
             "title": "Unhedged Timeout",
             "type": "boolean"
+          },
+          "unresolved_orders": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Unresolved Orders",
+            "type": "array"
           }
         },
         "required": [
@@ -3248,6 +3610,17 @@
               }
             ]
           },
+          "fill_latency_ms": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fill Latency Ms"
+          },
           "filled_quantity": {
             "default": "0",
             "title": "Filled Quantity",
@@ -3268,6 +3641,17 @@
             ],
             "title": "Side",
             "type": "string"
+          },
+          "submit_latency_ms": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Submit Latency Ms"
           },
           "symbol": {
             "title": "Symbol",
@@ -3404,6 +3788,17 @@
             "default": false,
             "title": "Reduce Only",
             "type": "boolean"
+          },
+          "reference_price": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reference Price"
           },
           "remaining_quantity": {
             "default": "0",
@@ -3676,6 +4071,16 @@
               }
             ]
           },
+          "capital_allocation": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CapitalAllocationDecisionItem"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "checked_at": {
             "title": "Checked At",
             "type": "string"
@@ -3725,6 +4130,13 @@
           },
           "source": {
             "$ref": "#/components/schemas/ExecutionPreflightSourceItem"
+          },
+          "venues": {
+            "items": {
+              "$ref": "#/components/schemas/ExecutionVenueCapabilityItem"
+            },
+            "title": "Venues",
+            "type": "array"
           }
         },
         "required": [
@@ -3786,27 +4198,6 @@
             "title": "Screener Ready Candidates",
             "type": "integer"
           },
-          "shadow_preflight_capture_count": {
-            "default": 0,
-            "title": "Shadow Preflight Capture Count",
-            "type": "integer"
-          },
-          "shadow_preflight_capture_failures": {
-            "default": 0,
-            "title": "Shadow Preflight Capture Failures",
-            "type": "integer"
-          },
-          "shadow_preflight_last_duration_ms": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Shadow Preflight Last Duration Ms"
-          },
           "trust_diagnostics": {
             "$ref": "#/components/schemas/PreflightTrustDiagnosticsItem"
           }
@@ -3823,61 +4214,96 @@
         "description": "Which evaluator produced this preflight decision (issue #170).",
         "properties": {
           "detail": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Detail"
+            "title": "Detail",
+            "type": "null"
           },
           "reason": {
-            "default": "legacy_configured",
-            "enum": [
-              "legacy_configured",
-              "parity_regression",
-              "cutover_not_approved",
-              "outside_canary_scope",
-              "canary",
-              "cutover"
-            ],
+            "const": "cutover",
+            "default": "cutover",
             "title": "Reason",
             "type": "string"
           },
           "requested": {
-            "default": "legacy",
-            "enum": [
-              "legacy",
-              "nautilus_canary",
-              "nautilus"
-            ],
+            "const": "nautilus",
+            "default": "nautilus",
             "title": "Requested",
             "type": "string"
           },
           "required_stage": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Required Stage"
+            "const": "F2",
+            "default": "F2",
+            "title": "Required Stage",
+            "type": "string"
           },
           "served_by": {
-            "default": "legacy",
-            "enum": [
-              "legacy",
-              "nautilus"
-            ],
+            "const": "nautilus",
+            "default": "nautilus",
             "title": "Served By",
             "type": "string"
           }
         },
         "title": "ExecutionPreflightSourceItem",
+        "type": "object"
+      },
+      "ExecutionVenueCapabilityItem": {
+        "description": "Execution support and live readiness of one venue (issue #415).\n\nEvery venue supplies market data for screening; `execution_support` says whether it can\nalso place live orders. `reason_code` is deterministic for a given configuration.",
+        "properties": {
+          "credentials": {
+            "enum": [
+              "configured",
+              "missing",
+              "incomplete",
+              "not_applicable"
+            ],
+            "title": "Credentials",
+            "type": "string"
+          },
+          "execution_support": {
+            "enum": [
+              "live",
+              "market_data_only"
+            ],
+            "title": "Execution Support",
+            "type": "string"
+          },
+          "live_ready": {
+            "title": "Live Ready",
+            "type": "boolean"
+          },
+          "market_data": {
+            "default": true,
+            "title": "Market Data",
+            "type": "boolean"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "reason_code": {
+            "enum": [
+              "ready",
+              "live_venue_not_supported",
+              "live_credentials_missing",
+              "live_credentials_incomplete",
+              "live_orders_disabled"
+            ],
+            "title": "Reason Code",
+            "type": "string"
+          },
+          "venue": {
+            "title": "Venue",
+            "type": "string"
+          }
+        },
+        "required": [
+          "venue",
+          "execution_support",
+          "credentials",
+          "live_ready",
+          "reason_code",
+          "message"
+        ],
+        "title": "ExecutionVenueCapabilityItem",
         "type": "object"
       },
       "FundingForecastItem": {
@@ -4694,6 +5120,256 @@
         "title": "MigrationParitySeverityCountsItem",
         "type": "object"
       },
+      "MonitorAlertIngestRequest": {
+        "properties": {
+          "artifacts_url": {
+            "title": "Artifacts Url",
+            "type": "string"
+          },
+          "attempts": {
+            "default": 0,
+            "title": "Attempts",
+            "type": "integer"
+          },
+          "container_health": {
+            "default": "unknown",
+            "title": "Container Health",
+            "type": "string"
+          },
+          "failure_reason": {
+            "title": "Failure Reason",
+            "type": "string"
+          },
+          "recent_5xx": {
+            "default": "unknown",
+            "title": "Recent 5Xx",
+            "type": "string"
+          },
+          "run_url": {
+            "title": "Run Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "failure_reason",
+          "run_url",
+          "artifacts_url"
+        ],
+        "title": "MonitorAlertIngestRequest",
+        "type": "object"
+      },
+      "MonitorAlertIngestResponse": {
+        "properties": {
+          "accepted": {
+            "title": "Accepted",
+            "type": "boolean"
+          },
+          "component": {
+            "const": "production-health-monitor",
+            "default": "production-health-monitor",
+            "title": "Component",
+            "type": "string"
+          },
+          "delivered_via": {
+            "const": "telegram",
+            "title": "Delivered Via",
+            "type": "string"
+          }
+        },
+        "required": [
+          "accepted",
+          "delivered_via"
+        ],
+        "title": "MonitorAlertIngestResponse",
+        "type": "object"
+      },
+      "NetPnlBreakdownItem": {
+        "description": "`net = convergence + funding - entry_fee - exit_fee - slippage - carry` (issue #293).\n\nbps are relative to `notional_usd`; USD amounts are decimal strings at that notional.\nConvergence and funding are signed; fees, slippage and carry are costs (positive is paid).",
+        "properties": {
+          "carry_bps": {
+            "title": "Carry Bps",
+            "type": "number"
+          },
+          "carry_usd": {
+            "title": "Carry Usd",
+            "type": "string"
+          },
+          "complete": {
+            "default": true,
+            "title": "Complete",
+            "type": "boolean"
+          },
+          "convergence_bps": {
+            "title": "Convergence Bps",
+            "type": "number"
+          },
+          "convergence_usd": {
+            "title": "Convergence Usd",
+            "type": "string"
+          },
+          "entry_fee_bps": {
+            "title": "Entry Fee Bps",
+            "type": "number"
+          },
+          "entry_fee_usd": {
+            "title": "Entry Fee Usd",
+            "type": "string"
+          },
+          "exit_fee_bps": {
+            "title": "Exit Fee Bps",
+            "type": "number"
+          },
+          "exit_fee_usd": {
+            "title": "Exit Fee Usd",
+            "type": "string"
+          },
+          "exit_slippage_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Exit Slippage Bps"
+          },
+          "exit_slippage_usd": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Exit Slippage Usd"
+          },
+          "fee_per_side_by_exchange": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "title": "Fee Per Side By Exchange",
+            "type": "object"
+          },
+          "funding_bps": {
+            "title": "Funding Bps",
+            "type": "number"
+          },
+          "funding_continuous_fallback": {
+            "default": false,
+            "title": "Funding Continuous Fallback",
+            "type": "boolean"
+          },
+          "funding_usd": {
+            "title": "Funding Usd",
+            "type": "string"
+          },
+          "hold_hours": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hold Hours"
+          },
+          "kind": {
+            "enum": [
+              "expected",
+              "realized"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "long_funding_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Long Funding Bps"
+          },
+          "long_funding_settlements": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Long Funding Settlements"
+          },
+          "net_bps": {
+            "title": "Net Bps",
+            "type": "number"
+          },
+          "net_usd": {
+            "title": "Net Usd",
+            "type": "string"
+          },
+          "notional_usd": {
+            "title": "Notional Usd",
+            "type": "string"
+          },
+          "short_funding_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Short Funding Bps"
+          },
+          "short_funding_settlements": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Short Funding Settlements"
+          },
+          "slippage_bps": {
+            "title": "Slippage Bps",
+            "type": "number"
+          },
+          "slippage_usd": {
+            "title": "Slippage Usd",
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "notional_usd",
+          "convergence_bps",
+          "funding_bps",
+          "entry_fee_bps",
+          "exit_fee_bps",
+          "slippage_bps",
+          "carry_bps",
+          "net_bps",
+          "convergence_usd",
+          "funding_usd",
+          "entry_fee_usd",
+          "exit_fee_usd",
+          "slippage_usd",
+          "carry_usd",
+          "net_usd"
+        ],
+        "title": "NetPnlBreakdownItem",
+        "type": "object"
+      },
       "OpportunitiesResponse": {
         "properties": {
           "count": {
@@ -4828,9 +5504,30 @@
             "title": "Effective Taker Fee By Exchange",
             "type": "object"
           },
+          "executable_entry_spread_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Executable Entry Spread Bps"
+          },
           "execution_adjusted_score_bps": {
             "title": "Execution Adjusted Score Bps",
             "type": "number"
+          },
+          "expected_net_pnl": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/NetPnlBreakdownItem"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "fee_impact_bps": {
             "title": "Fee Impact Bps",
@@ -5495,452 +6192,6 @@
         "title": "PositionsResponse",
         "type": "object"
       },
-      "PreflightParityArtifactItem": {
-        "additionalProperties": false,
-        "properties": {
-          "artifact_id": {
-            "title": "Artifact Id",
-            "type": "string"
-          },
-          "diffs": {
-            "items": {
-              "$ref": "#/components/schemas/PreflightParityDiffItem"
-            },
-            "title": "Diffs",
-            "type": "array"
-          },
-          "evaluation_status": {
-            "enum": [
-              "evaluated",
-              "not_evaluated"
-            ],
-            "title": "Evaluation Status",
-            "type": "string"
-          },
-          "generated_at": {
-            "title": "Generated At",
-            "type": "string"
-          },
-          "legacy_blocker_codes": {
-            "items": {
-              "type": "string"
-            },
-            "title": "Legacy Blocker Codes",
-            "type": "array"
-          },
-          "legacy_candidate_status": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Legacy Candidate Status"
-          },
-          "legacy_candidate_symbol": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Legacy Candidate Symbol"
-          },
-          "legacy_decision": {
-            "enum": [
-              "ready",
-              "watching",
-              "blocked"
-            ],
-            "title": "Legacy Decision",
-            "type": "string"
-          },
-          "legacy_gate_reason": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Legacy Gate Reason"
-          },
-          "legacy_payload_hash": {
-            "title": "Legacy Payload Hash",
-            "type": "string"
-          },
-          "parity_status": {
-            "enum": [
-              "pass",
-              "watching",
-              "fail",
-              "not_evaluated"
-            ],
-            "title": "Parity Status",
-            "type": "string"
-          },
-          "reason_groups": {
-            "additionalProperties": {
-              "type": "integer"
-            },
-            "title": "Reason Groups",
-            "type": "object"
-          },
-          "schema_version": {
-            "title": "Schema Version",
-            "type": "string"
-          },
-          "shadow_blocker_codes": {
-            "items": {
-              "type": "string"
-            },
-            "title": "Shadow Blocker Codes",
-            "type": "array"
-          },
-          "shadow_candidate_status": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Shadow Candidate Status"
-          },
-          "shadow_candidate_symbol": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Shadow Candidate Symbol"
-          },
-          "shadow_decision": {
-            "anyOf": [
-              {
-                "enum": [
-                  "ready",
-                  "watching",
-                  "blocked"
-                ],
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Shadow Decision"
-          },
-          "shadow_gate_reason": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Shadow Gate Reason"
-          },
-          "shadow_payload_hash": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Shadow Payload Hash"
-          },
-          "symbol_filter": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Symbol Filter"
-          }
-        },
-        "required": [
-          "schema_version",
-          "artifact_id",
-          "generated_at",
-          "evaluation_status",
-          "parity_status",
-          "legacy_decision",
-          "legacy_payload_hash"
-        ],
-        "title": "PreflightParityArtifactItem",
-        "type": "object"
-      },
-      "PreflightParityArtifactListResponse": {
-        "additionalProperties": false,
-        "properties": {
-          "count": {
-            "title": "Count",
-            "type": "integer"
-          },
-          "items": {
-            "items": {
-              "$ref": "#/components/schemas/PreflightParityArtifactItem"
-            },
-            "title": "Items",
-            "type": "array"
-          }
-        },
-        "required": [
-          "count"
-        ],
-        "title": "PreflightParityArtifactListResponse",
-        "type": "object"
-      },
-      "PreflightParityDiffItem": {
-        "additionalProperties": false,
-        "properties": {
-          "code": {
-            "title": "Code",
-            "type": "string"
-          },
-          "group": {
-            "enum": [
-              "decision",
-              "gate",
-              "blockers",
-              "candidate"
-            ],
-            "title": "Group",
-            "type": "string"
-          },
-          "legacy_value": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Legacy Value"
-          },
-          "message": {
-            "title": "Message",
-            "type": "string"
-          },
-          "severity": {
-            "enum": [
-              "ok",
-              "watching",
-              "blocked"
-            ],
-            "title": "Severity",
-            "type": "string"
-          },
-          "shadow_value": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Shadow Value"
-          }
-        },
-        "required": [
-          "group",
-          "code",
-          "severity",
-          "message"
-        ],
-        "title": "PreflightParityDiffItem",
-        "type": "object"
-      },
-      "PreflightParityPromotionPolicyItem": {
-        "additionalProperties": false,
-        "properties": {
-          "policy_hash": {
-            "title": "Policy Hash",
-            "type": "string"
-          },
-          "policy_schema_version": {
-            "title": "Policy Schema Version",
-            "type": "string"
-          },
-          "policy_version": {
-            "title": "Policy Version",
-            "type": "string"
-          },
-          "thresholds": {
-            "additionalProperties": {
-              "type": "integer"
-            },
-            "title": "Thresholds",
-            "type": "object"
-          }
-        },
-        "required": [
-          "policy_schema_version",
-          "policy_version",
-          "policy_hash"
-        ],
-        "title": "PreflightParityPromotionPolicyItem",
-        "type": "object"
-      },
-      "PreflightParityPromotionRecommendationItem": {
-        "additionalProperties": false,
-        "properties": {
-          "decision": {
-            "enum": [
-              "pass",
-              "fail"
-            ],
-            "title": "Decision",
-            "type": "string"
-          },
-          "evaluated_at": {
-            "title": "Evaluated At",
-            "type": "string"
-          },
-          "metrics": {
-            "additionalProperties": {
-              "type": "integer"
-            },
-            "title": "Metrics",
-            "type": "object"
-          },
-          "policy": {
-            "$ref": "#/components/schemas/PreflightParityPromotionPolicyItem"
-          },
-          "reasons": {
-            "items": {
-              "type": "string"
-            },
-            "title": "Reasons",
-            "type": "array"
-          }
-        },
-        "required": [
-          "evaluated_at",
-          "decision",
-          "policy"
-        ],
-        "title": "PreflightParityPromotionRecommendationItem",
-        "type": "object"
-      },
-      "PreflightParityReportResponse": {
-        "additionalProperties": false,
-        "properties": {
-          "artifacts_analyzed": {
-            "title": "Artifacts Analyzed",
-            "type": "integer"
-          },
-          "generated_at": {
-            "title": "Generated At",
-            "type": "string"
-          },
-          "items": {
-            "items": {
-              "$ref": "#/components/schemas/PreflightParityArtifactItem"
-            },
-            "title": "Items",
-            "type": "array"
-          },
-          "not_evaluated_count": {
-            "default": 0,
-            "title": "Not Evaluated Count",
-            "type": "integer"
-          },
-          "parity_passed": {
-            "title": "Parity Passed",
-            "type": "boolean"
-          },
-          "promotion_recommendation": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/PreflightParityPromotionRecommendationItem"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "reason_counts": {
-            "additionalProperties": {
-              "type": "integer"
-            },
-            "title": "Reason Counts",
-            "type": "object"
-          },
-          "reason_group_counts": {
-            "additionalProperties": {
-              "type": "integer"
-            },
-            "title": "Reason Group Counts",
-            "type": "object"
-          },
-          "schema_version": {
-            "title": "Schema Version",
-            "type": "string"
-          },
-          "severity_counts": {
-            "$ref": "#/components/schemas/PreflightParitySeverityCountsItem"
-          },
-          "window_end": {
-            "title": "Window End",
-            "type": "string"
-          },
-          "window_start": {
-            "title": "Window Start",
-            "type": "string"
-          }
-        },
-        "required": [
-          "schema_version",
-          "generated_at",
-          "window_start",
-          "window_end",
-          "artifacts_analyzed",
-          "parity_passed"
-        ],
-        "title": "PreflightParityReportResponse",
-        "type": "object"
-      },
-      "PreflightParitySeverityCountsItem": {
-        "additionalProperties": false,
-        "properties": {
-          "blocked": {
-            "default": 0,
-            "title": "Blocked",
-            "type": "integer"
-          },
-          "ok": {
-            "default": 0,
-            "title": "Ok",
-            "type": "integer"
-          },
-          "watching": {
-            "default": 0,
-            "title": "Watching",
-            "type": "integer"
-          }
-        },
-        "title": "PreflightParitySeverityCountsItem",
-        "type": "object"
-      },
       "PreflightTrustDiagnosticsItem": {
         "additionalProperties": false,
         "properties": {
@@ -5964,6 +6215,458 @@
         "title": "PreflightTrustDiagnosticsItem",
         "type": "object"
       },
+      "PublicCorrelationPairItem": {
+        "additionalProperties": false,
+        "properties": {
+          "above_threshold": {
+            "title": "Above Threshold",
+            "type": "boolean"
+          },
+          "correlation": {
+            "title": "Correlation",
+            "type": "number"
+          },
+          "symbol_a": {
+            "title": "Symbol A",
+            "type": "string"
+          },
+          "symbol_b": {
+            "title": "Symbol B",
+            "type": "string"
+          }
+        },
+        "required": [
+          "symbol_a",
+          "symbol_b",
+          "correlation",
+          "above_threshold"
+        ],
+        "title": "PublicCorrelationPairItem",
+        "type": "object"
+      },
+      "PublicCorrelationResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "pairs": {
+            "items": {
+              "$ref": "#/components/schemas/PublicCorrelationPairItem"
+            },
+            "title": "Pairs",
+            "type": "array"
+          },
+          "symbols": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Symbols",
+            "type": "array"
+          },
+          "threshold": {
+            "title": "Threshold",
+            "type": "number"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          },
+          "window_hours": {
+            "title": "Window Hours",
+            "type": "number"
+          }
+        },
+        "required": [
+          "threshold",
+          "window_hours",
+          "count"
+        ],
+        "title": "PublicCorrelationResponse",
+        "type": "object"
+      },
+      "PublicExchangeStatusItem": {
+        "additionalProperties": false,
+        "properties": {
+          "last_poll_ok": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Poll Ok"
+          },
+          "ws_connected": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ws Connected"
+          },
+          "ws_healthy": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ws Healthy"
+          }
+        },
+        "title": "PublicExchangeStatusItem",
+        "type": "object"
+      },
+      "PublicLegItem": {
+        "additionalProperties": false,
+        "properties": {
+          "instrument_kind": {
+            "enum": [
+              "perp",
+              "spot",
+              "future"
+            ],
+            "title": "Instrument Kind",
+            "type": "string"
+          },
+          "side": {
+            "enum": [
+              "long",
+              "short"
+            ],
+            "title": "Side",
+            "type": "string"
+          },
+          "venue": {
+            "title": "Venue",
+            "type": "string"
+          }
+        },
+        "required": [
+          "venue",
+          "side",
+          "instrument_kind"
+        ],
+        "title": "PublicLegItem",
+        "type": "object"
+      },
+      "PublicOpportunitiesResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "opportunities": {
+            "items": {
+              "$ref": "#/components/schemas/PublicOpportunityItem"
+            },
+            "title": "Opportunities",
+            "type": "array"
+          },
+          "ready_count": {
+            "title": "Ready Count",
+            "type": "integer"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          }
+        },
+        "required": [
+          "count",
+          "ready_count"
+        ],
+        "title": "PublicOpportunitiesResponse",
+        "type": "object"
+      },
+      "PublicOpportunityItem": {
+        "additionalProperties": false,
+        "properties": {
+          "basis_bps": {
+            "title": "Basis Bps",
+            "type": "number"
+          },
+          "depth_quality": {
+            "anyOf": [
+              {
+                "enum": [
+                  "A",
+                  "B",
+                  "C",
+                  "D"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Depth Quality"
+          },
+          "execution_adjusted_score_bps": {
+            "title": "Execution Adjusted Score Bps",
+            "type": "number"
+          },
+          "funding_diff_apr": {
+            "title": "Funding Diff Apr",
+            "type": "number"
+          },
+          "funding_edge_bps": {
+            "title": "Funding Edge Bps",
+            "type": "number"
+          },
+          "hours_to_breakeven": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hours To Breakeven"
+          },
+          "legs": {
+            "items": {
+              "$ref": "#/components/schemas/PublicLegItem"
+            },
+            "title": "Legs",
+            "type": "array"
+          },
+          "liquidity_tier": {
+            "anyOf": [
+              {
+                "enum": [
+                  "H",
+                  "M",
+                  "L"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Liquidity Tier"
+          },
+          "long_rate_apr": {
+            "title": "Long Rate Apr",
+            "type": "number"
+          },
+          "persistence_hours": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Persistence Hours"
+          },
+          "reasons": {
+            "items": {
+              "$ref": "#/components/schemas/PublicReasonItem"
+            },
+            "title": "Reasons",
+            "type": "array"
+          },
+          "short_rate_apr": {
+            "title": "Short Rate Apr",
+            "type": "number"
+          },
+          "signal_score_bps": {
+            "title": "Signal Score Bps",
+            "type": "number"
+          },
+          "status": {
+            "enum": [
+              "ready",
+              "watching",
+              "blocked"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "strategy_type": {
+            "enum": [
+              "funding_arbitrage",
+              "basis_convergence",
+              "cash_and_carry"
+            ],
+            "title": "Strategy Type",
+            "type": "string"
+          },
+          "symbol": {
+            "title": "Symbol",
+            "type": "string"
+          },
+          "total_cost_bps": {
+            "title": "Total Cost Bps",
+            "type": "number"
+          }
+        },
+        "required": [
+          "symbol",
+          "strategy_type",
+          "status",
+          "long_rate_apr",
+          "short_rate_apr",
+          "funding_diff_apr",
+          "funding_edge_bps",
+          "basis_bps",
+          "total_cost_bps",
+          "signal_score_bps",
+          "execution_adjusted_score_bps"
+        ],
+        "title": "PublicOpportunityItem",
+        "type": "object"
+      },
+      "PublicReasonItem": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "$ref": "#/components/schemas/ReasonCode"
+          },
+          "severity": {
+            "enum": [
+              "watching",
+              "blocked"
+            ],
+            "title": "Severity",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "severity"
+        ],
+        "title": "PublicReasonItem",
+        "type": "object"
+      },
+      "PublicReasonSeverityCounts": {
+        "additionalProperties": false,
+        "properties": {
+          "blocked": {
+            "default": 0,
+            "title": "Blocked",
+            "type": "integer"
+          },
+          "watching": {
+            "default": 0,
+            "title": "Watching",
+            "type": "integer"
+          }
+        },
+        "title": "PublicReasonSeverityCounts",
+        "type": "object"
+      },
+      "PublicStatusResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "active_exchanges": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Active Exchanges",
+            "type": "array"
+          },
+          "exchanges": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/PublicExchangeStatusItem"
+            },
+            "title": "Exchanges",
+            "type": "object"
+          },
+          "last_updated_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Updated At"
+          },
+          "poll_count_failed": {
+            "title": "Poll Count Failed",
+            "type": "integer"
+          },
+          "poll_count_success": {
+            "title": "Poll Count Success",
+            "type": "integer"
+          },
+          "poll_count_total": {
+            "title": "Poll Count Total",
+            "type": "integer"
+          },
+          "screener_post_cost_candidates": {
+            "title": "Screener Post Cost Candidates",
+            "type": "integer"
+          },
+          "screener_raw_candidates": {
+            "title": "Screener Raw Candidates",
+            "type": "integer"
+          },
+          "screener_ready_candidates": {
+            "title": "Screener Ready Candidates",
+            "type": "integer"
+          },
+          "screener_reason_severity_counts": {
+            "$ref": "#/components/schemas/PublicReasonSeverityCounts"
+          },
+          "screener_validated_candidates": {
+            "title": "Screener Validated Candidates",
+            "type": "integer"
+          },
+          "started_at": {
+            "title": "Started At",
+            "type": "string"
+          },
+          "uptime_s": {
+            "title": "Uptime S",
+            "type": "number"
+          }
+        },
+        "required": [
+          "started_at",
+          "uptime_s",
+          "poll_count_total",
+          "poll_count_success",
+          "poll_count_failed",
+          "screener_raw_candidates",
+          "screener_post_cost_candidates",
+          "screener_validated_candidates",
+          "screener_ready_candidates"
+        ],
+        "title": "PublicStatusResponse",
+        "type": "object"
+      },
       "ReasonCode": {
         "enum": [
           "persistence_insufficient",
@@ -5971,6 +6674,7 @@
           "historical_win_rate_unavailable",
           "break_even_window",
           "score_below_min",
+          "net_pnl_below_min",
           "funding_flips",
           "basis_limit",
           "basis_trend_unstable",
@@ -5987,7 +6691,9 @@
           "adl_limit",
           "margin_mode_cross",
           "anti_churn_cooldown",
-          "correlation_limit"
+          "correlation_limit",
+          "executable_spread_below_entry",
+          "executable_spread_unconfirmed"
         ],
         "title": "ReasonCode",
         "type": "string"
@@ -6018,6 +6724,108 @@
         "title": "ReasonItem",
         "type": "object"
       },
+      "ReplayDiagnosticsItem": {
+        "properties": {
+          "drops_skipped_after_gap": {
+            "default": 0,
+            "title": "Drops Skipped After Gap",
+            "type": "integer"
+          },
+          "entry_rejections": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Entry Rejections",
+            "type": "object"
+          },
+          "hold_cycles": {
+            "default": 0,
+            "title": "Hold Cycles",
+            "type": "integer"
+          },
+          "open_positions_at_end": {
+            "default": 0,
+            "title": "Open Positions At End",
+            "type": "integer"
+          },
+          "pairs_skipped_min_samples": {
+            "default": 0,
+            "title": "Pairs Skipped Min Samples",
+            "type": "integer"
+          },
+          "pairs_total": {
+            "default": 0,
+            "title": "Pairs Total",
+            "type": "integer"
+          },
+          "samples_skipped_min_samples": {
+            "default": 0,
+            "title": "Samples Skipped Min Samples",
+            "type": "integer"
+          }
+        },
+        "title": "ReplayDiagnosticsItem",
+        "type": "object"
+      },
+      "RiskCapitalAllocationItem": {
+        "additionalProperties": false,
+        "description": "Capital-aware sizing state (issue #292): limits, committed capital, daily loss.",
+        "properties": {
+          "committed_capital_usd": {
+            "default": 0.0,
+            "title": "Committed Capital Usd",
+            "type": "number"
+          },
+          "daily_loss_limit_usd": {
+            "default": 0.0,
+            "title": "Daily Loss Limit Usd",
+            "type": "number"
+          },
+          "daily_pnl_usd": {
+            "default": 0.0,
+            "title": "Daily Pnl Usd",
+            "type": "number"
+          },
+          "enabled": {
+            "default": false,
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "last_decision": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CapitalAllocationDecisionItem"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "limits": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "title": "Limits",
+            "type": "object"
+          },
+          "rejections": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Rejections",
+            "type": "object"
+          },
+          "venue_committed_usd": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "title": "Venue Committed Usd",
+            "type": "object"
+          }
+        },
+        "title": "RiskCapitalAllocationItem",
+        "type": "object"
+      },
       "RiskGuardrailsResponse": {
         "additionalProperties": false,
         "description": "`GET /risk/guardrails`: the status summary plus thresholds and close history.",
@@ -6044,6 +6852,9 @@
             },
             "title": "Blocking Guardrails",
             "type": "array"
+          },
+          "capital": {
+            "$ref": "#/components/schemas/RiskCapitalAllocationItem"
           },
           "close_records": {
             "items": {
@@ -6613,9 +7424,15 @@
             "anyOf": [
               {
                 "enum": [
+                  "stop_loss",
+                  "adverse_spread",
+                  "time_limit",
+                  "spread_target",
                   "funding_flip",
-                  "score_decay",
-                  "time_limit"
+                  "funding_reversal",
+                  "funding_decline",
+                  "low_funding",
+                  "score_decay"
                 ],
                 "type": "string"
               },
@@ -6730,6 +7547,53 @@
           }
         },
         "title": "StatusCalibrationLoaderDiagnostics",
+        "type": "object"
+      },
+      "StatusCycleReconcileVenue": {
+        "additionalProperties": false,
+        "description": "One venue in the last per-cycle reconciliation pass (issue #295).",
+        "properties": {
+          "checked_at": {
+            "title": "Checked At",
+            "type": "string"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "mismatches": {
+            "default": 0,
+            "title": "Mismatches",
+            "type": "integer"
+          },
+          "positions": {
+            "default": 0,
+            "title": "Positions",
+            "type": "integer"
+          },
+          "status": {
+            "enum": [
+              "clean",
+              "mismatch",
+              "unreadable",
+              "missing_source"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "checked_at"
+        ],
+        "title": "StatusCycleReconcileVenue",
         "type": "object"
       },
       "StatusDropCounters": {
@@ -6878,10 +7742,24 @@
             "title": "Missing Real Depth",
             "type": "integer"
           },
+          "missing_real_depth_causes": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Missing Real Depth Causes",
+            "type": "object"
+          },
           "missing_real_fee": {
             "default": 0,
             "title": "Missing Real Fee",
             "type": "integer"
+          },
+          "missing_real_fee_causes": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Missing Real Fee Causes",
+            "type": "object"
           },
           "strict_depth": {
             "default": 0,
@@ -6890,6 +7768,149 @@
           }
         },
         "title": "StatusExchangeDiagnostics",
+        "type": "object"
+      },
+      "StatusExecutionCycleReconcile": {
+        "additionalProperties": false,
+        "description": "Per-cycle position reconciliation against live venues (issue #295).\n\nRuns every runtime cycle and after every live open and close. `outcome` is `clean`,\n`blocked` (a mismatch, an unreadable venue, or an unresolved attempt refuses new entries\nwith `position_reconcile_mismatch` until a later clean pass), or `skipped` (dry-run\nvenues, or no live account sources); null before the first run.",
+        "properties": {
+          "blocked_runs_total": {
+            "default": 0,
+            "title": "Blocked Runs Total",
+            "type": "integer"
+          },
+          "blocks_entries": {
+            "default": false,
+            "title": "Blocks Entries",
+            "type": "boolean"
+          },
+          "counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Counts",
+            "type": "object"
+          },
+          "diagnostics": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Diagnostics",
+            "type": "array"
+          },
+          "enabled": {
+            "default": true,
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "last_clean_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Clean At"
+          },
+          "last_run_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Run At"
+          },
+          "outcome": {
+            "anyOf": [
+              {
+                "enum": [
+                  "clean",
+                  "blocked",
+                  "skipped"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Outcome"
+          },
+          "positions": {
+            "items": {
+              "$ref": "#/components/schemas/StatusPositionReconcileItem"
+            },
+            "title": "Positions",
+            "type": "array"
+          },
+          "post_close_residuals": {
+            "items": {
+              "$ref": "#/components/schemas/StatusPostCloseResidualItem"
+            },
+            "title": "Post Close Residuals",
+            "type": "array"
+          },
+          "runs_total": {
+            "default": 0,
+            "title": "Runs Total",
+            "type": "integer"
+          },
+          "skipped_reason": {
+            "anyOf": [
+              {
+                "enum": [
+                  "dry_run",
+                  "no_account_sources"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Skipped Reason"
+          },
+          "trigger": {
+            "anyOf": [
+              {
+                "enum": [
+                  "cycle",
+                  "post_open",
+                  "post_close"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Trigger"
+          },
+          "venues": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/StatusCycleReconcileVenue"
+            },
+            "title": "Venues",
+            "type": "object"
+          }
+        },
+        "title": "StatusExecutionCycleReconcile",
         "type": "object"
       },
       "StatusExecutionHydrationDiagnostics": {
@@ -7022,6 +8043,39 @@
         "title": "StatusExecutionHydrationDiagnostics",
         "type": "object"
       },
+      "StatusExecutionLatency": {
+        "additionalProperties": false,
+        "description": "Hot-path latency per stage; `bottleneck` is the leaf stage with the highest p95.",
+        "properties": {
+          "bottleneck": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bottleneck"
+          },
+          "budgets_ms": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "title": "Budgets Ms",
+            "type": "object"
+          },
+          "stages": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/StatusLatencyStage"
+            },
+            "title": "Stages",
+            "type": "object"
+          }
+        },
+        "title": "StatusExecutionLatency",
+        "type": "object"
+      },
       "StatusExecutionPersistenceDiagnostics": {
         "additionalProperties": false,
         "properties": {
@@ -7069,6 +8123,571 @@
           }
         },
         "title": "StatusExecutionPersistenceDiagnostics",
+        "type": "object"
+      },
+      "StatusExecutionPositionReconcile": {
+        "additionalProperties": false,
+        "description": "Restart position reconciliation (issue #270): persisted exposure vs venue positions.\n\n`outcome` is `clean`, `blocked` (a class other than `match`, a blocking diagnostic, or a\nload error holds new entries with `restart_position_mismatch`), or `skipped` (execution\ndisabled or persistence off); null before the first run. `diagnostics` lists every\nassumption the classifier refused to make as `<code>:<detail>`.",
+        "properties": {
+          "blocking_diagnostics": {
+            "default": 0,
+            "title": "Blocking Diagnostics",
+            "type": "integer"
+          },
+          "blocks_entries": {
+            "default": false,
+            "title": "Blocks Entries",
+            "type": "boolean"
+          },
+          "completed": {
+            "default": false,
+            "title": "Completed",
+            "type": "boolean"
+          },
+          "counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Counts",
+            "type": "object"
+          },
+          "diagnostics": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Diagnostics",
+            "type": "array"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "last_run_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Run At"
+          },
+          "outcome": {
+            "anyOf": [
+              {
+                "enum": [
+                  "clean",
+                  "blocked",
+                  "skipped"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Outcome"
+          },
+          "positions": {
+            "items": {
+              "$ref": "#/components/schemas/StatusPositionReconcileItem"
+            },
+            "title": "Positions",
+            "type": "array"
+          }
+        },
+        "title": "StatusExecutionPositionReconcile",
+        "type": "object"
+      },
+      "StatusExecutionRecovery": {
+        "additionalProperties": false,
+        "description": "Recovery actions (issue #294): open unhedged pairs and recent emergency unwinds.\n\n`emergency_unwinds` are the latest unwind reports, newest first, as recorded by the\nemergency unwinder.",
+        "properties": {
+          "emergency_unwinds": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Emergency Unwinds",
+            "type": "array"
+          },
+          "survivor_last_error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Survivor Last Error"
+          },
+          "survivor_watcher_enabled": {
+            "default": false,
+            "title": "Survivor Watcher Enabled",
+            "type": "boolean"
+          },
+          "unhedged_attempts": {
+            "items": {
+              "$ref": "#/components/schemas/StatusUnhedgedAttemptItem"
+            },
+            "title": "Unhedged Attempts",
+            "type": "array"
+          }
+        },
+        "title": "StatusExecutionRecovery",
+        "type": "object"
+      },
+      "StatusExecutionVenueHealth": {
+        "additionalProperties": false,
+        "description": "Entry gating for one venue (issue #294): hedge-failure breaker and degradation.",
+        "properties": {
+          "block_reasons": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Block Reasons",
+            "type": "array"
+          },
+          "breaker_opened_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Breaker Opened At"
+          },
+          "breaker_state": {
+            "default": "closed",
+            "enum": [
+              "closed",
+              "open",
+              "half_open"
+            ],
+            "title": "Breaker State",
+            "type": "string"
+          },
+          "breaker_trips": {
+            "default": 0,
+            "title": "Breaker Trips",
+            "type": "integer"
+          },
+          "consecutive_hedge_failures": {
+            "default": 0,
+            "title": "Consecutive Hedge Failures",
+            "type": "integer"
+          },
+          "entries_blocked": {
+            "default": false,
+            "title": "Entries Blocked",
+            "type": "boolean"
+          },
+          "entry_blocks_total": {
+            "default": 0,
+            "title": "Entry Blocks Total",
+            "type": "integer"
+          },
+          "last_failure_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Failure At"
+          },
+          "last_failure_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Failure Reason"
+          },
+          "last_success_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Success At"
+          },
+          "reconcile_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reconcile Status"
+          }
+        },
+        "title": "StatusExecutionVenueHealth",
+        "type": "object"
+      },
+      "StatusLatencyStage": {
+        "additionalProperties": false,
+        "description": "Latency of one open stage over the sample window, in milliseconds (issue #298).",
+        "properties": {
+          "budget_ms": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Budget Ms"
+          },
+          "count": {
+            "default": 0,
+            "title": "Count",
+            "type": "integer"
+          },
+          "last_ms": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Ms"
+          },
+          "max_ms": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Ms"
+          },
+          "over_budget": {
+            "default": 0,
+            "title": "Over Budget",
+            "type": "integer"
+          },
+          "p50_ms": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "P50 Ms"
+          },
+          "p95_ms": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "P95 Ms"
+          },
+          "p99_ms": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "P99 Ms"
+          },
+          "window": {
+            "default": 0,
+            "title": "Window",
+            "type": "integer"
+          },
+          "within_budget": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Within Budget"
+          }
+        },
+        "title": "StatusLatencyStage",
+        "type": "object"
+      },
+      "StatusMarketDataSourceItem": {
+        "additionalProperties": false,
+        "description": "Arbitrated market-data source of one venue (issue #287).\n\n`state` follows `real_ws` -> `real_rest` -> `unavailable`. `reason` is the deterministic\nreason code for the current state; `ws_reason` and `rest_reason` report each source at the\nlast sample. `preferred_state` is `real_ws` for venues with a live feed and `real_rest`\notherwise; `degraded` is true while `state` is below it. `qualified` is false when the\nvenue's rows are excluded from the screener and new entries are blocked. Durations are\nseconds; timestamps are ISO-8601 UTC.",
+        "properties": {
+          "degraded": {
+            "default": false,
+            "title": "Degraded",
+            "type": "boolean"
+          },
+          "degraded_episodes_total": {
+            "default": 0,
+            "title": "Degraded Episodes Total",
+            "type": "integer"
+          },
+          "degraded_for_s": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Degraded For S"
+          },
+          "degraded_seconds_total": {
+            "default": 0.0,
+            "title": "Degraded Seconds Total",
+            "type": "number"
+          },
+          "degraded_since": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Degraded Since"
+          },
+          "last_degraded_episode_s": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Degraded Episode S"
+          },
+          "last_sampled_at": {
+            "title": "Last Sampled At",
+            "type": "string"
+          },
+          "last_transition_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Transition At"
+          },
+          "last_transition_from": {
+            "anyOf": [
+              {
+                "enum": [
+                  "real_ws",
+                  "real_rest",
+                  "unavailable"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Transition From"
+          },
+          "preferred_state": {
+            "enum": [
+              "real_ws",
+              "real_rest",
+              "unavailable"
+            ],
+            "title": "Preferred State",
+            "type": "string"
+          },
+          "qualified": {
+            "default": true,
+            "title": "Qualified",
+            "type": "boolean"
+          },
+          "reason": {
+            "enum": [
+              "ws_healthy",
+              "ws_not_configured",
+              "ws_disconnected",
+              "ws_stale",
+              "ws_reconnect_storm",
+              "ws_parser_errors",
+              "ws_reconnected",
+              "recovery_hysteresis_pending",
+              "rest_ok",
+              "rest_pending",
+              "rest_failed",
+              "rest_stale"
+            ],
+            "title": "Reason",
+            "type": "string"
+          },
+          "rest_age_s": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rest Age S"
+          },
+          "rest_reason": {
+            "enum": [
+              "ws_healthy",
+              "ws_not_configured",
+              "ws_disconnected",
+              "ws_stale",
+              "ws_reconnect_storm",
+              "ws_parser_errors",
+              "ws_reconnected",
+              "recovery_hysteresis_pending",
+              "rest_ok",
+              "rest_pending",
+              "rest_failed",
+              "rest_stale"
+            ],
+            "title": "Rest Reason",
+            "type": "string"
+          },
+          "since": {
+            "title": "Since",
+            "type": "string"
+          },
+          "state": {
+            "enum": [
+              "real_ws",
+              "real_rest",
+              "unavailable"
+            ],
+            "title": "State",
+            "type": "string"
+          },
+          "state_age_s": {
+            "default": 0.0,
+            "title": "State Age S",
+            "type": "number"
+          },
+          "transitions_by_state": {
+            "$ref": "#/components/schemas/StatusMarketDataSourceTransitionCounts"
+          },
+          "transitions_total": {
+            "default": 0,
+            "title": "Transitions Total",
+            "type": "integer"
+          },
+          "ws_healthy_for_s": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ws Healthy For S"
+          },
+          "ws_message_errors_in_window": {
+            "default": 0,
+            "title": "Ws Message Errors In Window",
+            "type": "integer"
+          },
+          "ws_reason": {
+            "enum": [
+              "ws_healthy",
+              "ws_not_configured",
+              "ws_disconnected",
+              "ws_stale",
+              "ws_reconnect_storm",
+              "ws_parser_errors",
+              "ws_reconnected",
+              "recovery_hysteresis_pending",
+              "rest_ok",
+              "rest_pending",
+              "rest_failed",
+              "rest_stale"
+            ],
+            "title": "Ws Reason",
+            "type": "string"
+          },
+          "ws_reconnects_in_window": {
+            "default": 0,
+            "title": "Ws Reconnects In Window",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "state",
+          "reason",
+          "ws_reason",
+          "rest_reason",
+          "preferred_state",
+          "since",
+          "last_sampled_at"
+        ],
+        "title": "StatusMarketDataSourceItem",
+        "type": "object"
+      },
+      "StatusMarketDataSourceTransitionCounts": {
+        "additionalProperties": false,
+        "properties": {
+          "real_rest": {
+            "default": 0,
+            "title": "Real Rest",
+            "type": "integer"
+          },
+          "real_ws": {
+            "default": 0,
+            "title": "Real Ws",
+            "type": "integer"
+          },
+          "unavailable": {
+            "default": 0,
+            "title": "Unavailable",
+            "type": "integer"
+          }
+        },
+        "title": "StatusMarketDataSourceTransitionCounts",
         "type": "object"
       },
       "StatusMigrationFallbackDiagnostics": {
@@ -7270,7 +8889,7 @@
       },
       "StatusNotificationDiagnostics": {
         "additionalProperties": false,
-        "description": "Alert delivery health. `healthy` is false while any route's last delivery failed.",
+        "description": "Alert delivery health. `healthy` is false while any route's last delivery failed.\n\n`events` breaks the counters down by alert event type (for example `opportunity_ready`,\n`margin_critical`, `exchange_connectivity_lost`, `system_error`).",
         "properties": {
           "degraded_routes": {
             "items": {
@@ -7283,6 +8902,13 @@
             "default": false,
             "title": "Enabled",
             "type": "boolean"
+          },
+          "events": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/StatusNotificationEventDiagnostics"
+            },
+            "title": "Events",
+            "type": "object"
           },
           "failed": {
             "default": 0,
@@ -7328,6 +8954,50 @@
           }
         },
         "title": "StatusNotificationDiagnostics",
+        "type": "object"
+      },
+      "StatusNotificationEventDiagnostics": {
+        "additionalProperties": false,
+        "description": "Delivery outcomes for one alert event type; each submitted alert lands in one bucket.",
+        "properties": {
+          "failed": {
+            "default": 0,
+            "title": "Failed",
+            "type": "integer"
+          },
+          "filtered": {
+            "default": 0,
+            "title": "Filtered",
+            "type": "integer"
+          },
+          "last_submitted_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Submitted At"
+          },
+          "sent": {
+            "default": 0,
+            "title": "Sent",
+            "type": "integer"
+          },
+          "submitted": {
+            "default": 0,
+            "title": "Submitted",
+            "type": "integer"
+          },
+          "suppressed": {
+            "default": 0,
+            "title": "Suppressed",
+            "type": "integer"
+          }
+        },
+        "title": "StatusNotificationEventDiagnostics",
         "type": "object"
       },
       "StatusNotificationRouteDiagnostics": {
@@ -7393,6 +9063,87 @@
           }
         },
         "title": "StatusNotificationRouteDiagnostics",
+        "type": "object"
+      },
+      "StatusOrderBookDiagnostics": {
+        "additionalProperties": false,
+        "description": "Local WS order books of one execution venue (issue #296).\n\n`books` counts symbols with a non-empty local book; `stale_books` those older than\n`stale_after_s` (`ARB_EXEC_DEPTH_MAX_AGE_S`), which the depth query will not use.\n`subscriptions` is the number of live book subscriptions and `resyncing` the books\nwaiting for a fresh snapshot after a sequence gap. Counters are totals since start:\n`gaps_total` sequence gaps detected, `resyncs_total` resync requests sent, and\n`out_of_order_total` replayed or reordered frames dropped. Ages are seconds since the\nnewest (`last_update_age_s`) and oldest (`oldest_book_age_s`) book update.",
+        "properties": {
+          "books": {
+            "default": 0,
+            "title": "Books",
+            "type": "integer"
+          },
+          "gaps_total": {
+            "default": 0,
+            "title": "Gaps Total",
+            "type": "integer"
+          },
+          "last_gap_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Gap At"
+          },
+          "last_update_age_s": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Update Age S"
+          },
+          "oldest_book_age_s": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Oldest Book Age S"
+          },
+          "out_of_order_total": {
+            "default": 0,
+            "title": "Out Of Order Total",
+            "type": "integer"
+          },
+          "resyncing": {
+            "default": 0,
+            "title": "Resyncing",
+            "type": "integer"
+          },
+          "resyncs_total": {
+            "default": 0,
+            "title": "Resyncs Total",
+            "type": "integer"
+          },
+          "stale_after_s": {
+            "default": 0.0,
+            "title": "Stale After S",
+            "type": "number"
+          },
+          "stale_books": {
+            "default": 0,
+            "title": "Stale Books",
+            "type": "integer"
+          },
+          "subscriptions": {
+            "default": 0,
+            "title": "Subscriptions",
+            "type": "integer"
+          }
+        },
+        "title": "StatusOrderBookDiagnostics",
         "type": "object"
       },
       "StatusPositionMonitorDiagnostics": {
@@ -7465,42 +9216,102 @@
         "title": "StatusPositionMonitorDiagnostics",
         "type": "object"
       },
+      "StatusPositionReconcileItem": {
+        "additionalProperties": false,
+        "description": "One `(exchange, symbol)` compared at restart; sizes are signed decimal strings.",
+        "properties": {
+          "actual": {
+            "title": "Actual",
+            "type": "string"
+          },
+          "attempt_ids": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Attempt Ids",
+            "type": "array"
+          },
+          "classification": {
+            "enum": [
+              "match",
+              "missing",
+              "extra",
+              "diverged"
+            ],
+            "title": "Classification",
+            "type": "string"
+          },
+          "exchange": {
+            "title": "Exchange",
+            "type": "string"
+          },
+          "expected": {
+            "title": "Expected",
+            "type": "string"
+          },
+          "remediation": {
+            "enum": [
+              "keep_tracking",
+              "hold_for_operator_close",
+              "hold_for_operator_adoption",
+              "hold_for_operator_resize"
+            ],
+            "title": "Remediation",
+            "type": "string"
+          },
+          "symbol": {
+            "title": "Symbol",
+            "type": "string"
+          }
+        },
+        "required": [
+          "exchange",
+          "symbol",
+          "expected",
+          "actual",
+          "classification",
+          "remediation"
+        ],
+        "title": "StatusPositionReconcileItem",
+        "type": "object"
+      },
+      "StatusPostCloseResidualItem": {
+        "additionalProperties": false,
+        "properties": {
+          "attempt_id": {
+            "title": "Attempt Id",
+            "type": "string"
+          },
+          "detected_at": {
+            "title": "Detected At",
+            "type": "string"
+          },
+          "positions": {
+            "title": "Positions",
+            "type": "string"
+          },
+          "symbol": {
+            "title": "Symbol",
+            "type": "string"
+          }
+        },
+        "required": [
+          "attempt_id",
+          "symbol",
+          "detected_at",
+          "positions"
+        ],
+        "title": "StatusPostCloseResidualItem",
+        "type": "object"
+      },
       "StatusPreflightSourceDiagnostics": {
         "additionalProperties": false,
         "description": "Preflight source-of-truth cutover (issue #170).",
         "properties": {
-          "approval_error": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Approval Error"
-          },
-          "approval_stage": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Approval Stage"
-          },
-          "canary_symbols": {
-            "items": {
-              "type": "string"
-            },
-            "title": "Canary Symbols",
-            "type": "array"
-          },
           "last_reason": {
             "anyOf": [
               {
+                "const": "cutover",
                 "type": "string"
               },
               {
@@ -7512,10 +9323,7 @@
           "last_served_by": {
             "anyOf": [
               {
-                "enum": [
-                  "legacy",
-                  "nautilus"
-                ],
+                "const": "nautilus",
                 "type": "string"
               },
               {
@@ -7524,40 +9332,9 @@
             ],
             "title": "Last Served By"
           },
-          "regression_at": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Regression At"
-          },
-          "regression_latched": {
-            "default": false,
-            "title": "Regression Latched",
-            "type": "boolean"
-          },
-          "regression_reason": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Regression Reason"
-          },
           "requested": {
-            "default": "legacy",
-            "enum": [
-              "legacy",
-              "nautilus_canary",
-              "nautilus"
-            ],
+            "const": "nautilus",
+            "default": "nautilus",
             "title": "Requested",
             "type": "string"
           },
@@ -7570,6 +9347,87 @@
           }
         },
         "title": "StatusPreflightSourceDiagnostics",
+        "type": "object"
+      },
+      "StatusRateLimitDiagnostics": {
+        "additionalProperties": false,
+        "description": "REST request budget of one venue (issue #299).\n\n`used`/`headroom` are request weight inside the sliding window; `reserved_execution` is\nthe share only order submit/cancel may use. `throttled_count` counts requests the local\nbudget delayed, `rejected_count` the non-execution requests it gave up on, and\n`over_budget_count` the execution requests sent anyway after their bounded wait.",
+        "properties": {
+          "cooldown_remaining_s": {
+            "default": 0.0,
+            "title": "Cooldown Remaining S",
+            "type": "number"
+          },
+          "enabled": {
+            "default": true,
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "headroom": {
+            "default": 0,
+            "title": "Headroom",
+            "type": "integer"
+          },
+          "last_429_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last 429 At"
+          },
+          "limit": {
+            "default": 0,
+            "title": "Limit",
+            "type": "integer"
+          },
+          "over_budget_count": {
+            "default": 0,
+            "title": "Over Budget Count",
+            "type": "integer"
+          },
+          "rate_limited_count": {
+            "default": 0,
+            "title": "Rate Limited Count",
+            "type": "integer"
+          },
+          "rejected_count": {
+            "default": 0,
+            "title": "Rejected Count",
+            "type": "integer"
+          },
+          "requests_by_priority": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Requests By Priority",
+            "type": "object"
+          },
+          "reserved_execution": {
+            "default": 0,
+            "title": "Reserved Execution",
+            "type": "integer"
+          },
+          "throttled_count": {
+            "default": 0,
+            "title": "Throttled Count",
+            "type": "integer"
+          },
+          "used": {
+            "default": 0,
+            "title": "Used",
+            "type": "integer"
+          },
+          "window_s": {
+            "default": 0.0,
+            "title": "Window S",
+            "type": "number"
+          }
+        },
+        "title": "StatusRateLimitDiagnostics",
         "type": "object"
       },
       "StatusReasonSeverityCounts": {
@@ -7672,6 +9530,9 @@
             "title": "Execution Consecutive Rollbacks",
             "type": "integer"
           },
+          "execution_cycle_reconcile": {
+            "$ref": "#/components/schemas/StatusExecutionCycleReconcile"
+          },
           "execution_entries_stopped": {
             "default": false,
             "title": "Execution Entries Stopped",
@@ -7716,8 +9577,17 @@
             ],
             "title": "Execution Last Rollback Slippage Bps"
           },
+          "execution_latency": {
+            "$ref": "#/components/schemas/StatusExecutionLatency"
+          },
           "execution_persistence": {
             "$ref": "#/components/schemas/StatusExecutionPersistenceDiagnostics"
+          },
+          "execution_position_reconcile": {
+            "$ref": "#/components/schemas/StatusExecutionPositionReconcile"
+          },
+          "execution_recovery": {
+            "$ref": "#/components/schemas/StatusExecutionRecovery"
           },
           "execution_strategy_id": {
             "anyOf": [
@@ -7751,6 +9621,13 @@
               }
             ],
             "title": "Execution Strategy Profile Id"
+          },
+          "execution_venue_health": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/StatusExecutionVenueHealth"
+            },
+            "title": "Execution Venue Health",
+            "type": "object"
           },
           "last_poll_duration_ms": {
             "anyOf": [
@@ -7796,11 +9673,25 @@
             ],
             "title": "Last Updated At"
           },
+          "market_data_sources": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/StatusMarketDataSourceItem"
+            },
+            "title": "Market Data Sources",
+            "type": "object"
+          },
           "migration_fallback": {
             "$ref": "#/components/schemas/StatusMigrationFallbackDiagnostics"
           },
           "notifications": {
             "$ref": "#/components/schemas/StatusNotificationDiagnostics"
+          },
+          "order_books": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/StatusOrderBookDiagnostics"
+            },
+            "title": "Order Books",
+            "type": "object"
           },
           "poll_count_failed": {
             "title": "Poll Count Failed",
@@ -7816,6 +9707,13 @@
           },
           "position_monitor": {
             "$ref": "#/components/schemas/StatusPositionMonitorDiagnostics"
+          },
+          "rate_limits": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/StatusRateLimitDiagnostics"
+            },
+            "title": "Rate Limits",
+            "type": "object"
           },
           "risk_guardrails": {
             "$ref": "#/components/schemas/StatusRiskGuardrailsDiagnostics"
@@ -7836,6 +9734,9 @@
             },
             "title": "Screener Drop Counters By Strategy",
             "type": "object"
+          },
+          "screener_latency": {
+            "$ref": "#/components/schemas/StatusScreenerLatency"
           },
           "screener_post_cost_candidates": {
             "title": "Screener Post Cost Candidates",
@@ -7870,12 +9771,18 @@
             "title": "Started At",
             "type": "string"
           },
+          "stop_trading": {
+            "$ref": "#/components/schemas/StatusStopTradingDiagnostics"
+          },
           "trust_diagnostics": {
             "$ref": "#/components/schemas/StatusTrustDiagnosticsItem"
           },
           "uptime_s": {
             "title": "Uptime S",
             "type": "number"
+          },
+          "ws_auth_tickets": {
+            "$ref": "#/components/schemas/StatusWsAuthTickets"
           },
           "ws_feed_diagnostics": {
             "additionalProperties": {
@@ -8032,6 +9939,98 @@
         "title": "StatusRiskGuardrailsDiagnostics",
         "type": "object"
       },
+      "StatusScreenerLatency": {
+        "additionalProperties": false,
+        "description": "Screener stage latency per pass kind and event-driven fast passes (issue #298).\n\n`full` covers the periodic full pass; `fast` covers passes that re-screen only symbols whose\nmarket data or WS order book changed (`ARB_SCREENER_FAST_PASS_INTERVAL_S`), including\n`update_to_decision`: oldest pending change -> published decision.",
+        "properties": {
+          "budgets_ms": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "title": "Budgets Ms",
+            "type": "object"
+          },
+          "fast": {
+            "$ref": "#/components/schemas/StatusScreenerPassLatency"
+          },
+          "fast_pass_enabled": {
+            "default": false,
+            "title": "Fast Pass Enabled",
+            "type": "boolean"
+          },
+          "fast_pass_errors_total": {
+            "default": 0,
+            "title": "Fast Pass Errors Total",
+            "type": "integer"
+          },
+          "fast_pass_interval_s": {
+            "default": 0.0,
+            "title": "Fast Pass Interval S",
+            "type": "number"
+          },
+          "fast_passes_idle_total": {
+            "default": 0,
+            "title": "Fast Passes Idle Total",
+            "type": "integer"
+          },
+          "fast_passes_total": {
+            "default": 0,
+            "title": "Fast Passes Total",
+            "type": "integer"
+          },
+          "full": {
+            "$ref": "#/components/schemas/StatusScreenerPassLatency"
+          },
+          "full_pass_interval_s": {
+            "default": 0.0,
+            "title": "Full Pass Interval S",
+            "type": "number"
+          },
+          "last_fast_pass_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Fast Pass At"
+          },
+          "last_fast_pass_symbols": {
+            "default": 0,
+            "title": "Last Fast Pass Symbols",
+            "type": "integer"
+          }
+        },
+        "title": "StatusScreenerLatency",
+        "type": "object"
+      },
+      "StatusScreenerPassLatency": {
+        "additionalProperties": false,
+        "properties": {
+          "bottleneck": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bottleneck"
+          },
+          "stages": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/StatusLatencyStage"
+            },
+            "title": "Stages",
+            "type": "object"
+          }
+        },
+        "title": "StatusScreenerPassLatency",
+        "type": "object"
+      },
       "StatusSnapshotContinuity": {
         "additionalProperties": false,
         "properties": {
@@ -8149,6 +10148,125 @@
         "title": "StatusSnapshotContinuity",
         "type": "object"
       },
+      "StatusStopTradingDiagnostics": {
+        "additionalProperties": false,
+        "description": "`/status.stop_trading`: latch state and recovery gate summary (issues #272, #273).",
+        "properties": {
+          "ack_required": {
+            "default": false,
+            "title": "Ack Required",
+            "type": "boolean"
+          },
+          "acknowledged": {
+            "default": false,
+            "title": "Acknowledged",
+            "type": "boolean"
+          },
+          "acknowledged_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Acknowledged By"
+          },
+          "cooldown_remaining_s": {
+            "default": 0.0,
+            "title": "Cooldown Remaining S",
+            "type": "number"
+          },
+          "critical": {
+            "default": false,
+            "title": "Critical",
+            "type": "boolean"
+          },
+          "last_evaluated_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Evaluated At"
+          },
+          "last_tripped_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Tripped At"
+          },
+          "latched_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latched At"
+          },
+          "recovery_blockers": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Recovery Blockers",
+            "type": "array"
+          },
+          "recovery_ready": {
+            "default": false,
+            "title": "Recovery Ready",
+            "type": "boolean"
+          },
+          "released_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Released At"
+          },
+          "state": {
+            "default": "running",
+            "enum": [
+              "running",
+              "stopped"
+            ],
+            "title": "State",
+            "type": "string"
+          },
+          "triggers": {
+            "items": {
+              "enum": [
+                "consecutive_rollbacks",
+                "api_errors",
+                "fill_slippage",
+                "stale_data",
+                "risk_breach",
+                "emergency_unwind"
+              ],
+              "type": "string"
+            },
+            "title": "Triggers",
+            "type": "array"
+          }
+        },
+        "title": "StatusStopTradingDiagnostics",
+        "type": "object"
+      },
       "StatusTrustDiagnosticsItem": {
         "additionalProperties": false,
         "properties": {
@@ -8170,6 +10288,155 @@
           }
         },
         "title": "StatusTrustDiagnosticsItem",
+        "type": "object"
+      },
+      "StatusUnhedgedAttemptItem": {
+        "additionalProperties": false,
+        "properties": {
+          "attempt_id": {
+            "title": "Attempt Id",
+            "type": "string"
+          },
+          "hedge_state": {
+            "title": "Hedge State",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "symbol": {
+            "title": "Symbol",
+            "type": "string"
+          },
+          "unhedged_duration_s": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unhedged Duration S"
+          },
+          "unhedged_since": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unhedged Since"
+          },
+          "unresolved_orders": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Unresolved Orders",
+            "type": "array"
+          }
+        },
+        "required": [
+          "attempt_id",
+          "symbol",
+          "status",
+          "hedge_state"
+        ],
+        "title": "StatusUnhedgedAttemptItem",
+        "type": "object"
+      },
+      "StatusWsAuthTickets": {
+        "additionalProperties": false,
+        "description": "WS auth ticket abuse telemetry (issue #307).\n\nTotals count since process start. `*_in_window` counts cover the last `window_s` seconds,\nthe window the per-client and global issue limits use: a reconnect storm shows up as\n`issued_in_window` approaching `max_issues_per_window`, and ticket abuse as rate-limited\nor refused tickets in the window.",
+        "properties": {
+          "consumed_total": {
+            "default": 0,
+            "title": "Consumed Total",
+            "type": "integer"
+          },
+          "issued_in_window": {
+            "default": 0,
+            "title": "Issued In Window",
+            "type": "integer"
+          },
+          "issued_total": {
+            "default": 0,
+            "title": "Issued Total",
+            "type": "integer"
+          },
+          "max_issues_per_client_per_window": {
+            "default": 0,
+            "title": "Max Issues Per Client Per Window",
+            "type": "integer"
+          },
+          "max_issues_per_window": {
+            "default": 0,
+            "title": "Max Issues Per Window",
+            "type": "integer"
+          },
+          "outstanding": {
+            "default": 0,
+            "title": "Outstanding",
+            "type": "integer"
+          },
+          "rate_limited_by_scope": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "propertyNames": {
+              "enum": [
+                "client",
+                "global"
+              ]
+            },
+            "title": "Rate Limited By Scope",
+            "type": "object"
+          },
+          "rate_limited_in_window": {
+            "default": 0,
+            "title": "Rate Limited In Window",
+            "type": "integer"
+          },
+          "rate_limited_total": {
+            "default": 0,
+            "title": "Rate Limited Total",
+            "type": "integer"
+          },
+          "refused_by_reason": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "propertyNames": {
+              "enum": [
+                "expired",
+                "reused",
+                "unknown",
+                "client_mismatch"
+              ]
+            },
+            "title": "Refused By Reason",
+            "type": "object"
+          },
+          "refused_in_window": {
+            "default": 0,
+            "title": "Refused In Window",
+            "type": "integer"
+          },
+          "refused_total": {
+            "default": 0,
+            "title": "Refused Total",
+            "type": "integer"
+          },
+          "window_s": {
+            "default": 0.0,
+            "title": "Window S",
+            "type": "number"
+          }
+        },
+        "title": "StatusWsAuthTickets",
         "type": "object"
       },
       "StatusWsFeedDiagnostics": {
@@ -8263,6 +10530,513 @@
           }
         },
         "title": "StatusWsFeedDiagnostics",
+        "type": "object"
+      },
+      "StopTradingAckItem": {
+        "properties": {
+          "actor": {
+            "title": "Actor",
+            "type": "string"
+          },
+          "at": {
+            "title": "At",
+            "type": "string"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          },
+          "triggers": {
+            "items": {
+              "enum": [
+                "consecutive_rollbacks",
+                "api_errors",
+                "fill_slippage",
+                "stale_data",
+                "risk_breach",
+                "emergency_unwind"
+              ],
+              "type": "string"
+            },
+            "title": "Triggers",
+            "type": "array"
+          }
+        },
+        "required": [
+          "at",
+          "actor",
+          "reason"
+        ],
+        "title": "StopTradingAckItem",
+        "type": "object"
+      },
+      "StopTradingAckRequest": {
+        "properties": {
+          "reason": {
+            "maxLength": 200,
+            "title": "Reason",
+            "type": "string"
+          }
+        },
+        "required": [
+          "reason"
+        ],
+        "title": "StopTradingAckRequest",
+        "type": "object"
+      },
+      "StopTradingEventItem": {
+        "properties": {
+          "actor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Actor"
+          },
+          "at": {
+            "title": "At",
+            "type": "string"
+          },
+          "event": {
+            "enum": [
+              "tripped",
+              "acknowledged",
+              "released"
+            ],
+            "title": "Event",
+            "type": "string"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          },
+          "trigger": {
+            "anyOf": [
+              {
+                "enum": [
+                  "consecutive_rollbacks",
+                  "api_errors",
+                  "fill_slippage",
+                  "stale_data",
+                  "risk_breach",
+                  "emergency_unwind"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Trigger"
+          }
+        },
+        "required": [
+          "at",
+          "event",
+          "reason"
+        ],
+        "title": "StopTradingEventItem",
+        "type": "object"
+      },
+      "StopTradingHealthCheckItem": {
+        "properties": {
+          "detail": {
+            "title": "Detail",
+            "type": "string"
+          },
+          "name": {
+            "enum": [
+              "market_data_fresh",
+              "venue_api_errors",
+              "accounts_readable",
+              "risk_guardrails_clear",
+              "order_reconciliation"
+            ],
+            "title": "Name",
+            "type": "string"
+          },
+          "ok": {
+            "title": "Ok",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "name",
+          "ok",
+          "detail"
+        ],
+        "title": "StopTradingHealthCheckItem",
+        "type": "object"
+      },
+      "StopTradingReasonItem": {
+        "description": "One latched stop-trading trigger (issue #272).",
+        "properties": {
+          "critical": {
+            "title": "Critical",
+            "type": "boolean"
+          },
+          "first_tripped_at": {
+            "title": "First Tripped At",
+            "type": "string"
+          },
+          "last_tripped_at": {
+            "title": "Last Tripped At",
+            "type": "string"
+          },
+          "observed": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Observed"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          },
+          "subject": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Subject"
+          },
+          "threshold": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Threshold"
+          },
+          "trigger": {
+            "enum": [
+              "consecutive_rollbacks",
+              "api_errors",
+              "fill_slippage",
+              "stale_data",
+              "risk_breach",
+              "emergency_unwind"
+            ],
+            "title": "Trigger",
+            "type": "string"
+          },
+          "trips": {
+            "title": "Trips",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "trigger",
+          "reason",
+          "critical",
+          "first_tripped_at",
+          "last_tripped_at",
+          "trips"
+        ],
+        "title": "StopTradingReasonItem",
+        "type": "object"
+      },
+      "StopTradingRecoveryGateItem": {
+        "description": "Recovery prerequisites (issue #273); `ready` means the next pass releases the stop.",
+        "properties": {
+          "ack_required": {
+            "title": "Ack Required",
+            "type": "boolean"
+          },
+          "acknowledged": {
+            "title": "Acknowledged",
+            "type": "boolean"
+          },
+          "blockers": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Blockers",
+            "type": "array"
+          },
+          "cooldown_elapsed": {
+            "title": "Cooldown Elapsed",
+            "type": "boolean"
+          },
+          "cooldown_remaining_s": {
+            "title": "Cooldown Remaining S",
+            "type": "number"
+          },
+          "cooldown_s": {
+            "title": "Cooldown S",
+            "type": "number"
+          },
+          "health_checks": {
+            "items": {
+              "$ref": "#/components/schemas/StopTradingHealthCheckItem"
+            },
+            "title": "Health Checks",
+            "type": "array"
+          },
+          "health_green": {
+            "title": "Health Green",
+            "type": "boolean"
+          },
+          "ready": {
+            "title": "Ready",
+            "type": "boolean"
+          },
+          "stopped": {
+            "title": "Stopped",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "stopped",
+          "cooldown_s",
+          "cooldown_elapsed",
+          "cooldown_remaining_s",
+          "health_green",
+          "ack_required",
+          "acknowledged",
+          "ready"
+        ],
+        "title": "StopTradingRecoveryGateItem",
+        "type": "object"
+      },
+      "StopTradingResponse": {
+        "description": "`GET /risk/stop-trading`: latch, recovery gate, trigger observations, and audit log.",
+        "properties": {
+          "acknowledgment": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/StopTradingAckItem"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "active": {
+            "items": {
+              "$ref": "#/components/schemas/StopTradingReasonItem"
+            },
+            "title": "Active",
+            "type": "array"
+          },
+          "api_error_counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Api Error Counts",
+            "type": "object"
+          },
+          "checked_at": {
+            "title": "Checked At",
+            "type": "string"
+          },
+          "data_ages_s": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "title": "Data Ages S",
+            "type": "object"
+          },
+          "events": {
+            "items": {
+              "$ref": "#/components/schemas/StopTradingEventItem"
+            },
+            "title": "Events",
+            "type": "array"
+          },
+          "fill_slippage_samples": {
+            "items": {
+              "type": "number"
+            },
+            "title": "Fill Slippage Samples",
+            "type": "array"
+          },
+          "gate": {
+            "$ref": "#/components/schemas/StopTradingRecoveryGateItem"
+          },
+          "last_evaluated_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Evaluated At"
+          },
+          "last_hits": {
+            "items": {
+              "$ref": "#/components/schemas/StopTradingTriggerHitItem"
+            },
+            "title": "Last Hits",
+            "type": "array"
+          },
+          "last_tripped_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Tripped At"
+          },
+          "latched_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latched At"
+          },
+          "released_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Released At"
+          },
+          "require_manual_ack": {
+            "title": "Require Manual Ack",
+            "type": "boolean"
+          },
+          "restore_error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Restore Error"
+          },
+          "state": {
+            "enum": [
+              "running",
+              "stopped"
+            ],
+            "title": "State",
+            "type": "string"
+          },
+          "thresholds": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "title": "Thresholds",
+            "type": "object"
+          }
+        },
+        "required": [
+          "checked_at",
+          "state",
+          "gate",
+          "require_manual_ack"
+        ],
+        "title": "StopTradingResponse",
+        "type": "object"
+      },
+      "StopTradingTriggerHitItem": {
+        "properties": {
+          "critical": {
+            "title": "Critical",
+            "type": "boolean"
+          },
+          "observed": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Observed"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          },
+          "subject": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Subject"
+          },
+          "threshold": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Threshold"
+          },
+          "trigger": {
+            "enum": [
+              "consecutive_rollbacks",
+              "api_errors",
+              "fill_slippage",
+              "stale_data",
+              "risk_breach",
+              "emergency_unwind"
+            ],
+            "title": "Trigger",
+            "type": "string"
+          }
+        },
+        "required": [
+          "trigger",
+          "reason",
+          "critical"
+        ],
+        "title": "StopTradingTriggerHitItem",
         "type": "object"
       },
       "SurvivalPoint": {
@@ -9318,6 +12092,26 @@
         "summary": "Get Execution Preflight"
       }
     },
+    "/healthz": {
+      "get": {
+        "operationId": "get_healthz_healthz_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Get Healthz Healthz Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Healthz"
+      }
+    },
     "/migration/parity/artifacts": {
       "get": {
         "operationId": "list_migration_parity_artifacts_migration_parity_artifacts_get",
@@ -9424,29 +12218,25 @@
         "summary": "Get Migration Parity Report"
       }
     },
-    "/migration/preflight-parity/artifacts": {
-      "get": {
-        "operationId": "list_migration_preflight_parity_artifacts_migration_preflight_parity_artifacts_get",
-        "parameters": [
-          {
-            "in": "query",
-            "name": "limit",
-            "required": false,
-            "schema": {
-              "default": 200,
-              "maximum": 1000,
-              "minimum": 1,
-              "title": "Limit",
-              "type": "integer"
+    "/notifications/monitor-alert": {
+      "post": {
+        "operationId": "ingest_monitor_alert_notifications_monitor_alert_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MonitorAlertIngestRequest"
+              }
             }
-          }
-        ],
+          },
+          "required": true
+        },
         "responses": {
           "200": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PreflightParityArtifactListResponse"
+                  "$ref": "#/components/schemas/MonitorAlertIngestResponse"
                 }
               }
             },
@@ -9463,71 +12253,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "List Migration Preflight Parity Artifacts"
-      }
-    },
-    "/migration/preflight-parity/report": {
-      "get": {
-        "operationId": "get_migration_preflight_parity_report_migration_preflight_parity_report_get",
-        "parameters": [
-          {
-            "in": "query",
-            "name": "window_s",
-            "required": false,
-            "schema": {
-              "default": 3600.0,
-              "maximum": 604800.0,
-              "minimum": 60.0,
-              "title": "Window S",
-              "type": "number"
-            }
-          },
-          {
-            "in": "query",
-            "name": "limit",
-            "required": false,
-            "schema": {
-              "default": 500,
-              "maximum": 2000,
-              "minimum": 1,
-              "title": "Limit",
-              "type": "integer"
-            }
-          },
-          {
-            "in": "query",
-            "name": "include_artifacts",
-            "required": false,
-            "schema": {
-              "default": false,
-              "title": "Include Artifacts",
-              "type": "boolean"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PreflightParityReportResponse"
-                }
-              }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "Get Migration Preflight Parity Report"
+        "summary": "Ingest Monitor Alert"
       }
     },
     "/opportunities": {
@@ -9646,6 +12372,96 @@
         "summary": "Get Daily Pnl"
       }
     },
+    "/public/correlation": {
+      "get": {
+        "operationId": "get_public_correlation_public_correlation_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicCorrelationResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Public Correlation"
+      }
+    },
+    "/public/opportunities": {
+      "get": {
+        "operationId": "get_public_opportunities_public_opportunities_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "strategy_type",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "enum": [
+                      "funding_arbitrage",
+                      "basis_convergence",
+                      "cash_and_carry"
+                    ],
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Strategy Type"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicOpportunitiesResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Public Opportunities"
+      }
+    },
+    "/public/status": {
+      "get": {
+        "operationId": "get_public_status_public_status_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicStatusResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Public Status"
+      }
+    },
     "/risk/guardrails": {
       "get": {
         "description": "Guardrail decisions, entry blocks, close history, and the active thresholds.",
@@ -9663,6 +12479,64 @@
           }
         },
         "summary": "Get Risk Guardrails"
+      }
+    },
+    "/risk/stop-trading": {
+      "get": {
+        "description": "Global stop-trading latch, recovery gate prerequisites, and the audit log.",
+        "operationId": "get_stop_trading_risk_stop_trading_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StopTradingResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Stop Trading"
+      }
+    },
+    "/risk/stop-trading/ack": {
+      "post": {
+        "description": "Operator acknowledgment of the latched stop; released at once if the gate passed.",
+        "operationId": "post_stop_trading_ack_risk_stop_trading_ack_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StopTradingAckRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StopTradingResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Post Stop Trading Ack"
       }
     },
     "/snapshots/continuity": {

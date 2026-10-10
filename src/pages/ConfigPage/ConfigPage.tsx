@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import layoutStyles from "../../pages/OpportunitiesPage/OpportunitiesPage.module.scss";
 import pageStyles from "./ConfigPage.module.scss";
 import { useConfig } from "../../hooks/useConfig";
@@ -136,6 +136,7 @@ function groupEditableFields(editableFields: string[]) {
 
 const ConfigPage = () => {
   usePageTitle("Config");
+  const baseId = useId();
 
   const [draftOverrides, setDraftOverrides] = useState<Partial<Draft>>({});
   const [baselineConfig, setBaselineConfig] = useState<ConfigResponse | null>(null);
@@ -144,6 +145,8 @@ const ConfigPage = () => {
   const [localError, setLocalError] = useState<string | null>(null);
   const [hint, setHint] = useState<string | null>(null);
   const [applyingPresetKey, setApplyingPresetKey] = useState<string | null>(null);
+  const previewButtonRef = useRef<HTMLButtonElement>(null);
+  const restoreFocusRef = useRef(false);
 
   const hasDraft = Object.keys(draftOverrides).length > 0;
 
@@ -152,6 +155,13 @@ const ConfigPage = () => {
     refetchInterval: hasDraft ? POLL_INTERVAL_MS : undefined,
   });
   const updateConfig = useUpdateConfig();
+
+  useEffect(() => {
+    if (!previewOpen && restoreFocusRef.current && !updateConfig.isPending) {
+      restoreFocusRef.current = false;
+      previewButtonRef.current?.focus();
+    }
+  }, [previewOpen, updateConfig.isPending]);
 
   const editableFields = useMemo(() => (data ? editableFieldsFromConfig(data) : []), [data]);
   const fieldGroups = useMemo(() => groupEditableFields(editableFields), [editableFields]);
@@ -181,6 +191,11 @@ const ConfigPage = () => {
   const setFieldOverride = (field: string, value: string | boolean) => {
     startEditingIfNeeded();
     setDraftOverrides((prev) => ({ ...prev, [field]: value }));
+    setPreviewOpen(false);
+  };
+
+  const closePreview = () => {
+    restoreFocusRef.current = true;
     setPreviewOpen(false);
   };
 
@@ -227,7 +242,7 @@ const ConfigPage = () => {
       await updateConfig.mutateAsync(payload);
       setDraftOverrides({});
       setBaselineConfig(null);
-      setPreviewOpen(false);
+      closePreview();
       setHint("Config updated");
     } catch (e) {
       setLocalError(e instanceof Error ? e.message : "Failed to update config");
@@ -238,10 +253,20 @@ const ConfigPage = () => {
     <div className={layoutStyles.page}>
       <h1 className={layoutStyles.title}>Config</h1>
 
-      {error && <div className={layoutStyles.errorBox}>Error: {error}</div>}
-      {localError && <div className={layoutStyles.errorBox}>Error: {localError}</div>}
-      {loading && !data && <div>Loading config...</div>}
-      {hint && <div className={layoutStyles.hint}>{hint}</div>}
+      {error && (
+        <div className={layoutStyles.errorBox} role="alert">
+          Error: {error}
+        </div>
+      )}
+      {localError && (
+        <div className={layoutStyles.errorBox} role="alert">
+          Error: {localError}
+        </div>
+      )}
+      {loading && !data && <div role="status">Loading config...</div>}
+      <div className={layoutStyles.hint} role="status">
+        {hint}
+      </div>
 
       {conflicts.length > 0 && (
         <div className={pageStyles.conflictBanner} role="alert">
@@ -296,37 +321,44 @@ const ConfigPage = () => {
                     {group.fields.map((field) => {
                       const value = draft[field];
                       const isBoolean = typeof value === "boolean";
+                      const inputId = `${baseId}-${field}`;
+                      const labelText = FIELD_LABELS[field] ?? field;
+                      const help = CONFIG_FIELD_HELP[field];
+                      const labelBlock = (
+                        <div className={pageStyles.label}>
+                          <label htmlFor={inputId}>{labelText}</label>
+                          {help && <HelpTooltip label={labelText} text={help} />}
+                        </div>
+                      );
                       return (
-                        <label
+                        <div
                           key={field}
                           className={isBoolean ? pageStyles.booleanField : pageStyles.field}
                         >
-                          {isBoolean && (
-                            <input
-                              type="checkbox"
-                              checked={value as boolean}
-                              onChange={(e) => setFieldOverride(field, e.target.checked)}
-                            />
-                          )}
-                          <span className={pageStyles.label}>
-                            {FIELD_LABELS[field] ?? field}
-                            {CONFIG_FIELD_HELP[field] && (
-                              <HelpTooltip
-                                label={FIELD_LABELS[field] ?? field}
-                                text={CONFIG_FIELD_HELP[field]}
+                          {isBoolean ? (
+                            <>
+                              <input
+                                id={inputId}
+                                type="checkbox"
+                                checked={value as boolean}
+                                onChange={(e) => setFieldOverride(field, e.target.checked)}
                               />
-                            )}
-                          </span>
-                          {!isBoolean && (
-                            <input
-                              className={pageStyles.input}
-                              type="number"
-                              step="any"
-                              value={value as string}
-                              onChange={(e) => setFieldOverride(field, e.target.value)}
-                            />
+                              {labelBlock}
+                            </>
+                          ) : (
+                            <>
+                              {labelBlock}
+                              <input
+                                id={inputId}
+                                className={pageStyles.input}
+                                type="number"
+                                step="any"
+                                value={value as string}
+                                onChange={(e) => setFieldOverride(field, e.target.value)}
+                              />
+                            </>
                           )}
-                        </label>
+                        </div>
                       );
                     })}
                   </div>
@@ -371,6 +403,7 @@ const ConfigPage = () => {
                   Reset
                 </button>
                 <button
+                  ref={previewButtonRef}
                   type="button"
                   className={pageStyles.buttonPrimary}
                   onClick={onOpenPreview}
@@ -394,7 +427,7 @@ const ConfigPage = () => {
                   persist={persist}
                   fieldLabels={FIELD_LABELS}
                   onConfirm={() => void onConfirmSave()}
-                  onCancel={() => setPreviewOpen(false)}
+                  onCancel={closePreview}
                   submitting={updateConfig.isPending}
                 />
               )}

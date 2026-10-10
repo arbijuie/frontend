@@ -60,6 +60,12 @@
   background: v.$bg-card;
 }
 
+.strategyWarning {
+  margin-top: 0.4rem;
+  font-size: 0.78rem;
+  color: v.$text-muted;
+}
+
 .errorBox {
   padding: 1rem;
   color: v.$red;
@@ -90,6 +96,17 @@
   font-weight: 600;
   color: v.$text-secondary;
   margin: 0.75rem 0;
+}
+
+.resetButton {
+  margin-left: 0.5rem;
+  padding: 0.3rem 0.6rem;
+  border: 0.0625rem solid v.$border-color;
+  background: none;
+  color: v.$text-secondary;
+  border-radius: 0.5rem;
+  font-size: 0.72rem;
+  cursor: pointer;
 }
 
 @media (min-width: 960px) {

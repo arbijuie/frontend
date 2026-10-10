@@ -22,8 +22,8 @@ const BacktestLockDetail = ({ lockId }: BacktestLockDetailProps) => {
     );
   }
 
-  if (loading) return <div>Loading lock details...</div>;
-  if (error) return <div>Error: {error}</div>;
+  if (loading) return <div role="status">Loading lock details...</div>;
+  if (error) return <div role="alert">Error: {error}</div>;
   if (!data) return null;
 
   return (

@@ -46,7 +46,7 @@
 
 .createLockButton {
   width: 100%;
-  background: v.$accent-purple;
+  background: v.$accent-purple-bg;
   color: #fff;
   border: none;
   border-radius: 0.5rem;
@@ -54,7 +54,8 @@
   font-weight: 600;
   font-size: 0.875rem;
 
-  &:disabled {
+  &:disabled,
+  &[aria-disabled="true"] {
     opacity: 0.6;
   }
 }

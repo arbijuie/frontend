@@ -1,0 +1,240 @@
+type OpportunityStatus = "ready" | "watching" | "blocked";
+
+function makeOpportunity(
+  symbol: string,
+  status: OpportunityStatus,
+  combinedScore: number,
+  reasons: Array<{ code: string; message: string; severity: string }> = []
+) {
+  return {
+    symbol,
+    strategy_type: "funding_arbitrage",
+    strategy_profile_id: "baseline-v1",
+    legs: [
+      {
+        instrument_kind: "perp",
+        venue: "hyperliquid",
+        venue_native_symbol: symbol,
+        normalized_symbol: symbol,
+        side: "long",
+        mark_price: "100",
+        index_price: "100",
+        funding_rate: 5,
+        borrow_rate: null,
+        fee_taker: 0.035,
+        fee_maker: null,
+        margin_mode: null,
+        settlement_ccy: "USDC",
+        quote_asset: "USDC",
+      },
+      {
+        instrument_kind: "perp",
+        venue: "lighter",
+        venue_native_symbol: symbol,
+        normalized_symbol: symbol,
+        side: "short",
+        mark_price: "101",
+        index_price: "101",
+        funding_rate: 20,
+        borrow_rate: null,
+        fee_taker: 0.001,
+        fee_maker: null,
+        margin_mode: null,
+        settlement_ccy: "USDC",
+        quote_asset: "USDC",
+      },
+    ],
+    persistence_hours: 2,
+    long_rate_apr: 5,
+    short_rate_apr: 20,
+    funding_diff_apr: 15,
+    funding_edge_bps: 12,
+    basis_bps: 8,
+    basis_bonus_bps: 4,
+    fee_impact_bps: 2,
+    slippage_impact_bps: 1,
+    source_penalty_bps: 0,
+    total_cost_bps: 3,
+    depth_source_state_by_exchange: { hyperliquid: "real_rest", lighter: "real_rest" },
+    fee_source_state_by_exchange: { hyperliquid: "real_rest", lighter: "config" },
+    effective_taker_fee_by_exchange: { hyperliquid: 0.00035, lighter: 0.0001 },
+    microstructure_by_exchange: {
+      hyperliquid: {
+        best_ask: "100.20",
+        best_bid: "100.00",
+        mid: "100.10",
+        spread_bps: 2.0,
+        depth_band_5bps_usd: 60000,
+        depth_band_10bps_usd: 120000,
+        depth_band_20bps_usd: 240000,
+        imbalance: 0.1,
+        quality: "A",
+        price_source: "real_rest",
+        depth_source: "real_rest",
+        fee_source: "real_rest",
+      },
+      lighter: {
+        best_ask: "101.40",
+        best_bid: "101.00",
+        mid: "101.20",
+        spread_bps: 3.95,
+        depth_band_5bps_usd: 45000,
+        depth_band_10bps_usd: 90000,
+        depth_band_20bps_usd: 180000,
+        imbalance: -0.05,
+        quality: "B",
+        price_source: "real_ws",
+        depth_source: "real_ws",
+        fee_source: "config",
+      },
+    },
+    long_hours_to_next_funding: 0.5,
+    short_hours_to_next_funding: 0.2,
+    funding_timing_asymmetry_hours: 0.3,
+    funding_timing_penalty_bps: 0,
+    basis_expansion_penalty_bps: 0,
+    negative_funding_penalty_bps: 0,
+    min_profitable_hours: 10,
+    hours_to_breakeven: null,
+    effective_hold_hours: 72,
+    signal_score_bps: 16,
+    execution_adjusted_score_bps: 13,
+    combined_score: combinedScore,
+    long_forecast: null,
+    short_forecast: null,
+    funding_instability_multiplier: 1,
+    basis_trend: null,
+    basis_divergence_hours: null,
+    liquidity_tier: "M",
+    recommended_size_usd: 1000,
+    depth_quality: "B",
+    status,
+    reasons,
+  };
+}
+
+function withShortVenue(opportunity: ReturnType<typeof makeOpportunity>, venue: string) {
+  return {
+    ...opportunity,
+    legs: opportunity.legs.map((leg) => (leg.side === "short" ? { ...leg, venue } : leg)),
+  };
+}
+
+export const opportunitiesSnapshot = {
+  count: 4,
+  ready_count: 1,
+  updated_at: "2026-10-04T12:00:00Z",
+  opportunities: [
+    makeOpportunity("AERO", "ready", 40),
+    withShortVenue(makeOpportunity("AERO", "watching", 25), "binance"),
+    makeOpportunity("KAITO", "watching", 18, [
+      {
+        code: "score_below_min",
+        message: "score 4.00bps < min score 5.00bps",
+        severity: "watching",
+      },
+    ]),
+    makeOpportunity("DOGE", "blocked", 6, [
+      {
+        code: "real_fee_unavailable",
+        message: "hyperliquid real fee unavailable",
+        severity: "blocked",
+      },
+    ]),
+  ],
+};
+
+export const backtestSummary = {
+  total_snapshots: 12345,
+  symbols_covered: 87,
+  first_snapshot_at: "2026-09-01T00:00:00Z",
+  last_snapshot_at: "2026-10-04T12:00:00Z",
+};
+
+export const backtestGate = {
+  passed: false,
+  strategy_id: null,
+  lock_id: null,
+  reason: "No passing strategy lock yet — execution stays disabled.",
+};
+
+export const backtestLocks = [
+  {
+    lock_id: "lock-pass-001",
+    strategy_id: "baseline-v1",
+    gate_passed: true,
+    created_at: "2026-10-01T10:00:00Z",
+    total_pnl_bps: 120.5,
+    max_drawdown_bps: 30,
+    funding_carry_pnl_bps: 90,
+    basis_carry_pnl_bps: 40,
+    entry_cost_bps: 9.5,
+    entries: 12,
+    exits: 12,
+  },
+  {
+    lock_id: "lock-fail-002",
+    strategy_id: "baseline-v1",
+    gate_passed: false,
+    created_at: "2026-10-02T10:00:00Z",
+    total_pnl_bps: -15.2,
+    max_drawdown_bps: 80,
+    funding_carry_pnl_bps: 5,
+    basis_carry_pnl_bps: -12,
+    entry_cost_bps: 8.2,
+    entries: 9,
+    exits: 9,
+  },
+];
+
+export function makeLockDetail(lockId: string, gatePassed: boolean) {
+  return {
+    lock_id: lockId,
+    strategy_id: "baseline-v1",
+    strategy_profile_id: "baseline-v1",
+    schema_version: 1,
+    gate_passed: gatePassed,
+    created_at: "2026-10-02T10:00:00Z",
+    min_win_rate: 0.55,
+    min_total_pnl_bps: 0,
+    max_drawdown_bps: 50,
+    metrics: {
+      total_samples: 1200,
+      symbols_covered: 14,
+      entries: 9,
+      exits: 9,
+      closed_trades: 9,
+      wins: 4,
+      win_rate: 0.44,
+      total_pnl_bps: -15.2,
+      median_trade_pnl_bps: -1.2,
+      max_drawdown_bps: 80,
+      funding_carry_pnl_bps: 5,
+      basis_carry_pnl_bps: -12,
+      entry_cost_bps: 8.2,
+      exit_reasons: { score_decay: 5, time_stop: 4 },
+      entries_by_strategy_type: { funding_arbitrage: 9 },
+      exits_by_strategy_type: { funding_arbitrage: 9 },
+    },
+  };
+}
+
+export const replayMetrics = {
+  strategy_id: "baseline-v1",
+  total_samples: 1200,
+  symbols_covered: 14,
+  entries: 9,
+  exits: 9,
+  closed_trades: 9,
+  wins: 4,
+  win_rate: 0.44,
+  total_pnl_bps: -15.2,
+  median_trade_pnl_bps: -1.2,
+  max_drawdown_bps: 80,
+  funding_carry_pnl_bps: 5,
+  basis_carry_pnl_bps: -12,
+  entry_cost_bps: 8.2,
+  exit_reasons: { score_decay: 5, time_stop: 4 },
+  entries_by_strategy_type: { funding_arbitrage: 9 },
+  exits_by_strategy_type: { funding_arbitrage: 9 },
+};

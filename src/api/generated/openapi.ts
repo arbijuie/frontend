@@ -372,6 +372,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/healthz": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Healthz */
+        get: operations["get_healthz_healthz_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/migration/parity/artifacts": {
         parameters: {
             query?: never;
@@ -406,34 +423,17 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/migration/preflight-parity/artifacts": {
+    "/notifications/monitor-alert": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** List Migration Preflight Parity Artifacts */
-        get: operations["list_migration_preflight_parity_artifacts_migration_preflight_parity_artifacts_get"];
+        get?: never;
         put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/migration/preflight-parity/report": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get Migration Preflight Parity Report */
-        get: operations["get_migration_preflight_parity_report_migration_preflight_parity_report_get"];
-        put?: never;
-        post?: never;
+        /** Ingest Monitor Alert */
+        post: operations["ingest_monitor_alert_notifications_monitor_alert_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -497,6 +497,57 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/public/correlation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Public Correlation */
+        get: operations["get_public_correlation_public_correlation_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/public/opportunities": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Public Opportunities */
+        get: operations["get_public_opportunities_public_opportunities_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/public/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Public Status */
+        get: operations["get_public_status_public_status_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/risk/guardrails": {
         parameters: {
             query?: never;
@@ -511,6 +562,46 @@ export interface paths {
         get: operations["get_risk_guardrails_risk_guardrails_get"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/risk/stop-trading": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Stop Trading
+         * @description Global stop-trading latch, recovery gate prerequisites, and the audit log.
+         */
+        get: operations["get_stop_trading_risk_stop_trading_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/risk/stop-trading/ack": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Post Stop Trading Ack
+         * @description Operator acknowledgment of the latched stop; released at once if the gate passed.
+         */
+        post: operations["post_stop_trading_ack_risk_stop_trading_ack_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -619,17 +710,35 @@ export interface components {
             /** Attempt Id */
             attempt_id: string;
             /** Conditions */
-            conditions?: ("funding_flip" | "score_decay" | "time_limit")[];
+            conditions?: ("stop_loss" | "adverse_spread" | "time_limit" | "spread_target" | "funding_flip" | "funding_reversal" | "funding_decline" | "low_funding" | "score_decay")[];
+            /** Current Basis Bps */
+            current_basis_bps?: number | null;
             /** Current Score Bps */
             current_score_bps?: number | null;
+            /** Entry Basis Bps */
+            entry_basis_bps?: number | null;
             /** Entry Score Bps */
             entry_score_bps?: number | null;
             /** Evaluated At */
             evaluated_at: string;
+            /**
+             * Funding Breakeven
+             * @default false
+             */
+            funding_breakeven: boolean;
+            /** Funding Samples */
+            funding_samples?: number[];
             /** Held Hours */
             held_hours: number;
+            /**
+             * Min Hold Gated
+             * @default false
+             */
+            min_hold_gated: boolean;
             /** Net Funding Apr */
             net_funding_apr?: number | null;
+            /** Net Pnl Bps */
+            net_pnl_bps?: number | null;
             /** Outcome */
             outcome?: string | null;
             /**
@@ -637,10 +746,12 @@ export interface components {
              * @default
              */
             reason: string;
+            /** Strategy Type */
+            strategy_type?: ("funding_arbitrage" | "basis_convergence" | "cash_and_carry") | null;
             /** Symbol */
             symbol: string;
             /** Trigger */
-            trigger?: ("funding_flip" | "score_decay" | "time_limit") | null;
+            trigger?: ("stop_loss" | "adverse_spread" | "time_limit" | "spread_target" | "funding_flip" | "funding_reversal" | "funding_decline" | "low_funding" | "score_decay") | null;
         };
         /** AutoExitDecisionListResponse */
         AutoExitDecisionListResponse: {
@@ -689,13 +800,7 @@ export interface components {
              */
             target: "entry" | "exit" | "all";
         };
-        /**
-         * AutomationModeItem
-         * @description One autonomous capability (issue #195).
-         *
-         *     `state`: `disabled` (not configured), `paused` (operator hold), `blocked` (configured and
-         *     not paused, but `blockers` stop it), or `armed` (the next pass may act).
-         */
+        /** AutomationModeItem */
         AutomationModeItem: {
             /**
              * Actions Total
@@ -765,7 +870,7 @@ export interface components {
             /** Gate Passed */
             gate_passed: boolean;
             /** Gate Reason */
-            gate_reason?: string | null;
+            gate_reason: string;
             /** Guardrail Entry Blocks */
             guardrail_entry_blocks?: string[];
             /** Guardrail Last Evaluated At */
@@ -887,6 +992,7 @@ export interface components {
             basis_carry_pnl_bps: number;
             /** Closed Trades */
             closed_trades: number;
+            diagnostics?: components["schemas"]["ReplayDiagnosticsItem"];
             /** Entries */
             entries: number;
             /** Entries By Strategy Type */
@@ -1071,6 +1177,88 @@ export interface components {
             /** Window Start */
             window_start?: string | null;
         };
+        /**
+         * CapitalAllocationDecisionItem
+         * @description Capital-aware sizing outcome for one entry; `reason_code` is set when rejected.
+         */
+        CapitalAllocationDecisionItem: {
+            /** Approved */
+            approved: boolean;
+            /** Binding Exchange */
+            binding_exchange?: string | null;
+            /**
+             * Binding Limit
+             * @enum {string}
+             */
+            binding_limit: "requested_notional" | "trade_capital" | "total_exposure" | "venue_exposure" | "venue_balance" | "trade_loss" | "daily_loss" | "venue_minimum";
+            /** Committed Capital Usd */
+            committed_capital_usd: number;
+            /** Daily Loss Limit Usd */
+            daily_loss_limit_usd: number;
+            /** Daily Pnl Usd */
+            daily_pnl_usd: number;
+            /** Evaluated At */
+            evaluated_at: string;
+            /** Legs */
+            legs?: components["schemas"]["CapitalLegAllocationItem"][];
+            /** Long Exchange */
+            long_exchange: string;
+            /** Max Loss Usd */
+            max_loss_usd: number;
+            /** Notional Usd */
+            notional_usd: number;
+            /** Quantity */
+            quantity: string;
+            /** Reason */
+            reason: string;
+            /** Reason Code */
+            reason_code?: ("daily_loss_limit" | "insufficient_capital" | "below_venue_minimum") | null;
+            /** Requested Notional Usd */
+            requested_notional_usd: number;
+            /** Required Capital Usd */
+            required_capital_usd: number;
+            /** Safe Capacity Usd */
+            safe_capacity_usd: number;
+            /** Short Exchange */
+            short_exchange: string;
+            /** Symbol */
+            symbol: string;
+            /** Venue Committed Usd */
+            venue_committed_usd?: {
+                [key: string]: number;
+            };
+        };
+        /**
+         * CapitalLegAllocationItem
+         * @description One leg of a capital-aware sizing decision (issue #292). Prices/sizes are decimals.
+         */
+        CapitalLegAllocationItem: {
+            /** Exchange */
+            exchange: string;
+            /** Lot Size */
+            lot_size?: string | null;
+            /** Margin Usd */
+            margin_usd: number;
+            /** Min Notional Usd */
+            min_notional_usd?: number | null;
+            /** Min Quantity */
+            min_quantity?: string | null;
+            /** Notional Usd */
+            notional_usd: number;
+            /** Price */
+            price: string;
+            /** Quantity */
+            quantity: string;
+            /** Reserve Usd */
+            reserve_usd: number;
+            /**
+             * Side
+             * @enum {string}
+             */
+            side: "buy" | "sell";
+            /** Tick Size */
+            tick_size?: string | null;
+        };
         /** ConfigResponse */
         ConfigResponse: {
             /** Active Exchanges */
@@ -1231,8 +1419,6 @@ export interface components {
             expected_hold_hours: number;
             /** Extended Base Url */
             extended_base_url: string;
-            /** Extra Exchanges */
-            extra_exchanges: string;
             /** Funding Avg Long Hours */
             funding_avg_long_hours: number;
             /** Funding Avg Short Hours */
@@ -1316,22 +1502,6 @@ export interface components {
             migration_nautilus_mode: "legacy_only" | "shadow_compare" | "nautilus_primary";
             /** Migration Nautilus Observe Only */
             migration_nautilus_observe_only: boolean;
-            /**
-             * Migration Preflight Canary Symbols
-             * @default
-             */
-            migration_preflight_canary_symbols: string;
-            /**
-             * Migration Preflight Cutover Approval Path
-             * @default
-             */
-            migration_preflight_cutover_approval_path: string;
-            /**
-             * Migration Preflight Source
-             * @default legacy
-             * @enum {string}
-             */
-            migration_preflight_source: "legacy" | "nautilus_canary" | "nautilus";
             /** Min Depth Quality */
             min_depth_quality: string;
             /** Min Open Interest */
@@ -1427,10 +1597,6 @@ export interface components {
             migration_nautilus_mode?: ("legacy_only" | "shadow_compare" | "nautilus_primary") | null;
             /** Migration Nautilus Observe Only */
             migration_nautilus_observe_only?: boolean | null;
-            /** Migration Preflight Canary Symbols */
-            migration_preflight_canary_symbols?: string | null;
-            /** Migration Preflight Source */
-            migration_preflight_source?: ("legacy" | "nautilus_canary" | "nautilus") | null;
             /** Min Open Interest */
             min_open_interest?: number | null;
             /** Min Persistence Hours */
@@ -1581,6 +1747,10 @@ export interface components {
             consecutive_rollbacks: number;
             /** Created At */
             created_at: string;
+            /** Depth Reason Codes */
+            depth_reason_codes?: {
+                [key: string]: string;
+            };
             /** Dry Run */
             dry_run: boolean;
             /** Entry Score Bps */
@@ -1589,6 +1759,7 @@ export interface components {
             error?: string | null;
             /** Events */
             events?: string[];
+            expected_pnl?: components["schemas"]["NetPnlBreakdownItem"] | null;
             /** Expected Slippage Bps */
             expected_slippage_bps?: {
                 [key: string]: number | null;
@@ -1601,18 +1772,38 @@ export interface components {
             first_leg: components["schemas"]["ExecutionLegItem"];
             /** First Leg Slippage Bps */
             first_leg_slippage_bps?: number | null;
+            /** Hedge Failure Venues */
+            hedge_failure_venues?: string[];
             /**
              * Hedge Leg
              * @default long
              * @enum {string}
              */
             hedge_leg: "long" | "short";
+            /**
+             * Hedge State
+             * @default flat
+             * @enum {string}
+             */
+            hedge_state: "flat" | "unhedged" | "partially_hedged" | "hedged" | "unwinding";
             /** Hydrated At */
             hydrated_at?: string | null;
             /** Hydration Conflicts */
             hydration_conflicts?: string[];
+            /** Latency Ms */
+            latency_ms?: {
+                [key: string]: number;
+            };
+            /** Leg Gap Ms */
+            leg_gap_ms?: number | null;
             /** Long Exchange */
             long_exchange: string;
+            /**
+             * Open Mode
+             * @default hedge_first
+             * @enum {string}
+             */
+            open_mode: "hedge_first" | "parallel";
             /**
              * Partial Fill
              * @default false
@@ -1620,6 +1811,7 @@ export interface components {
             partial_fill: boolean;
             /** Quantity */
             quantity: string;
+            realized_pnl?: components["schemas"]["NetPnlBreakdownItem"] | null;
             /** Residual Exposure */
             residual_exposure: boolean;
             residual_trim_order?: components["schemas"]["ExecutionOrderItem"] | null;
@@ -1646,11 +1838,17 @@ export interface components {
             status: string;
             /** Symbol */
             symbol: string;
+            /** Unhedged Duration S */
+            unhedged_duration_s?: number | null;
+            /** Unhedged Since */
+            unhedged_since?: string | null;
             /**
              * Unhedged Timeout
              * @default false
              */
             unhedged_timeout: boolean;
+            /** Unresolved Orders */
+            unresolved_orders?: string[];
         };
         /** ExecutionAttemptListResponse */
         ExecutionAttemptListResponse: {
@@ -1748,6 +1946,8 @@ export interface components {
             /** Exchange */
             exchange: string;
             fill?: components["schemas"]["ExecutionOrderItem"] | null;
+            /** Fill Latency Ms */
+            fill_latency_ms?: number | null;
             /**
              * Filled Quantity
              * @default 0
@@ -1762,6 +1962,8 @@ export interface components {
              * @enum {string}
              */
             side: "buy" | "sell";
+            /** Submit Latency Ms */
+            submit_latency_ms?: number | null;
             /** Symbol */
             symbol: string;
         };
@@ -1802,6 +2004,8 @@ export interface components {
              * @default false
              */
             reduce_only: boolean;
+            /** Reference Price */
+            reference_price?: string | null;
             /**
              * Remaining Quantity
              * @default 0
@@ -1906,6 +2110,7 @@ export interface components {
             /** Blockers */
             blockers?: components["schemas"]["ExecutionPreflightReasonItem"][];
             candidate?: components["schemas"]["ExecutionPreflightCandidateItem"] | null;
+            capital_allocation?: components["schemas"]["CapitalAllocationDecisionItem"] | null;
             /** Checked At */
             checked_at: string;
             /**
@@ -1922,6 +2127,8 @@ export interface components {
             ready: boolean;
             runtime: components["schemas"]["ExecutionPreflightRuntimeItem"];
             source?: components["schemas"]["ExecutionPreflightSourceItem"];
+            /** Venues */
+            venues?: components["schemas"]["ExecutionVenueCapabilityItem"][];
         };
         /** ExecutionPreflightRuntimeItem */
         ExecutionPreflightRuntimeItem: {
@@ -1946,18 +2153,6 @@ export interface components {
             poll_count_success: number;
             /** Screener Ready Candidates */
             screener_ready_candidates: number;
-            /**
-             * Shadow Preflight Capture Count
-             * @default 0
-             */
-            shadow_preflight_capture_count: number;
-            /**
-             * Shadow Preflight Capture Failures
-             * @default 0
-             */
-            shadow_preflight_capture_failures: number;
-            /** Shadow Preflight Last Duration Ms */
-            shadow_preflight_last_duration_ms?: number | null;
             trust_diagnostics?: components["schemas"]["PreflightTrustDiagnosticsItem"];
         };
         /**
@@ -1966,27 +2161,66 @@ export interface components {
          */
         ExecutionPreflightSourceItem: {
             /** Detail */
-            detail?: string | null;
+            detail?: null;
             /**
              * Reason
-             * @default legacy_configured
-             * @enum {string}
+             * @default cutover
+             * @constant
              */
-            reason: "legacy_configured" | "parity_regression" | "cutover_not_approved" | "outside_canary_scope" | "canary" | "cutover";
+            reason: "cutover";
             /**
              * Requested
-             * @default legacy
-             * @enum {string}
+             * @default nautilus
+             * @constant
              */
-            requested: "legacy" | "nautilus_canary" | "nautilus";
-            /** Required Stage */
-            required_stage?: string | null;
+            requested: "nautilus";
+            /**
+             * Required Stage
+             * @default F2
+             * @constant
+             */
+            required_stage: "F2";
             /**
              * Served By
-             * @default legacy
+             * @default nautilus
+             * @constant
+             */
+            served_by: "nautilus";
+        };
+        /**
+         * ExecutionVenueCapabilityItem
+         * @description Execution support and live readiness of one venue (issue #415).
+         *
+         *     Every venue supplies market data for screening; `execution_support` says whether it can
+         *     also place live orders. `reason_code` is deterministic for a given configuration.
+         */
+        ExecutionVenueCapabilityItem: {
+            /**
+             * Credentials
              * @enum {string}
              */
-            served_by: "legacy" | "nautilus";
+            credentials: "configured" | "missing" | "incomplete" | "not_applicable";
+            /**
+             * Execution Support
+             * @enum {string}
+             */
+            execution_support: "live" | "market_data_only";
+            /** Live Ready */
+            live_ready: boolean;
+            /**
+             * Market Data
+             * @default true
+             */
+            market_data: boolean;
+            /** Message */
+            message: string;
+            /**
+             * Reason Code
+             * @enum {string}
+             */
+            reason_code: "ready" | "live_venue_not_supported" | "live_credentials_missing" | "live_credentials_incomplete" | "live_orders_disabled";
+            /** Venue */
+            venue: string;
         };
         /** FundingForecastItem */
         FundingForecastItem: {
@@ -2267,6 +2501,118 @@ export interface components {
              */
             watching: number;
         };
+        /** MonitorAlertIngestRequest */
+        MonitorAlertIngestRequest: {
+            /** Artifacts Url */
+            artifacts_url: string;
+            /**
+             * Attempts
+             * @default 0
+             */
+            attempts: number;
+            /**
+             * Container Health
+             * @default unknown
+             */
+            container_health: string;
+            /** Failure Reason */
+            failure_reason: string;
+            /**
+             * Recent 5Xx
+             * @default unknown
+             */
+            recent_5xx: string;
+            /** Run Url */
+            run_url: string;
+        };
+        /** MonitorAlertIngestResponse */
+        MonitorAlertIngestResponse: {
+            /** Accepted */
+            accepted: boolean;
+            /**
+             * Component
+             * @default production-health-monitor
+             * @constant
+             */
+            component: "production-health-monitor";
+            /**
+             * Delivered Via
+             * @constant
+             */
+            delivered_via: "telegram";
+        };
+        /**
+         * NetPnlBreakdownItem
+         * @description `net = convergence + funding - entry_fee - exit_fee - slippage - carry` (issue #293).
+         *
+         *     bps are relative to `notional_usd`; USD amounts are decimal strings at that notional.
+         *     Convergence and funding are signed; fees, slippage and carry are costs (positive is paid).
+         */
+        NetPnlBreakdownItem: {
+            /** Carry Bps */
+            carry_bps: number;
+            /** Carry Usd */
+            carry_usd: string;
+            /**
+             * Complete
+             * @default true
+             */
+            complete: boolean;
+            /** Convergence Bps */
+            convergence_bps: number;
+            /** Convergence Usd */
+            convergence_usd: string;
+            /** Entry Fee Bps */
+            entry_fee_bps: number;
+            /** Entry Fee Usd */
+            entry_fee_usd: string;
+            /** Exit Fee Bps */
+            exit_fee_bps: number;
+            /** Exit Fee Usd */
+            exit_fee_usd: string;
+            /** Exit Slippage Bps */
+            exit_slippage_bps?: number | null;
+            /** Exit Slippage Usd */
+            exit_slippage_usd?: string | null;
+            /** Fee Per Side By Exchange */
+            fee_per_side_by_exchange?: {
+                [key: string]: number;
+            };
+            /** Funding Bps */
+            funding_bps: number;
+            /**
+             * Funding Continuous Fallback
+             * @default false
+             */
+            funding_continuous_fallback: boolean;
+            /** Funding Usd */
+            funding_usd: string;
+            /** Hold Hours */
+            hold_hours?: number | null;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "expected" | "realized";
+            /** Long Funding Bps */
+            long_funding_bps?: number | null;
+            /** Long Funding Settlements */
+            long_funding_settlements?: number | null;
+            /** Net Bps */
+            net_bps: number;
+            /** Net Usd */
+            net_usd: string;
+            /** Notional Usd */
+            notional_usd: string;
+            /** Short Funding Bps */
+            short_funding_bps?: number | null;
+            /** Short Funding Settlements */
+            short_funding_settlements?: number | null;
+            /** Slippage Bps */
+            slippage_bps: number;
+            /** Slippage Usd */
+            slippage_usd: string;
+        };
         /** OpportunitiesResponse */
         OpportunitiesResponse: {
             /** Count */
@@ -2309,8 +2655,11 @@ export interface components {
             effective_taker_fee_by_exchange?: {
                 [key: string]: number;
             };
+            /** Executable Entry Spread Bps */
+            executable_entry_spread_bps?: number | null;
             /** Execution Adjusted Score Bps */
             execution_adjusted_score_bps: number;
+            expected_net_pnl?: components["schemas"]["NetPnlBreakdownItem"] | null;
             /** Fee Impact Bps */
             fee_impact_bps: number;
             /** Fee Source State By Exchange */
@@ -2544,168 +2893,6 @@ export interface components {
             /** Updated At */
             updated_at?: string | null;
         };
-        /** PreflightParityArtifactItem */
-        PreflightParityArtifactItem: {
-            /** Artifact Id */
-            artifact_id: string;
-            /** Diffs */
-            diffs?: components["schemas"]["PreflightParityDiffItem"][];
-            /**
-             * Evaluation Status
-             * @enum {string}
-             */
-            evaluation_status: "evaluated" | "not_evaluated";
-            /** Generated At */
-            generated_at: string;
-            /** Legacy Blocker Codes */
-            legacy_blocker_codes?: string[];
-            /** Legacy Candidate Status */
-            legacy_candidate_status?: string | null;
-            /** Legacy Candidate Symbol */
-            legacy_candidate_symbol?: string | null;
-            /**
-             * Legacy Decision
-             * @enum {string}
-             */
-            legacy_decision: "ready" | "watching" | "blocked";
-            /** Legacy Gate Reason */
-            legacy_gate_reason?: string | null;
-            /** Legacy Payload Hash */
-            legacy_payload_hash: string;
-            /**
-             * Parity Status
-             * @enum {string}
-             */
-            parity_status: "pass" | "watching" | "fail" | "not_evaluated";
-            /** Reason Groups */
-            reason_groups?: {
-                [key: string]: number;
-            };
-            /** Schema Version */
-            schema_version: string;
-            /** Shadow Blocker Codes */
-            shadow_blocker_codes?: string[];
-            /** Shadow Candidate Status */
-            shadow_candidate_status?: string | null;
-            /** Shadow Candidate Symbol */
-            shadow_candidate_symbol?: string | null;
-            /** Shadow Decision */
-            shadow_decision?: ("ready" | "watching" | "blocked") | null;
-            /** Shadow Gate Reason */
-            shadow_gate_reason?: string | null;
-            /** Shadow Payload Hash */
-            shadow_payload_hash?: string | null;
-            /** Symbol Filter */
-            symbol_filter?: string | null;
-        };
-        /** PreflightParityArtifactListResponse */
-        PreflightParityArtifactListResponse: {
-            /** Count */
-            count: number;
-            /** Items */
-            items?: components["schemas"]["PreflightParityArtifactItem"][];
-        };
-        /** PreflightParityDiffItem */
-        PreflightParityDiffItem: {
-            /** Code */
-            code: string;
-            /**
-             * Group
-             * @enum {string}
-             */
-            group: "decision" | "gate" | "blockers" | "candidate";
-            /** Legacy Value */
-            legacy_value?: string | null;
-            /** Message */
-            message: string;
-            /**
-             * Severity
-             * @enum {string}
-             */
-            severity: "ok" | "watching" | "blocked";
-            /** Shadow Value */
-            shadow_value?: string | null;
-        };
-        /** PreflightParityPromotionPolicyItem */
-        PreflightParityPromotionPolicyItem: {
-            /** Policy Hash */
-            policy_hash: string;
-            /** Policy Schema Version */
-            policy_schema_version: string;
-            /** Policy Version */
-            policy_version: string;
-            /** Thresholds */
-            thresholds?: {
-                [key: string]: number;
-            };
-        };
-        /** PreflightParityPromotionRecommendationItem */
-        PreflightParityPromotionRecommendationItem: {
-            /**
-             * Decision
-             * @enum {string}
-             */
-            decision: "pass" | "fail";
-            /** Evaluated At */
-            evaluated_at: string;
-            /** Metrics */
-            metrics?: {
-                [key: string]: number;
-            };
-            policy: components["schemas"]["PreflightParityPromotionPolicyItem"];
-            /** Reasons */
-            reasons?: string[];
-        };
-        /** PreflightParityReportResponse */
-        PreflightParityReportResponse: {
-            /** Artifacts Analyzed */
-            artifacts_analyzed: number;
-            /** Generated At */
-            generated_at: string;
-            /** Items */
-            items?: components["schemas"]["PreflightParityArtifactItem"][];
-            /**
-             * Not Evaluated Count
-             * @default 0
-             */
-            not_evaluated_count: number;
-            /** Parity Passed */
-            parity_passed: boolean;
-            promotion_recommendation?: components["schemas"]["PreflightParityPromotionRecommendationItem"] | null;
-            /** Reason Counts */
-            reason_counts?: {
-                [key: string]: number;
-            };
-            /** Reason Group Counts */
-            reason_group_counts?: {
-                [key: string]: number;
-            };
-            /** Schema Version */
-            schema_version: string;
-            severity_counts?: components["schemas"]["PreflightParitySeverityCountsItem"];
-            /** Window End */
-            window_end: string;
-            /** Window Start */
-            window_start: string;
-        };
-        /** PreflightParitySeverityCountsItem */
-        PreflightParitySeverityCountsItem: {
-            /**
-             * Blocked
-             * @default 0
-             */
-            blocked: number;
-            /**
-             * Ok
-             * @default 0
-             */
-            ok: number;
-            /**
-             * Watching
-             * @default 0
-             */
-            watching: number;
-        };
         /** PreflightTrustDiagnosticsItem */
         PreflightTrustDiagnosticsItem: {
             confidence_distribution?: components["schemas"]["TrustConfidenceDistributionItem"];
@@ -2716,11 +2903,167 @@ export interface components {
             fallback_risk_counters?: components["schemas"]["TrustFallbackRiskCountersItem"];
             provenance_coverage?: components["schemas"]["TrustProvenanceCoverageItem"];
         };
+        /** PublicCorrelationPairItem */
+        PublicCorrelationPairItem: {
+            /** Above Threshold */
+            above_threshold: boolean;
+            /** Correlation */
+            correlation: number;
+            /** Symbol A */
+            symbol_a: string;
+            /** Symbol B */
+            symbol_b: string;
+        };
+        /** PublicCorrelationResponse */
+        PublicCorrelationResponse: {
+            /** Count */
+            count: number;
+            /** Pairs */
+            pairs?: components["schemas"]["PublicCorrelationPairItem"][];
+            /** Symbols */
+            symbols?: string[];
+            /** Threshold */
+            threshold: number;
+            /** Updated At */
+            updated_at?: string | null;
+            /** Window Hours */
+            window_hours: number;
+        };
+        /** PublicExchangeStatusItem */
+        PublicExchangeStatusItem: {
+            /** Last Poll Ok */
+            last_poll_ok?: boolean | null;
+            /** Ws Connected */
+            ws_connected?: boolean | null;
+            /** Ws Healthy */
+            ws_healthy?: boolean | null;
+        };
+        /** PublicLegItem */
+        PublicLegItem: {
+            /**
+             * Instrument Kind
+             * @enum {string}
+             */
+            instrument_kind: "perp" | "spot" | "future";
+            /**
+             * Side
+             * @enum {string}
+             */
+            side: "long" | "short";
+            /** Venue */
+            venue: string;
+        };
+        /** PublicOpportunitiesResponse */
+        PublicOpportunitiesResponse: {
+            /** Count */
+            count: number;
+            /** Opportunities */
+            opportunities?: components["schemas"]["PublicOpportunityItem"][];
+            /** Ready Count */
+            ready_count: number;
+            /** Updated At */
+            updated_at?: string | null;
+        };
+        /** PublicOpportunityItem */
+        PublicOpportunityItem: {
+            /** Basis Bps */
+            basis_bps: number;
+            /** Depth Quality */
+            depth_quality?: ("A" | "B" | "C" | "D") | null;
+            /** Execution Adjusted Score Bps */
+            execution_adjusted_score_bps: number;
+            /** Funding Diff Apr */
+            funding_diff_apr: number;
+            /** Funding Edge Bps */
+            funding_edge_bps: number;
+            /** Hours To Breakeven */
+            hours_to_breakeven?: number | null;
+            /** Legs */
+            legs?: components["schemas"]["PublicLegItem"][];
+            /** Liquidity Tier */
+            liquidity_tier?: ("H" | "M" | "L") | null;
+            /** Long Rate Apr */
+            long_rate_apr: number;
+            /** Persistence Hours */
+            persistence_hours?: number | null;
+            /** Reasons */
+            reasons?: components["schemas"]["PublicReasonItem"][];
+            /** Short Rate Apr */
+            short_rate_apr: number;
+            /** Signal Score Bps */
+            signal_score_bps: number;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "ready" | "watching" | "blocked";
+            /**
+             * Strategy Type
+             * @enum {string}
+             */
+            strategy_type: "funding_arbitrage" | "basis_convergence" | "cash_and_carry";
+            /** Symbol */
+            symbol: string;
+            /** Total Cost Bps */
+            total_cost_bps: number;
+        };
+        /** PublicReasonItem */
+        PublicReasonItem: {
+            code: components["schemas"]["ReasonCode"];
+            /**
+             * Severity
+             * @enum {string}
+             */
+            severity: "watching" | "blocked";
+        };
+        /** PublicReasonSeverityCounts */
+        PublicReasonSeverityCounts: {
+            /**
+             * Blocked
+             * @default 0
+             */
+            blocked: number;
+            /**
+             * Watching
+             * @default 0
+             */
+            watching: number;
+        };
+        /** PublicStatusResponse */
+        PublicStatusResponse: {
+            /** Active Exchanges */
+            active_exchanges?: string[];
+            /** Exchanges */
+            exchanges?: {
+                [key: string]: components["schemas"]["PublicExchangeStatusItem"];
+            };
+            /** Last Updated At */
+            last_updated_at?: string | null;
+            /** Poll Count Failed */
+            poll_count_failed: number;
+            /** Poll Count Success */
+            poll_count_success: number;
+            /** Poll Count Total */
+            poll_count_total: number;
+            /** Screener Post Cost Candidates */
+            screener_post_cost_candidates: number;
+            /** Screener Raw Candidates */
+            screener_raw_candidates: number;
+            /** Screener Ready Candidates */
+            screener_ready_candidates: number;
+            screener_reason_severity_counts?: components["schemas"]["PublicReasonSeverityCounts"];
+            /** Screener Validated Candidates */
+            screener_validated_candidates: number;
+            /** Started At */
+            started_at: string;
+            /** Uptime S */
+            uptime_s: number;
+        };
         /**
          * ReasonCode
          * @enum {string}
          */
-        ReasonCode: "persistence_insufficient" | "historical_win_rate_low" | "historical_win_rate_unavailable" | "break_even_window" | "score_below_min" | "funding_flips" | "basis_limit" | "basis_trend_unstable" | "basis_divergence_hard" | "basis_divergence_window" | "funding_timing_asymmetry" | "funding_unstable" | "funding_trend_thin_edge" | "stale_data" | "real_depth_unavailable" | "depth_quality_below_min" | "real_fee_unavailable" | "margin_mode_unknown" | "adl_limit" | "margin_mode_cross" | "anti_churn_cooldown" | "correlation_limit";
+        ReasonCode: "persistence_insufficient" | "historical_win_rate_low" | "historical_win_rate_unavailable" | "break_even_window" | "score_below_min" | "net_pnl_below_min" | "funding_flips" | "basis_limit" | "basis_trend_unstable" | "basis_divergence_hard" | "basis_divergence_window" | "funding_timing_asymmetry" | "funding_unstable" | "funding_trend_thin_edge" | "stale_data" | "real_depth_unavailable" | "depth_quality_below_min" | "real_fee_unavailable" | "margin_mode_unknown" | "adl_limit" | "margin_mode_cross" | "anti_churn_cooldown" | "correlation_limit" | "executable_spread_below_entry" | "executable_spread_unconfirmed";
         /** ReasonItem */
         ReasonItem: {
             code: components["schemas"]["ReasonCode"];
@@ -2732,6 +3075,82 @@ export interface components {
              */
             severity: "watching" | "blocked";
         };
+        /** ReplayDiagnosticsItem */
+        ReplayDiagnosticsItem: {
+            /**
+             * Drops Skipped After Gap
+             * @default 0
+             */
+            drops_skipped_after_gap: number;
+            /** Entry Rejections */
+            entry_rejections?: {
+                [key: string]: number;
+            };
+            /**
+             * Hold Cycles
+             * @default 0
+             */
+            hold_cycles: number;
+            /**
+             * Open Positions At End
+             * @default 0
+             */
+            open_positions_at_end: number;
+            /**
+             * Pairs Skipped Min Samples
+             * @default 0
+             */
+            pairs_skipped_min_samples: number;
+            /**
+             * Pairs Total
+             * @default 0
+             */
+            pairs_total: number;
+            /**
+             * Samples Skipped Min Samples
+             * @default 0
+             */
+            samples_skipped_min_samples: number;
+        };
+        /**
+         * RiskCapitalAllocationItem
+         * @description Capital-aware sizing state (issue #292): limits, committed capital, daily loss.
+         */
+        RiskCapitalAllocationItem: {
+            /**
+             * Committed Capital Usd
+             * @default 0
+             */
+            committed_capital_usd: number;
+            /**
+             * Daily Loss Limit Usd
+             * @default 0
+             */
+            daily_loss_limit_usd: number;
+            /**
+             * Daily Pnl Usd
+             * @default 0
+             */
+            daily_pnl_usd: number;
+            /**
+             * Enabled
+             * @default false
+             */
+            enabled: boolean;
+            last_decision?: components["schemas"]["CapitalAllocationDecisionItem"] | null;
+            /** Limits */
+            limits?: {
+                [key: string]: number;
+            };
+            /** Rejections */
+            rejections?: {
+                [key: string]: number;
+            };
+            /** Venue Committed Usd */
+            venue_committed_usd?: {
+                [key: string]: number;
+            };
+        };
         /**
          * RiskGuardrailsResponse
          * @description `GET /risk/guardrails`: the status summary plus thresholds and close history.
@@ -2741,6 +3160,7 @@ export interface components {
             account_sources?: string[];
             /** Blocking Guardrails */
             blocking_guardrails?: ("margin" | "adl" | "funding_flip" | "spread_expansion" | "max_open_positions" | "max_pair_exposure" | "max_memecoin_exposure")[];
+            capital?: components["schemas"]["RiskCapitalAllocationItem"];
             /** Close Records */
             close_records?: components["schemas"]["GuardrailCloseRecordItem"][];
             /** Closed Attempt Ids */
@@ -2976,7 +3396,7 @@ export interface components {
             /** Last Exit Symbol */
             last_exit_symbol?: string | null;
             /** Last Exit Trigger */
-            last_exit_trigger?: ("funding_flip" | "score_decay" | "time_limit") | null;
+            last_exit_trigger?: ("stop_loss" | "adverse_spread" | "time_limit" | "spread_target" | "funding_flip" | "funding_reversal" | "funding_decline" | "low_funding" | "score_decay") | null;
             /** Last Run At */
             last_run_at?: string | null;
             /**
@@ -3026,6 +3446,31 @@ export interface components {
              * @enum {string}
              */
             status: "loaded" | "missing" | "path_error" | "load_failed";
+        };
+        /**
+         * StatusCycleReconcileVenue
+         * @description One venue in the last per-cycle reconciliation pass (issue #295).
+         */
+        StatusCycleReconcileVenue: {
+            /** Checked At */
+            checked_at: string;
+            /** Error */
+            error?: string | null;
+            /**
+             * Mismatches
+             * @default 0
+             */
+            mismatches: number;
+            /**
+             * Positions
+             * @default 0
+             */
+            positions: number;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "clean" | "mismatch" | "unreadable" | "missing_source";
         };
         /** StatusDropCounters */
         StatusDropCounters: {
@@ -3170,16 +3615,81 @@ export interface components {
              * @default 0
              */
             missing_real_depth: number;
+            /** Missing Real Depth Causes */
+            missing_real_depth_causes?: {
+                [key: string]: number;
+            };
             /**
              * Missing Real Fee
              * @default 0
              */
             missing_real_fee: number;
+            /** Missing Real Fee Causes */
+            missing_real_fee_causes?: {
+                [key: string]: number;
+            };
             /**
              * Strict Depth
              * @default 0
              */
             strict_depth: number;
+        };
+        /**
+         * StatusExecutionCycleReconcile
+         * @description Per-cycle position reconciliation against live venues (issue #295).
+         *
+         *     Runs every runtime cycle and after every live open and close. `outcome` is `clean`,
+         *     `blocked` (a mismatch, an unreadable venue, or an unresolved attempt refuses new entries
+         *     with `position_reconcile_mismatch` until a later clean pass), or `skipped` (dry-run
+         *     venues, or no live account sources); null before the first run.
+         */
+        StatusExecutionCycleReconcile: {
+            /**
+             * Blocked Runs Total
+             * @default 0
+             */
+            blocked_runs_total: number;
+            /**
+             * Blocks Entries
+             * @default false
+             */
+            blocks_entries: boolean;
+            /** Counts */
+            counts?: {
+                [key: string]: number;
+            };
+            /** Diagnostics */
+            diagnostics?: string[];
+            /**
+             * Enabled
+             * @default true
+             */
+            enabled: boolean;
+            /** Error */
+            error?: string | null;
+            /** Last Clean At */
+            last_clean_at?: string | null;
+            /** Last Run At */
+            last_run_at?: string | null;
+            /** Outcome */
+            outcome?: ("clean" | "blocked" | "skipped") | null;
+            /** Positions */
+            positions?: components["schemas"]["StatusPositionReconcileItem"][];
+            /** Post Close Residuals */
+            post_close_residuals?: components["schemas"]["StatusPostCloseResidualItem"][];
+            /**
+             * Runs Total
+             * @default 0
+             */
+            runs_total: number;
+            /** Skipped Reason */
+            skipped_reason?: ("dry_run" | "no_account_sources") | null;
+            /** Trigger */
+            trigger?: ("cycle" | "post_open" | "post_close") | null;
+            /** Venues */
+            venues?: {
+                [key: string]: components["schemas"]["StatusCycleReconcileVenue"];
+            };
         };
         /**
          * StatusExecutionHydrationDiagnostics
@@ -3261,6 +3771,22 @@ export interface components {
              */
             window_time_budget_s: number;
         };
+        /**
+         * StatusExecutionLatency
+         * @description Hot-path latency per stage; `bottleneck` is the leaf stage with the highest p95.
+         */
+        StatusExecutionLatency: {
+            /** Bottleneck */
+            bottleneck?: string | null;
+            /** Budgets Ms */
+            budgets_ms?: {
+                [key: string]: number;
+            };
+            /** Stages */
+            stages?: {
+                [key: string]: components["schemas"]["StatusLatencyStage"];
+            };
+        };
         /** StatusExecutionPersistenceDiagnostics */
         StatusExecutionPersistenceDiagnostics: {
             /**
@@ -3287,6 +3813,262 @@ export interface components {
              * @default 0
              */
             write_failures: number;
+        };
+        /**
+         * StatusExecutionPositionReconcile
+         * @description Restart position reconciliation (issue #270): persisted exposure vs venue positions.
+         *
+         *     `outcome` is `clean`, `blocked` (a class other than `match`, a blocking diagnostic, or a
+         *     load error holds new entries with `restart_position_mismatch`), or `skipped` (execution
+         *     disabled or persistence off); null before the first run. `diagnostics` lists every
+         *     assumption the classifier refused to make as `<code>:<detail>`.
+         */
+        StatusExecutionPositionReconcile: {
+            /**
+             * Blocking Diagnostics
+             * @default 0
+             */
+            blocking_diagnostics: number;
+            /**
+             * Blocks Entries
+             * @default false
+             */
+            blocks_entries: boolean;
+            /**
+             * Completed
+             * @default false
+             */
+            completed: boolean;
+            /** Counts */
+            counts?: {
+                [key: string]: number;
+            };
+            /** Diagnostics */
+            diagnostics?: string[];
+            /** Error */
+            error?: string | null;
+            /** Last Run At */
+            last_run_at?: string | null;
+            /** Outcome */
+            outcome?: ("clean" | "blocked" | "skipped") | null;
+            /** Positions */
+            positions?: components["schemas"]["StatusPositionReconcileItem"][];
+        };
+        /**
+         * StatusExecutionRecovery
+         * @description Recovery actions (issue #294): open unhedged pairs and recent emergency unwinds.
+         *
+         *     `emergency_unwinds` are the latest unwind reports, newest first, as recorded by the
+         *     emergency unwinder.
+         */
+        StatusExecutionRecovery: {
+            /** Emergency Unwinds */
+            emergency_unwinds?: {
+                [key: string]: unknown;
+            }[];
+            /** Survivor Last Error */
+            survivor_last_error?: string | null;
+            /**
+             * Survivor Watcher Enabled
+             * @default false
+             */
+            survivor_watcher_enabled: boolean;
+            /** Unhedged Attempts */
+            unhedged_attempts?: components["schemas"]["StatusUnhedgedAttemptItem"][];
+        };
+        /**
+         * StatusExecutionVenueHealth
+         * @description Entry gating for one venue (issue #294): hedge-failure breaker and degradation.
+         */
+        StatusExecutionVenueHealth: {
+            /** Block Reasons */
+            block_reasons?: string[];
+            /** Breaker Opened At */
+            breaker_opened_at?: string | null;
+            /**
+             * Breaker State
+             * @default closed
+             * @enum {string}
+             */
+            breaker_state: "closed" | "open" | "half_open";
+            /**
+             * Breaker Trips
+             * @default 0
+             */
+            breaker_trips: number;
+            /**
+             * Consecutive Hedge Failures
+             * @default 0
+             */
+            consecutive_hedge_failures: number;
+            /**
+             * Entries Blocked
+             * @default false
+             */
+            entries_blocked: boolean;
+            /**
+             * Entry Blocks Total
+             * @default 0
+             */
+            entry_blocks_total: number;
+            /** Last Failure At */
+            last_failure_at?: string | null;
+            /** Last Failure Reason */
+            last_failure_reason?: string | null;
+            /** Last Success At */
+            last_success_at?: string | null;
+            /** Reconcile Status */
+            reconcile_status?: string | null;
+        };
+        /**
+         * StatusLatencyStage
+         * @description Latency of one open stage over the sample window, in milliseconds (issue #298).
+         */
+        StatusLatencyStage: {
+            /** Budget Ms */
+            budget_ms?: number | null;
+            /**
+             * Count
+             * @default 0
+             */
+            count: number;
+            /** Last Ms */
+            last_ms?: number | null;
+            /** Max Ms */
+            max_ms?: number | null;
+            /**
+             * Over Budget
+             * @default 0
+             */
+            over_budget: number;
+            /** P50 Ms */
+            p50_ms?: number | null;
+            /** P95 Ms */
+            p95_ms?: number | null;
+            /** P99 Ms */
+            p99_ms?: number | null;
+            /**
+             * Window
+             * @default 0
+             */
+            window: number;
+            /** Within Budget */
+            within_budget?: boolean | null;
+        };
+        /**
+         * StatusMarketDataSourceItem
+         * @description Arbitrated market-data source of one venue (issue #287).
+         *
+         *     `state` follows `real_ws` -> `real_rest` -> `unavailable`. `reason` is the deterministic
+         *     reason code for the current state; `ws_reason` and `rest_reason` report each source at the
+         *     last sample. `preferred_state` is `real_ws` for venues with a live feed and `real_rest`
+         *     otherwise; `degraded` is true while `state` is below it. `qualified` is false when the
+         *     venue's rows are excluded from the screener and new entries are blocked. Durations are
+         *     seconds; timestamps are ISO-8601 UTC.
+         */
+        StatusMarketDataSourceItem: {
+            /**
+             * Degraded
+             * @default false
+             */
+            degraded: boolean;
+            /**
+             * Degraded Episodes Total
+             * @default 0
+             */
+            degraded_episodes_total: number;
+            /** Degraded For S */
+            degraded_for_s?: number | null;
+            /**
+             * Degraded Seconds Total
+             * @default 0
+             */
+            degraded_seconds_total: number;
+            /** Degraded Since */
+            degraded_since?: string | null;
+            /** Last Degraded Episode S */
+            last_degraded_episode_s?: number | null;
+            /** Last Sampled At */
+            last_sampled_at: string;
+            /** Last Transition At */
+            last_transition_at?: string | null;
+            /** Last Transition From */
+            last_transition_from?: ("real_ws" | "real_rest" | "unavailable") | null;
+            /**
+             * Preferred State
+             * @enum {string}
+             */
+            preferred_state: "real_ws" | "real_rest" | "unavailable";
+            /**
+             * Qualified
+             * @default true
+             */
+            qualified: boolean;
+            /**
+             * Reason
+             * @enum {string}
+             */
+            reason: "ws_healthy" | "ws_not_configured" | "ws_disconnected" | "ws_stale" | "ws_reconnect_storm" | "ws_parser_errors" | "ws_reconnected" | "recovery_hysteresis_pending" | "rest_ok" | "rest_pending" | "rest_failed" | "rest_stale";
+            /** Rest Age S */
+            rest_age_s?: number | null;
+            /**
+             * Rest Reason
+             * @enum {string}
+             */
+            rest_reason: "ws_healthy" | "ws_not_configured" | "ws_disconnected" | "ws_stale" | "ws_reconnect_storm" | "ws_parser_errors" | "ws_reconnected" | "recovery_hysteresis_pending" | "rest_ok" | "rest_pending" | "rest_failed" | "rest_stale";
+            /** Since */
+            since: string;
+            /**
+             * State
+             * @enum {string}
+             */
+            state: "real_ws" | "real_rest" | "unavailable";
+            /**
+             * State Age S
+             * @default 0
+             */
+            state_age_s: number;
+            transitions_by_state?: components["schemas"]["StatusMarketDataSourceTransitionCounts"];
+            /**
+             * Transitions Total
+             * @default 0
+             */
+            transitions_total: number;
+            /** Ws Healthy For S */
+            ws_healthy_for_s?: number | null;
+            /**
+             * Ws Message Errors In Window
+             * @default 0
+             */
+            ws_message_errors_in_window: number;
+            /**
+             * Ws Reason
+             * @enum {string}
+             */
+            ws_reason: "ws_healthy" | "ws_not_configured" | "ws_disconnected" | "ws_stale" | "ws_reconnect_storm" | "ws_parser_errors" | "ws_reconnected" | "recovery_hysteresis_pending" | "rest_ok" | "rest_pending" | "rest_failed" | "rest_stale";
+            /**
+             * Ws Reconnects In Window
+             * @default 0
+             */
+            ws_reconnects_in_window: number;
+        };
+        /** StatusMarketDataSourceTransitionCounts */
+        StatusMarketDataSourceTransitionCounts: {
+            /**
+             * Real Rest
+             * @default 0
+             */
+            real_rest: number;
+            /**
+             * Real Ws
+             * @default 0
+             */
+            real_ws: number;
+            /**
+             * Unavailable
+             * @default 0
+             */
+            unavailable: number;
         };
         /** StatusMigrationFallbackDiagnostics */
         StatusMigrationFallbackDiagnostics: {
@@ -3395,6 +4177,9 @@ export interface components {
         /**
          * StatusNotificationDiagnostics
          * @description Alert delivery health. `healthy` is false while any route's last delivery failed.
+         *
+         *     `events` breaks the counters down by alert event type (for example `opportunity_ready`,
+         *     `margin_critical`, `exchange_connectivity_lost`, `system_error`).
          */
         StatusNotificationDiagnostics: {
             /** Degraded Routes */
@@ -3404,6 +4189,10 @@ export interface components {
              * @default false
              */
             enabled: boolean;
+            /** Events */
+            events?: {
+                [key: string]: components["schemas"]["StatusNotificationEventDiagnostics"];
+            };
             /**
              * Failed
              * @default 0
@@ -3428,6 +4217,39 @@ export interface components {
             routes?: {
                 [key: string]: components["schemas"]["StatusNotificationRouteDiagnostics"];
             };
+            /**
+             * Sent
+             * @default 0
+             */
+            sent: number;
+            /**
+             * Submitted
+             * @default 0
+             */
+            submitted: number;
+            /**
+             * Suppressed
+             * @default 0
+             */
+            suppressed: number;
+        };
+        /**
+         * StatusNotificationEventDiagnostics
+         * @description Delivery outcomes for one alert event type; each submitted alert lands in one bucket.
+         */
+        StatusNotificationEventDiagnostics: {
+            /**
+             * Failed
+             * @default 0
+             */
+            failed: number;
+            /**
+             * Filtered
+             * @default 0
+             */
+            filtered: number;
+            /** Last Submitted At */
+            last_submitted_at?: string | null;
             /**
              * Sent
              * @default 0
@@ -3477,6 +4299,66 @@ export interface components {
              * @default 0
              */
             sent: number;
+        };
+        /**
+         * StatusOrderBookDiagnostics
+         * @description Local WS order books of one execution venue (issue #296).
+         *
+         *     `books` counts symbols with a non-empty local book; `stale_books` those older than
+         *     `stale_after_s` (`ARB_EXEC_DEPTH_MAX_AGE_S`), which the depth query will not use.
+         *     `subscriptions` is the number of live book subscriptions and `resyncing` the books
+         *     waiting for a fresh snapshot after a sequence gap. Counters are totals since start:
+         *     `gaps_total` sequence gaps detected, `resyncs_total` resync requests sent, and
+         *     `out_of_order_total` replayed or reordered frames dropped. Ages are seconds since the
+         *     newest (`last_update_age_s`) and oldest (`oldest_book_age_s`) book update.
+         */
+        StatusOrderBookDiagnostics: {
+            /**
+             * Books
+             * @default 0
+             */
+            books: number;
+            /**
+             * Gaps Total
+             * @default 0
+             */
+            gaps_total: number;
+            /** Last Gap At */
+            last_gap_at?: string | null;
+            /** Last Update Age S */
+            last_update_age_s?: number | null;
+            /** Oldest Book Age S */
+            oldest_book_age_s?: number | null;
+            /**
+             * Out Of Order Total
+             * @default 0
+             */
+            out_of_order_total: number;
+            /**
+             * Resyncing
+             * @default 0
+             */
+            resyncing: number;
+            /**
+             * Resyncs Total
+             * @default 0
+             */
+            resyncs_total: number;
+            /**
+             * Stale After S
+             * @default 0
+             */
+            stale_after_s: number;
+            /**
+             * Stale Books
+             * @default 0
+             */
+            stale_books: number;
+            /**
+             * Subscriptions
+             * @default 0
+             */
+            subscriptions: number;
         };
         /**
          * StatusPositionMonitorDiagnostics
@@ -3529,39 +4411,133 @@ export interface components {
             unrealized_pnl_usd: number;
         };
         /**
+         * StatusPositionReconcileItem
+         * @description One `(exchange, symbol)` compared at restart; sizes are signed decimal strings.
+         */
+        StatusPositionReconcileItem: {
+            /** Actual */
+            actual: string;
+            /** Attempt Ids */
+            attempt_ids?: string[];
+            /**
+             * Classification
+             * @enum {string}
+             */
+            classification: "match" | "missing" | "extra" | "diverged";
+            /** Exchange */
+            exchange: string;
+            /** Expected */
+            expected: string;
+            /**
+             * Remediation
+             * @enum {string}
+             */
+            remediation: "keep_tracking" | "hold_for_operator_close" | "hold_for_operator_adoption" | "hold_for_operator_resize";
+            /** Symbol */
+            symbol: string;
+        };
+        /** StatusPostCloseResidualItem */
+        StatusPostCloseResidualItem: {
+            /** Attempt Id */
+            attempt_id: string;
+            /** Detected At */
+            detected_at: string;
+            /** Positions */
+            positions: string;
+            /** Symbol */
+            symbol: string;
+        };
+        /**
          * StatusPreflightSourceDiagnostics
          * @description Preflight source-of-truth cutover (issue #170).
          */
         StatusPreflightSourceDiagnostics: {
-            /** Approval Error */
-            approval_error?: string | null;
-            /** Approval Stage */
-            approval_stage?: string | null;
-            /** Canary Symbols */
-            canary_symbols?: string[];
             /** Last Reason */
-            last_reason?: string | null;
+            last_reason?: "cutover" | null;
             /** Last Served By */
-            last_served_by?: ("legacy" | "nautilus") | null;
-            /** Regression At */
-            regression_at?: string | null;
-            /**
-             * Regression Latched
-             * @default false
-             */
-            regression_latched: boolean;
-            /** Regression Reason */
-            regression_reason?: string | null;
+            last_served_by?: "nautilus" | null;
             /**
              * Requested
-             * @default legacy
-             * @enum {string}
+             * @default nautilus
+             * @constant
              */
-            requested: "legacy" | "nautilus_canary" | "nautilus";
+            requested: "nautilus";
             /** Served Total */
             served_total?: {
                 [key: string]: number;
             };
+        };
+        /**
+         * StatusRateLimitDiagnostics
+         * @description REST request budget of one venue (issue #299).
+         *
+         *     `used`/`headroom` are request weight inside the sliding window; `reserved_execution` is
+         *     the share only order submit/cancel may use. `throttled_count` counts requests the local
+         *     budget delayed, `rejected_count` the non-execution requests it gave up on, and
+         *     `over_budget_count` the execution requests sent anyway after their bounded wait.
+         */
+        StatusRateLimitDiagnostics: {
+            /**
+             * Cooldown Remaining S
+             * @default 0
+             */
+            cooldown_remaining_s: number;
+            /**
+             * Enabled
+             * @default true
+             */
+            enabled: boolean;
+            /**
+             * Headroom
+             * @default 0
+             */
+            headroom: number;
+            /** Last 429 At */
+            last_429_at?: string | null;
+            /**
+             * Limit
+             * @default 0
+             */
+            limit: number;
+            /**
+             * Over Budget Count
+             * @default 0
+             */
+            over_budget_count: number;
+            /**
+             * Rate Limited Count
+             * @default 0
+             */
+            rate_limited_count: number;
+            /**
+             * Rejected Count
+             * @default 0
+             */
+            rejected_count: number;
+            /** Requests By Priority */
+            requests_by_priority?: {
+                [key: string]: number;
+            };
+            /**
+             * Reserved Execution
+             * @default 0
+             */
+            reserved_execution: number;
+            /**
+             * Throttled Count
+             * @default 0
+             */
+            throttled_count: number;
+            /**
+             * Used
+             * @default 0
+             */
+            used: number;
+            /**
+             * Window S
+             * @default 0
+             */
+            window_s: number;
         };
         /** StatusReasonSeverityCounts */
         StatusReasonSeverityCounts: {
@@ -3613,6 +4589,7 @@ export interface components {
              * @default 0
              */
             execution_consecutive_rollbacks: number;
+            execution_cycle_reconcile?: components["schemas"]["StatusExecutionCycleReconcile"];
             /**
              * Execution Entries Stopped
              * @default false
@@ -3626,13 +4603,20 @@ export interface components {
             execution_last_attempt_status?: string | null;
             /** Execution Last Rollback Slippage Bps */
             execution_last_rollback_slippage_bps?: number | null;
+            execution_latency?: components["schemas"]["StatusExecutionLatency"];
             execution_persistence?: components["schemas"]["StatusExecutionPersistenceDiagnostics"];
+            execution_position_reconcile?: components["schemas"]["StatusExecutionPositionReconcile"];
+            execution_recovery?: components["schemas"]["StatusExecutionRecovery"];
             /** Execution Strategy Id */
             execution_strategy_id?: string | null;
             /** Execution Strategy Lock Id */
             execution_strategy_lock_id?: string | null;
             /** Execution Strategy Profile Id */
             execution_strategy_profile_id?: string | null;
+            /** Execution Venue Health */
+            execution_venue_health?: {
+                [key: string]: components["schemas"]["StatusExecutionVenueHealth"];
+            };
             /** Last Poll Duration Ms */
             last_poll_duration_ms?: number | null;
             /** Last Poll Finished At */
@@ -3641,8 +4625,16 @@ export interface components {
             last_poll_started_at?: string | null;
             /** Last Updated At */
             last_updated_at?: string | null;
+            /** Market Data Sources */
+            market_data_sources?: {
+                [key: string]: components["schemas"]["StatusMarketDataSourceItem"];
+            };
             migration_fallback?: components["schemas"]["StatusMigrationFallbackDiagnostics"];
             notifications?: components["schemas"]["StatusNotificationDiagnostics"];
+            /** Order Books */
+            order_books?: {
+                [key: string]: components["schemas"]["StatusOrderBookDiagnostics"];
+            };
             /** Poll Count Failed */
             poll_count_failed: number;
             /** Poll Count Success */
@@ -3650,12 +4642,17 @@ export interface components {
             /** Poll Count Total */
             poll_count_total: number;
             position_monitor?: components["schemas"]["StatusPositionMonitorDiagnostics"];
+            /** Rate Limits */
+            rate_limits?: {
+                [key: string]: components["schemas"]["StatusRateLimitDiagnostics"];
+            };
             risk_guardrails?: components["schemas"]["StatusRiskGuardrailsDiagnostics"];
             screener_drop_counters?: components["schemas"]["StatusDropCounters"];
             /** Screener Drop Counters By Strategy */
             screener_drop_counters_by_strategy?: {
                 [key: string]: components["schemas"]["StatusDropCounters"];
             };
+            screener_latency?: components["schemas"]["StatusScreenerLatency"];
             /** Screener Post Cost Candidates */
             screener_post_cost_candidates: number;
             /** Screener Raw Candidates */
@@ -3672,9 +4669,11 @@ export interface components {
             snapshot_continuity?: components["schemas"]["StatusSnapshotContinuity"];
             /** Started At */
             started_at: string;
+            stop_trading?: components["schemas"]["StatusStopTradingDiagnostics"];
             trust_diagnostics?: components["schemas"]["StatusTrustDiagnosticsItem"];
             /** Uptime S */
             uptime_s: number;
+            ws_auth_tickets?: components["schemas"]["StatusWsAuthTickets"];
             /** Ws Feed Diagnostics */
             ws_feed_diagnostics?: {
                 [key: string]: components["schemas"]["StatusWsFeedDiagnostics"];
@@ -3738,6 +4737,68 @@ export interface components {
              * @default 0
              */
             recent_closes: number;
+        };
+        /**
+         * StatusScreenerLatency
+         * @description Screener stage latency per pass kind and event-driven fast passes (issue #298).
+         *
+         *     `full` covers the periodic full pass; `fast` covers passes that re-screen only symbols whose
+         *     market data or WS order book changed (`ARB_SCREENER_FAST_PASS_INTERVAL_S`), including
+         *     `update_to_decision`: oldest pending change -> published decision.
+         */
+        StatusScreenerLatency: {
+            /** Budgets Ms */
+            budgets_ms?: {
+                [key: string]: number;
+            };
+            fast?: components["schemas"]["StatusScreenerPassLatency"];
+            /**
+             * Fast Pass Enabled
+             * @default false
+             */
+            fast_pass_enabled: boolean;
+            /**
+             * Fast Pass Errors Total
+             * @default 0
+             */
+            fast_pass_errors_total: number;
+            /**
+             * Fast Pass Interval S
+             * @default 0
+             */
+            fast_pass_interval_s: number;
+            /**
+             * Fast Passes Idle Total
+             * @default 0
+             */
+            fast_passes_idle_total: number;
+            /**
+             * Fast Passes Total
+             * @default 0
+             */
+            fast_passes_total: number;
+            full?: components["schemas"]["StatusScreenerPassLatency"];
+            /**
+             * Full Pass Interval S
+             * @default 0
+             */
+            full_pass_interval_s: number;
+            /** Last Fast Pass At */
+            last_fast_pass_at?: string | null;
+            /**
+             * Last Fast Pass Symbols
+             * @default 0
+             */
+            last_fast_pass_symbols: number;
+        };
+        /** StatusScreenerPassLatency */
+        StatusScreenerPassLatency: {
+            /** Bottleneck */
+            bottleneck?: string | null;
+            /** Stages */
+            stages?: {
+                [key: string]: components["schemas"]["StatusLatencyStage"];
+            };
         };
         /** StatusSnapshotContinuity */
         StatusSnapshotContinuity: {
@@ -3819,6 +4880,57 @@ export interface components {
              */
             write_failures: number;
         };
+        /**
+         * StatusStopTradingDiagnostics
+         * @description `/status.stop_trading`: latch state and recovery gate summary (issues #272, #273).
+         */
+        StatusStopTradingDiagnostics: {
+            /**
+             * Ack Required
+             * @default false
+             */
+            ack_required: boolean;
+            /**
+             * Acknowledged
+             * @default false
+             */
+            acknowledged: boolean;
+            /** Acknowledged By */
+            acknowledged_by?: string | null;
+            /**
+             * Cooldown Remaining S
+             * @default 0
+             */
+            cooldown_remaining_s: number;
+            /**
+             * Critical
+             * @default false
+             */
+            critical: boolean;
+            /** Last Evaluated At */
+            last_evaluated_at?: string | null;
+            /** Last Tripped At */
+            last_tripped_at?: string | null;
+            /** Latched At */
+            latched_at?: string | null;
+            /** Recovery Blockers */
+            recovery_blockers?: string[];
+            /**
+             * Recovery Ready
+             * @default false
+             */
+            recovery_ready: boolean;
+            /** Released At */
+            released_at?: string | null;
+            /**
+             * State
+             * @default running
+             * @enum {string}
+             */
+            state: "running" | "stopped";
+            /** Triggers */
+            triggers?: ("consecutive_rollbacks" | "api_errors" | "fill_slippage" | "stale_data" | "risk_breach" | "emergency_unwind")[];
+        };
         /** StatusTrustDiagnosticsItem */
         StatusTrustDiagnosticsItem: {
             confidence_distribution?: components["schemas"]["TrustConfidenceDistributionItem"];
@@ -3828,6 +4940,97 @@ export interface components {
             };
             fallback_risk_counters?: components["schemas"]["TrustFallbackRiskCountersItem"];
             provenance_coverage?: components["schemas"]["TrustProvenanceCoverageItem"];
+        };
+        /** StatusUnhedgedAttemptItem */
+        StatusUnhedgedAttemptItem: {
+            /** Attempt Id */
+            attempt_id: string;
+            /** Hedge State */
+            hedge_state: string;
+            /** Status */
+            status: string;
+            /** Symbol */
+            symbol: string;
+            /** Unhedged Duration S */
+            unhedged_duration_s?: number | null;
+            /** Unhedged Since */
+            unhedged_since?: string | null;
+            /** Unresolved Orders */
+            unresolved_orders?: string[];
+        };
+        /**
+         * StatusWsAuthTickets
+         * @description WS auth ticket abuse telemetry (issue #307).
+         *
+         *     Totals count since process start. `*_in_window` counts cover the last `window_s` seconds,
+         *     the window the per-client and global issue limits use: a reconnect storm shows up as
+         *     `issued_in_window` approaching `max_issues_per_window`, and ticket abuse as rate-limited
+         *     or refused tickets in the window.
+         */
+        StatusWsAuthTickets: {
+            /**
+             * Consumed Total
+             * @default 0
+             */
+            consumed_total: number;
+            /**
+             * Issued In Window
+             * @default 0
+             */
+            issued_in_window: number;
+            /**
+             * Issued Total
+             * @default 0
+             */
+            issued_total: number;
+            /**
+             * Max Issues Per Client Per Window
+             * @default 0
+             */
+            max_issues_per_client_per_window: number;
+            /**
+             * Max Issues Per Window
+             * @default 0
+             */
+            max_issues_per_window: number;
+            /**
+             * Outstanding
+             * @default 0
+             */
+            outstanding: number;
+            /** Rate Limited By Scope */
+            rate_limited_by_scope?: {
+                [key: string]: number;
+            };
+            /**
+             * Rate Limited In Window
+             * @default 0
+             */
+            rate_limited_in_window: number;
+            /**
+             * Rate Limited Total
+             * @default 0
+             */
+            rate_limited_total: number;
+            /** Refused By Reason */
+            refused_by_reason?: {
+                [key: string]: number;
+            };
+            /**
+             * Refused In Window
+             * @default 0
+             */
+            refused_in_window: number;
+            /**
+             * Refused Total
+             * @default 0
+             */
+            refused_total: number;
+            /**
+             * Window S
+             * @default 0
+             */
+            window_s: number;
         };
         /** StatusWsFeedDiagnostics */
         StatusWsFeedDiagnostics: {
@@ -3867,6 +5070,168 @@ export interface components {
              * @default 0
              */
             reconnects_in_window: number;
+        };
+        /** StopTradingAckItem */
+        StopTradingAckItem: {
+            /** Actor */
+            actor: string;
+            /** At */
+            at: string;
+            /** Reason */
+            reason: string;
+            /** Triggers */
+            triggers?: ("consecutive_rollbacks" | "api_errors" | "fill_slippage" | "stale_data" | "risk_breach" | "emergency_unwind")[];
+        };
+        /** StopTradingAckRequest */
+        StopTradingAckRequest: {
+            /** Reason */
+            reason: string;
+        };
+        /** StopTradingEventItem */
+        StopTradingEventItem: {
+            /** Actor */
+            actor?: string | null;
+            /** At */
+            at: string;
+            /**
+             * Event
+             * @enum {string}
+             */
+            event: "tripped" | "acknowledged" | "released";
+            /** Reason */
+            reason: string;
+            /** Trigger */
+            trigger?: ("consecutive_rollbacks" | "api_errors" | "fill_slippage" | "stale_data" | "risk_breach" | "emergency_unwind") | null;
+        };
+        /** StopTradingHealthCheckItem */
+        StopTradingHealthCheckItem: {
+            /** Detail */
+            detail: string;
+            /**
+             * Name
+             * @enum {string}
+             */
+            name: "market_data_fresh" | "venue_api_errors" | "accounts_readable" | "risk_guardrails_clear" | "order_reconciliation";
+            /** Ok */
+            ok: boolean;
+        };
+        /**
+         * StopTradingReasonItem
+         * @description One latched stop-trading trigger (issue #272).
+         */
+        StopTradingReasonItem: {
+            /** Critical */
+            critical: boolean;
+            /** First Tripped At */
+            first_tripped_at: string;
+            /** Last Tripped At */
+            last_tripped_at: string;
+            /** Observed */
+            observed?: number | null;
+            /** Reason */
+            reason: string;
+            /** Subject */
+            subject?: string | null;
+            /** Threshold */
+            threshold?: number | null;
+            /**
+             * Trigger
+             * @enum {string}
+             */
+            trigger: "consecutive_rollbacks" | "api_errors" | "fill_slippage" | "stale_data" | "risk_breach" | "emergency_unwind";
+            /** Trips */
+            trips: number;
+        };
+        /**
+         * StopTradingRecoveryGateItem
+         * @description Recovery prerequisites (issue #273); `ready` means the next pass releases the stop.
+         */
+        StopTradingRecoveryGateItem: {
+            /** Ack Required */
+            ack_required: boolean;
+            /** Acknowledged */
+            acknowledged: boolean;
+            /** Blockers */
+            blockers?: string[];
+            /** Cooldown Elapsed */
+            cooldown_elapsed: boolean;
+            /** Cooldown Remaining S */
+            cooldown_remaining_s: number;
+            /** Cooldown S */
+            cooldown_s: number;
+            /** Health Checks */
+            health_checks?: components["schemas"]["StopTradingHealthCheckItem"][];
+            /** Health Green */
+            health_green: boolean;
+            /** Ready */
+            ready: boolean;
+            /** Stopped */
+            stopped: boolean;
+        };
+        /**
+         * StopTradingResponse
+         * @description `GET /risk/stop-trading`: latch, recovery gate, trigger observations, and audit log.
+         */
+        StopTradingResponse: {
+            acknowledgment?: components["schemas"]["StopTradingAckItem"] | null;
+            /** Active */
+            active?: components["schemas"]["StopTradingReasonItem"][];
+            /** Api Error Counts */
+            api_error_counts?: {
+                [key: string]: number;
+            };
+            /** Checked At */
+            checked_at: string;
+            /** Data Ages S */
+            data_ages_s?: {
+                [key: string]: number | null;
+            };
+            /** Events */
+            events?: components["schemas"]["StopTradingEventItem"][];
+            /** Fill Slippage Samples */
+            fill_slippage_samples?: number[];
+            gate: components["schemas"]["StopTradingRecoveryGateItem"];
+            /** Last Evaluated At */
+            last_evaluated_at?: string | null;
+            /** Last Hits */
+            last_hits?: components["schemas"]["StopTradingTriggerHitItem"][];
+            /** Last Tripped At */
+            last_tripped_at?: string | null;
+            /** Latched At */
+            latched_at?: string | null;
+            /** Released At */
+            released_at?: string | null;
+            /** Require Manual Ack */
+            require_manual_ack: boolean;
+            /** Restore Error */
+            restore_error?: string | null;
+            /**
+             * State
+             * @enum {string}
+             */
+            state: "running" | "stopped";
+            /** Thresholds */
+            thresholds?: {
+                [key: string]: number;
+            };
+        };
+        /** StopTradingTriggerHitItem */
+        StopTradingTriggerHitItem: {
+            /** Critical */
+            critical: boolean;
+            /** Observed */
+            observed?: number | null;
+            /** Reason */
+            reason: string;
+            /** Subject */
+            subject?: string | null;
+            /** Threshold */
+            threshold?: number | null;
+            /**
+             * Trigger
+             * @enum {string}
+             */
+            trigger: "consecutive_rollbacks" | "api_errors" | "fill_slippage" | "stale_data" | "risk_breach" | "emergency_unwind";
         };
         /**
          * SurvivalPoint
@@ -4655,6 +6020,28 @@ export interface operations {
             };
         };
     };
+    get_healthz_healthz_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
     list_migration_parity_artifacts_migration_parity_artifacts_get: {
         parameters: {
             query?: {
@@ -4719,16 +6106,18 @@ export interface operations {
             };
         };
     };
-    list_migration_preflight_parity_artifacts_migration_preflight_parity_artifacts_get: {
+    ingest_monitor_alert_notifications_monitor_alert_post: {
         parameters: {
-            query?: {
-                limit?: number;
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MonitorAlertIngestRequest"];
+            };
+        };
         responses: {
             /** @description Successful Response */
             200: {
@@ -4736,40 +6125,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["PreflightParityArtifactListResponse"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    get_migration_preflight_parity_report_migration_preflight_parity_report_get: {
-        parameters: {
-            query?: {
-                window_s?: number;
-                limit?: number;
-                include_artifacts?: boolean;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PreflightParityReportResponse"];
+                    "application/json": components["schemas"]["MonitorAlertIngestResponse"];
                 };
             };
             /** @description Validation Error */
@@ -4865,6 +6221,77 @@ export interface operations {
             };
         };
     };
+    get_public_correlation_public_correlation_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicCorrelationResponse"];
+                };
+            };
+        };
+    };
+    get_public_opportunities_public_opportunities_get: {
+        parameters: {
+            query?: {
+                strategy_type?: ("funding_arbitrage" | "basis_convergence" | "cash_and_carry")[] | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicOpportunitiesResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_public_status_public_status_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicStatusResponse"];
+                };
+            };
+        };
+    };
     get_risk_guardrails_risk_guardrails_get: {
         parameters: {
             query?: never;
@@ -4881,6 +6308,59 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["RiskGuardrailsResponse"];
+                };
+            };
+        };
+    };
+    get_stop_trading_risk_stop_trading_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StopTradingResponse"];
+                };
+            };
+        };
+    };
+    post_stop_trading_ack_risk_stop_trading_ack_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StopTradingAckRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StopTradingResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

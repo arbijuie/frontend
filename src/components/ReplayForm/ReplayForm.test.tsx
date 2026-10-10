@@ -43,4 +43,23 @@ describe("ReplayForm", () => {
     );
     expect(screen.getByText("end must be after start")).not.toBeNull();
   });
+
+  it("links field errors to their inputs for assistive tech", () => {
+    render(
+      <ReplayForm
+        onSubmit={vi.fn()}
+        submitting={false}
+        fieldErrors={{ entry_score_bps: "Must be greater than exit score." }}
+      />
+    );
+
+    const input = screen.getByLabelText("Entry Score (bps)");
+    expect(input.getAttribute("aria-invalid")).toBe("true");
+
+    const error = screen.getByRole("alert");
+    expect(error.textContent).toBe("Must be greater than exit score.");
+    expect(input.getAttribute("aria-describedby")).toBe(error.id);
+
+    expect(screen.getByLabelText("Exit Score (bps)").getAttribute("aria-invalid")).toBeNull();
+  });
 });

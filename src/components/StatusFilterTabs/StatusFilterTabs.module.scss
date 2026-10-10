@@ -2,6 +2,8 @@
   display: flex;
   gap: 0.375rem;
   margin: 1rem 0;
+  margin-inline: -0.25rem;
+  padding: 0.5rem 0.25rem;
   overflow-x: auto;
 }
 
@@ -15,8 +17,8 @@
   font-size: 0.75rem;
 
   &.active {
-    background: v.$accent-purple;
-    color: v.$text-primary;
-    border-color: v.$accent-purple;
+    background: v.$accent-purple-bg;
+    color: #fff;
+    border-color: v.$accent-purple-bg;
   }
 }

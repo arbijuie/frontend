@@ -1,16 +1,7 @@
 import styles from "./ExchangeBadge.module.scss";
+import { KNOWN_EXCHANGES, type KnownExchange } from "../../lib/exchanges";
 
-const KNOWN_EXCHANGES = [
-  "hyperliquid",
-  "lighter",
-  "aster",
-  "binance",
-  "bybit",
-  "dydx",
-  "extended",
-] as const;
-
-type ExchangeKey = (typeof KNOWN_EXCHANGES)[number] | "unknown";
+type ExchangeKey = KnownExchange | "unknown";
 
 function resolveExchangeKey(exchange: string): ExchangeKey {
   const normalized = exchange.toLowerCase();

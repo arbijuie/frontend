@@ -1,14 +1,7 @@
 import styles from "./StatusFilterTabs.module.scss";
-import type { OpportunityStatus } from "../../api/types";
+import { STATUS_FILTER_OPTIONS, type StatusFilter } from "../../lib/opportunitiesUrlState";
 
-export type StatusFilter = OpportunityStatus | "all";
-
-const FILTERS: { key: StatusFilter; label: string }[] = [
-  { key: "all", label: "All" },
-  { key: "ready", label: "Ready" },
-  { key: "watching", label: "Watching" },
-  { key: "blocked", label: "Blocked" },
-];
+export type { StatusFilter };
 
 interface Props {
   value: StatusFilter;
@@ -18,10 +11,12 @@ interface Props {
 
 const StatusFilterTabs = ({ value, onChange, counts }: Props) => {
   return (
-    <div className={styles.tabs}>
-      {FILTERS.map((f) => (
+    <div className={styles.tabs} role="group" aria-label="Filter opportunities by status">
+      {STATUS_FILTER_OPTIONS.map((f) => (
         <button
           key={f.key}
+          type="button"
+          aria-pressed={value === f.key}
           className={`${styles.tab} ${value === f.key ? styles.active : ""}`}
           onClick={() => onChange(f.key)}
         >

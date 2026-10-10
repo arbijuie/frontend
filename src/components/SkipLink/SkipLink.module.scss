@@ -1,0 +1,20 @@
+.skipLink {
+  position: fixed;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 100;
+  padding: 0.5rem 0.875rem;
+  border-radius: 0.5rem;
+  background: v.$accent-purple-bg;
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  transform: translateY(-200%);
+
+  &:focus {
+    transform: translateY(0);
+    outline: 0.125rem solid #fff;
+    outline-offset: 0.125rem;
+  }
+}

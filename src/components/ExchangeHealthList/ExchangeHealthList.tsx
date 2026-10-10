@@ -3,10 +3,19 @@ import type { StatusResponse } from "../../api/types";
 
 interface ExchangeHealthListProps {
   exchangeStatus: StatusResponse["exchange_last_ok"];
+  activeExchanges?: StatusResponse["active_exchanges"];
 }
 
-const ExchangeHealthList = ({ exchangeStatus }: ExchangeHealthListProps) => {
-  const entries = Object.entries(exchangeStatus);
+const ExchangeHealthList = ({ exchangeStatus, activeExchanges }: ExchangeHealthListProps) => {
+  const mergedExchanges = new Set<string>(activeExchanges ?? []);
+  for (const exchange of Object.keys(exchangeStatus)) {
+    mergedExchanges.add(exchange);
+  }
+
+  const entries = Array.from(mergedExchanges).map((exchange) => [
+    exchange,
+    exchangeStatus[exchange] ?? null,
+  ] as const);
 
   if (entries.length === 0) {
     return <div className={styles.empty}>No exchange health data</div>;

@@ -1,19 +1,13 @@
 import styles from "./OpportunitiesList.module.scss";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { OpportunityItem } from "../../api/types";
 import OpportunityCard from "../OpportunityCard/OpportunityCard";
-import StatusFilterTabs, { type StatusFilter } from "../StatusFilterTabs/StatusFilterTabs";
+import StatusFilterTabs from "../StatusFilterTabs/StatusFilterTabs";
 import SymbolSearch from "../SymbolSearch/SymbolSearch";
 import EmptyState from "../EmptyState/EmptyState";
+import { SORT_OPTIONS, type SortKey, type StatusFilter } from "../../lib/opportunitiesUrlState";
 
-type SortKey = "priority" | "combined_score" | "funding_diff_apr" | "hours_to_breakeven";
-
-const SORT_OPTIONS: { key: SortKey; label: string }[] = [
-  { key: "priority", label: "Priority" },
-  { key: "combined_score", label: "Score" },
-  { key: "funding_diff_apr", label: "Funding APR" },
-  { key: "hours_to_breakeven", label: "Breakeven" },
-];
+const SEARCH_DEBOUNCE_MS = 300;
 
 const STATUS_LABELS: Record<Exclude<StatusFilter, "all">, string> = {
   ready: "ready",
@@ -74,11 +68,51 @@ interface OpportunitiesListProps {
   items: OpportunityItem[];
   updatedAt: string | null;
   now: Date;
+  sortKey: SortKey;
+  onSortKeyChange: (key: SortKey) => void;
+  statusFilter: StatusFilter;
+  onStatusFilterChange: (filter: StatusFilter) => void;
+  search: string;
+  onSearchChange: (search: string) => void;
 }
-const OpportunitiesList = ({ items, updatedAt, now }: OpportunitiesListProps) => {
-  const [sortKey, setSortKey] = useState<SortKey>("priority");
-  const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
-  const [search, setSearch] = useState("");
+
+const OpportunitiesList = ({
+  items,
+  updatedAt,
+  now,
+  sortKey,
+  onSortKeyChange,
+  statusFilter,
+  onStatusFilterChange,
+  search,
+  onSearchChange,
+}: OpportunitiesListProps) => {
+  const [searchDraft, setSearchDraft] = useState(search);
+  const [prevSearchProp, setPrevSearchProp] = useState(search);
+  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  if (search !== prevSearchProp) {
+    setPrevSearchProp(search);
+    setSearchDraft(search);
+  }
+
+  useEffect(() => {
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, []);
+
+  const handleSearchChange = (value: string) => {
+    setSearchDraft(value);
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+    debounceTimerRef.current = setTimeout(() => {
+      onSearchChange(value);
+    }, SEARCH_DEBOUNCE_MS);
+  };
 
   const counts = useMemo(
     () => ({
@@ -91,25 +125,25 @@ const OpportunitiesList = ({ items, updatedAt, now }: OpportunitiesListProps) =>
   );
 
   const bySearch =
-    search.trim() === ""
+    searchDraft.trim() === ""
       ? items
-      : items.filter((i) => i.symbol.toLowerCase().includes(search.trim().toLowerCase()));
+      : items.filter((i) => i.symbol.toLowerCase().includes(searchDraft.trim().toLowerCase()));
   const byStatus =
     statusFilter === "all" ? bySearch : bySearch.filter((i) => i.status === statusFilter);
   const sorted = sortItems(byStatus, sortKey);
-  const emptyMessage = buildEmptyMessage(search, statusFilter);
+  const emptyMessage = buildEmptyMessage(searchDraft, statusFilter);
   const hiddenByFilter =
-    sorted.length === 0 && statusFilter !== "all" && search.trim() === "" && counts.all > 0;
+    sorted.length === 0 && statusFilter !== "all" && searchDraft.trim() === "" && counts.all > 0;
 
   return (
     <div>
       <div className={styles.controls}>
         <div className={styles.topRow}>
-          <SymbolSearch value={search} onChange={setSearch} />
+          <SymbolSearch value={searchDraft} onChange={handleSearchChange} />
           <select
             className={styles.sortSelect}
             value={sortKey}
-            onChange={(e) => setSortKey(e.target.value as SortKey)}
+            onChange={(e) => onSortKeyChange(e.target.value as SortKey)}
             aria-label="Sort opportunities by"
           >
             {SORT_OPTIONS.map((opt) => (
@@ -119,7 +153,7 @@ const OpportunitiesList = ({ items, updatedAt, now }: OpportunitiesListProps) =>
             ))}
           </select>
         </div>
-        <StatusFilterTabs value={statusFilter} onChange={setStatusFilter} counts={counts} />
+        <StatusFilterTabs value={statusFilter} onChange={onStatusFilterChange} counts={counts} />
       </div>
       {hiddenByFilter && (
         <div className={styles.filterHint}>
@@ -130,7 +164,7 @@ const OpportunitiesList = ({ items, updatedAt, now }: OpportunitiesListProps) =>
           <button
             type="button"
             className={styles.filterHintButton}
-            onClick={() => setStatusFilter("all")}
+            onClick={() => onStatusFilterChange("all")}
           >
             Show all
           </button>

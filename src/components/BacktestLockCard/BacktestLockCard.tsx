@@ -45,7 +45,11 @@ const BacktestLockCard = ({ lock, onSelect }: BacktestLockCardProps) => {
           </div>
         </div>
       </div>
-      <button className={styles.viewButton} onClick={() => onSelect(lock.lock_id)}>
+      <button
+        className={styles.viewButton}
+        onClick={() => onSelect(lock.lock_id)}
+        aria-label={`View details for ${lock.lock_id}`}
+      >
         View details
       </button>
     </div>

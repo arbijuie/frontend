@@ -75,7 +75,6 @@ function makeConfig(): ConfigResponse {
     exec_adl_critical_quantile: 4,
     exec_recovery_cooldown_s: 900,
     exec_recovery_require_manual_ack: true,
-    extra_exchanges: "",
     active_exchanges: ["hyperliquid", "lighter"],
     binance_base_url: "https://fapi.binance.com",
     aster_base_url: "https://fapi.asterdex.com",

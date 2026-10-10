@@ -1,10 +1,11 @@
 import styles from "./OpportunityCard.module.scss";
-import { useState } from "react";
+import { useId, useState } from "react";
 import { SOURCE_STATE_SET, type OpportunityItem, type FundingTrend } from "../../api/types";
 import StatusBadge from "../StatusBadge/StatusBadge";
 import ExchangeBadge from "../ExchangeBadge/ExchangeBadge";
 import { signColor, getFundingTargetTime, formatCountdown } from "../../lib/format";
 import HelpTooltip from "../HelpTooltip/HelpTooltip";
+import VisuallyHidden from "../VisuallyHidden/VisuallyHidden";
 
 const trendIcon: Record<FundingTrend, string> = { rising: "↑", falling: "↓", stable: "→" };
 const trendClass: Record<FundingTrend, string> = {
@@ -85,7 +86,14 @@ function formatEffectiveFee(
   return fee != null ? `${(fee * 100).toFixed(3)}%` : "—";
 }
 
+function routeLabel(longVenue: string, shortVenue: string): string {
+  return `${longVenue} to ${shortVenue}`;
+}
+
 const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
+  const detailsId = useId();
+  const headingId = useId();
+  const routeId = useId();
   const [expanded, setExpanded] = useState(false);
   const [showProvenance, setShowProvenance] = useState(false);
   const longLeg = item.legs?.find((leg) => leg.side === "long");
@@ -128,14 +136,19 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
       ? formatCountdown(getFundingTargetTime(updatedAt, item.short_hours_to_next_funding), now)
       : null;
   return (
-    <div className={styles.card}>
+    <article className={styles.card} aria-labelledby={`${headingId} ${routeId}`}>
       <div className={styles.topRow}>
-        <span className={styles.symbol}>{item.symbol}</span>
+        <h2 id={headingId} className={styles.symbol}>
+          {item.symbol}
+        </h2>
         <StatusBadge status={item.status} />
       </div>
-      <div className={styles.route}>
+      <div id={routeId} className={styles.route}>
         <ExchangeBadge exchange={longVenue} />
-        <span className={styles.arrow}>→</span>
+        <span className={styles.arrow} aria-hidden="true">
+          →
+        </span>
+        <VisuallyHidden> to </VisuallyHidden>
         <ExchangeBadge exchange={shortVenue} />
       </div>
       <div className={styles.metrics}>
@@ -211,12 +224,18 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
         </div>
       ) : null}
 
-      <button className={styles.expandButton} onClick={() => setExpanded(!expanded)}>
+      <button
+        className={styles.expandButton}
+        onClick={() => setExpanded(!expanded)}
+        aria-expanded={expanded}
+        aria-controls={detailsId}
+        aria-label={`${expanded ? "Hide details" : "More details"} for ${item.symbol}, ${routeLabel(longVenue, shortVenue)}`}
+      >
         {expanded ? "Hide details" : "More details"}
       </button>
 
       {expanded && (
-        <div className={styles.details}>
+        <div id={detailsId} className={styles.details}>
           <div className={styles.breakdownCard}>
             <div className={styles.breakdownTitle}>Score breakdown (bps)</div>
             <div className={styles.detailRow}>
@@ -485,7 +504,7 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
           )}
         </div>
       )}
-    </div>
+    </article>
   );
 };
 

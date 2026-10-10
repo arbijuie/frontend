@@ -75,4 +75,61 @@ describe("ConfigDiffPreview", () => {
       true
     );
   });
+
+  it("moves focus into the dialog when it opens", () => {
+    render(
+      <ConfigDiffPreview
+        rows={[]}
+        persist={true}
+        fieldLabels={{}}
+        onConfirm={vi.fn()}
+        onCancel={vi.fn()}
+        submitting={false}
+      />
+    );
+
+    expect(document.activeElement).toBe(
+      screen.getByRole("dialog", { name: /preview config changes/i })
+    );
+  });
+
+  it("calls onCancel when Escape is pressed inside the dialog", () => {
+    const onCancel = vi.fn();
+    render(
+      <ConfigDiffPreview
+        rows={[]}
+        persist={true}
+        fieldLabels={{}}
+        onConfirm={vi.fn()}
+        onCancel={onCancel}
+        submitting={false}
+      />
+    );
+
+    fireEvent.keyDown(screen.getByRole("dialog", { name: /preview config changes/i }), {
+      key: "Escape",
+    });
+
+    expect(onCancel).toHaveBeenCalledTimes(1);
+  });
+
+  it("ignores Escape while a save is in progress", () => {
+    const onCancel = vi.fn();
+    render(
+      <ConfigDiffPreview
+        rows={[]}
+        persist={true}
+        fieldLabels={{}}
+        onConfirm={vi.fn()}
+        onCancel={onCancel}
+        submitting={true}
+      />
+    );
+
+    fireEvent.keyDown(screen.getByRole("dialog", { name: /preview config changes/i }), {
+      key: "Escape",
+    });
+
+    expect(onCancel).not.toHaveBeenCalled();
+  });
 });

@@ -12,8 +12,17 @@ const FloatingRefreshButton = ({
   label = "Refresh opportunities",
 }: FloatingRefreshButtonProps) => {
   return (
-    <button className={styles.fab} onClick={onClick} disabled={fetching} aria-label={label}>
-      <span className={fetching ? styles.spinning : ""}>↻</span>
+    <button
+      className={styles.fab}
+      onClick={() => {
+        if (!fetching) onClick();
+      }}
+      aria-disabled={fetching}
+      aria-label={label}
+    >
+      <span className={fetching ? styles.spinning : ""} aria-hidden="true">
+        ↻
+      </span>
     </button>
   );
 };

@@ -19,9 +19,10 @@ const ReplayResultPanel = ({
 }: ReplayResultPanelProps) => {
   const entriesByStrategy = Object.entries(metrics.entries_by_strategy_type ?? {});
   const exitsByStrategy = Object.entries(metrics.exits_by_strategy_type ?? {});
+  const lockButtonBusy = Boolean(creatingLock || lockCreated);
 
   return (
-    <div className={styles.panel}>
+    <section className={styles.panel} aria-label="Replay result">
       {usedRequest && (
         <div className={styles.usedParams}>
           Symbols: {usedRequest.symbols?.length ? usedRequest.symbols.join(", ") : "All"}
@@ -135,8 +136,10 @@ const ReplayResultPanel = ({
       {onCreateLock && (
         <button
           className={styles.createLockButton}
-          onClick={onCreateLock}
-          disabled={creatingLock || lockCreated}
+          onClick={() => {
+            if (!lockButtonBusy) onCreateLock();
+          }}
+          aria-disabled={lockButtonBusy}
         >
           {creatingLock
             ? "Locking..."
@@ -145,7 +148,7 @@ const ReplayResultPanel = ({
               : "Create Strategy Lock from this Result"}
         </button>
       )}
-    </div>
+    </section>
   );
 };
 

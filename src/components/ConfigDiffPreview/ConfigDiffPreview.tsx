@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import styles from "./ConfigDiffPreview.module.scss";
 import type { DiffRow } from "../../lib/configDraft";
 
@@ -22,8 +23,26 @@ const ConfigDiffPreview = ({
   onCancel,
   submitting,
 }: ConfigDiffPreviewProps) => {
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    panelRef.current?.focus();
+  }, []);
+
   return (
-    <div className={styles.panel} role="dialog" aria-label="Preview config changes">
+    <div
+      ref={panelRef}
+      className={styles.panel}
+      role="dialog"
+      aria-label="Preview config changes"
+      tabIndex={-1}
+      onKeyDown={(event) => {
+        if (event.key === "Escape" && !submitting) {
+          event.stopPropagation();
+          onCancel();
+        }
+      }}
+    >
       <div className={styles.title}>Preview changes</div>
       <div className={styles.persistRow}>
         Persist: <strong>{persist ? "true (saved to .env)" : "false (session only)"}</strong>

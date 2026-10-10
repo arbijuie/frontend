@@ -351,4 +351,59 @@ describe("OpportunityCard", () => {
     fireEvent.click(screen.getByRole("button", { name: /show data provenance/i }));
     expect(screen.getByRole("button", { name: /hide data provenance/i })).toBeTruthy();
   });
+
+  it("exposes expand state and a per-card accessible name on the details button", () => {
+    render(
+      <OpportunityCard item={makeItem()} updatedAt={"2026-01-01T00:00:00Z"} now={new Date()} />
+    );
+
+    const button = screen.getByRole("button", {
+      name: "More details for BTC, hyperliquid to lighter",
+    });
+    expect(button.getAttribute("aria-expanded")).toBe("false");
+
+    fireEvent.click(button);
+
+    const hideButton = screen.getByRole("button", {
+      name: "Hide details for BTC, hyperliquid to lighter",
+    });
+    expect(hideButton.getAttribute("aria-expanded")).toBe("true");
+    const panelId = hideButton.getAttribute("aria-controls");
+    expect(document.getElementById(panelId as string)).not.toBeNull();
+  });
+
+  it("exposes each card as an article named by its symbol heading and route", () => {
+    render(
+      <OpportunityCard item={makeItem()} updatedAt={"2026-01-01T00:00:00Z"} now={new Date()} />
+    );
+
+    expect(screen.getByRole("heading", { level: 2, name: "BTC" })).toBeTruthy();
+    expect(screen.getByRole("article", { name: /BTC.*hyperliquid.*to.*lighter/i })).toBeTruthy();
+  });
+
+  it("keeps button and card names unique when the same symbol appears on two routes", () => {
+    const base = makeItem();
+    const other = {
+      ...base,
+      legs: (base.legs ?? []).map((leg) =>
+        leg.side === "short" ? { ...leg, venue: "binance" } : leg
+      ),
+    };
+
+    render(
+      <>
+        <OpportunityCard item={makeItem()} updatedAt={"2026-01-01T00:00:00Z"} now={new Date()} />
+        <OpportunityCard item={other} updatedAt={"2026-01-01T00:00:00Z"} now={new Date()} />
+      </>
+    );
+
+    expect(
+      screen.getByRole("button", { name: "More details for BTC, hyperliquid to lighter" })
+    ).toBeTruthy();
+    expect(
+      screen.getByRole("button", { name: "More details for BTC, hyperliquid to binance" })
+    ).toBeTruthy();
+    expect(screen.getByRole("article", { name: /BTC.*hyperliquid.*lighter/i })).toBeTruthy();
+    expect(screen.getByRole("article", { name: /BTC.*hyperliquid.*binance/i })).toBeTruthy();
+  });
 });

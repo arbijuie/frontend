@@ -102,6 +102,13 @@ describe("StatusPage", () => {
     expect(screen.getByText("Startup Recovery")).toBeTruthy();
   });
 
+  it("renders the Market Data Sources section", () => {
+    render(<StatusPage />);
+
+    expect(screen.getByRole("heading", { level: 2, name: "Market Data Sources" })).toBeTruthy();
+    expect(screen.getByText("WS reliability mock")).toBeTruthy();
+  });
+
   it("renders the Live Transport section", () => {
     render(<StatusPage />);
 

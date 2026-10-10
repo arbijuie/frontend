@@ -1,0 +1,28 @@
+.header {
+  border-bottom: 0.0625rem solid v.$border-color;
+  padding: 0.75rem var(--app-horizontal-padding, 0.8rem);
+}
+
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  max-width: var(--app-max-width, 48rem);
+  margin: 0 auto;
+}
+
+.link {
+  color: v.$text-secondary;
+  text-decoration: none;
+  padding: 0.375rem 0.25rem;
+  border-bottom: 0.125rem solid transparent;
+
+  &:hover {
+    color: v.$text-primary;
+  }
+}
+
+.active {
+  color: v.$accent-purple;
+  border-bottom-color: v.$accent-purple;
+}

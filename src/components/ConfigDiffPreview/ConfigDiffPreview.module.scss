@@ -4,6 +4,11 @@
   border: 0.0625rem solid v.$accent-purple;
   border-radius: 0.75rem;
   background: rgba(139, 92, 246, 0.06);
+
+  &:focus-visible {
+    outline: 0.125rem solid v.$accent-purple;
+    outline-offset: 0.125rem;
+  }
 }
 
 .title {
@@ -58,7 +63,7 @@
   padding: 0.45rem;
   border: none;
   border-radius: 0.5rem;
-  background: v.$accent-purple;
+  background: v.$accent-purple-bg;
   color: #fff;
   font-weight: 600;
   cursor: pointer;

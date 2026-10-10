@@ -1,6 +1,7 @@
-import { useMemo, useState, type CSSProperties } from "react";
-import type { StatusResponse } from "../../api/types";
 import styles from "./DeepPipelineDiagnostics.module.scss";
+import { useId, useMemo, useState, type CSSProperties } from "react";
+import type { StatusResponse } from "../../api/types";
+import VisuallyHidden from "../VisuallyHidden/VisuallyHidden";
 
 interface DeepPipelineDiagnosticsProps {
   status: StatusResponse;
@@ -58,6 +59,7 @@ function sortByCountDesc<T extends { count: number; key: string }>(items: T[]): 
 
 const DeepPipelineDiagnostics = ({ status }: DeepPipelineDiagnosticsProps) => {
   const [showAllReasons, setShowAllReasons] = useState(false);
+  const reasonListId = useId();
 
   const dropCounts = status.screener_drop_counters;
   const dropMetrics = useMemo<MetricItem[]>(() => {
@@ -241,10 +243,21 @@ const DeepPipelineDiagnostics = ({ status }: DeepPipelineDiagnosticsProps) => {
               "--heat-intensity": String(intensity),
               backgroundColor: `rgba(56, 189, 248, ${(0.07 + intensity * 0.33).toFixed(3)})`,
             } as CSSProperties;
+            const intensityLabel =
+              intensity >= 0.75
+                ? "high"
+                : intensity >= 0.4
+                  ? "medium"
+                  : intensity > 0
+                    ? "low"
+                    : "none";
             return (
               <div key={item.key} className={styles.heatRow} style={style}>
                 <span className={styles.heatLabel}>{item.label}</span>
-                <span className={styles.heatValue}>{item.count}</span>
+                <span className={styles.heatValue}>
+                  {item.count}
+                  <VisuallyHidden>, {intensityLabel} relative intensity</VisuallyHidden>
+                </span>
               </div>
             );
           })}
@@ -263,6 +276,8 @@ const DeepPipelineDiagnostics = ({ status }: DeepPipelineDiagnosticsProps) => {
               type="button"
               className={styles.toggleButton}
               onClick={() => setShowAllReasons((prev) => !prev)}
+              aria-expanded={showAllReasons}
+              aria-controls={reasonListId}
             >
               {showAllReasons ? "Show top 8" : "Show all"}
             </button>
@@ -271,7 +286,7 @@ const DeepPipelineDiagnostics = ({ status }: DeepPipelineDiagnosticsProps) => {
         {reasonMetrics.length === 0 ? (
           <p className={styles.empty}>No reason-code events recorded.</p>
         ) : (
-          <ul className={styles.list}>
+          <ul className={styles.list} id={reasonListId}>
             {visibleReasons.map((item) => (
               <li key={item.key} className={styles.row}>
                 <span className={styles.label}>{item.label}</span>
@@ -292,7 +307,12 @@ const DeepPipelineDiagnostics = ({ status }: DeepPipelineDiagnosticsProps) => {
         {exchangeRows.length === 0 ? (
           <p className={styles.empty}>No exchange diagnostics are available.</p>
         ) : (
-          <div className={styles.tableWrap}>
+          <div
+            className={styles.tableWrap}
+            tabIndex={0}
+            role="region"
+            aria-label="Exchange split table"
+          >
             <table className={styles.table}>
               <thead>
                 <tr>

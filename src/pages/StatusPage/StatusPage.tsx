@@ -46,7 +46,7 @@ const StatusPage = () => {
         <div>
           <h1 className={styles.title}>Status</h1>
           <div className={styles.liveRow}>
-            <span className={styles.liveDot} />
+            <span className={styles.liveDot} aria-hidden="true" />
             live
             {data?.last_updated_at && (
               <span> · updated {new Date(data.last_updated_at).toLocaleTimeString()}</span>
@@ -62,10 +62,16 @@ const StatusPage = () => {
       <h2 className={styles.sectionTitle}>Live Transport</h2>
       <WsTransportHealthCard />
 
-      {justChecked && <div className={styles.hint}>Already up to date</div>}
+      <div className={styles.hint} role="status">
+        {justChecked ? "Already up to date" : ""}
+      </div>
 
-      {error && <div className={styles.errorBox}>Error: {error}</div>}
-      {loading && !data && <div>Loading status...</div>}
+      {error && (
+        <div className={styles.errorBox} role="alert">
+          Error: {error}
+        </div>
+      )}
+      {loading && !data && <div role="status">Loading status...</div>}
 
       {data && (
         <>
@@ -74,12 +80,15 @@ const StatusPage = () => {
           <StatusDetailsList status={data} />
           <h2 className={styles.sectionTitle}>Pipeline Diagnostics</h2>
           <DeepPipelineDiagnostics status={data} />
-          <h2 className={styles.sectionTitle}>WS Feed Reliability</h2>
+          <h2 className={styles.sectionTitle}>Market Data Sources</h2>
           <WsFeedReliabilityList status={data} />
           <h2 className={styles.sectionTitle}>Recovery Health</h2>
           <RecoveryHealthCard status={data} />
           <h2 className={styles.sectionTitle}>Exchange Health</h2>
-          <ExchangeHealthList exchangeStatus={data.exchange_last_ok} />
+          <ExchangeHealthList
+            exchangeStatus={data.exchange_last_ok}
+            activeExchanges={data.active_exchanges}
+          />
         </>
       )}
 

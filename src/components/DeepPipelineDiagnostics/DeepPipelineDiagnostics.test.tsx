@@ -226,4 +226,60 @@ describe("DeepPipelineDiagnostics", () => {
     expect(screen.getByText("hyperliquid")).toBeTruthy();
     expect(screen.getByText("lighter")).toBeTruthy();
   });
+
+  it("exposes the reason-code toggle state via aria-expanded/aria-controls", () => {
+    const reasons: Record<string, number> = {};
+    for (let i = 1; i <= 11; i += 1) {
+      reasons[`reason_${i}`] = 20 - i;
+    }
+
+    render(
+      <DeepPipelineDiagnostics
+        status={makeStatus({
+          screener_reason_code_counts: reasons,
+          screener_reason_severity_counts: { blocked: 3, watching: 7 },
+        })}
+      />
+    );
+
+    const button = screen.getByRole("button", { name: /show all/i });
+    expect(button.getAttribute("aria-expanded")).toBe("false");
+    const panelId = button.getAttribute("aria-controls");
+    expect(panelId).toBeTruthy();
+
+    fireEvent.click(button);
+
+    const toggledButton = screen.getByRole("button", { name: /show top 8/i });
+    expect(toggledButton.getAttribute("aria-expanded")).toBe("true");
+    expect(document.getElementById(panelId as string)).not.toBeNull();
+  });
+
+  it("exposes heat-map intensity as text, not color or a label alone", () => {
+    render(
+      <DeepPipelineDiagnostics
+        status={makeStatus({
+          screener_drop_counters: {
+            ...makeDropCounters(),
+            missing_real_depth: 10,
+            stale: 1,
+          },
+        })}
+      />
+    );
+
+    expect(screen.getByText(/, high relative intensity/i).closest("div")?.textContent).toContain(
+      "Missing real depth"
+    );
+    expect(screen.getByText(/, low relative intensity/i).closest("div")?.textContent).toContain(
+      "Stale data"
+    );
+    expect(document.querySelector("[aria-label*='relative intensity']")).toBeNull();
+  });
+
+  it("makes the exchange split table scroll container keyboard-focusable", () => {
+    render(<DeepPipelineDiagnostics status={makeStatus()} />);
+
+    const region = screen.getByRole("region", { name: /exchange split table/i });
+    expect(region.getAttribute("tabindex")).toBe("0");
+  });
 });

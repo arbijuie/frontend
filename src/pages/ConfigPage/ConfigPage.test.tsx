@@ -96,7 +96,6 @@ function makeConfig(overrides: Partial<ConfigResponse> = {}): ConfigResponse {
     exec_adl_critical_quantile: 4,
     exec_recovery_cooldown_s: 900,
     exec_recovery_require_manual_ack: true,
-    extra_exchanges: "",
     active_exchanges: ["hyperliquid", "lighter"],
     binance_base_url: "https://fapi.binance.com",
     aster_base_url: "https://fapi.asterdex.com",
@@ -442,6 +441,7 @@ describe("ConfigPage", () => {
     });
     const scoreInput = screen.getByLabelText("Min Score (bps)") as HTMLInputElement;
     expect(scoreInput.value).toBe("9");
+    expect(screen.getByRole("alert").textContent).toContain("Network error");
   });
 
   it("re-closes an open preview when the draft changes again after it was opened", () => {
@@ -480,5 +480,61 @@ describe("ConfigPage", () => {
     fireEvent.click(screen.getByRole("button", { name: /refresh live/i }));
 
     expect(refetch).toHaveBeenCalledTimes(1);
+  });
+
+  it("returns focus to the Preview button when the preview is cancelled", () => {
+    mockedUseConfig.mockReturnValue({
+      data: makeConfig(),
+      error: null,
+      loading: false,
+      fetching: false,
+      refetch,
+    });
+    mockedUseUpdateConfig.mockReturnValue({ mutateAsync: vi.fn(), isPending: false } as never);
+
+    render(<ConfigPage />);
+
+    fireEvent.change(screen.getByLabelText("Min Score (bps)"), { target: { value: "9" } });
+    fireEvent.click(screen.getByRole("button", { name: /preview changes/i }));
+    fireEvent.click(screen.getByRole("button", { name: /^cancel$/i }));
+
+    expect(document.activeElement).toBe(screen.getByRole("button", { name: /preview changes/i }));
+  });
+
+  it("keeps the help button out of a checkbox's accessible name", () => {
+    mockedUseConfig.mockReturnValue({
+      data: makeConfig({
+        runbook_config_fields: ["min_score_bps", "migration_nautilus_enabled"],
+        migration_nautilus_enabled: false,
+      }),
+      error: null,
+      loading: false,
+      fetching: false,
+      refetch,
+    });
+    mockedUseUpdateConfig.mockReturnValue({ mutateAsync: vi.fn(), isPending: false } as never);
+
+    render(<ConfigPage />);
+
+    expect(screen.getByRole("checkbox", { name: "Nautilus Migration Enabled" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Help: Nautilus Migration Enabled" })).toBeTruthy();
+  });
+
+  it("announces the reset confirmation politely via role=status", () => {
+    mockedUseConfig.mockReturnValue({
+      data: makeConfig(),
+      error: null,
+      loading: false,
+      fetching: false,
+      refetch,
+    });
+    mockedUseUpdateConfig.mockReturnValue({ mutateAsync: vi.fn(), isPending: false } as never);
+
+    render(<ConfigPage />);
+
+    fireEvent.change(screen.getByLabelText("Min Score (bps)"), { target: { value: "9" } });
+    fireEvent.click(screen.getByRole("button", { name: /^reset$/i }));
+
+    expect(screen.getByRole("status").textContent).toBe("Draft reset to live config");
   });
 });

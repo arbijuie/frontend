@@ -1,5 +1,5 @@
 import styles from "./ReplayForm.module.scss";
-import { useState, type SubmitEvent } from "react";
+import { useId, useState, type ReactNode, type SubmitEvent } from "react";
 import type { BacktestReplayRequest } from "../../api/types";
 
 interface ReplayFormProps {
@@ -16,6 +16,7 @@ function parseDateOrNull(value: string): string | null {
 }
 
 const ReplayForm = ({ onSubmit, submitting, fieldErrors }: ReplayFormProps) => {
+  const baseId = useId();
   const [symbols, setSymbols] = useState("");
   const [start, setStart] = useState("");
   const [end, setEnd] = useState("");
@@ -25,6 +26,37 @@ const ReplayForm = ({ onSubmit, submitting, fieldErrors }: ReplayFormProps) => {
   const [minSamples, setMinSamples] = useState("");
   const [strategyId, setStrategyId] = useState("baseline-v1");
   const [localErrors, setLocalErrors] = useState<Record<string, string>>({});
+
+  const errorFor = (field: string): string | undefined =>
+    localErrors[field] || fieldErrors?.[field];
+  const inputId = (field: string) => `${baseId}-${field}`;
+  const errorId = (field: string) => `${baseId}-${field}-error`;
+
+  const inputA11yProps = (field: string) => {
+    const hasError = Boolean(errorFor(field));
+    return {
+      id: inputId(field),
+      "aria-invalid": hasError || undefined,
+      "aria-describedby": hasError ? errorId(field) : undefined,
+    };
+  };
+
+  const renderField = (field: string, label: string, input: ReactNode) => {
+    const error = errorFor(field);
+    return (
+      <div className={styles.field}>
+        <label className={styles.label} htmlFor={inputId(field)}>
+          {label}
+        </label>
+        {input}
+        {error && (
+          <span id={errorId(field)} className={styles.fieldError} role="alert">
+            {error}
+          </span>
+        )}
+      </div>
+    );
+  };
 
   const handleSubmit = (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -69,111 +101,109 @@ const ReplayForm = ({ onSubmit, submitting, fieldErrors }: ReplayFormProps) => {
 
   return (
     <form className={styles.form} onSubmit={handleSubmit}>
-      <label className={styles.field}>
-        <span className={styles.label}>Symbols (comma-separated, blank = all)</span>
+      {renderField(
+        "symbols",
+        "Symbols (comma-separated, blank = all)",
         <input
+          {...inputA11yProps("symbols")}
           className={styles.input}
           type="text"
           value={symbols}
           onChange={(e) => setSymbols(e.target.value)}
           placeholder="AERO, KAITO"
         />
-        {fieldErrors?.symbols && <span className={styles.fieldError}>{fieldErrors.symbols}</span>}
-      </label>
+      )}
 
-      <label className={styles.field}>
-        <span className={styles.label}>Start</span>
+      {renderField(
+        "start",
+        "Start",
         <input
+          {...inputA11yProps("start")}
           className={styles.input}
           type="datetime-local"
           value={start}
           onChange={(e) => setStart(e.target.value)}
         />
-        {(localErrors.start || fieldErrors?.start) && (
-          <span className={styles.fieldError}>{localErrors.start || fieldErrors?.start}</span>
-        )}
-      </label>
-      <label className={styles.field}>
-        <span className={styles.label}>End</span>
+      )}
+
+      {renderField(
+        "end",
+        "End",
         <input
+          {...inputA11yProps("end")}
           className={styles.input}
           type="datetime-local"
           value={end}
           onChange={(e) => setEnd(e.target.value)}
         />
-        {(localErrors.end || fieldErrors?.end) && (
-          <span className={styles.fieldError}>{localErrors.end || fieldErrors?.end}</span>
-        )}
-      </label>
+      )}
 
       <div className={styles.row}>
-        <label className={styles.field}>
-          <span className={styles.label}>Entry Score (bps)</span>
+        {renderField(
+          "entry_score_bps",
+          "Entry Score (bps)",
           <input
+            {...inputA11yProps("entry_score_bps")}
             className={styles.input}
             type="number"
             step="any"
             value={entryScoreBps}
             onChange={(e) => setEntryScoreBps(e.target.value)}
           />
-          {fieldErrors?.entry_score_bps && (
-            <span className={styles.fieldError}>{fieldErrors.entry_score_bps}</span>
-          )}
-        </label>
-        <label className={styles.field}>
-          <span className={styles.label}>Exit Score (bps)</span>
+        )}
+        {renderField(
+          "exit_score_bps",
+          "Exit Score (bps)",
           <input
+            {...inputA11yProps("exit_score_bps")}
             className={styles.input}
             type="number"
             step="any"
             value={exitScoreBps}
             onChange={(e) => setExitScoreBps(e.target.value)}
           />
-          {fieldErrors?.exit_score_bps && (
-            <span className={styles.fieldError}>{fieldErrors.exit_score_bps}</span>
-          )}
-        </label>
+        )}
       </div>
+
       <div className={styles.row}>
-        <label className={styles.field}>
-          <span className={styles.label}>Cycle Hours</span>
+        {renderField(
+          "cycle_hours",
+          "Cycle Hours",
           <input
+            {...inputA11yProps("cycle_hours")}
             className={styles.input}
             type="number"
             step="any"
             value={cycleHours}
             onChange={(e) => setCycleHours(e.target.value)}
           />
-          {fieldErrors?.cycle_hours && (
-            <span className={styles.fieldError}>{fieldErrors.cycle_hours}</span>
-          )}
-        </label>
-        <label className={styles.field}>
-          <span className={styles.label}>Min Samples / Symbol</span>
+        )}
+        {renderField(
+          "min_samples_per_symbol",
+          "Min Samples / Symbol",
           <input
+            {...inputA11yProps("min_samples_per_symbol")}
             className={styles.input}
             type="number"
             step="1"
             value={minSamples}
             onChange={(e) => setMinSamples(e.target.value)}
           />
-          {fieldErrors?.min_samples_per_symbol && (
-            <span className={styles.fieldError}>{fieldErrors.min_samples_per_symbol}</span>
-          )}
-        </label>
+        )}
       </div>
-      <label className={styles.field}>
-        <span className={styles.label}>Strategy ID</span>
+
+      {renderField(
+        "strategy_id",
+        "Strategy ID",
         <input
+          {...inputA11yProps("strategy_id")}
           className={styles.input}
           type="text"
           value={strategyId}
           onChange={(e) => setStrategyId(e.target.value)}
         />
-        {fieldErrors?.strategy_id && (
-          <span className={styles.fieldError}>{fieldErrors.strategy_id}</span>
-        )}
-      </label>
+      )}
+
       <button className={styles.submitButton} type="submit" disabled={submitting}>
         {submitting ? "Running..." : "Run Replay"}
       </button>

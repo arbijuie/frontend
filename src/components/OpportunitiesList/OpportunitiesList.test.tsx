@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import OpportunitiesList from "./OpportunitiesList";
 import type { OpportunityItem } from "../../api/types";
 
@@ -96,9 +96,26 @@ function makeItem(overrides: Partial<OpportunityItem>): OpportunityItem {
   };
 }
 
-describe("OpportunitiesList", () => {
-  const now = new Date("2026-01-01T00:00:00Z");
+type OpportunitiesListProps = Parameters<typeof OpportunitiesList>[0];
 
+function renderList(items: OpportunityItem[], overrides: Partial<OpportunitiesListProps> = {}) {
+  return render(
+    <OpportunitiesList
+      items={items}
+      updatedAt={null}
+      now={new Date("2026-01-01T00:00:00Z")}
+      sortKey="priority"
+      onSortKeyChange={vi.fn()}
+      statusFilter="all"
+      onStatusFilterChange={vi.fn()}
+      search=""
+      onSearchChange={vi.fn()}
+      {...overrides}
+    />
+  );
+}
+
+describe("OpportunitiesList", () => {
   it("sorts ready items by fewer correlations first when sort is Priority", () => {
     const items: OpportunityItem[] = [
       makeItem({
@@ -111,7 +128,7 @@ describe("OpportunitiesList", () => {
       makeItem({ symbol: "CCC", status: "watching", combined_score: 999 }),
     ];
 
-    render(<OpportunitiesList items={items} updatedAt={null} now={now} />);
+    renderList(items);
 
     const cards = screen.getAllByTestId("opportunity-card").map((item) => item.textContent);
     expect(cards).toEqual(["BBB", "AAA", "CCC"]);
@@ -123,9 +140,109 @@ describe("OpportunitiesList", () => {
       makeItem({ symbol: "BBB", status: "ready", combined_score: 90, correlated_with: ["Y"] }),
     ];
 
-    render(<OpportunitiesList items={items} updatedAt={null} now={now} />);
+    renderList(items);
 
     const cards = screen.getAllByTestId("opportunity-card").map((item) => item.textContent);
     expect(cards).toEqual(["BBB", "AAA"]);
+  });
+
+  it("calls onSortKeyChange when the sort select changes", () => {
+    const onSortKeyChange = vi.fn();
+    renderList([makeItem({})], { onSortKeyChange });
+
+    fireEvent.change(screen.getByLabelText("Sort opportunities by"), {
+      target: { value: "combined_score" },
+    });
+
+    expect(onSortKeyChange).toHaveBeenCalledWith("combined_score");
+  });
+
+  it("calls onStatusFilterChange when a status tab is clicked", () => {
+    const onStatusFilterChange = vi.fn();
+    renderList([makeItem({ status: "ready" }), makeItem({ status: "watching" })], {
+      onStatusFilterChange,
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: /^watching/i }));
+
+    expect(onStatusFilterChange).toHaveBeenCalledWith("watching");
+  });
+
+  it("filters the list instantly as you type, without waiting for the debounce", () => {
+    renderList([makeItem({ symbol: "AERO" }), makeItem({ symbol: "DOGE" })]);
+
+    fireEvent.change(screen.getByPlaceholderText(/search/i), { target: { value: "aer" } });
+
+    const cards = screen.getAllByTestId("opportunity-card").map((item) => item.textContent);
+    expect(cards).toEqual(["AERO"]);
+  });
+
+  it("debounces the onSearchChange call to the parent instead of firing per keystroke", () => {
+    vi.useFakeTimers();
+    const onSearchChange = vi.fn();
+    renderList([makeItem({})], { onSearchChange });
+
+    fireEvent.change(screen.getByPlaceholderText(/search/i), { target: { value: "a" } });
+    fireEvent.change(screen.getByPlaceholderText(/search/i), { target: { value: "ae" } });
+    fireEvent.change(screen.getByPlaceholderText(/search/i), { target: { value: "aer" } });
+
+    expect(onSearchChange).not.toHaveBeenCalled();
+
+    vi.advanceTimersByTime(300);
+
+    expect(onSearchChange).toHaveBeenCalledTimes(1);
+    expect(onSearchChange).toHaveBeenCalledWith("aer");
+
+    vi.useRealTimers();
+  });
+
+  it("resyncs the visible search value when the search prop changes externally", () => {
+    const { rerender } = renderList([makeItem({})], { search: "aero" });
+
+    rerender(
+      <OpportunitiesList
+        items={[makeItem({})]}
+        updatedAt={null}
+        now={new Date("2026-01-01T00:00:00Z")}
+        sortKey="priority"
+        onSortKeyChange={vi.fn()}
+        statusFilter="all"
+        onStatusFilterChange={vi.fn()}
+        search=""
+        onSearchChange={vi.fn()}
+      />
+    );
+
+    expect((screen.getByPlaceholderText(/search/i) as HTMLInputElement).value).toBe("");
+  });
+
+  it('shows a "Show all" hint when a status filter hides every item, and resets on click', () => {
+    const onStatusFilterChange = vi.fn();
+    renderList([makeItem({ status: "watching" })], {
+      statusFilter: "ready",
+      onStatusFilterChange,
+    });
+
+    expect(screen.getByText(/none in the ready filter/i)).toBeTruthy();
+
+    fireEvent.click(screen.getByRole("button", { name: /show all/i }));
+
+    expect(onStatusFilterChange).toHaveBeenCalledWith("all");
+  });
+
+  it("shows an empty state with no hint when there are no items at all", () => {
+    renderList([]);
+
+    expect(screen.getByText("No opportunities")).toBeTruthy();
+    expect(screen.queryByText(/show all/i)).toBeNull();
+  });
+
+  it("filters by search term across the symbol", () => {
+    renderList([makeItem({ symbol: "AERO" }), makeItem({ symbol: "DOGE" })], {
+      search: "aer",
+    });
+
+    const cards = screen.getAllByTestId("opportunity-card").map((item) => item.textContent);
+    expect(cards).toEqual(["AERO"]);
   });
 });

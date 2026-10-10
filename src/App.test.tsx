@@ -1,7 +1,11 @@
+import type { ReactNode } from "react";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { AppShell } from "./App";
 
+vi.mock("./components/OpportunitiesSocketProvider/OpportunitiesSocketProvider", () => ({
+  default: ({ children }: { children: ReactNode }) => <>{children}</>,
+}));
 vi.mock("./pages/OpportunitiesPage/OpportunitiesPage", () => ({
   default: () => <h1>Opportunities page mock</h1>,
 }));
