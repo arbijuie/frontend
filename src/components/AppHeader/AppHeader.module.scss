@@ -1,0 +1,78 @@
+// Mobile: a slim brand bar that scrolls away; the operator nav is a fixed bottom bar.
+// Desktop (lg+): a sticky top bar that also holds the navigation.
+.header {
+  border-bottom: 0.0625rem solid v.color(border);
+  background: v.color(bg);
+}
+
+.inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: v.space(2) v.space(4);
+  width: min(100%, var(--app-max-width, 48rem));
+  min-height: v.size(header-height);
+  margin: 0 auto;
+  padding: v.space(2) var(--app-horizontal-padding, v.space(3));
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: v.space(2);
+  min-height: v.size(touch-target);
+  color: v.color(text);
+  font-weight: v.font-weight(bold);
+  text-decoration: none;
+  border-radius: v.radius(md);
+}
+
+.mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: v.radius(md);
+  background: v.color(accent-fill);
+  color: v.color(text-on-fill);
+}
+
+.markIcon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.name {
+  font-size: v.font-size(base);
+  letter-spacing: -0.01em;
+}
+
+.tag {
+  @include v.badge(accent);
+}
+
+.operator {
+  @include v.bp-up(lg) {
+    position: sticky;
+    top: 0;
+    z-index: v.z(nav);
+    background: color-mix(in srgb, v.color(bg) 92%, transparent);
+    backdrop-filter: blur(0.5rem);
+
+    .inner {
+      flex-wrap: nowrap;
+      height: v.size(header-height);
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+  }
+}
+
+.public {
+  .inner {
+    @include v.bp-up(md) {
+      flex-wrap: nowrap;
+    }
+  }
+}

@@ -49,6 +49,7 @@ export default function OpportunitiesPage() {
     authStatus,
     authRetryAfterSeconds,
     authDetail,
+    transportDetail,
     retryConnection,
   } = useOpportunities({ strategyTypes });
   const { data: status } = useStatus();
@@ -133,6 +134,7 @@ export default function OpportunitiesPage() {
                 authStatus={authStatus}
                 authRetryAfterSeconds={authRetryAfterSeconds}
                 authDetail={authDetail}
+                transportDetail={transportDetail}
                 onRetry={retryConnection}
               />
             ) : (
@@ -172,13 +174,15 @@ export default function OpportunitiesPage() {
       {error && (
         <div className={styles.errorBox} role="alert">
           Error: {error}{" "}
-          <button onClick={() => refetch()} aria-label="Retry loading opportunities">
+          <button
+            className={styles.retryButton}
+            onClick={() => refetch()}
+            aria-label="Retry loading opportunities"
+          >
             Retry
           </button>
           {showTelegramLaunchHint && (
-            <p>
-              This operator page requires Telegram session auth. Open it from the bot Mini App.
-            </p>
+            <p>This operator page requires Telegram session auth. Open it from the bot Mini App.</p>
           )}
         </div>
       )}

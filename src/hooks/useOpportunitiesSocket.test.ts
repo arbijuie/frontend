@@ -204,12 +204,15 @@ describe("useOpportunitiesSocket", () => {
       await Promise.resolve();
     });
 
-    for (let i = 0; i < 10 && result.current.transportState !== "polling-fallback"; i++) {
+    for (let i = 0; i < 10; i++) {
+      if (result.current.transportState === "polling-fallback") {
+        break;
+      }
       act(() => {
         latestSocket().close();
       });
       await act(async () => {
-        vi.advanceTimersByTime(30000);
+        vi.advanceTimersByTime(1000);
         await Promise.resolve();
       });
     }

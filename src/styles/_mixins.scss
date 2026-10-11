@@ -1,0 +1,357 @@
+// Base component styles built on the design tokens (issue #379). CSS modules include these
+// instead of repeating card, button, badge and input declarations.
+
+@use "tokens" as t;
+
+@mixin focus-ring($offset: 0.125rem) {
+  outline: 0.125rem solid t.color(focus);
+  outline-offset: $offset;
+}
+
+@mixin tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+@mixin visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+// Raised content container. `$padding` defaults to the standard card inset.
+@mixin card($padding: t.space(3) t.space("3-5")) {
+  background: t.color(surface);
+  border: 0.0625rem solid t.color(border);
+  border-radius: t.radius(lg);
+  padding: $padding;
+  box-shadow: t.shadow(sm);
+}
+
+// Nested block inside a card (sub-panels, list groups).
+@mixin inset-panel($padding: t.space("2-5")) {
+  background: t.color(surface-sunken);
+  border: 0.0625rem solid t.color(border);
+  border-radius: t.radius(md);
+  padding: $padding;
+}
+
+// Tinted callout. `$tone`: accent | success | warning | danger | info | neutral.
+@mixin callout($tone) {
+  border: 0.0625rem solid t.color(#{$tone}-border);
+  background: t.color(#{$tone}-tint);
+  border-radius: t.radius(lg);
+  padding: t.space("2-5") t.space(3);
+  color: t.color(text);
+  font-size: t.font-size(sm);
+}
+
+// Small uppercase label above a group of fields or rows.
+@mixin eyebrow($tone: accent-text) {
+  font-size: t.font-size("2xs");
+  font-weight: t.font-weight(bold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: t.color($tone);
+}
+
+@mixin button-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: t.space("1-5");
+  min-height: t.size(touch-target);
+  padding: t.space("1-5") t.space(3);
+  border: 0.0625rem solid transparent;
+  border-radius: t.radius(md);
+  font-family: inherit;
+  font-size: t.font-size(sm);
+  font-weight: t.font-weight(semibold);
+  line-height: t.line-height(tight);
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color t.duration(fast) t.easing(standard),
+    border-color t.duration(fast) t.easing(standard),
+    color t.duration(fast) t.easing(standard);
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+
+  &:disabled,
+  &[aria-disabled="true"] {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+// `$variant`: primary | secondary | ghost | danger | warning.
+@mixin button($variant: secondary) {
+  @include button-base;
+
+  @if $variant == primary {
+    background: t.color(accent-fill);
+    border-color: t.color(accent-fill);
+    color: t.color(text-on-fill);
+
+    &:hover:not(:disabled):not([aria-disabled="true"]) {
+      background: t.color(accent-fill-hover);
+      border-color: t.color(accent-fill-hover);
+    }
+  } @else if $variant == secondary {
+    background: t.color(surface-raised);
+    border-color: t.color(border-strong);
+    color: t.color(text);
+
+    &:hover:not(:disabled):not([aria-disabled="true"]) {
+      border-color: t.color(accent-border);
+    }
+  } @else if $variant == ghost {
+    background: transparent;
+    border-color: t.color(border);
+    color: t.color(accent-text);
+
+    &:hover:not(:disabled):not([aria-disabled="true"]) {
+      background: t.color(accent-tint);
+      border-color: t.color(accent-border);
+    }
+  } @else if $variant == danger {
+    background: t.color(danger-fill);
+    border-color: t.color(danger-fill);
+    color: t.color(text-on-fill);
+  } @else if $variant == warning {
+    background: transparent;
+    border-color: t.color(warning-border);
+    color: t.color(warning-text);
+
+    &:hover:not(:disabled):not([aria-disabled="true"]) {
+      background: t.color(warning-tint);
+    }
+  } @else {
+    @error "Unknown button variant `#{$variant}`.";
+  }
+}
+
+// Compact button for inline actions (card toggles, retry links).
+@mixin button-small($variant: ghost) {
+  @include button($variant);
+  min-height: 1.75rem;
+  padding: t.space(1) t.space("2-5");
+  font-size: t.font-size(xs);
+}
+
+// Status badge. `$tone`: accent | success | warning | danger | info | neutral.
+@mixin badge($tone: neutral) {
+  display: inline-flex;
+  align-items: center;
+  gap: t.space(1);
+  padding: t.space("0-5") t.space(2);
+  border-radius: t.radius(sm);
+  font-size: t.font-size("2xs");
+  font-weight: t.font-weight(bold);
+  line-height: t.line-height(snug);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+
+  @if $tone == accent {
+    background: t.color(accent-tint);
+    color: t.color(accent-text);
+  } @else if $tone == neutral {
+    background: t.color(neutral-tint);
+    color: t.color(text-secondary);
+  } @else {
+    background: t.color(#{$tone}-tint);
+    color: t.color(#{$tone}-text);
+  }
+}
+
+// Solid badge on a tinted banner: white text on a `*-fill` color.
+@mixin badge-solid($tone) {
+  @include badge;
+  background: t.color(#{$tone}-fill);
+  color: t.color(text-on-fill);
+}
+
+// Rounded metadata chip (counts, timestamps, filters in effect).
+@mixin pill {
+  display: inline-flex;
+  align-items: center;
+  gap: t.space(1);
+  padding: t.space("0-5") t.space(2);
+  border: 0.0625rem solid t.color(border);
+  border-radius: t.radius(pill);
+  background: t.color(surface);
+  color: t.color(text-secondary);
+  font-size: t.font-size(xs);
+  white-space: nowrap;
+}
+
+@mixin input {
+  width: 100%;
+  min-width: 0;
+  min-height: t.size(touch-target);
+  padding: t.space(2) t.space("2-5");
+  border: 0.0625rem solid t.color(border-strong);
+  border-radius: t.radius(md);
+  background: t.color(surface-sunken);
+  color: t.color(text);
+  font-family: inherit;
+  font-size: t.font-size(md);
+
+  &::placeholder {
+    color: t.color(text-muted);
+  }
+
+  &:hover {
+    border-color: t.color(accent-border);
+  }
+
+  &:focus-visible {
+    @include focus-ring(0);
+    border-color: t.color(accent-text);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+$_select-caret: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2394a3b8'/%3E%3C/svg%3E");
+
+@mixin select {
+  @include input;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: t.space(8);
+  background-image: $_select-caret;
+  background-repeat: no-repeat;
+  background-position: right t.space(3) center;
+  font-size: t.font-size(sm);
+}
+
+// Segmented chip used for filter tabs.
+@mixin chip($active: false) {
+  flex-shrink: 0;
+  min-height: 2rem;
+  padding: t.space("1-5") t.space("3-5");
+  border-radius: t.radius(pill);
+  border: 0.0625rem solid t.color(border-strong);
+  background: t.color(surface);
+  color: t.color(text-secondary);
+  font-family: inherit;
+  font-size: t.font-size(sm);
+  white-space: nowrap;
+  cursor: pointer;
+
+  &:hover {
+    color: t.color(text);
+    border-color: t.color(accent-border);
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+@mixin chip-active {
+  background: t.color(accent-fill);
+  border-color: t.color(accent-fill);
+  color: t.color(text-on-fill);
+
+  &:hover {
+    color: t.color(text-on-fill);
+    border-color: t.color(accent-fill);
+  }
+}
+
+// Label / value row used in key-value lists.
+@mixin kv-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: t.space(3);
+  padding: t.space(2) 0;
+  font-size: t.font-size(md);
+
+  &:not(:last-child) {
+    border-bottom: 0.0625rem solid t.color(border);
+  }
+}
+
+// Horizontal scroll container for wide tables; keeps the page itself from overflowing.
+@mixin scroll-x {
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+// Page frame shared by every page stylesheet (Page.module.scss and the page modules that
+// predate it), so pages agree on width, header and section rhythm.
+@mixin page-frame {
+  width: min(100%, var(--app-max-width, 48rem));
+  margin: 0 auto;
+  padding: t.space(4) var(--app-horizontal-padding, t.space(3)) t.space(8);
+
+  @include t.bp-up(lg) {
+    padding-top: t.space(6);
+  }
+}
+
+@mixin page-header {
+  display: flex;
+  flex-direction: column;
+  gap: t.space(1);
+  margin-bottom: t.space(4);
+}
+
+@mixin page-title {
+  font-size: t.font-size(xl);
+  font-weight: t.font-weight(bold);
+  letter-spacing: -0.01em;
+  color: t.color(text);
+
+  @include t.bp-up(md) {
+    font-size: t.font-size("2xl");
+  }
+}
+
+@mixin page-subtitle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: t.space("1-5") t.space(2);
+  font-size: t.font-size(sm);
+  color: t.color(text-muted);
+}
+
+@mixin section-title {
+  margin: t.space(6) 0 t.space(3);
+  font-size: t.font-size(xs);
+  font-weight: t.font-weight(bold);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: t.color(text-secondary);
+}
+
+@mixin error-box {
+  @include callout(danger);
+  margin-bottom: t.space(3);
+}
+
+@mixin hint {
+  font-size: t.font-size(xs);
+  color: t.color(text-muted);
+}

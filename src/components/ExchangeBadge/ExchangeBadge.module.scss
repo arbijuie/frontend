@@ -1,46 +1,23 @@
 .badge {
-  padding: 0.3rem 0.7rem;
-  border-radius: 0.375rem;
-  font-size: 0.7rem;
-  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  padding: v.space(1) v.space("2-5");
+  border-radius: v.radius(sm);
+  font-size: v.font-size("2xs");
+  font-weight: v.font-weight(semibold);
+  white-space: nowrap;
 }
 
-.hyperliquid {
-  background: v.$exchange-hyperliquid-bg;
-  color: v.$exchange-hyperliquid-text;
-}
+$venues: hyperliquid, lighter, aster, binance, bybit, dydx, extended;
 
-.lighter {
-  background: v.$exchange-lighter-bg;
-  color: v.$exchange-lighter-text;
-}
-
-.aster {
-  background: v.$exchange-aster-bg;
-  color: v.$exchange-aster-text;
-}
-
-.binance {
-  background: v.$exchange-binance-bg;
-  color: v.$exchange-binance-text;
-}
-
-.bybit {
-  background: v.$exchange-bybit-bg;
-  color: v.$exchange-bybit-text;
-}
-
-.dydx {
-  background: v.$exchange-dydx-bg;
-  color: v.$exchange-dydx-text;
-}
-
-.extended {
-  background: v.$exchange-extended-bg;
-  color: v.$exchange-extended-text;
+@each $venue in $venues {
+  .#{$venue} {
+    background: v.color(exchange-#{$venue}-bg);
+    color: v.color(exchange-#{$venue}-text);
+  }
 }
 
 .unknown {
-  background: rgba(148, 163, 184, 0.15);
-  color: v.$text-secondary;
+  background: v.color(neutral-tint);
+  color: v.color(text-secondary);
 }

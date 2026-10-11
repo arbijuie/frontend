@@ -1,0 +1,193 @@
+.dot {
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+}
+
+.dotFresh {
+  background: v.color(success-text);
+  box-shadow: 0 0 0 0.1875rem v.color(success-tint);
+}
+
+.dotStale {
+  background: v.color(warning-text);
+  box-shadow: 0 0 0 0.1875rem v.color(warning-tint);
+}
+
+.loading {
+  color: v.color(text-muted);
+  font-size: v.font-size(sm);
+}
+
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: v.space(2);
+  margin-bottom: v.space(2);
+
+  @include v.bp-up(md) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.lead {
+  max-width: 48rem;
+  margin-bottom: v.space(3);
+  font-size: v.font-size(sm);
+  color: v.color(text-secondary);
+}
+
+.venues {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 11rem), 1fr));
+  gap: v.space(2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.venue {
+  @include v.card(v.space("2-5") v.space(3));
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: v.space(2);
+}
+
+.venueName {
+  font-weight: v.font-weight(semibold);
+  color: v.color(text);
+}
+
+// Source and severity badges always spell the state out; the tone only reinforces it.
+.sourceBadge {
+  @include v.badge;
+}
+
+.toneSuccess {
+  background: v.color(success-tint);
+  color: v.color(success-text);
+}
+
+.toneWarning {
+  background: v.color(warning-tint);
+  color: v.color(warning-text);
+}
+
+.toneDanger {
+  background: v.color(danger-tint);
+  color: v.color(danger-text);
+}
+
+.toneNeutral {
+  background: v.color(neutral-tint);
+  color: v.color(text-secondary);
+}
+
+.panel {
+  @include v.card(v.space("3-5"));
+  min-width: 0;
+}
+
+.panelTitle {
+  margin-bottom: v.space(3);
+  font-size: v.font-size(sm);
+  font-weight: v.font-weight(semibold);
+  color: v.color(text);
+}
+
+.panelNote {
+  margin-top: v.space(3);
+  font-size: v.font-size(sm);
+  color: v.color(text-secondary);
+
+  &:first-child {
+    margin-top: 0;
+  }
+}
+
+.confidence {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: v.space(3);
+
+  @include v.bp-up(lg) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.reasons {
+  @include v.card(v.space(1) v.space("3-5"));
+  margin: 0;
+  list-style: none;
+}
+
+.reason {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: v.space(3);
+  padding: v.space(2) 0;
+  font-size: v.font-size(sm);
+
+  &:not(:last-child) {
+    border-bottom: 0.0625rem solid v.color(border);
+  }
+}
+
+.reasonLabel {
+  min-width: 0;
+  color: v.color(text);
+  overflow-wrap: anywhere;
+}
+
+.reasonCount {
+  color: v.color(text-secondary);
+  white-space: nowrap;
+  @include v.tabular-nums;
+}
+
+.pairs {
+  margin: v.space(3) 0 0;
+  padding: 0;
+  list-style: none;
+
+  > li {
+    display: flex;
+    justify-content: space-between;
+    gap: v.space(3);
+    padding: v.space("1-5") 0;
+    font-size: v.font-size(sm);
+    color: v.color(text-secondary);
+
+    &:not(:last-child) {
+      border-bottom: 0.0625rem solid v.color(border);
+    }
+  }
+}
+
+.pairValue {
+  color: v.color(text);
+  @include v.tabular-nums;
+}
+
+.prose {
+  display: flex;
+  flex-direction: column;
+  gap: v.space(2);
+  max-width: 48rem;
+  font-size: v.font-size(sm);
+  color: v.color(text-secondary);
+
+  strong {
+    color: v.color(text);
+  }
+}
+
+.disclaimer {
+  max-width: 48rem;
+  font-size: v.font-size(xs);
+  color: v.color(text-muted);
+}

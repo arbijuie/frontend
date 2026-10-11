@@ -1,3 +1,43 @@
+:root {
+  @include v.custom-properties;
+  color-scheme: dark;
+
+  // Page frame, mobile-first. Pages read these through `.page`; the shell reads
+  // `--app-sticky-top` to keep sticky page controls below the desktop header.
+  --app-font-size: clamp(0.93rem, 0.24vw + 0.87rem, 1rem);
+  --app-max-width: 48rem;
+  --app-horizontal-padding: #{v.space(3)};
+  --app-sticky-top: 0px;
+}
+
+@include v.bp-down(sm) {
+  :root {
+    --app-horizontal-padding: #{v.space("2-5")};
+  }
+}
+
+@include v.bp-up(md) {
+  :root {
+    --app-max-width: 56rem;
+    --app-horizontal-padding: #{v.space(4)};
+  }
+}
+
+@include v.bp-up(lg) {
+  :root {
+    --app-max-width: 64rem;
+    --app-horizontal-padding: #{v.space(5)};
+    --app-sticky-top: #{v.size(header-height)};
+  }
+}
+
+@include v.bp-up(xl) {
+  :root {
+    --app-max-width: #{v.size(content-max)};
+    --app-horizontal-padding: #{v.space(6)};
+  }
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -14,55 +54,60 @@ body,
 html {
   scroll-padding-top: 7rem;
   scroll-padding-bottom: calc(v.$nav-height + env(safe-area-inset-bottom, 0px) + 5rem);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background: v.$bg-primary;
-  color: v.$text-primary;
-  min-height: 100dvh;
-  --app-font-size: clamp(0.93rem, 0.24vw + 0.87rem, 1rem);
-  --app-max-width: 48rem;
-  --app-horizontal-padding: 0.8rem;
-  --app-nav-max-width: 48rem;
+  font-family: v.font(sans);
   font-size: var(--app-font-size);
-  padding-bottom: calc(v.$nav-height + env(safe-area-inset-bottom, 0px) + 0.75rem);
+  line-height: v.line-height(normal);
+  background: v.color(bg);
+  color: v.color(text);
+  min-height: 100dvh;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-@media (max-width: 380px) {
-  body {
-    --app-horizontal-padding: 0.65rem;
-  }
+h1,
+h2,
+h3,
+h4 {
+  line-height: v.line-height(tight);
 }
 
-@media (min-width: 700px) {
-  body {
-    --app-max-width: 56rem;
-    --app-horizontal-padding: 0.95rem;
-    --app-nav-max-width: 54rem;
-  }
+a {
+  color: v.color(accent-text);
+  text-underline-offset: 0.15em;
 }
 
-@media (min-width: 960px) {
-  body {
-    --app-max-width: 64rem;
-    --app-horizontal-padding: 1.25rem;
-    --app-nav-max-width: 60rem;
-  }
+button,
+input,
+select,
+textarea {
+  font: inherit;
 }
 
-@media (min-width: 1280px) {
-  body {
-    --app-max-width: 72rem;
-    --app-horizontal-padding: 1.4rem;
-    --app-nav-max-width: 66rem;
-  }
+code,
+kbd,
+samp {
+  font-family: v.font(mono);
+  font-size: 0.92em;
+}
+
+img,
+svg {
+  max-width: 100%;
+}
+
+::selection {
+  background: v.color(accent-fill);
+  color: v.color(text-on-fill);
 }
 
 :focus-visible {
-  outline: 0.125rem solid v.$accent-purple;
-  outline-offset: 0.125rem;
+  @include v.focus-ring;
 }
 
 @media (prefers-reduced-motion: reduce) {

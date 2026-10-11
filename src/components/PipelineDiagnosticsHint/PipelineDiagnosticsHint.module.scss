@@ -1,54 +1,47 @@
+.warnBox,
+.infoBox,
+.okBox {
+  margin-bottom: v.space("2-5");
+  padding: v.space("2-5") v.space(3);
+  border: 0.0625rem solid;
+  border-radius: v.radius(lg);
+  color: v.color(text-secondary);
+  font-size: v.font-size(sm);
+}
+
 .warnBox {
-  margin-bottom: 0.6rem;
-  padding: 0.6rem;
-  border: 1px solid rgba(251, 191, 36, 0.45);
-  border-radius: 0.65rem;
-  background: rgba(251, 191, 36, 0.12);
-  color: v.$text-secondary;
-  font-size: 0.82rem;
+  border-color: v.color(warning-border);
+  background: v.color(warning-tint);
 }
 
 .infoBox {
-  margin-bottom: 0.6rem;
-  padding: 0.6rem;
-  border: 1px solid v.$border-color;
-  border-radius: 0.65rem;
-  background: v.$bg-card;
-  color: v.$text-muted;
-  font-size: 0.82rem;
+  border-color: v.color(border);
+  background: v.color(surface);
+  color: v.color(text-muted);
 }
 
 .okBox {
-  margin-bottom: 0.6rem;
-  padding: 0.6rem;
-  border: 1px solid rgba(34, 197, 94, 0.45);
-  border-radius: 0.65rem;
-  background: rgba(34, 197, 94, 0.1);
-  color: v.$text-secondary;
-  font-size: 0.82rem;
+  border-color: v.color(success-border);
+  background: v.color(success-tint);
 }
 
 .badge {
-  display: inline-block;
-  margin-right: 0.4rem;
-  padding: 0.05rem 0.35rem;
-  border-radius: 999px;
-  font-size: 0.66rem;
-  font-weight: 700;
-  text-transform: uppercase;
+  @include v.badge;
+  margin-right: v.space("1-5");
+  border-radius: v.radius(pill);
 }
 
 .warnBadge {
-  background: rgba(251, 191, 36, 0.25);
-  color: v.$yellow;
+  background: v.color(warning-tint);
+  color: v.color(warning-text);
 }
 
 .infoBadge {
-  background: rgba(148, 163, 184, 0.2);
-  color: v.$text-muted;
+  background: v.color(neutral-tint);
+  color: v.color(text-secondary);
 }
 
 .okBadge {
-  background: rgba(34, 197, 94, 0.2);
-  color: v.$green;
+  background: v.color(success-tint);
+  color: v.color(success-text);
 }

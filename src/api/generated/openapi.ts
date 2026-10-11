@@ -514,6 +514,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/public/journal": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Public Journal
+         * @description Daily aggregate capture history over the last `days` UTC days, most recent first (#305).
+         */
+        get: operations["get_public_journal_public_journal_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/public/opportunities": {
         parameters: {
             query?: never;
@@ -540,6 +560,23 @@ export interface paths {
         };
         /** Get Public Status */
         get: operations["get_public_status_public_status_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/readyz": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Readyz */
+        get: operations["get_readyz_readyz_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1514,6 +1551,8 @@ export interface components {
             min_volume_24h: number;
             /** Portfolio Usd */
             portfolio_usd: number;
+            /** Reference Sources */
+            reference_sources?: string[];
             /** Require Isolated Margin */
             require_isolated_margin: boolean;
             /** Runbook Config Fields */
@@ -1532,6 +1571,16 @@ export interface components {
             };
             /** Timing Penalty Bps Per Hour */
             timing_penalty_bps_per_hour: number;
+            /**
+             * Vooi Base Url
+             * @default
+             */
+            vooi_base_url: string;
+            /**
+             * Vooi Enabled
+             * @default false
+             */
+            vooi_enabled: boolean;
         };
         /** ConfigUpdateRequest */
         ConfigUpdateRequest: {
@@ -2937,6 +2986,73 @@ export interface components {
             ws_connected?: boolean | null;
             /** Ws Healthy */
             ws_healthy?: boolean | null;
+        };
+        /**
+         * PublicJournalCounters
+         * @description Aggregate capture counters over one UTC day or the whole journal window.
+         */
+        PublicJournalCounters: {
+            /** Distinct Ready Routes */
+            distinct_ready_routes: number;
+            /** Distinct Routes */
+            distinct_routes: number;
+            /** Distinct Symbols */
+            distinct_symbols: number;
+            /** Median Ready Score Bps */
+            median_ready_score_bps?: number | null;
+            /** Ready By Strategy */
+            ready_by_strategy?: {
+                [key: string]: number;
+            };
+            /** Ready Observations */
+            ready_observations: number;
+            /** Snapshots */
+            snapshots: number;
+        };
+        /**
+         * PublicJournalDay
+         * @description One UTC calendar day (`YYYY-MM-DD`) with at least one captured snapshot.
+         */
+        PublicJournalDay: {
+            /** Day */
+            day: string;
+            /** Distinct Ready Routes */
+            distinct_ready_routes: number;
+            /** Distinct Routes */
+            distinct_routes: number;
+            /** Distinct Symbols */
+            distinct_symbols: number;
+            /** Median Ready Score Bps */
+            median_ready_score_bps?: number | null;
+            /** Ready By Strategy */
+            ready_by_strategy?: {
+                [key: string]: number;
+            };
+            /** Ready Observations */
+            ready_observations: number;
+            /** Snapshots */
+            snapshots: number;
+        };
+        /**
+         * PublicJournalResponse
+         * @description Daily aggregate history from the backtest capture store, most recent UTC day first.
+         */
+        PublicJournalResponse: {
+            /** Capture Enabled */
+            capture_enabled: boolean;
+            /** Days */
+            days?: components["schemas"]["PublicJournalDay"][];
+            /** First Snapshot At */
+            first_snapshot_at?: string | null;
+            /** Generated At */
+            generated_at: string;
+            /** Last Snapshot At */
+            last_snapshot_at?: string | null;
+            totals: components["schemas"]["PublicJournalCounters"];
+            /** Window Days */
+            window_days: number;
+            /** Window Start */
+            window_start: string;
         };
         /** PublicLegItem */
         PublicLegItem: {
@@ -4552,6 +4668,133 @@ export interface components {
              */
             watching: number;
         };
+        /**
+         * StatusReferenceParseCounters
+         * @description Row accounting of the last reference snapshot parse.
+         */
+        StatusReferenceParseCounters: {
+            /**
+             * Closed
+             * @default 0
+             */
+            closed: number;
+            /**
+             * Filtered Exchange
+             * @default 0
+             */
+            filtered_exchange: number;
+            /**
+             * Malformed
+             * @default 0
+             */
+            malformed: number;
+            /**
+             * Non Crypto
+             * @default 0
+             */
+            non_crypto: number;
+            /**
+             * Rows
+             * @default 0
+             */
+            rows: number;
+            /**
+             * Upstream Stale
+             * @default 0
+             */
+            upstream_stale: number;
+            /**
+             * Used
+             * @default 0
+             */
+            used: number;
+        };
+        /**
+         * StatusReferenceSourceItem
+         * @description A reference-only market-data source (issue #291).
+         *
+         *     Reference sources are never execution venues (`executable` is always false), never pair
+         *     as screener legs and never enter snapshots. `state` is `fresh` while the last successful
+         *     poll is younger than `stale_after_s`, `stale` after that, and `unavailable` before the
+         *     first success. `symbols` is empty unless the source is `fresh`.
+         */
+        StatusReferenceSourceItem: {
+            /** Age S */
+            age_s?: number | null;
+            /**
+             * Consecutive Failures
+             * @default 0
+             */
+            consecutive_failures: number;
+            /**
+             * Executable
+             * @default false
+             * @constant
+             */
+            executable: false;
+            /**
+             * Failure Count
+             * @default 0
+             */
+            failure_count: number;
+            /** Last Attempt At */
+            last_attempt_at?: string | null;
+            /** Last Error */
+            last_error?: string | null;
+            /** Last Ok At */
+            last_ok_at?: string | null;
+            parse?: components["schemas"]["StatusReferenceParseCounters"];
+            /** Stale After S */
+            stale_after_s: number;
+            /**
+             * State
+             * @enum {string}
+             */
+            state: "fresh" | "stale" | "unavailable";
+            /**
+             * Success Count
+             * @default 0
+             */
+            success_count: number;
+            /**
+             * Symbol Count
+             * @default 0
+             */
+            symbol_count: number;
+            /** Symbols */
+            symbols?: {
+                [key: string]: components["schemas"]["StatusReferenceSymbolItem"];
+            };
+        };
+        /**
+         * StatusReferenceSymbolItem
+         * @description One normalized symbol from a reference-only source (issue #291).
+         *
+         *     `price` is the volume-weighted reference price across the venues VOOI reports in
+         *     `venues`; `funding_apr` is the matching volume-weighted hourly funding as APR percent.
+         *     `basis_bps` maps each executable venue with a mark price to
+         *     `(venue_mark - reference_price) / reference_price` in basis points.
+         */
+        StatusReferenceSymbolItem: {
+            /** Basis Bps */
+            basis_bps?: {
+                [key: string]: number;
+            };
+            /** Funding Apr */
+            funding_apr: number;
+            /** Next Funding Time */
+            next_funding_time?: string | null;
+            /** Open Interest */
+            open_interest?: number | null;
+            /** Period Hours */
+            period_hours: number;
+            /** Price */
+            price: string;
+            /** Venues */
+            venues?: string[];
+            /** Volume 24H */
+            volume_24h: number;
+        };
         /** StatusResponse */
         StatusResponse: {
             /** Active Exchanges */
@@ -4645,6 +4888,10 @@ export interface components {
             /** Rate Limits */
             rate_limits?: {
                 [key: string]: components["schemas"]["StatusRateLimitDiagnostics"];
+            };
+            /** Reference Sources */
+            reference_sources?: {
+                [key: string]: components["schemas"]["StatusReferenceSourceItem"];
             };
             risk_guardrails?: components["schemas"]["StatusRiskGuardrailsDiagnostics"];
             screener_drop_counters?: components["schemas"]["StatusDropCounters"];
@@ -6241,6 +6488,37 @@ export interface operations {
             };
         };
     };
+    get_public_journal_public_journal_get: {
+        parameters: {
+            query?: {
+                days?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicJournalResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     get_public_opportunities_public_opportunities_get: {
         parameters: {
             query?: {
@@ -6288,6 +6566,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["PublicStatusResponse"];
+                };
+            };
+        };
+    };
+    get_readyz_readyz_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
                 };
             };
         };

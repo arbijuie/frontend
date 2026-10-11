@@ -1,20 +1,20 @@
 .skipLink {
   position: fixed;
-  top: 0.5rem;
-  left: 0.5rem;
-  z-index: 100;
-  padding: 0.5rem 0.875rem;
-  border-radius: 0.5rem;
-  background: v.$accent-purple-bg;
-  color: #fff;
-  font-size: 0.875rem;
-  font-weight: 600;
+  top: v.space(2);
+  left: v.space(2);
+  z-index: v.z(skip-link);
+  padding: v.space(2) v.space("3-5");
+  border-radius: v.radius(md);
+  background: v.color(accent-fill);
+  color: v.color(text-on-fill);
+  font-size: v.font-size(md);
+  font-weight: v.font-weight(semibold);
   text-decoration: none;
   transform: translateY(-200%);
 
   &:focus {
     transform: translateY(0);
-    outline: 0.125rem solid #fff;
+    outline: 0.125rem solid v.color(text-on-fill);
     outline-offset: 0.125rem;
   }
 }

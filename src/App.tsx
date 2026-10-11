@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, type ReactElement } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import OpportunitiesPage from "./pages/OpportunitiesPage/OpportunitiesPage";
 import ConfigPage from "./pages/ConfigPage/ConfigPage";
@@ -8,9 +8,21 @@ import ExecutionPreflightPage from "./pages/ExecutionPreflightPage/ExecutionPref
 import AutomationPage from "./pages/AutomationPage/AutomationPage";
 import NotFoundPage from "./pages/NotFoundPage/NotFoundPage";
 import PublicPlaceholderPage from "./pages/PublicPlaceholderPage/PublicPlaceholderPage";
+import ProductPage from "./pages/ProductPage/ProductPage";
+import StatisticsPage from "./pages/StatisticsPage/StatisticsPage";
+import JournalPage from "./pages/JournalPage/JournalPage";
+import OnboardingPage from "./pages/OnboardingPage/OnboardingPage";
 import OperatorLayout from "./layouts/OperatorLayout";
 import PublicLayout from "./layouts/PublicLayout";
 import { PUBLIC_NAV_ITEMS } from "./lib/navigation";
+
+// Public routes with a real page; the rest render the placeholder until they ship.
+const PUBLIC_PAGES: Record<string, ReactElement> = {
+  "/product": <ProductPage />,
+  "/statistics": <StatisticsPage />,
+  "/journal": <JournalPage />,
+  "/onboarding": <OnboardingPage />,
+};
 
 export function AppShell() {
   return (
@@ -20,7 +32,9 @@ export function AppShell() {
           <Route
             key={to}
             path={to}
-            element={<PublicPlaceholderPage title={label} description={description} />}
+            element={
+              PUBLIC_PAGES[to] ?? <PublicPlaceholderPage title={label} description={description} />
+            }
           />
         ))}
       </Route>

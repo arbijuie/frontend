@@ -1,0 +1,121 @@
+.card {
+  @include v.card;
+  display: flex;
+  flex-direction: column;
+  gap: v.space(2);
+  min-width: 0;
+
+  &.active {
+    border-color: v.color(accent-text);
+    background: v.color(surface-raised);
+  }
+}
+
+.topRow {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: v.space(2);
+}
+
+.name {
+  font-size: v.font-size(base);
+  font-weight: v.font-weight(bold);
+  color: v.color(text);
+}
+
+// The risk level is always written out; the tone only reinforces it.
+.risk {
+  @include v.badge;
+  border-radius: v.radius(pill);
+}
+
+.lower {
+  background: v.color(success-tint);
+  color: v.color(success-text);
+}
+
+.moderate {
+  background: v.color(info-tint);
+  color: v.color(info-text);
+}
+
+.higher {
+  background: v.color(warning-tint);
+  color: v.color(warning-text);
+}
+
+.highest {
+  background: v.color(danger-tint);
+  color: v.color(danger-text);
+}
+
+.preset {
+  font-size: v.font-size(xs);
+  color: v.color(text-muted);
+
+  code {
+    color: v.color(text-secondary);
+  }
+}
+
+.summary {
+  font-size: v.font-size(md);
+  color: v.color(text);
+}
+
+.tradeoffs {
+  display: flex;
+  flex-direction: column;
+  gap: v.space(2);
+  font-size: v.font-size(sm);
+
+  dt {
+    @include v.eyebrow(text-muted);
+    margin-bottom: v.space("0-5");
+  }
+
+  dd {
+    color: v.color(text-secondary);
+  }
+}
+
+.thresholds {
+  @include v.inset-panel(v.space(1) v.space("2-5"));
+}
+
+.thresholdRow {
+  display: flex;
+  justify-content: space-between;
+  gap: v.space(3);
+  padding: v.space(1) 0;
+  font-size: v.font-size(xs);
+
+  &:not(:last-child) {
+    border-bottom: 0.0625rem solid v.color(border);
+  }
+
+  dt {
+    color: v.color(text-muted);
+  }
+
+  dd {
+    color: v.color(text-secondary);
+    text-align: right;
+    @include v.tabular-nums;
+  }
+}
+
+.applyButton {
+  @include v.button(secondary);
+  align-self: flex-start;
+  margin-top: v.space(1);
+}
+
+.activeNote {
+  @include v.badge(accent);
+  align-self: flex-start;
+  margin-top: v.space(1);
+  padding: v.space(1) v.space("2-5");
+}

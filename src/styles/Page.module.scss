@@ -1,37 +1,27 @@
+// Shared page frame for pages without their own stylesheet. The rules live in the
+// `page-*` mixins so OpportunitiesPage.module.scss (also shared) stays identical.
 .page {
-  width: min(100%, var(--app-max-width, 48rem));
-  padding: 1rem var(--app-horizontal-padding, 0.8rem);
-  padding-bottom: 5rem;
-  margin: 0 auto;
+  @include v.page-frame;
+}
+
+.header {
+  @include v.page-header;
 }
 
 .title {
-  font-size: 1.65rem;
-  color: v.$text-primary;
-  margin-bottom: 0.75rem;
+  @include v.page-title;
+  margin-bottom: v.space(3);
 }
 
 .sectionTitle {
-  font-size: 1rem;
-  font-weight: 600;
-  color: v.$text-secondary;
-  margin: 0.75rem 0;
+  @include v.section-title;
 }
 
 .errorBox {
-  padding: 1rem;
-  color: v.$red;
+  @include v.error-box;
 }
 
 .hint {
-  font-size: 0.6875rem;
-  color: v.$text-muted;
-  margin-bottom: 0.5rem;
-  text-align: right;
-}
-
-@media (min-width: 960px) {
-  .page {
-    padding-top: 1.15rem;
-  }
+  @include v.hint;
+  margin-bottom: v.space(2);
 }

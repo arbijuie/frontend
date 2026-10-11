@@ -1,20 +1,21 @@
+// Phone and tablet: fixed bottom tab bar (thumb reach). Desktop (lg+): inline links in the
+// sticky AppHeader. The operator layout reserves bottom space for the bar below lg.
 .nav {
   position: fixed;
-  bottom: 0.5rem;
+  bottom: v.space(2);
   left: 50%;
   transform: translateX(-50%);
-  width: min(calc(100% - 1rem), var(--app-nav-max-width, 48rem));
-  min-height: calc(v.$nav-height + env(safe-area-inset-bottom, 0px));
+  z-index: v.z(nav);
   display: flex;
+  align-items: stretch;
   justify-content: space-around;
-  align-items: center;
-  background: v.$bg-primary;
-  border-top: 0.0625rem solid v.$border-color;
-  border: 0.0625rem solid v.$border-color;
-  border-radius: 0.875rem;
-  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.35);
-  z-index: 30;
-  padding: 0.35rem 0.35rem calc(0.35rem + env(safe-area-inset-bottom, 0px));
+  width: min(calc(100% - #{v.space(4)}), 40rem);
+  min-height: calc(v.$nav-height + env(safe-area-inset-bottom, 0px));
+  padding: v.space(1) v.space(1) calc(#{v.space(1)} + env(safe-area-inset-bottom, 0px));
+  background: v.color(surface);
+  border: 0.0625rem solid v.color(border-strong);
+  border-radius: v.radius(xl);
+  box-shadow: v.shadow(lg);
 }
 
 .item {
@@ -23,30 +24,32 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.125rem;
-  color: v.$text-muted;
+  justify-content: center;
+  gap: v.space("0-5");
+  padding: v.space(1) v.space("0-5");
+  border-radius: v.radius(lg);
+  color: v.color(text-muted);
   text-decoration: none;
-  padding: 0.35rem 0.25rem;
-  border-bottom: 0.125rem solid transparent;
+  transition:
+    color v.duration(fast) v.easing(standard),
+    background-color v.duration(fast) v.easing(standard);
 
   &:hover {
-    color: v.$text-secondary;
+    color: v.color(text);
   }
 
   &:focus-visible {
-    color: v.$text-primary;
-    outline: 0.125rem solid v.$accent-purple;
-    outline-offset: -0.125rem;
-    border-radius: 0.5rem;
+    @include v.focus-ring(-0.125rem);
+    color: v.color(text);
   }
 }
 
 .active {
-  color: v.$accent-purple;
-  border-bottom-color: v.$accent-purple;
+  color: v.color(accent-text);
+  background: v.color(accent-tint);
 
   &:hover {
-    color: v.$accent-purple;
+    color: v.color(accent-text);
   }
 }
 
@@ -61,39 +64,47 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 0.6875rem;
+  font-size: v.font-size("2xs");
+  font-weight: v.font-weight(medium);
 }
 
-@media (min-width: 960px) {
-  .nav {
-    bottom: 0.75rem;
-    width: min(calc(100% - 2rem), var(--app-nav-max-width, 60rem));
-    padding-top: 0.45rem;
-    padding-bottom: calc(0.45rem + env(safe-area-inset-bottom, 0px));
-  }
-
-  .item {
-    padding: 0.4rem 0.35rem;
-  }
-
-  .label {
-    font-size: 0.75rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .item {
-    padding: 0.35rem 0;
-  }
-
+@include v.bp-down(sm) {
   .label {
     font-size: 0.625rem;
     letter-spacing: -0.01em;
   }
 }
 
-@media (max-width: 340px) {
+@include v.bp-up(lg) {
+  .nav {
+    position: static;
+    transform: none;
+    flex: 1 1 auto;
+    justify-content: flex-end;
+    gap: v.space(1);
+    width: auto;
+    min-height: 0;
+    padding: 0;
+    background: none;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .item {
+    flex: 0 0 auto;
+    flex-direction: row;
+    gap: v.space("1-5");
+    padding: v.space("1-5") v.space("2-5");
+    border-radius: v.radius(md);
+  }
+
+  .icon {
+    width: 1rem;
+    height: 1rem;
+  }
+
   .label {
-    font-size: 0.5625rem;
+    font-size: v.font-size(sm);
   }
 }

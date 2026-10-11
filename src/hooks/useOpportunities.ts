@@ -21,6 +21,8 @@ export function useOpportunities(options?: UseOpportunitiesOptions) {
     authStatus,
     authRetryAfterSeconds,
     authDetail,
+    transportDetail,
+    fallbackReason,
     retryNow,
   } = useOpportunitiesTransport();
   const isLive = transportState === "connected";
@@ -44,6 +46,8 @@ export function useOpportunities(options?: UseOpportunitiesOptions) {
     authStatus,
     authRetryAfterSeconds,
     authDetail,
+    transportDetail,
+    fallbackReason,
     retryConnection: retryNow,
   };
 }

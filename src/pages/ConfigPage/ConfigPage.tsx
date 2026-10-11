@@ -3,7 +3,8 @@ import layoutStyles from "../../pages/OpportunitiesPage/OpportunitiesPage.module
 import pageStyles from "./ConfigPage.module.scss";
 import { useConfig } from "../../hooks/useConfig";
 import { useUpdateConfig } from "../../hooks/useUpdateConfig";
-import PresetComparison from "../../components/PresetComparison/PresetComparison";
+import ProductModes from "../../components/ProductModes/ProductModes";
+import { modeForPreset } from "../../lib/productModes";
 import ConfigAccordion from "../../components/ConfigAccordion/ConfigAccordion";
 import ConfigDiffPreview from "../../components/ConfigDiffPreview/ConfigDiffPreview";
 import {
@@ -283,8 +284,8 @@ const ConfigPage = () => {
           <h2 className={layoutStyles.sectionTitle}>Live Configuration</h2>
           <ConfigAccordion config={data} />
 
-          <h2 className={layoutStyles.sectionTitle}>Presets</h2>
-          <PresetComparison
+          <h2 className={layoutStyles.sectionTitle}>Product Modes</h2>
+          <ProductModes
             config={data}
             onApplyPreset={(preset) => {
               setLocalError(null);
@@ -295,7 +296,9 @@ const ConfigPage = () => {
                   await updateConfig.mutateAsync({ preset: preset.key, persist: true });
                   setDraftOverrides({});
                   setBaselineConfig(null);
-                  setHint(`${preset.name} preset applied`);
+                  setHint(
+                    `${modeForPreset(preset.key)?.label ?? preset.name} mode applied (preset ${preset.key})`
+                  );
                 } catch (e) {
                   setLocalError(e instanceof Error ? e.message : "Failed to apply preset");
                 } finally {

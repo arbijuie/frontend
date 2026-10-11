@@ -1,9 +1,6 @@
 .card {
-  background: v.$bg-card;
-  border: 1px solid v.$border-color;
-  border-radius: 0.75rem;
-  padding: 0.75rem 0.875rem;
-  margin-bottom: 0.5rem;
+  @include v.card;
+  margin-bottom: v.space(2);
 }
 
 @keyframes pulse {
@@ -17,9 +14,9 @@
 }
 
 .line {
-  height: 0.75rem;
-  border-radius: 0.25rem;
-  background: v.$border-color;
+  height: v.space(3);
+  border-radius: v.radius(sm);
+  background: v.color(border-strong);
   animation: pulse 1.5s ease-in-out infinite;
 
   @media (prefers-reduced-motion: reduce) {
@@ -30,7 +27,7 @@
 
 .metricsRow {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.5rem 0.75rem;
-  margin-top: 0.875rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: v.space(2) v.space(3);
+  margin-top: v.space("3-5");
 }

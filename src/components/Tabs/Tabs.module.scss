@@ -1,13 +1,13 @@
 .tabs {
-  display: flex;
-  gap: 0.5rem;
-  overflow-x: auto;
   position: sticky;
-  top: 0;
-  background: v.$bg-primary;
-  padding: 0.5rem 0.25rem;
-  margin-bottom: 0.5rem;
-  z-index: 10;
+  top: var(--app-sticky-top, 0px);
+  z-index: v.z(sticky);
+  display: flex;
+  gap: v.space(2);
+  margin-bottom: v.space(2);
+  padding: v.space(2) v.space(1);
+  overflow-x: auto;
+  background: v.color(bg);
   scrollbar-width: none;
   -ms-overflow-style: none;
 
@@ -17,18 +17,9 @@
 }
 
 .tab {
-  flex-shrink: 0;
-  padding: 0.5rem 0.875rem;
-  border-radius: 1rem;
-  border: 0.0625rem solid v.$border-color;
-  background: v.$bg-card;
-  color: v.$text-secondary;
-  font-size: 0.8125rem;
-  white-space: nowrap;
+  @include v.chip;
 }
 
 .active {
-  background: v.$accent-purple-bg;
-  color: #fff;
-  border-color: v.$accent-purple-bg;
+  @include v.chip-active;
 }

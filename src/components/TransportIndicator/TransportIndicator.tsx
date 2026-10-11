@@ -56,6 +56,7 @@ interface TransportIndicatorProps {
   authStatus: AuthStatus;
   authRetryAfterSeconds: number | null;
   authDetail: string | null;
+  transportDetail: string | null;
   onRetry: () => void;
 }
 
@@ -66,11 +67,14 @@ const TransportIndicator = ({
   authStatus,
   authRetryAfterSeconds,
   authDetail,
+  transportDetail,
   onRetry,
 }: TransportIndicatorProps) => {
   const severity = severityFromState(state);
   const label = labelFromState(state, reconnectAttempt, authStatus, authRetryAttempt);
-  const detail = authHint(authStatus, authRetryAfterSeconds, authDetail);
+  const detail =
+    authHint(authStatus, authRetryAfterSeconds, authDetail) ??
+    (state === "polling-fallback" ? transportDetail : null);
 
   return (
     <div className={styles.container} aria-live="polite">

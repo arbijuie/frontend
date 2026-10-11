@@ -1,26 +1,21 @@
 .card {
-  background: v.$bg-card;
-  border: 1px solid v.$border-color;
-  border-radius: 0.75rem;
-  padding: 0.75rem 0.875rem;
-  margin-bottom: 1rem;
+  @include v.card(v.space(1) v.space("3-5"));
+  margin-bottom: v.space(4);
 }
 
 .row {
-  display: flex;
-  justify-content: space-between;
-  padding: 0.4rem 0;
-  font-size: 0.875rem;
-
-  &:not(:last-child) {
-    border-bottom: 1px solid v.$border-color;
-  }
+  @include v.kv-row;
 }
 
 .label {
-  color: v.$text-muted;
+  min-width: 0;
+  color: v.color(text-muted);
 }
 
 .value {
-  color: v.$text-primary;
+  min-width: 0;
+  color: v.color(text);
+  text-align: right;
+  overflow-wrap: anywhere;
+  @include v.tabular-nums;
 }

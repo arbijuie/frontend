@@ -50,13 +50,72 @@ Notes:
 
 ## Main Routes
 
-- Operator pages: `/`, `/status`, `/config`, `/backtest`, `/execution/preflight`
-- Public pages: `/product`, `/how-it-works`, `/statistics`, `/onboarding`
+- Operator pages: `/`, `/status`, `/config`, `/backtest`, `/execution/preflight`, `/automation`
+- Public pages: `/product`, `/how-it-works`, `/statistics`, `/journal`, `/onboarding`
+  - `/product` explains the screener and the product modes (static, no API calls).
+  - `/statistics` and `/journal` show live aggregates and daily history from the read-only
+    `/public/*` projections, and explain closed-channel, rate-limit and network failures.
+  - `/onboarding` is the guided 3-step check (prerequisites, public access and venue
+    connectivity, first runtime signal); it only reads `GET /healthz`, `/public/status` and
+    `/public/opportunities`.
 
 Navigation registries:
 
 - Operator nav: [frontend/src/lib/navigation.ts](src/lib/navigation.ts)
 - Public nav: [frontend/src/lib/navigation.ts](src/lib/navigation.ts)
+
+## Supported Viewports
+
+Layouts are mobile-first. Every primary page (operator and public) must be usable without
+horizontal page scroll at these widths:
+
+| Target | Width | Layout |
+| --- | --- | --- |
+| Phone | 390px | Single column; operator navigation is a fixed bottom tab bar |
+| Tablet | 768px | Two to four column grids; bottom tab bar |
+| Desktop | 960px and up | Navigation moves into the sticky top header; content up to 72rem |
+
+Wide tables scroll inside their own container; the page itself never scrolls sideways.
+[frontend/e2e/responsive-layout.spec.ts](e2e/responsive-layout.spec.ts) checks every primary
+page at 390px and 768px for horizontal overflow and keeps the title and navigation on screen.
+Playwright also runs the whole e2e suite on a phone (`chromium-mobile`, Pixel 7) and a tablet
+(`chromium-tablet`, 768px) project next to `chromium-desktop`.
+
+## Design Tokens
+
+The design system lives in [frontend/src/styles](src/styles):
+
+- `_tokens.scss`: the only place that holds raw values. Colors, type scale, spacing
+  (0.25rem grid), radius, shadows, z-index, motion, layout sizes and the 390 / 768 / 960 /
+  1280px breakpoints. Each token is emitted once as a CSS custom property on `:root`
+  (`--color-surface`, `--space-3`, ...).
+- `_mixins.scss`: base styles built from tokens: `card`, `button($variant)`, `badge($tone)`,
+  `pill`, `input`, `select`, `chip`, `callout($tone)`, `focus-ring`, and the shared page frame.
+- `_variables.scss`: injected into every SCSS module as `v`. It forwards the two files above
+  and keeps the older `$bg-card`-style names as aliases.
+
+Usage in a module:
+
+```scss
+.panel {
+  @include v.card;
+  gap: v.space(3);
+  color: v.color(text-secondary);
+
+  @include v.bp-up(md) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+```
+
+Rules:
+
+- Do not put hex or rgba values in modules; add or reuse a token.
+- Text colors and fill colors are separate tokens. `*-text` colors are for text on dark
+  surfaces; `*-fill` colors are solid backgrounds under `text-on-fill` (white). Both clear
+  WCAG AA 4.5:1, which the axe e2e suites enforce.
+- State is never shown by color alone: badges and dots always come with a text label.
+- Keep the visible focus ring (`focus-ring` mixin) on every interactive element.
 
 ## Quality Checks
 
@@ -78,6 +137,7 @@ Primary suites:
 - Accessibility scan: [frontend/e2e/accessibility.spec.ts](e2e/accessibility.spec.ts)
 - Keyboard navigation: [frontend/e2e/keyboard-navigation.spec.ts](e2e/keyboard-navigation.spec.ts)
 - Public layout behavior: [frontend/e2e/public-layout.spec.ts](e2e/public-layout.spec.ts)
+- Responsive layout (390px and 768px): [frontend/e2e/responsive-layout.spec.ts](e2e/responsive-layout.spec.ts)
 
 Fixture data:
 

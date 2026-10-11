@@ -1,0 +1,43 @@
+.highlights {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: v.space(3);
+  margin: 0 0 v.space(2);
+  padding: 0;
+  list-style: none;
+
+  @include v.bp-up(md) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.highlight {
+  @include v.card(v.space(4));
+  font-size: v.font-size(sm);
+  color: v.color(text-secondary);
+}
+
+.highlightTitle {
+  margin-bottom: v.space("1-5");
+  font-size: v.font-size(md);
+  font-weight: v.font-weight(semibold);
+  color: v.color(text);
+}
+
+.lead {
+  margin-bottom: v.space(3);
+  font-size: v.font-size(sm);
+  color: v.color(text-secondary);
+  max-width: 48rem;
+}
+
+.modes {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: v.space(3);
+  margin-bottom: v.space(2);
+
+  @include v.bp-up(md) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

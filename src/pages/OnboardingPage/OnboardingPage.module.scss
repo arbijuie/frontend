@@ -1,0 +1,336 @@
+// Guided onboarding (issue #306). Mobile-first: one column on phones, the step list
+// spreads into three columns from the tablet breakpoint.
+
+.steps {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: v.space(2);
+  margin: 0 0 v.space(4);
+  padding: 0;
+  list-style: none;
+
+  @include v.bp-up(md) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.step {
+  @include v.card(v.space("2-5") v.space(3));
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: v.space(1) v.space(2);
+  min-width: 0;
+
+  // The current step gets a heavier accent border on top of `aria-current`.
+  &[aria-current="step"] {
+    border-color: v.color(accent-border);
+    background: v.color(surface-raised);
+    box-shadow: inset 0.1875rem 0 0 v.color(accent-fill);
+  }
+
+  @include v.bp-up(md) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.stepNumber {
+  @include v.eyebrow(text-secondary);
+  flex-basis: 100%;
+
+  .step[aria-current="step"] & {
+    color: v.color(accent-text);
+  }
+
+  @include v.bp-up(md) {
+    flex-basis: auto;
+  }
+}
+
+.stepTitle {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: v.font-size(md);
+  font-weight: v.font-weight(semibold);
+  color: v.color(text);
+}
+
+.badge {
+  flex-shrink: 0;
+}
+
+.badge_neutral {
+  @include v.badge(neutral);
+}
+
+.badge_info {
+  @include v.badge(info);
+}
+
+.badge_success {
+  @include v.badge(success);
+}
+
+.badge_warning {
+  @include v.badge(warning);
+}
+
+.badge_danger {
+  @include v.badge(danger);
+}
+
+.panel {
+  @include v.card(v.space(4));
+  display: flex;
+  flex-direction: column;
+  gap: v.space(4);
+  min-width: 0;
+
+  @include v.bp-up(md) {
+    padding: v.space(5);
+  }
+}
+
+.panelHeader {
+  display: flex;
+  flex-direction: column;
+  gap: v.space(1);
+}
+
+.eyebrow {
+  @include v.eyebrow;
+}
+
+.title {
+  font-size: v.font-size(lg);
+  font-weight: v.font-weight(bold);
+  color: v.color(text);
+}
+
+.intro {
+  max-width: 48rem;
+  font-size: v.font-size(sm);
+  color: v.color(text-secondary);
+}
+
+.summary {
+  font-weight: v.font-weight(medium);
+}
+
+.summary_neutral {
+  @include v.callout(neutral);
+}
+
+.summary_info {
+  @include v.callout(info);
+}
+
+.summary_success {
+  @include v.callout(success);
+}
+
+.summary_warning {
+  @include v.callout(warning);
+}
+
+.summary_danger {
+  @include v.callout(danger);
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: v.space(2);
+
+  @include v.bp-up(md) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  dt {
+    @include v.eyebrow(text-secondary);
+    margin-bottom: v.space(1);
+  }
+
+  dd {
+    font-size: v.font-size(sm);
+    color: v.color(text);
+  }
+}
+
+.fact {
+  @include v.inset-panel;
+  min-width: 0;
+}
+
+.address {
+  overflow-wrap: anywhere;
+  color: v.color(accent-text);
+}
+
+.checks {
+  display: flex;
+  flex-direction: column;
+  gap: v.space("2-5");
+  padding: 0;
+  list-style: none;
+}
+
+.check {
+  @include v.inset-panel(v.space(3));
+  display: flex;
+  flex-direction: column;
+  gap: v.space("1-5");
+  min-width: 0;
+}
+
+.checkHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: v.space(2);
+}
+
+.checkTitle {
+  font-size: v.font-size(md);
+  font-weight: v.font-weight(semibold);
+  color: v.color(text);
+}
+
+.checkSummary {
+  font-size: v.font-size(sm);
+  color: v.color(text);
+  overflow-wrap: anywhere;
+}
+
+.checkDetail {
+  font-size: v.font-size(sm);
+  color: v.color(text-secondary);
+  overflow-wrap: anywhere;
+}
+
+.venues {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 11rem), 1fr));
+  gap: v.space("1-5");
+  margin-top: v.space(1);
+  padding: 0;
+  list-style: none;
+}
+
+.venue {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: v.space(1) v.space(2);
+  padding: v.space("1-5") v.space(2);
+  border: 0.0625rem solid v.color(border);
+  border-radius: v.radius(md);
+  background: v.color(surface);
+  font-size: v.font-size(sm);
+}
+
+.venueName {
+  font-weight: v.font-weight(medium);
+  color: v.color(text);
+}
+
+.note {
+  @include v.callout(info);
+  display: flex;
+  flex-direction: column;
+  gap: v.space(1);
+  color: v.color(text-secondary);
+}
+
+.noteTitle {
+  font-weight: v.font-weight(semibold);
+  color: v.color(text);
+}
+
+.nextSteps {
+  display: flex;
+  flex-direction: column;
+  gap: v.space(2);
+}
+
+.nextTitle {
+  @include v.section-title;
+  margin: 0;
+}
+
+.nextLinks {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: v.space(2);
+  padding: 0;
+  list-style: none;
+
+  @include v.bp-up(md) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.nextItem {
+  @include v.inset-panel(v.space(3));
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: v.space("1-5");
+  min-width: 0;
+}
+
+.nextLink {
+  @include v.button(ghost);
+}
+
+.nextText {
+  font-size: v.font-size(sm);
+  color: v.color(text-secondary);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: v.space(2) v.space(3);
+  padding-top: v.space(3);
+  border-top: 0.0625rem solid v.color(border);
+}
+
+.recheck {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: v.space(2);
+  min-width: 0;
+}
+
+.countdown {
+  @include v.hint;
+  @include v.tabular-nums;
+}
+
+.navButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: v.space(2);
+  margin-left: auto;
+}
+
+.primaryButton {
+  @include v.button(primary);
+}
+
+.secondaryButton {
+  @include v.button(secondary);
+}
+
+.actionHint {
+  @include v.hint;
+  flex-basis: 100%;
+  text-align: right;
+}

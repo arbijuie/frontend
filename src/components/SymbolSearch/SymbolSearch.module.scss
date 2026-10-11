@@ -1,31 +1,23 @@
 .wrapper {
   position: relative;
+  flex: 1 1 12rem;
+  min-width: 0;
 }
 
 .input {
-  width: 100%;
-  padding: 0.5rem 0.75rem 0.5rem 2rem;
-  border-radius: 0.5rem;
-  border: 1px solid v.$border-color;
-  background: v.$bg-card;
-  color: v.$text-primary;
-  font-size: 0.82rem;
-
-  &::placeholder {
-    color: v.$text-muted;
-  }
-
-  &:focus {
-    border-color: v.$accent-purple;
-  }
+  @include v.input;
+  padding-left: v.space(8);
+  background: v.color(surface);
+  font-size: v.font-size(sm);
 }
 
 .icon {
   position: absolute;
-  left: 0.625rem;
-  top: 45%;
+  top: 50%;
+  left: v.space("2-5");
   transform: translateY(-50%);
-  color: v.$text-muted;
+  color: v.color(text-muted);
   font-size: 1.35rem;
+  line-height: 1;
   pointer-events: none;
 }

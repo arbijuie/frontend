@@ -11,6 +11,7 @@ describe("TransportIndicator", () => {
         authStatus="ok"
         authRetryAfterSeconds={null}
         authDetail={null}
+        transportDetail={null}
         onRetry={vi.fn()}
       />
     );
@@ -27,6 +28,7 @@ describe("TransportIndicator", () => {
         authStatus="rate-limited"
         authRetryAfterSeconds={3}
         authDetail={null}
+        transportDetail={null}
         onRetry={vi.fn()}
       />
     );
@@ -44,6 +46,7 @@ describe("TransportIndicator", () => {
         authStatus="rate-limited"
         authRetryAfterSeconds={5}
         authDetail="Retry-After missing or invalid; using safe default delay."
+        transportDetail={null}
         onRetry={vi.fn()}
       />
     );
@@ -66,11 +69,31 @@ describe("TransportIndicator", () => {
         authStatus="auth-failed"
         authRetryAfterSeconds={null}
         authDetail="WS auth failed repeatedly; using polling fallback."
+        transportDetail={null}
         onRetry={onRetry}
       />
     );
 
     fireEvent.click(screen.getByRole("button", { name: "Retry live connection" }));
     expect(onRetry).toHaveBeenCalledTimes(1);
+  });
+
+  it("shows transport fallback detail when auth status is ok", () => {
+    render(
+      <TransportIndicator
+        state="polling-fallback"
+        reconnectAttempt={6}
+        authRetryAttempt={0}
+        authStatus="ok"
+        authRetryAfterSeconds={null}
+        authDetail={null}
+        transportDetail="Live stream is temporarily unavailable; background recovery is active."
+        onRetry={vi.fn()}
+      />
+    );
+
+    expect(
+      screen.getByText("Live stream is temporarily unavailable; background recovery is active.")
+    ).not.toBeNull();
   });
 });

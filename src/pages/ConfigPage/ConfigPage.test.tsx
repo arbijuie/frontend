@@ -18,8 +18,8 @@ vi.mock("../../hooks/useUpdateConfig", () => ({
   useUpdateConfig: vi.fn(),
 }));
 
-vi.mock("../../components/PresetComparison/PresetComparison", () => ({
-  default: () => <div>Preset comparison mock</div>,
+vi.mock("../../components/ProductModes/ProductModes", () => ({
+  default: () => <div>Product modes mock</div>,
 }));
 
 vi.mock("../../components/ConfigAccordion/ConfigAccordion", () => ({

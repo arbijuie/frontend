@@ -19,6 +19,7 @@ const WsTransportHealthCard = () => {
     authRetryAttempt,
     authStatus,
     authDetail,
+    transportDetail,
     lastMessageAtMs,
     transitions,
     retryNow,
@@ -42,7 +43,9 @@ const WsTransportHealthCard = () => {
             {health === "degraded" ? "DEGRADED" : "RECONNECTING"}
           </span>
           <span>{hint}</span>
-          {authStatus !== "ok" && authDetail && <span className={styles.detail}>{authDetail}</span>}
+          {((authStatus !== "ok" && authDetail) || transportDetail) && (
+            <span className={styles.detail}>{authStatus !== "ok" && authDetail ? authDetail : transportDetail}</span>
+          )}
           {health === "degraded" && (
             <button
               className={styles.retryButton}

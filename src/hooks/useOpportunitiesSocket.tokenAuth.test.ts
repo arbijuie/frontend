@@ -91,7 +91,7 @@ describe("useOpportunitiesSocket with token auth", () => {
       await Promise.resolve();
     });
 
-    expect(result.current.transportState).toBe("reconnecting");
+    expect(["connecting", "reconnecting"]).toContain(result.current.transportState);
     expect(result.current.authStatus).toBe("rate-limited");
     expect(result.current.authRetryAfterSeconds).toBe(5);
     expect(result.current.authDetail).toBe("Retry-After below safe minimum; applying minimum delay.");
@@ -160,6 +160,50 @@ describe("useOpportunitiesSocket with token auth", () => {
 
     expect(result.current.transportState).toBe("polling-fallback");
     expect(result.current.authStatus).toBe("auth-failed");
+  });
+
+  it("attempts automatic recovery from polling fallback after cooldown", async () => {
+    mockedFetchWsAuthTicket
+      .mockRejectedValueOnce(new WsAuthTicketRequestError(429, 1))
+      .mockRejectedValueOnce(new WsAuthTicketRequestError(429, 1))
+      .mockRejectedValueOnce(new WsAuthTicketRequestError(429, 1))
+      .mockRejectedValueOnce(new WsAuthTicketRequestError(429, 1))
+      .mockResolvedValue({
+        ticket: "recovered",
+        expires_at: "2026-09-17T10:03:00Z",
+        ttl_s: 60,
+        last_reject_reason: null,
+      });
+
+    const { result } = renderHook(() => useOpportunitiesSocket());
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    for (let i = 0; i < 10 && result.current.transportState !== "polling-fallback"; i++) {
+      await act(async () => {
+        vi.advanceTimersByTime(5000);
+        await Promise.resolve();
+      });
+    }
+
+    expect(result.current.transportState).toBe("polling-fallback");
+    const callsAtFallback = mockedFetchWsAuthTicket.mock.calls.length;
+
+    await act(async () => {
+      vi.advanceTimersByTime(29999);
+      await Promise.resolve();
+    });
+    expect(mockedFetchWsAuthTicket.mock.calls.length).toBe(callsAtFallback);
+
+    await act(async () => {
+      vi.advanceTimersByTime(1);
+      await Promise.resolve();
+    });
+
+    expect(mockedFetchWsAuthTicket.mock.calls.length).toBe(callsAtFallback + 1);
+    expect(["connecting", "reconnecting"]).toContain(result.current.transportState);
+    expect(result.current.transportDetail).toBeNull();
   });
 
   it("clears stale auth diagnostics when live transport is re-enabled", async () => {

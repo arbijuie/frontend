@@ -1,42 +1,42 @@
 .form {
-  background: v.$bg-card;
-  border: 0.0625rem solid v.$border-color;
-  border-radius: 0.75rem;
-  padding: 0.875rem;
-  margin-bottom: 1rem;
+  @include v.card(v.space("3-5"));
   display: flex;
   flex-direction: column;
-  gap: 0.625rem;
+  gap: v.space(3);
+  margin-bottom: v.space(4);
 }
 
+// Paired fields stack on phones and sit side by side from md up.
 .row {
   display: flex;
-  gap: 0.625rem;
+  flex-direction: column;
+  gap: v.space(3);
 
   > * {
     flex: 1;
+    min-width: 0;
+  }
+
+  @include v.bp-up(md) {
+    flex-direction: row;
   }
 }
 
 .field {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: v.space(1);
   min-width: 0;
 }
 
 .label {
-  font-size: 0.75rem;
-  color: v.$text-muted;
+  font-size: v.font-size(xs);
+  color: v.color(text-muted);
 }
 
 .input {
-  background: v.$bg-primary;
-  border: 0.0625rem solid v.$border-color;
-  border-radius: 0.5rem;
-  padding: 0.5rem 0.625rem;
-  color: v.$text-primary;
-  font-size: 0.8125rem;
+  @include v.input;
+  font-size: v.font-size(sm);
 }
 
 input[type="date"],
@@ -48,20 +48,13 @@ input[type="datetime-local"] {
 }
 
 .submitButton {
-  background: v.$accent-purple-bg;
-  color: #fff;
-  border: none;
-  border-radius: 0.5rem;
-  padding: 0.625rem;
-  font-weight: 600;
-  font-size: 0.875rem;
-
-  &:disabled {
-    opacity: 0.6;
-  }
+  @include v.button(primary);
+  width: 100%;
+  min-height: 2.5rem;
+  font-size: v.font-size(md);
 }
 
 .fieldError {
-  font-size: 0.6875rem;
-  color: v.$red;
+  font-size: v.font-size("2xs");
+  color: v.color(danger-text);
 }

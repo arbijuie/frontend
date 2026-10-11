@@ -1,0 +1,22 @@
+// Blocking states shown before the operator shell mounts.
+.panel {
+  @include v.card(v.space(4));
+  width: min(calc(100% - #{v.space(6)}), 28rem);
+  margin: v.space(10) auto 0;
+  color: v.color(text-secondary);
+  font-size: v.font-size(md);
+}
+
+.error {
+  @include v.callout(danger);
+  width: min(calc(100% - #{v.space(6)}), 28rem);
+  margin: v.space(10) auto 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: v.space(3);
+}
+
+.retry {
+  @include v.button(primary);
+}

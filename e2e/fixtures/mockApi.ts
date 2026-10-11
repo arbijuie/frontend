@@ -7,6 +7,13 @@ import {
   opportunitiesSnapshot,
   replayMetrics,
 } from "./a11yData";
+import {
+  healthz,
+  publicCorrelation,
+  publicJournal,
+  publicOpportunities,
+  publicStatus,
+} from "./publicData";
 
 const API = "http://127.0.0.1:8000";
 const WS_URL = "ws://127.0.0.1:8000/ws/opportunities";
@@ -30,6 +37,14 @@ export async function mockApi(page: Page, options: MockApiOptions = {}) {
     }
     if (pathname === "/config") {
       return route.fulfill({ path: CONFIG_FIXTURE_PATH, contentType: "application/json" });
+    }
+    if (pathname === "/healthz") return json(healthz);
+    if (pathname === "/public/status") return json(publicStatus);
+    if (pathname === "/public/opportunities") return json(publicOpportunities);
+    if (pathname === "/public/correlation") return json(publicCorrelation);
+    if (pathname === "/public/journal") {
+      const days = Number(new URL(route.request().url()).searchParams.get("days") ?? 14);
+      return json(publicJournal(days));
     }
     if (pathname === "/backtest/summary") return json(backtestSummary);
     if (pathname === "/backtest/gate") return json(backtestGate);

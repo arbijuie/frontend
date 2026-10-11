@@ -1,29 +1,38 @@
 .section {
-  background: v.$bg-card;
-  border: 1px solid v.$border-color;
-  border-radius: 0.75rem;
-  margin-bottom: 0.5rem;
+  @include v.card(0);
+  margin-bottom: v.space(2);
   overflow: hidden;
 }
 
 .header {
-  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: none;
+  gap: v.space(2);
+  width: 100%;
+  min-height: v.size(touch-target);
+  padding: v.space(3) v.space("3-5");
   border: none;
-  color: v.$text-primary;
-  font-size: 0.875rem;
-  font-weight: 600;
-  padding: 0.75rem 0.875rem;
+  background: none;
+  color: v.color(text);
+  font-size: v.font-size(md);
+  font-weight: v.font-weight(semibold);
+  text-align: left;
   cursor: pointer;
+
+  &:hover {
+    background: v.color(surface-raised);
+  }
+
+  &:focus-visible {
+    @include v.focus-ring(-0.125rem);
+  }
 }
 
 .chevron {
-  color: v.$text-muted;
-  transition: transform 0.2s ease;
-  font-size: 0.75rem;
+  color: v.color(text-muted);
+  font-size: v.font-size(xs);
+  transition: transform v.duration(base) v.easing(standard);
 }
 
 .chevronOpen {
@@ -31,5 +40,5 @@
 }
 
 .body {
-  padding: 0 0.875rem 0.75rem;
+  padding: 0 v.space("3-5") v.space(3);
 }

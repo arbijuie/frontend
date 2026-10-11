@@ -58,3 +58,13 @@ export const TEST_TAKER_FEE_BY_EXCHANGE: Record<string, number> = {
 export type AutomationOverviewResponse = ApiSchemas["AutomationOverviewResponse"];
 export type AutomationModeItem = ApiSchemas["AutomationModeItem"];
 export type AutomationControlRequest = ApiSchemas["AutomationControlRequest"];
+
+// Redacted public projections (issues #304, #305): read-only DTOs for the public pages.
+export type PublicStatusResponse = ApiSchemas["PublicStatusResponse"];
+export type PublicExchangeStatus = ApiSchemas["PublicExchangeStatusItem"];
+export type PublicOpportunitiesResponse = ApiSchemas["PublicOpportunitiesResponse"];
+export type PublicOpportunityItem = ApiSchemas["PublicOpportunityItem"];
+export type PublicCorrelationResponse = ApiSchemas["PublicCorrelationResponse"];
+export type PublicJournalResponse = ApiSchemas["PublicJournalResponse"];
+export type PublicJournalDay = ApiSchemas["PublicJournalDay"];
+export type PublicJournalCounters = ApiSchemas["PublicJournalCounters"];

@@ -33,7 +33,7 @@ export const PUBLIC_NAV_ITEMS: readonly PublicNavItem[] = [
   {
     to: "/product",
     label: "Product",
-    description: "An overview of the product will appear here.",
+    description: "What the screener does and the product modes.",
   },
   {
     to: "/how-it-works",
@@ -43,12 +43,17 @@ export const PUBLIC_NAV_ITEMS: readonly PublicNavItem[] = [
   {
     to: "/statistics",
     label: "Statistics",
-    description: "Public statistics will appear here.",
+    description: "Coverage, data sources and signal quality of the screener.",
+  },
+  {
+    to: "/journal",
+    label: "Journal",
+    description: "Daily history of what the screener observed.",
   },
   {
     to: "/onboarding",
     label: "Onboarding",
-    description: "A guided first-time setup will appear here.",
+    description: "Guided checks from prerequisites to the first runtime signal.",
   },
 ];
 

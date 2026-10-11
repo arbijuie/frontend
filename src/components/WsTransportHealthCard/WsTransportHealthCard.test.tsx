@@ -83,8 +83,8 @@ describe("WsTransportHealthCard", () => {
     mockedUseTransport.mockReturnValue(
       makeTransport({
         transitions: [
-          { state: "connecting", atMs: Date.parse("2026-09-28T10:00:01Z") },
-          { state: "connected", atMs: Date.parse("2026-09-28T10:00:03Z") },
+          { state: "connecting", atMs: Date.parse("2026-09-28T10:00:01Z"), reason: null },
+          { state: "connected", atMs: Date.parse("2026-09-28T10:00:03Z"), reason: null },
         ],
       })
     );
@@ -95,5 +95,21 @@ describe("WsTransportHealthCard", () => {
     expect(items).toHaveLength(2);
     expect(items[0].textContent).toContain("connected (live)");
     expect(items[1].textContent).toContain("connecting");
+  });
+
+  it("shows transport detail when degraded without auth failure", () => {
+    mockedUseTransport.mockReturnValue(
+      makeTransport({
+        transportState: "polling-fallback",
+        authStatus: "ok",
+        transportDetail: "Live stream is temporarily unavailable; background recovery is active.",
+      })
+    );
+
+    render(<WsTransportHealthCard />);
+
+    expect(
+      screen.getByText("Live stream is temporarily unavailable; background recovery is active.")
+    ).not.toBeNull();
   });
 });

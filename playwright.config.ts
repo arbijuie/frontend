@@ -35,5 +35,16 @@ export default defineConfig({
       name: "chromium-mobile",
       use: { ...devices["Pixel 7"], ...channelOverride },
     },
+    {
+      // Tablet target from the supported viewports (issue #378): 768px wide, touch input.
+      name: "chromium-tablet",
+      use: {
+        ...devices["Desktop Chrome"],
+        viewport: { width: 768, height: 1024 },
+        hasTouch: true,
+        isMobile: true,
+        ...channelOverride,
+      },
+    },
   ],
 });

@@ -1,82 +1,83 @@
 .panel {
-  background: v.$bg-card;
-  border: 0.0625rem solid v.$border-color;
-  border-radius: 0.75rem;
-  padding: 0.875rem;
-  margin-bottom: 1rem;
+  @include v.card(v.space("3-5"));
+  margin-bottom: v.space(4);
 }
 
 .usedParams {
-  font-size: 0.75rem;
-  color: v.$text-muted;
-  margin-bottom: 0.75rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 0.0625rem solid v.$border-color;
+  margin-bottom: v.space(3);
+  padding-bottom: v.space(3);
+  border-bottom: 0.0625rem solid v.color(border);
+  font-size: v.font-size(xs);
+  color: v.color(text-muted);
+  overflow-wrap: anywhere;
 }
 
 .grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.5rem 0.75rem;
-  font-size: 0.8125rem;
-  margin-bottom: 0.75rem;
-}
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: v.space(2) v.space(3);
+  margin-bottom: v.space(3);
+  font-size: v.font-size(sm);
 
-.metricLabel {
-  color: v.$text-muted;
-  font-size: 0.6875rem;
-}
-
-.metricValue {
-  font-weight: 600;
-  color: v.$text-primary;
-}
-
-.positive {
-  color: v.$green;
-}
-
-.negative {
-  color: v.$red;
-}
-
-.neutral {
-  color: v.$text-primary;
-}
-
-.createLockButton {
-  width: 100%;
-  background: v.$accent-purple-bg;
-  color: #fff;
-  border: none;
-  border-radius: 0.5rem;
-  padding: 0.625rem;
-  font-weight: 600;
-  font-size: 0.875rem;
-
-  &:disabled,
-  &[aria-disabled="true"] {
-    opacity: 0.6;
+  @include v.bp-up(md) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 
+.metricLabel {
+  font-size: v.font-size("2xs");
+  color: v.color(text-muted);
+}
+
+.metricValue {
+  font-weight: v.font-weight(semibold);
+  color: v.color(text);
+  @include v.tabular-nums;
+}
+
+.positive {
+  color: v.color(success-text);
+}
+
+.negative {
+  color: v.color(danger-text);
+}
+
+.neutral {
+  color: v.color(text);
+}
+
+.createLockButton {
+  @include v.button(primary);
+  width: 100%;
+  min-height: 2.5rem;
+  font-size: v.font-size(md);
+}
+
 .section {
-  margin-top: 0.75rem;
-  padding-top: 0.75rem;
-  border-top: 0.0625rem solid v.$border-color;
+  margin-top: v.space(3);
+  padding-top: v.space(3);
+  border-top: 0.0625rem solid v.color(border);
 }
 
 .sectionLabel {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: v.$text-secondary;
-  margin-bottom: 0.375rem;
+  margin-bottom: v.space("1-5");
+  font-size: v.font-size(xs);
+  font-weight: v.font-weight(semibold);
+  color: v.color(text-secondary);
 }
 
 .row {
   display: flex;
   justify-content: space-between;
-  font-size: 0.8125rem;
-  color: v.$text-secondary;
-  padding: 0.1875rem 0;
+  gap: v.space(3);
+  padding: v.space(1) 0;
+  font-size: v.font-size(sm);
+  color: v.color(text-secondary);
+  @include v.tabular-nums;
+
+  > * {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
 }

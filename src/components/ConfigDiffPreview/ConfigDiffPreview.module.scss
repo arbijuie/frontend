@@ -1,80 +1,71 @@
 .panel {
-  margin-top: 0.5rem;
-  padding: 0.75rem 0.875rem;
-  border: 0.0625rem solid v.$accent-purple;
-  border-radius: 0.75rem;
-  background: rgba(139, 92, 246, 0.06);
+  margin-top: v.space(2);
+  padding: v.space(3) v.space("3-5");
+  border: 0.0625rem solid v.color(accent-border);
+  border-radius: v.radius(lg);
+  background: v.color(accent-tint);
 
   &:focus-visible {
-    outline: 0.125rem solid v.$accent-purple;
-    outline-offset: 0.125rem;
+    @include v.focus-ring;
   }
 }
 
 .title {
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: v.$accent-purple;
-  margin-bottom: 0.4rem;
+  margin-bottom: v.space(2);
+  font-size: v.font-size(sm);
+  font-weight: v.font-weight(bold);
+  color: v.color(accent-text);
 }
 
 .persistRow {
-  font-size: 0.78rem;
-  color: v.$text-secondary;
-  margin-bottom: 0.5rem;
+  margin-bottom: v.space(2);
+  font-size: v.font-size(xs);
+  color: v.color(text-secondary);
 }
 
 .row {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
-  font-size: 0.78rem;
-  color: v.$text-secondary;
-  padding: 0.2rem 0;
+  gap: v.space(1) v.space(3);
+  padding: v.space(1) 0;
+  font-size: v.font-size(xs);
+  color: v.color(text-secondary);
 }
 
 .values {
   display: flex;
   align-items: center;
-  gap: 0.3rem;
+  gap: v.space(1);
+  @include v.tabular-nums;
 }
 
 .oldValue {
-  color: v.$text-muted;
+  color: v.color(text-muted);
   text-decoration: line-through;
 }
 
 .newValue {
-  color: v.$text-primary;
-  font-weight: 600;
+  color: v.color(text);
+  font-weight: v.font-weight(semibold);
 }
 
 .arrow {
-  color: v.$text-muted;
+  color: v.color(text-muted);
 }
 
 .actions {
   display: flex;
-  gap: 0.5rem;
-  margin-top: 0.6rem;
+  gap: v.space(2);
+  margin-top: v.space(3);
 }
 
 .buttonPrimary {
+  @include v.button(primary);
   flex: 1;
-  padding: 0.45rem;
-  border: none;
-  border-radius: 0.5rem;
-  background: v.$accent-purple-bg;
-  color: #fff;
-  font-weight: 600;
-  cursor: pointer;
 }
 
 .buttonSecondary {
+  @include v.button(secondary);
   flex: 1;
-  padding: 0.45rem;
-  border: 0.0625rem solid v.$border-color;
-  border-radius: 0.5rem;
-  background: none;
-  color: v.$text-secondary;
-  cursor: pointer;
 }

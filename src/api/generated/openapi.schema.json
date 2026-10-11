@@ -2167,6 +2167,13 @@
             "title": "Portfolio Usd",
             "type": "number"
           },
+          "reference_sources": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Reference Sources",
+            "type": "array"
+          },
           "require_isolated_margin": {
             "title": "Require Isolated Margin",
             "type": "boolean"
@@ -2212,6 +2219,16 @@
           "timing_penalty_bps_per_hour": {
             "title": "Timing Penalty Bps Per Hour",
             "type": "number"
+          },
+          "vooi_base_url": {
+            "default": "",
+            "title": "Vooi Base Url",
+            "type": "string"
+          },
+          "vooi_enabled": {
+            "default": false,
+            "title": "Vooi Enabled",
+            "type": "boolean"
           }
         },
         "required": [
@@ -6333,6 +6350,194 @@
         "title": "PublicExchangeStatusItem",
         "type": "object"
       },
+      "PublicJournalCounters": {
+        "additionalProperties": false,
+        "description": "Aggregate capture counters over one UTC day or the whole journal window.",
+        "properties": {
+          "distinct_ready_routes": {
+            "title": "Distinct Ready Routes",
+            "type": "integer"
+          },
+          "distinct_routes": {
+            "title": "Distinct Routes",
+            "type": "integer"
+          },
+          "distinct_symbols": {
+            "title": "Distinct Symbols",
+            "type": "integer"
+          },
+          "median_ready_score_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Median Ready Score Bps"
+          },
+          "ready_by_strategy": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "propertyNames": {
+              "enum": [
+                "funding_arbitrage",
+                "basis_convergence",
+                "cash_and_carry"
+              ]
+            },
+            "title": "Ready By Strategy",
+            "type": "object"
+          },
+          "ready_observations": {
+            "title": "Ready Observations",
+            "type": "integer"
+          },
+          "snapshots": {
+            "title": "Snapshots",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "snapshots",
+          "distinct_routes",
+          "distinct_symbols",
+          "ready_observations",
+          "distinct_ready_routes"
+        ],
+        "title": "PublicJournalCounters",
+        "type": "object"
+      },
+      "PublicJournalDay": {
+        "additionalProperties": false,
+        "description": "One UTC calendar day (`YYYY-MM-DD`) with at least one captured snapshot.",
+        "properties": {
+          "day": {
+            "title": "Day",
+            "type": "string"
+          },
+          "distinct_ready_routes": {
+            "title": "Distinct Ready Routes",
+            "type": "integer"
+          },
+          "distinct_routes": {
+            "title": "Distinct Routes",
+            "type": "integer"
+          },
+          "distinct_symbols": {
+            "title": "Distinct Symbols",
+            "type": "integer"
+          },
+          "median_ready_score_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Median Ready Score Bps"
+          },
+          "ready_by_strategy": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "propertyNames": {
+              "enum": [
+                "funding_arbitrage",
+                "basis_convergence",
+                "cash_and_carry"
+              ]
+            },
+            "title": "Ready By Strategy",
+            "type": "object"
+          },
+          "ready_observations": {
+            "title": "Ready Observations",
+            "type": "integer"
+          },
+          "snapshots": {
+            "title": "Snapshots",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "snapshots",
+          "distinct_routes",
+          "distinct_symbols",
+          "ready_observations",
+          "distinct_ready_routes",
+          "day"
+        ],
+        "title": "PublicJournalDay",
+        "type": "object"
+      },
+      "PublicJournalResponse": {
+        "additionalProperties": false,
+        "description": "Daily aggregate history from the backtest capture store, most recent UTC day first.",
+        "properties": {
+          "capture_enabled": {
+            "title": "Capture Enabled",
+            "type": "boolean"
+          },
+          "days": {
+            "items": {
+              "$ref": "#/components/schemas/PublicJournalDay"
+            },
+            "title": "Days",
+            "type": "array"
+          },
+          "first_snapshot_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "First Snapshot At"
+          },
+          "generated_at": {
+            "title": "Generated At",
+            "type": "string"
+          },
+          "last_snapshot_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Snapshot At"
+          },
+          "totals": {
+            "$ref": "#/components/schemas/PublicJournalCounters"
+          },
+          "window_days": {
+            "title": "Window Days",
+            "type": "integer"
+          },
+          "window_start": {
+            "title": "Window Start",
+            "type": "string"
+          }
+        },
+        "required": [
+          "capture_enabled",
+          "window_days",
+          "window_start",
+          "generated_at",
+          "totals"
+        ],
+        "title": "PublicJournalResponse",
+        "type": "object"
+      },
       "PublicLegItem": {
         "additionalProperties": false,
         "properties": {
@@ -9447,6 +9652,217 @@
         "title": "StatusReasonSeverityCounts",
         "type": "object"
       },
+      "StatusReferenceParseCounters": {
+        "description": "Row accounting of the last reference snapshot parse.",
+        "properties": {
+          "closed": {
+            "default": 0,
+            "title": "Closed",
+            "type": "integer"
+          },
+          "filtered_exchange": {
+            "default": 0,
+            "title": "Filtered Exchange",
+            "type": "integer"
+          },
+          "malformed": {
+            "default": 0,
+            "title": "Malformed",
+            "type": "integer"
+          },
+          "non_crypto": {
+            "default": 0,
+            "title": "Non Crypto",
+            "type": "integer"
+          },
+          "rows": {
+            "default": 0,
+            "title": "Rows",
+            "type": "integer"
+          },
+          "upstream_stale": {
+            "default": 0,
+            "title": "Upstream Stale",
+            "type": "integer"
+          },
+          "used": {
+            "default": 0,
+            "title": "Used",
+            "type": "integer"
+          }
+        },
+        "title": "StatusReferenceParseCounters",
+        "type": "object"
+      },
+      "StatusReferenceSourceItem": {
+        "description": "A reference-only market-data source (issue #291).\n\nReference sources are never execution venues (`executable` is always false), never pair\nas screener legs and never enter snapshots. `state` is `fresh` while the last successful\npoll is younger than `stale_after_s`, `stale` after that, and `unavailable` before the\nfirst success. `symbols` is empty unless the source is `fresh`.",
+        "properties": {
+          "age_s": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Age S"
+          },
+          "consecutive_failures": {
+            "default": 0,
+            "title": "Consecutive Failures",
+            "type": "integer"
+          },
+          "executable": {
+            "const": false,
+            "default": false,
+            "title": "Executable",
+            "type": "boolean"
+          },
+          "failure_count": {
+            "default": 0,
+            "title": "Failure Count",
+            "type": "integer"
+          },
+          "last_attempt_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Attempt At"
+          },
+          "last_error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Error"
+          },
+          "last_ok_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Ok At"
+          },
+          "parse": {
+            "$ref": "#/components/schemas/StatusReferenceParseCounters"
+          },
+          "stale_after_s": {
+            "title": "Stale After S",
+            "type": "number"
+          },
+          "state": {
+            "enum": [
+              "fresh",
+              "stale",
+              "unavailable"
+            ],
+            "title": "State",
+            "type": "string"
+          },
+          "success_count": {
+            "default": 0,
+            "title": "Success Count",
+            "type": "integer"
+          },
+          "symbol_count": {
+            "default": 0,
+            "title": "Symbol Count",
+            "type": "integer"
+          },
+          "symbols": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/StatusReferenceSymbolItem"
+            },
+            "title": "Symbols",
+            "type": "object"
+          }
+        },
+        "required": [
+          "state",
+          "stale_after_s"
+        ],
+        "title": "StatusReferenceSourceItem",
+        "type": "object"
+      },
+      "StatusReferenceSymbolItem": {
+        "description": "One normalized symbol from a reference-only source (issue #291).\n\n`price` is the volume-weighted reference price across the venues VOOI reports in\n`venues`; `funding_apr` is the matching volume-weighted hourly funding as APR percent.\n`basis_bps` maps each executable venue with a mark price to\n`(venue_mark - reference_price) / reference_price` in basis points.",
+        "properties": {
+          "basis_bps": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "title": "Basis Bps",
+            "type": "object"
+          },
+          "funding_apr": {
+            "title": "Funding Apr",
+            "type": "number"
+          },
+          "next_funding_time": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Funding Time"
+          },
+          "open_interest": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Open Interest"
+          },
+          "period_hours": {
+            "title": "Period Hours",
+            "type": "integer"
+          },
+          "price": {
+            "title": "Price",
+            "type": "string"
+          },
+          "venues": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Venues",
+            "type": "array"
+          },
+          "volume_24h": {
+            "title": "Volume 24H",
+            "type": "number"
+          }
+        },
+        "required": [
+          "price",
+          "funding_apr",
+          "period_hours",
+          "volume_24h"
+        ],
+        "title": "StatusReferenceSymbolItem",
+        "type": "object"
+      },
       "StatusResponse": {
         "properties": {
           "active_exchanges": {
@@ -9713,6 +10129,13 @@
               "$ref": "#/components/schemas/StatusRateLimitDiagnostics"
             },
             "title": "Rate Limits",
+            "type": "object"
+          },
+          "reference_sources": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/StatusReferenceSourceItem"
+            },
+            "title": "Reference Sources",
             "type": "object"
           },
           "risk_guardrails": {
@@ -12390,6 +12813,49 @@
         "summary": "Get Public Correlation"
       }
     },
+    "/public/journal": {
+      "get": {
+        "description": "Daily aggregate capture history over the last `days` UTC days, most recent first (#305).",
+        "operationId": "get_public_journal_public_journal_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "days",
+            "required": false,
+            "schema": {
+              "default": 14,
+              "maximum": 90,
+              "minimum": 1,
+              "title": "Days",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicJournalResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Public Journal"
+      }
+    },
     "/public/opportunities": {
       "get": {
         "operationId": "get_public_opportunities_public_opportunities_get",
@@ -12460,6 +12926,22 @@
           }
         },
         "summary": "Get Public Status"
+      }
+    },
+    "/readyz": {
+      "get": {
+        "operationId": "get_readyz_readyz_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Readyz"
       }
     },
     "/risk/guardrails": {

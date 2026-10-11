@@ -1,0 +1,45 @@
+.wrap {
+  @include v.card(0);
+  @include v.scroll-x;
+  margin-bottom: v.space(4);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: v.font-size(sm);
+
+  th,
+  td {
+    padding: v.space(2) v.space(3);
+    border-bottom: 0.0625rem solid v.color(border);
+    text-align: left;
+  }
+
+  thead th {
+    color: v.color(text-muted);
+    font-size: v.font-size(xs);
+    font-weight: v.font-weight(semibold);
+  }
+
+  tbody th {
+    color: v.color(text);
+    font-weight: v.font-weight(semibold);
+  }
+
+  td {
+    color: v.color(text-secondary);
+  }
+
+  tbody tr:last-child th,
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+}
+
+.caption {
+  padding: v.space(2) v.space(3) 0;
+  color: v.color(text-muted);
+  font-size: v.font-size(xs);
+  text-align: left;
+}

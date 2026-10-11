@@ -7,32 +7,41 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 0.9rem;
-  height: 0.9rem;
-  border: 1px solid v.$border-color;
+  width: 1rem;
+  height: 1rem;
+  padding: 0;
+  border: 0.0625rem solid v.color(border-strong);
   border-radius: 50%;
   background: none;
-  color: v.$text-secondary;
+  color: v.color(text-secondary);
   font-size: 0.65rem;
   line-height: 1;
   cursor: help;
-  padding: 0;
+
+  &:hover {
+    color: v.color(text);
+    border-color: v.color(accent-border);
+  }
+
+  &:focus-visible {
+    @include v.focus-ring;
+  }
 }
 
 .bubble {
   position: absolute;
-  bottom: calc(100% + 0.3rem);
+  bottom: calc(100% + #{v.space("1-5")});
   left: 50%;
   transform: translateX(-50%);
-  z-index: 10;
+  z-index: v.z(overlay);
   width: max-content;
-  max-width: 14rem;
-  padding: 0.4rem 0.55rem;
-  border-radius: 0.5rem;
-  background: v.$bg-card;
-  border: 1px solid v.$border-color;
-  color: v.$text-secondary;
-  font-size: 0.7rem;
-  line-height: 1.3;
-  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.3);
+  max-width: min(14rem, calc(100vw - #{v.space(8)}));
+  padding: v.space("1-5") v.space(2);
+  border: 0.0625rem solid v.color(border-strong);
+  border-radius: v.radius(md);
+  background: v.color(surface-raised);
+  color: v.color(text-secondary);
+  font-size: v.font-size("2xs");
+  line-height: v.line-height(snug);
+  box-shadow: v.shadow(md);
 }

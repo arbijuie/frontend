@@ -1,25 +1,17 @@
 .card {
-  background: v.$bg-card;
-  border: 1px solid v.$border-color;
-  border-radius: 0.75rem;
-  padding: 0.75rem 0.875rem;
-  margin-bottom: 1rem;
+  @include v.card(v.space(1) v.space("3-5"));
+  margin-bottom: v.space(4);
 }
 
 .row {
-  display: flex;
-  justify-content: space-between;
+  @include v.kv-row;
   align-items: center;
-  padding: 0.6rem 0;
-
-  &:not(:last-child) {
-    border-bottom: 1px solid v.$border-color;
-  }
+  padding: v.space("2-5") 0;
 }
 
 .exchangeName {
-  font-size: 0.875rem;
-  color: v.$text-primary;
+  font-size: v.font-size(md);
+  color: v.color(text);
   text-transform: capitalize;
 }
 
@@ -32,28 +24,29 @@
 .healthState {
   display: flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: v.space("1-5");
 }
 
 .healthLabel {
-  font-size: 0.75rem;
-  color: v.$text-muted;
+  font-size: v.font-size(xs);
+  color: v.color(text-muted);
   text-transform: lowercase;
 }
 
 .ok {
-  background: v.$green;
+  background: v.color(success-text);
 }
 
 .notOk {
-  background: v.$red;
+  background: v.color(danger-text);
 }
 
 .unknown {
-  background: v.$text-muted;
+  background: v.color(text-muted);
 }
 
 .empty {
-  color: v.$text-muted;
-  font-size: 0.875rem;
+  padding: v.space(2) 0;
+  color: v.color(text-muted);
+  font-size: v.font-size(md);
 }

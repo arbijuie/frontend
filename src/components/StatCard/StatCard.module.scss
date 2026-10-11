@@ -1,39 +1,39 @@
 .card {
-  background: v.$bg-card;
-  border: 1px solid v.$border-color;
-  border-radius: 0.75rem;
-  padding: 0.75rem;
+  @include v.card;
+  min-width: 0;
 }
 
 .label {
-  font-size: 0.85rem;
-  color: v.$text-secondary;
-  margin-bottom: 0.25rem;
+  margin-bottom: v.space(1);
+  font-size: v.font-size(xs);
+  color: v.color(text-secondary);
 }
 
 .value {
-  font-size: 1rem;
-  font-weight: 700;
+  font-size: v.font-size(lg);
+  font-weight: v.font-weight(bold);
+  line-height: v.line-height(tight);
+  overflow-wrap: anywhere;
 
   &.green {
-    color: v.$green;
+    color: v.color(success-text);
   }
 
   &.yellow {
-    color: v.$yellow;
+    color: v.color(warning-text);
   }
 
   &.red {
-    color: v.$red;
+    color: v.color(danger-text);
   }
 
   &.purple {
-    color: v.$accent-purple;
+    color: v.color(accent-text);
   }
 }
 
 .sub {
-  font-size: 0.75rem;
-  color: v.$text-muted;
-  margin-top: 0.125rem;
+  margin-top: v.space("0-5");
+  font-size: v.font-size(xs);
+  color: v.color(text-muted);
 }

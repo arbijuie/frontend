@@ -10,6 +10,8 @@ export function makeTransport(
     authStatus: "ok",
     authRetryAfterSeconds: null,
     authDetail: null,
+    transportDetail: null,
+    fallbackReason: null,
     lastMessageAtMs: null,
     transitions: [],
     retryNow: vi.fn(),

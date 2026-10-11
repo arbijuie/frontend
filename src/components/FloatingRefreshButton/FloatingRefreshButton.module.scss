@@ -1,24 +1,35 @@
+// Sits above the bottom tab bar on phones and tablets; drops to the corner on desktop,
+// where the navigation moves into the header.
 .fab {
   position: fixed;
-  bottom: calc(#{v.$nav-height} + 1.25rem);
-  right: 1.25rem;
-  width: 2.75rem;
-  height: 2.75rem;
-  border-radius: 50%;
-  background: v.$accent-purple-bg;
-  color: #fff;
-  border: none;
-  font-size: 1.125rem;
-  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+  right: v.space(4);
+  bottom: calc(#{v.$nav-height} + env(safe-area-inset-bottom, 0px) + #{v.space(5)});
+  z-index: v.z(fab);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 20;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: none;
+  border-radius: 50%;
+  background: v.color(accent-fill);
+  color: v.color(text-on-fill);
+  font-size: v.font-size(lg);
+  box-shadow: v.shadow(md);
   cursor: pointer;
+
+  &:hover:not(:disabled):not([aria-disabled="true"]) {
+    background: v.color(accent-fill-hover);
+  }
 
   &:disabled,
   &[aria-disabled="true"] {
     opacity: 0.6;
+  }
+
+  @include v.bp-up(lg) {
+    right: v.space(6);
+    bottom: v.space(6);
   }
 }
 

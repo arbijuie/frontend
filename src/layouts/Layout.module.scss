@@ -1,0 +1,15 @@
+// The operator shell reserves room for the fixed bottom tab bar below lg; from lg up the
+// navigation lives in the sticky header instead.
+.operatorShell {
+  min-height: 100dvh;
+  padding-bottom: calc(v.$nav-height + env(safe-area-inset-bottom, 0px) + #{v.space(4)});
+
+  @include v.bp-up(lg) {
+    padding-bottom: v.space(4);
+  }
+}
+
+.publicShell {
+  min-height: 100dvh;
+  padding-bottom: v.space(6);
+}

@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AppShell } from "./App";
 
 vi.mock("./components/OpportunitiesSocketProvider/OpportunitiesSocketProvider", () => ({
@@ -8,10 +9,15 @@ vi.mock("./components/OpportunitiesSocketProvider/OpportunitiesSocketProvider", 
 }));
 
 function renderAt(path: string) {
+  // Public pages read public projections; offline here, they render their error states.
+  vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new TypeError("offline")));
+  const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   return render(
-    <MemoryRouter initialEntries={[path]}>
-      <AppShell />
-    </MemoryRouter>
+    <QueryClientProvider client={queryClient}>
+      <MemoryRouter initialEntries={[path]}>
+        <AppShell />
+      </MemoryRouter>
+    </QueryClientProvider>
   );
 }
 
@@ -20,6 +26,7 @@ describe("AppShell public routes", () => {
     ["/product", "Product"],
     ["/how-it-works", "How it works"],
     ["/statistics", "Statistics"],
+    ["/journal", "Journal"],
     ["/onboarding", "Onboarding"],
   ])("renders %s by direct URL with the public layout", (path, heading) => {
     renderAt(path);
@@ -31,11 +38,11 @@ describe("AppShell public routes", () => {
     expect(screen.getByRole("link", { name: "Skip to main content" })).toBeTruthy();
   });
 
-  it("marks the current public link and links to all four public pages", () => {
+  it("marks the current public link and links to all five public pages", () => {
     renderAt("/statistics");
 
     const nav = screen.getByRole("navigation", { name: "Public" });
-    expect(nav.querySelectorAll("a")).toHaveLength(4);
+    expect(nav.querySelectorAll("a")).toHaveLength(5);
     expect(screen.getByRole("link", { name: "Statistics" }).getAttribute("aria-current")).toBe(
       "page"
     );

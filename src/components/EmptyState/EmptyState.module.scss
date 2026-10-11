@@ -1,16 +1,18 @@
 .wrapper {
+  padding: v.space(8) v.space(4);
+  border: 0.0625rem dashed v.color(border-strong);
+  border-radius: v.radius(lg);
   text-align: center;
-  padding: 2.5rem 1rem;
-  color: v.$text-muted;
+  color: v.color(text-muted);
 }
 
 .title {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: v.$text-secondary;
-  margin-bottom: 0.25rem;
+  margin-bottom: v.space(1);
+  font-size: v.font-size(md);
+  font-weight: v.font-weight(semibold);
+  color: v.color(text-secondary);
 }
 
 .description {
-  font-size: 0.75rem;
+  font-size: v.font-size(xs);
 }

@@ -12,6 +12,10 @@ import type { OpportunitiesResponse } from "../api/types";
 
 export type TransportState = "connecting" | "connected" | "reconnecting" | "polling-fallback";
 export type AuthStatus = "ok" | "rate-limited" | "ticket-rejected" | "auth-failed";
+export type TransportFallbackReason =
+  | "transport-reconnect-exhausted"
+  | "auth-retry-exhausted"
+  | "ticket-rate-limited-exhausted";
 
 type WsCloseLike = {
   code: number;
@@ -20,8 +24,9 @@ type WsCloseLike = {
 const STALL_TIMEOUT_MS = 60000;
 const MAX_AUTH_REISSUE_ATTEMPTS = 3;
 const DEFAULT_AUTH_RETRY_SECONDS = 5;
+const FALLBACK_BACKGROUND_RECOVERY_DELAY_MS = 30000;
 const DEFAULT_QUERY_KEY = ["opportunities"] as const;
-export type TransportTransition = { state: TransportState; atMs: number };
+export type TransportTransition = { state: TransportState; atMs: number; reason: string | null };
 
 const MAX_TRANSITIONS = 6;
 
@@ -49,14 +54,16 @@ export function useOpportunitiesSocket(options?: UseOpportunitiesSocketOptions) 
   );
   const [transitions, setTransitions] = useState<TransportTransition[]>([]);
   const [lastMessageAtMs, setLastMessageAtMs] = useState<number | null>(null);
+  const [transportDetail, setTransportDetail] = useState<string | null>(null);
+  const [fallbackReason, setFallbackReason] = useState<TransportFallbackReason | null>(null);
   const lastRecordedStateRef = useRef<TransportState | null>(null);
 
-  const setTransportState = useCallback((next: TransportState) => {
+  const setTransportState = useCallback((next: TransportState, reason: string | null = null) => {
     setTransportStateRaw(next);
     if (lastRecordedStateRef.current === next) return;
     lastRecordedStateRef.current = next;
     const atMs = Date.now();
-    setTransitions((prev) => [...prev, { state: next, atMs }].slice(-MAX_TRANSITIONS));
+    setTransitions((prev) => [...prev, { state: next, atMs, reason }].slice(-MAX_TRANSITIONS));
   }, []);
   const [authDiagnostics, setAuthDiagnostics] = useState<AuthDiagnostics>({
     status: "ok",
@@ -86,6 +93,23 @@ export function useOpportunitiesSocket(options?: UseOpportunitiesSocketOptions) 
     }
   };
 
+  const clearReconnectTimer = () => {
+    if (reconnectTimerRef.current) {
+      clearTimeout(reconnectTimerRef.current);
+      reconnectTimerRef.current = null;
+    }
+  };
+
+  const enterFallback = useCallback(
+    (reason: TransportFallbackReason, detail: string, diagnostics: AuthDiagnostics) => {
+      setFallbackReason(reason);
+      setTransportDetail(detail);
+      setAuthDiagnostics(diagnostics);
+      setTransportState("polling-fallback", reason);
+    },
+    [setTransportState]
+  );
+
   const armStallTimer = (ws: WebSocket) => {
     clearStallTimer();
     stallTimerRef.current = setTimeout(() => {
@@ -101,10 +125,20 @@ export function useOpportunitiesSocket(options?: UseOpportunitiesSocketOptions) 
     setReconnectAttempt(attemptRef.current);
 
     if (shouldGiveUp(failureCount)) {
-      setTransportState("polling-fallback");
+      enterFallback(
+        "transport-reconnect-exhausted",
+        "Live stream is temporarily unavailable; background recovery is active.",
+        {
+          status: "ok",
+          retryAfterSeconds: null,
+          detail: null,
+        }
+      );
       return;
     }
 
+    setTransportDetail(null);
+    setFallbackReason(null);
     setTransportState("reconnecting");
     const delay = getBackoffDelayMs(failureCount);
     reconnectTimerRef.current = setTimeout(connect, delay);
@@ -120,15 +154,20 @@ export function useOpportunitiesSocket(options?: UseOpportunitiesSocketOptions) 
     });
 
     if (authReissueAttemptRef.current > MAX_AUTH_REISSUE_ATTEMPTS) {
-      setTransportState("polling-fallback");
-      setAuthDiagnostics({
-        status: "auth-failed",
-        retryAfterSeconds: null,
-        detail: "WS auth failed repeatedly; using polling fallback.",
-      });
+      enterFallback(
+        "auth-retry-exhausted",
+        "WS auth failed repeatedly; background recovery is active.",
+        {
+          status: "auth-failed",
+          retryAfterSeconds: null,
+          detail: "WS auth failed repeatedly; background recovery is active.",
+        }
+      );
       return;
     }
 
+    setTransportDetail(null);
+    setFallbackReason(null);
     setTransportState("reconnecting");
     reconnectTimerRef.current = setTimeout(connect, delayMs);
   };
@@ -155,15 +194,20 @@ export function useOpportunitiesSocket(options?: UseOpportunitiesSocketOptions) 
     });
 
     if (authReissueAttemptRef.current > MAX_AUTH_REISSUE_ATTEMPTS) {
-      setTransportState("polling-fallback");
-      setAuthDiagnostics({
-        status: "auth-failed",
-        retryAfterSeconds: null,
-        detail: "WS ticket request rate-limited repeatedly; using polling fallback.",
-      });
+      enterFallback(
+        "ticket-rate-limited-exhausted",
+        "WS ticket endpoint is rate-limited; background recovery is active.",
+        {
+          status: "auth-failed",
+          retryAfterSeconds: null,
+          detail: "WS ticket request rate-limited repeatedly; background recovery is active.",
+        }
+      );
       return;
     }
 
+    setTransportDetail(null);
+    setFallbackReason(null);
     setTransportState("reconnecting");
     reconnectTimerRef.current = setTimeout(connect, safeRetrySeconds * 1000);
   };
@@ -177,6 +221,8 @@ export function useOpportunitiesSocket(options?: UseOpportunitiesSocketOptions) 
     if (isFreshSessionAttempt) {
       setReconnectAttempt(0);
       setAuthRetryAttempt(0);
+      setTransportDetail(null);
+      setFallbackReason(null);
       setAuthDiagnostics({
         status: "ok",
         retryAfterSeconds: null,
@@ -205,10 +251,18 @@ export function useOpportunitiesSocket(options?: UseOpportunitiesSocketOptions) 
           }
 
           if (myGeneration === generationRef.current && !stoppedRef.current) {
+            const detail =
+              error instanceof WsAuthTicketRequestError
+                ? error.status === 401 || error.status === 403
+                  ? "WS ticket request is unauthorized; check operator auth context."
+                  : error.status >= 500
+                    ? "WS ticket service is temporarily unavailable."
+                    : `WS ticket request failed (HTTP ${error.status}).`
+                : "Unable to reach WS ticket service.";
             scheduleAuthRetry(
               getBackoffDelayMs(authReissueAttemptRef.current),
               "auth-failed",
-              "Unable to issue WS auth ticket."
+              detail
             );
           }
           return;
@@ -232,6 +286,8 @@ export function useOpportunitiesSocket(options?: UseOpportunitiesSocketOptions) 
         }
         attemptRef.current = 0;
         setReconnectAttempt(0);
+        setTransportDetail(null);
+        setFallbackReason(null);
         setAuthRetryAttempt(authReissueAttemptRef.current);
         armStallTimer(ws);
       };
@@ -255,6 +311,8 @@ export function useOpportunitiesSocket(options?: UseOpportunitiesSocketOptions) 
           }
           queryClient.setQueryData(queryKeyRef.current, frame);
           setTransportState("connected");
+          setTransportDetail(null);
+          setFallbackReason(null);
           authReissueAttemptRef.current = 0;
           setAuthRetryAttempt(0);
           pendingRejectReasonRef.current = null;
@@ -306,9 +364,7 @@ export function useOpportunitiesSocket(options?: UseOpportunitiesSocketOptions) 
     if (!enabled) {
       return;
     }
-    if (reconnectTimerRef.current) {
-      clearTimeout(reconnectTimerRef.current);
-    }
+    clearReconnectTimer();
     generationRef.current += 1;
     wsRef.current?.close();
     wsRef.current = null;
@@ -317,6 +373,8 @@ export function useOpportunitiesSocket(options?: UseOpportunitiesSocketOptions) 
     authReissueAttemptRef.current = 0;
     setReconnectAttempt(0);
     setAuthRetryAttempt(0);
+    setTransportDetail(null);
+    setFallbackReason(null);
     setAuthDiagnostics({
       status: "ok",
       retryAfterSeconds: null,
@@ -331,9 +389,7 @@ export function useOpportunitiesSocket(options?: UseOpportunitiesSocketOptions) 
       generationRef.current += 1;
       wsRef.current?.close();
       wsRef.current = null;
-      if (reconnectTimerRef.current) {
-        clearTimeout(reconnectTimerRef.current);
-      }
+      clearReconnectTimer();
       clearStallTimer();
       attemptRef.current = 0;
       authReissueAttemptRef.current = 0;
@@ -345,13 +401,42 @@ export function useOpportunitiesSocket(options?: UseOpportunitiesSocketOptions) 
       stoppedRef.current = true;
       generationRef.current += 1;
       wsRef.current?.close();
-      if (reconnectTimerRef.current) {
-        clearTimeout(reconnectTimerRef.current);
-      }
+      clearReconnectTimer();
       clearStallTimer();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enabled]);
+
+  useEffect(() => {
+    if (!enabled || transportState !== "polling-fallback") {
+      return;
+    }
+
+    clearReconnectTimer();
+    reconnectTimerRef.current = setTimeout(() => {
+      if (stoppedRef.current || !enabled) {
+        return;
+      }
+      attemptRef.current = 0;
+      authReissueAttemptRef.current = 0;
+      setReconnectAttempt(0);
+      setAuthRetryAttempt(0);
+      setAuthDiagnostics({
+        status: "ok",
+        retryAfterSeconds: null,
+        detail: null,
+      });
+      setTransportDetail("Attempting automatic recovery...");
+      setFallbackReason(null);
+      setTransportState("reconnecting", "background-recovery");
+      void connect();
+    }, FALLBACK_BACKGROUND_RECOVERY_DELAY_MS);
+
+    return () => {
+      clearReconnectTimer();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [enabled, transportState]);
 
   const effectiveAuthDiagnostics = enabled
     ? authDiagnostics
@@ -364,6 +449,8 @@ export function useOpportunitiesSocket(options?: UseOpportunitiesSocketOptions) 
     authStatus: effectiveAuthDiagnostics.status,
     authRetryAfterSeconds: effectiveAuthDiagnostics.retryAfterSeconds,
     authDetail: effectiveAuthDiagnostics.detail,
+    transportDetail,
+    fallbackReason,
     lastMessageAtMs,
     transitions,
     retryNow,

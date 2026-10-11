@@ -1,6 +1,10 @@
 .grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: v.space(2);
+  margin-bottom: v.space(4);
+
+  @include v.bp-up(md) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }

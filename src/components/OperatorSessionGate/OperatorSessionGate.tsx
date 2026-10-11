@@ -1,5 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { API_TOKEN } from "../../api/config";
+import styles from "./OperatorSessionGate.module.scss";
 import {
   bootstrapTelegramSession,
   formatTelegramBootstrapErrorForDisplay,
@@ -60,15 +61,23 @@ const OperatorSessionGate = ({ children }: OperatorSessionGateProps) => {
 
   if (authError) {
     return (
-      <div role="alert">
+      <div className={`${styles.panel} ${styles.error}`} role="alert">
         <p>{authError}</p>
-        {shouldBootstrapTelegramSession ? <button onClick={retryBootstrap}>Retry</button> : null}
+        {shouldBootstrapTelegramSession ? (
+          <button className={styles.retry} onClick={retryBootstrap}>
+            Retry
+          </button>
+        ) : null}
       </div>
     );
   }
 
   if (!authReady) {
-    return <div role="status">Authorizing Telegram session...</div>;
+    return (
+      <div className={styles.panel} role="status">
+        Authorizing Telegram session...
+      </div>
+    );
   }
 
   return <>{children}</>;

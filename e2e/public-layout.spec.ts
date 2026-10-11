@@ -6,6 +6,7 @@ const PUBLIC_PAGES = [
   { path: "/product", name: "Product" },
   { path: "/how-it-works", name: "How it works" },
   { path: "/statistics", name: "Statistics" },
+  { path: "/journal", name: "Journal" },
   { path: "/onboarding", name: "Onboarding" },
 ];
 

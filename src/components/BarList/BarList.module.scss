@@ -1,0 +1,75 @@
+// Thin bars from one left baseline: square at the baseline, rounded at the data end.
+// Values and labels stay in text tokens; only the bar carries the tone.
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: v.space(2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 9rem) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: v.space(3);
+  font-size: v.font-size(sm);
+
+  @include v.bp-down(sm) {
+    grid-template-columns: minmax(0, 7rem) minmax(0, 1fr) auto;
+    gap: v.space(2);
+  }
+}
+
+.label {
+  min-width: 0;
+  color: v.color(text-secondary);
+  overflow-wrap: anywhere;
+}
+
+.track {
+  display: block;
+  height: 0.625rem;
+  border-left: 0.0625rem solid v.color(border-strong);
+}
+
+.bar {
+  display: block;
+  height: 100%;
+  min-width: 0.125rem;
+  border-radius: 0 0.25rem 0.25rem 0;
+}
+
+.accent {
+  background: v.color(accent-text);
+}
+
+.success {
+  background: v.color(success-text);
+}
+
+.warning {
+  background: v.color(warning-text);
+}
+
+.danger {
+  background: v.color(danger-text);
+}
+
+.neutral {
+  background: v.color(text-muted);
+}
+
+.value {
+  color: v.color(text);
+  font-weight: v.font-weight(semibold);
+  text-align: right;
+  white-space: nowrap;
+  @include v.tabular-nums;
+}
+
+.note {
+  color: v.color(text-muted);
+  font-weight: v.font-weight(regular);
+}
