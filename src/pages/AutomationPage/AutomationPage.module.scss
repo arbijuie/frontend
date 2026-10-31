@@ -90,10 +90,33 @@
 
 .banner {
   @include v.callout(warning);
-  margin-bottom: v.space(4);
+  margin-block: v.space(4);
 }
 
 .bannerList {
   margin: v.space(1) 0 0;
   padding-left: v.space(4);
+}
+
+// Decision logs (issue #510).
+.decisionList {
+  list-style: none;
+  margin: 0 0 v.space(3);
+  padding: 0;
+  display: grid;
+  gap: v.space(1);
+}
+
+.decision {
+  @include v.card(v.space("1-5") v.space("2-5"));
+  font-size: v.font-size(sm);
+}
+
+.decisionTime {
+  color: v.color(text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.decisionReasons {
+  color: v.color(text-muted);
 }

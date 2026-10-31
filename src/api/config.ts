@@ -27,10 +27,7 @@ export const authHeaders = (): HeadersInit => {
   return headers;
 };
 
-export async function authFetch(
-  input: string,
-  init: RequestInit = {},
-): Promise<Response> {
+export async function authFetch(input: string, init: RequestInit = {}): Promise<Response> {
   const mergedHeaders = new Headers(init.headers ?? {});
   const auth = authHeaders();
   for (const [key, value] of Object.entries(auth)) {

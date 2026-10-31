@@ -1,0 +1,32 @@
+.card {
+  @include v.callout(accent);
+  margin-bottom: v.space(3);
+}
+
+.title {
+  font-size: v.font-size(sm);
+  font-weight: v.font-weight(semibold);
+  color: v.color(text);
+}
+
+.text {
+  margin: v.space(1) 0 v.space(2);
+  font-size: v.font-size(xs);
+  color: v.color(text-secondary);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: v.space(2);
+}
+
+.primary {
+  @include v.button-small(primary);
+  text-decoration: none;
+}
+
+.secondary {
+  @include v.button-small(secondary);
+  text-decoration: none;
+}

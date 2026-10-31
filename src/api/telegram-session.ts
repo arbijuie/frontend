@@ -14,7 +14,7 @@ export class TelegramSessionBootstrapError extends Error {
 }
 
 export function formatTelegramBootstrapErrorForDisplay(
-  error: TelegramSessionBootstrapError,
+  error: TelegramSessionBootstrapError
 ): string {
   if (error.status === 400 && error.detail?.includes("initData is missing")) {
     return "Open this app from Telegram to authenticate.";
@@ -60,7 +60,7 @@ export async function bootstrapTelegramSession(): Promise<TelegramSessionRespons
     throw new TelegramSessionBootstrapError(
       res.status,
       `POST /auth/telegram/session failed: ${res.status}`,
-      detail || null,
+      detail || null
     );
   }
 

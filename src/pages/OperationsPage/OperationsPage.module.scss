@@ -1,0 +1,163 @@
+// Operations page (issues #508 to #513): execution actions, positions, guardrails, parity,
+// and snapshot continuity share one layout: cards for forms and summaries, tables for lists.
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: v.space(2);
+  margin: v.space(2) 0 v.space(3);
+}
+
+.toolbarLabel {
+  font-size: v.font-size(sm);
+  color: v.color(text-muted);
+}
+
+.select {
+  @include v.select;
+  width: auto;
+  min-width: 8rem;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  gap: v.space(3);
+  margin-bottom: v.space(3);
+}
+
+.card {
+  @include v.card;
+}
+
+.cardTitle {
+  margin: 0 0 v.space(2);
+  font-size: v.font-size(md);
+  font-weight: v.font-weight(semibold);
+}
+
+.form {
+  display: grid;
+  gap: v.space(2);
+}
+
+.field {
+  display: grid;
+  gap: v.space("0-5");
+}
+
+.label {
+  font-size: v.font-size(sm);
+  color: v.color(text-muted);
+}
+
+.input {
+  @include v.input;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: v.space(2);
+  margin-top: v.space(1);
+}
+
+.button {
+  @include v.button(secondary);
+}
+
+.primaryButton {
+  @include v.button(primary);
+}
+
+.dangerNote {
+  @include v.callout(warning);
+}
+
+.infoNote {
+  @include v.callout(info);
+}
+
+.errorBox {
+  @include v.error-box;
+}
+
+.okNote {
+  @include v.callout(success);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr));
+  gap: v.space(2);
+  margin-bottom: v.space(3);
+}
+
+.tableWrap {
+  @include v.scroll-x;
+  margin-bottom: v.space(3);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: v.font-size(sm);
+
+  th,
+  td {
+    padding: v.space(1) v.space("1-5");
+    text-align: left;
+    border-bottom: 0.0625rem solid v.color(border);
+    white-space: nowrap;
+    vertical-align: top;
+  }
+
+  th {
+    color: v.color(text-muted);
+    font-weight: v.font-weight(semibold);
+  }
+}
+
+.wrap {
+  white-space: normal;
+}
+
+.badge {
+  @include v.badge(neutral);
+}
+
+.badgeSuccess {
+  @include v.badge(success);
+}
+
+.badgeWarning {
+  @include v.badge(warning);
+}
+
+.badgeDanger {
+  @include v.badge(danger);
+}
+
+.badgeInfo {
+  @include v.badge(info);
+}
+
+.events {
+  margin: v.space(1) 0 0;
+  padding-left: v.space(3);
+  font-size: v.font-size(xs);
+  color: v.color(text-muted);
+  white-space: normal;
+}
+
+.hint {
+  @include v.hint;
+}
+
+.sectionTitle {
+  @include v.section-title;
+}
+
+.link {
+  color: v.color(accent-text);
+}

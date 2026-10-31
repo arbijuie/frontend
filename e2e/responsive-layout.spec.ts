@@ -18,7 +18,7 @@ interface PageCase {
 const PAGES: PageCase[] = [
   {
     path: "/",
-    heading: "Opportunities",
+    heading: "Deals",
     surface: "operator",
     ready: async (page) => {
       await expect(page.getByText("AERO").first()).toBeVisible();
@@ -26,7 +26,7 @@ const PAGES: PageCase[] = [
   },
   {
     path: "/status",
-    heading: "Status",
+    heading: "Health",
     surface: "operator",
     ready: async (page) => {
       await expect(page.getByRole("heading", { name: "Live Transport" })).toBeVisible();
@@ -49,7 +49,15 @@ const PAGES: PageCase[] = [
     },
   },
   { path: "/execution/preflight", heading: "Execution Preflight", surface: "operator" },
-  { path: "/automation", heading: "Automation", surface: "operator" },
+  { path: "/automation", heading: "Auto", surface: "operator" },
+  {
+    path: "/operations",
+    heading: "Operations",
+    surface: "operator",
+    ready: async (page) => {
+      await expect(page.getByRole("table", { name: "Execution attempts" })).toBeVisible();
+    },
+  },
   { path: "/product", heading: "Product", surface: "public" },
   { path: "/how-it-works", heading: "How it works", surface: "public" },
   { path: "/statistics", heading: "Statistics", surface: "public" },
@@ -154,10 +162,8 @@ test.describe("Responsive layout", () => {
       test("Opportunities: filters and status tabs are above the fold", async ({ page }) => {
         await page.goto("/");
         await expect(page.getByText("AERO").first()).toBeVisible();
-        await expect(page.getByLabel("Filter opportunities by strategy")).toBeInViewport();
-        await expect(
-          page.getByRole("group", { name: "Filter opportunities by status" })
-        ).toBeInViewport();
+        await expect(page.getByLabel("Filter deals by strategy")).toBeInViewport();
+        await expect(page.getByRole("group", { name: "Filter deals by status" })).toBeInViewport();
       });
     });
   }

@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { AppShell } from "./App";
 
@@ -8,6 +8,9 @@ vi.mock("./components/OpportunitiesSocketProvider/OpportunitiesSocketProvider", 
 }));
 vi.mock("./pages/OpportunitiesPage/OpportunitiesPage", () => ({
   default: () => <h1>Opportunities page mock</h1>,
+}));
+vi.mock("./pages/PositionsPage/PositionsPage", () => ({
+  default: () => <h1>Positions page mock</h1>,
 }));
 vi.mock("./pages/StatusPage/StatusPage", () => ({
   default: () => <h1>Status page mock</h1>,
@@ -38,6 +41,7 @@ function renderAt(path: string) {
 describe("AppShell routing", () => {
   it.each([
     ["/", "Opportunities page mock"],
+    ["/positions", "Positions page mock"],
     ["/status", "Status page mock"],
     ["/backtest", "Backtest page mock"],
     ["/execution/preflight", "Execution Preflight"],
@@ -46,13 +50,14 @@ describe("AppShell routing", () => {
     renderAt(path);
     expect(screen.getByRole("heading", { level: 1, name: heading })).toBeTruthy();
     expect(screen.getByRole("navigation", { name: "Primary" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Go back" })).toBeTruthy();
   });
 
   it("renders a not-found page for unknown routes and keeps navigation available", () => {
     renderAt("/nope");
     expect(screen.getByRole("heading", { level: 1, name: "Page not found" })).toBeTruthy();
     expect(screen.getByText('No section matches "/nope"')).toBeTruthy();
-    expect(screen.getByRole("link", { name: "Go to Opportunities" }).getAttribute("href")).toBe(
+    expect(screen.getByRole("link", { name: "Go to Deals" }).getAttribute("href")).toBe(
       "/"
     );
     expect(screen.getByRole("navigation", { name: "Primary" })).toBeTruthy();
@@ -70,5 +75,11 @@ describe("AppShell routing", () => {
     expect(screen.getByRole("alert").textContent).toContain("Error: config exploded");
     expect(screen.getByRole("navigation", { name: "Primary" })).toBeTruthy();
     consoleError.mockRestore();
+  });
+
+  it("returns to Deals when opened on an operator deep link with no history", () => {
+    renderAt("/positions");
+    fireEvent.click(screen.getByRole("button", { name: "Go back" }));
+    expect(screen.getByRole("heading", { level: 1, name: "Opportunities page mock" })).toBeTruthy();
   });
 });

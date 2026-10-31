@@ -31,17 +31,18 @@ describe("telegram session bootstrap", () => {
 
     vi.stubGlobal(
       "fetch",
-      vi.fn(async () =>
-        new Response(
-          JSON.stringify({
-            session_token: "session-123",
-            principal_id: "telegram:42",
-            expires_at: "2026-10-02T00:00:00Z",
-            ttl_s: 3600,
-          }),
-          { status: 200, headers: { "Content-Type": "application/json" } },
-        ),
-      ),
+      vi.fn(
+        async () =>
+          new Response(
+            JSON.stringify({
+              session_token: "session-123",
+              principal_id: "telegram:42",
+              expires_at: "2026-10-02T00:00:00Z",
+              ttl_s: 3600,
+            }),
+            { status: 200, headers: { "Content-Type": "application/json" } }
+          )
+      )
     );
 
     const response = await bootstrapTelegramSession();
@@ -53,6 +54,8 @@ describe("telegram session bootstrap", () => {
   it("returns 401 details for display mapping", () => {
     const error = new TelegramSessionBootstrapError(401, "failed", "init_data signature mismatch");
 
-    expect(formatTelegramBootstrapErrorForDisplay(error)).toContain("Telegram authorization failed");
+    expect(formatTelegramBootstrapErrorForDisplay(error)).toContain(
+      "Telegram authorization failed"
+    );
   });
 });

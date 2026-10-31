@@ -1187,6 +1187,15 @@
             ],
             "title": "Min Samples Per Symbol"
           },
+          "replay_source": {
+            "default": "runtime_capture",
+            "enum": [
+              "runtime_capture",
+              "vooi_seed_overlay"
+            ],
+            "title": "Replay Source",
+            "type": "string"
+          },
           "start": {
             "anyOf": [
               {
@@ -1229,6 +1238,18 @@
         "properties": {
           "metrics": {
             "$ref": "#/components/schemas/BacktestMetricsItem"
+          },
+          "replay_source": {
+            "default": "runtime_capture",
+            "enum": [
+              "runtime_capture",
+              "vooi_seed_overlay"
+            ],
+            "title": "Replay Source",
+            "type": "string"
+          },
+          "replay_source_diagnostics": {
+            "$ref": "#/components/schemas/ReplaySourceDiagnosticsItem"
           }
         },
         "required": [
@@ -1498,6 +1519,11 @@
             },
             "title": "Legs",
             "type": "array"
+          },
+          "leverage": {
+            "default": 1.0,
+            "title": "Leverage",
+            "type": "number"
           },
           "long_exchange": {
             "title": "Long Exchange",
@@ -1789,6 +1815,10 @@
           "backtest_time_stop_hold_multiplier": {
             "title": "Backtest Time Stop Hold Multiplier",
             "type": "number"
+          },
+          "backtest_vooi_history_db_path": {
+            "title": "Backtest Vooi History Db Path",
+            "type": "string"
           },
           "basis_bonus_cap_bps": {
             "title": "Basis Bonus Cap Bps",
@@ -2225,9 +2255,24 @@
             "title": "Vooi Base Url",
             "type": "string"
           },
+          "vooi_broker_key_configured": {
+            "default": false,
+            "title": "Vooi Broker Key Configured",
+            "type": "boolean"
+          },
           "vooi_enabled": {
             "default": false,
             "title": "Vooi Enabled",
+            "type": "boolean"
+          },
+          "vooi_execution_enabled": {
+            "default": false,
+            "title": "Vooi Execution Enabled",
+            "type": "boolean"
+          },
+          "vooi_mcp_token_configured": {
+            "default": false,
+            "title": "Vooi Mcp Token Configured",
             "type": "boolean"
           }
         },
@@ -2325,6 +2370,7 @@
           "extended_base_url",
           "backtest_capture_enabled",
           "backtest_db_path",
+          "backtest_vooi_history_db_path",
           "durable_snapshots_enabled",
           "durable_snapshots_db_path",
           "durable_snapshots_retention_days",
@@ -4217,6 +4263,9 @@
           },
           "trust_diagnostics": {
             "$ref": "#/components/schemas/PreflightTrustDiagnosticsItem"
+          },
+          "vooi_route": {
+            "$ref": "#/components/schemas/VooiRouteReadiness"
           }
         },
         "required": [
@@ -4263,7 +4312,7 @@
         "type": "object"
       },
       "ExecutionVenueCapabilityItem": {
-        "description": "Execution support and live readiness of one venue (issue #415).\n\nEvery venue supplies market data for screening; `execution_support` says whether it can\nalso place live orders. `reason_code` is deterministic for a given configuration.",
+        "description": "Execution support and live readiness of one venue (issue #415).\n\nEvery venue supplies market data for screening; `execution_support` says whether it can\nalso place live orders. `order_route` is the venue's one order route (issue #473):\n`native` or `vooi`; `credentials` are the route's credentials. `reason_code` is\ndeterministic for a given configuration.",
         "properties": {
           "credentials": {
             "enum": [
@@ -4294,6 +4343,37 @@
           },
           "message": {
             "title": "Message",
+            "type": "string"
+          },
+          "order_modify": {
+            "default": "blocked",
+            "enum": [
+              "supported",
+              "blocked"
+            ],
+            "title": "Order Modify",
+            "type": "string"
+          },
+          "order_modify_reason_code": {
+            "anyOf": [
+              {
+                "const": "order_modify_not_supported",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": "order_modify_not_supported",
+            "title": "Order Modify Reason Code"
+          },
+          "order_route": {
+            "default": "native",
+            "enum": [
+              "native",
+              "vooi"
+            ],
+            "title": "Order Route",
             "type": "string"
           },
           "reason_code": {
@@ -5157,6 +5237,11 @@
             "title": "Failure Reason",
             "type": "string"
           },
+          "guard_failure_kind": {
+            "default": "none",
+            "title": "Guard Failure Kind",
+            "type": "string"
+          },
           "recent_5xx": {
             "default": "unknown",
             "title": "Recent 5Xx",
@@ -6000,6 +6085,10 @@
             ],
             "title": "Basis Bps"
           },
+          "dry_run": {
+            "title": "Dry Run",
+            "type": "boolean"
+          },
           "funding_accrued_usd": {
             "title": "Funding Accrued Usd",
             "type": "number"
@@ -6127,6 +6216,7 @@
           "attempt_id",
           "symbol",
           "status",
+          "dry_run",
           "long_exchange",
           "short_exchange",
           "opened_at",
@@ -6972,6 +7062,111 @@
         "title": "ReplayDiagnosticsItem",
         "type": "object"
       },
+      "ReplaySourceDiagnosticsItem": {
+        "additionalProperties": false,
+        "properties": {
+          "history_rows_loaded": {
+            "default": 0,
+            "title": "History Rows Loaded",
+            "type": "integer"
+          },
+          "overlay_matched": {
+            "default": 0,
+            "title": "Overlay Matched",
+            "type": "integer"
+          },
+          "overlay_missing": {
+            "default": 0,
+            "title": "Overlay Missing",
+            "type": "integer"
+          },
+          "overlay_parse_errors": {
+            "default": 0,
+            "title": "Overlay Parse Errors",
+            "type": "integer"
+          },
+          "overlay_symbols_complete": {
+            "default": 0,
+            "title": "Overlay Symbols Complete",
+            "type": "integer"
+          },
+          "overlay_symbols_missing": {
+            "default": 0,
+            "title": "Overlay Symbols Missing",
+            "type": "integer"
+          },
+          "overlay_symbols_partial": {
+            "default": 0,
+            "title": "Overlay Symbols Partial",
+            "type": "integer"
+          },
+          "overlay_symbols_total": {
+            "default": 0,
+            "title": "Overlay Symbols Total",
+            "type": "integer"
+          },
+          "overlay_total": {
+            "default": 0,
+            "title": "Overlay Total",
+            "type": "integer"
+          },
+          "replay_source": {
+            "default": "runtime_capture",
+            "enum": [
+              "runtime_capture",
+              "vooi_seed_overlay"
+            ],
+            "title": "Replay Source",
+            "type": "string"
+          },
+          "symbol_coverage": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/ReplaySourceSymbolCoverageItem"
+            },
+            "title": "Symbol Coverage",
+            "type": "object"
+          }
+        },
+        "title": "ReplaySourceDiagnosticsItem",
+        "type": "object"
+      },
+      "ReplaySourceSymbolCoverageItem": {
+        "additionalProperties": false,
+        "properties": {
+          "coverage_pct": {
+            "default": 0.0,
+            "title": "Coverage Pct",
+            "type": "number"
+          },
+          "matched": {
+            "default": 0,
+            "title": "Matched",
+            "type": "integer"
+          },
+          "missing_long": {
+            "default": 0,
+            "title": "Missing Long",
+            "type": "integer"
+          },
+          "missing_short": {
+            "default": 0,
+            "title": "Missing Short",
+            "type": "integer"
+          },
+          "parse_errors": {
+            "default": 0,
+            "title": "Parse Errors",
+            "type": "integer"
+          },
+          "snapshots_total": {
+            "default": 0,
+            "title": "Snapshots Total",
+            "type": "integer"
+          }
+        },
+        "title": "ReplaySourceSymbolCoverageItem",
+        "type": "object"
+      },
       "RiskCapitalAllocationItem": {
         "additionalProperties": false,
         "description": "Capital-aware sizing state (issue #292): limits, committed capital, daily loss.",
@@ -7005,6 +7200,13 @@
                 "type": "null"
               }
             ]
+          },
+          "leverage_by_symbol": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "title": "Leverage By Symbol",
+            "type": "object"
           },
           "limits": {
             "additionalProperties": {
@@ -7568,7 +7770,7 @@
       },
       "StatusAutoExitDiagnostics": {
         "additionalProperties": false,
-        "description": "Rule-based auto-exit (issue #194): last pass and exits by trigger since start.",
+        "description": "Rule-based auto-exit (issue #194): last pass and exits by trigger since start.\n\n`preset` is the resolved auto-exit preset selection (`name@version`, comma separated,\nissue #476), or None when no preset is selected.",
         "properties": {
           "enabled": {
             "default": false,
@@ -7672,6 +7874,17 @@
             "default": false,
             "title": "Paused",
             "type": "boolean"
+          },
+          "preset": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Preset"
           }
         },
         "title": "StatusAutoExitDiagnostics",
@@ -8453,7 +8666,7 @@
       },
       "StatusExecutionVenueHealth": {
         "additionalProperties": false,
-        "description": "Entry gating for one venue (issue #294): hedge-failure breaker and degradation.",
+        "description": "Entry gating for one venue (issue #294): hedge-failure breaker and degradation.\n\n`order_route` is the venue's order route (issue #473); `vooi_route` is the VOOI route's\nreachability for a venue on the `vooi` route (None until VOOI answered once, and for\nnative-route venues).",
         "properties": {
           "block_reasons": {
             "items": {
@@ -8536,6 +8749,15 @@
             ],
             "title": "Last Success At"
           },
+          "order_route": {
+            "default": "native",
+            "enum": [
+              "native",
+              "vooi"
+            ],
+            "title": "Order Route",
+            "type": "string"
+          },
           "reconcile_status": {
             "anyOf": [
               {
@@ -8546,6 +8768,16 @@
               }
             ],
             "title": "Reconcile Status"
+          },
+          "vooi_route": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/StatusVooiRouteHealth"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "title": "StatusExecutionVenueHealth",
@@ -9094,7 +9326,7 @@
       },
       "StatusNotificationDiagnostics": {
         "additionalProperties": false,
-        "description": "Alert delivery health. `healthy` is false while any route's last delivery failed.\n\n`events` breaks the counters down by alert event type (for example `opportunity_ready`,\n`margin_critical`, `exchange_connectivity_lost`, `system_error`).",
+        "description": "Alert delivery health. `healthy` is false while any route's last delivery failed.\n\n`events` breaks the counters down by alert event type (for example `opportunity_ready`,\n`margin_critical`, `exchange_connectivity_lost`, `system_error`). User product alerts\nare reported separately under `user_alerts` / `user_commands` and never replace ops routes.",
         "properties": {
           "degraded_routes": {
             "items": {
@@ -9130,6 +9362,9 @@
             "title": "Healthy",
             "type": "boolean"
           },
+          "operator_commands": {
+            "$ref": "#/components/schemas/StatusOperatorCommandDiagnostics"
+          },
           "pending": {
             "default": 0,
             "title": "Pending",
@@ -9156,6 +9391,12 @@
             "default": 0,
             "title": "Suppressed",
             "type": "integer"
+          },
+          "user_alerts": {
+            "$ref": "#/components/schemas/StatusUserAlertDiagnostics"
+          },
+          "user_commands": {
+            "$ref": "#/components/schemas/StatusUserCommandDiagnostics"
           }
         },
         "title": "StatusNotificationDiagnostics",
@@ -9268,6 +9509,79 @@
           }
         },
         "title": "StatusNotificationRouteDiagnostics",
+        "type": "object"
+      },
+      "StatusOperatorCommandDiagnostics": {
+        "additionalProperties": false,
+        "description": "Telegram operator commands (issue #506): counters since start and the last refusal.",
+        "properties": {
+          "enabled": {
+            "default": false,
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "handled": {
+            "default": 0,
+            "title": "Handled",
+            "type": "integer"
+          },
+          "last_command": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Command"
+          },
+          "last_command_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Command At"
+          },
+          "last_refusal": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Refusal"
+          },
+          "received": {
+            "default": 0,
+            "title": "Received",
+            "type": "integer"
+          },
+          "refusals": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Refusals",
+            "type": "object"
+          },
+          "refused": {
+            "default": 0,
+            "title": "Refused",
+            "type": "integer"
+          },
+          "reply_failures": {
+            "default": 0,
+            "title": "Reply Failures",
+            "type": "integer"
+          }
+        },
+        "title": "StatusOperatorCommandDiagnostics",
         "type": "object"
       },
       "StatusOrderBookDiagnostics": {
@@ -10204,6 +10518,9 @@
             "title": "Uptime S",
             "type": "number"
           },
+          "vooi_route": {
+            "$ref": "#/components/schemas/VooiRouteReadiness"
+          },
           "ws_auth_tickets": {
             "$ref": "#/components/schemas/StatusWsAuthTickets"
           },
@@ -10769,6 +11086,200 @@
           "hedge_state"
         ],
         "title": "StatusUnhedgedAttemptItem",
+        "type": "object"
+      },
+      "StatusUserAlertDiagnostics": {
+        "additionalProperties": false,
+        "description": "1:1 user product-alert delivery (opportunity_new + execution open/close/fail).",
+        "properties": {
+          "active_subscribers": {
+            "default": 0,
+            "title": "Active Subscribers",
+            "type": "integer"
+          },
+          "enabled": {
+            "default": false,
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "failed": {
+            "default": 0,
+            "title": "Failed",
+            "type": "integer"
+          },
+          "pending": {
+            "default": 0,
+            "title": "Pending",
+            "type": "integer"
+          },
+          "sent": {
+            "default": 0,
+            "title": "Sent",
+            "type": "integer"
+          },
+          "submitted": {
+            "default": 0,
+            "title": "Submitted",
+            "type": "integer"
+          },
+          "subscribers_notified": {
+            "default": 0,
+            "title": "Subscribers Notified",
+            "type": "integer"
+          },
+          "suppressed": {
+            "default": 0,
+            "title": "Suppressed",
+            "type": "integer"
+          }
+        },
+        "title": "StatusUserAlertDiagnostics",
+        "type": "object"
+      },
+      "StatusUserCommandDiagnostics": {
+        "additionalProperties": false,
+        "description": "Telegram user subscription commands (`/subscribe`, `/unsubscribe`, `/status`).",
+        "properties": {
+          "active_subscribers": {
+            "default": 0,
+            "title": "Active Subscribers",
+            "type": "integer"
+          },
+          "enabled": {
+            "default": false,
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "handled": {
+            "default": 0,
+            "title": "Handled",
+            "type": "integer"
+          },
+          "last_command": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Command"
+          },
+          "last_command_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Command At"
+          },
+          "last_refusal": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Refusal"
+          },
+          "received": {
+            "default": 0,
+            "title": "Received",
+            "type": "integer"
+          },
+          "refusals": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Refusals",
+            "type": "object"
+          },
+          "refused": {
+            "default": 0,
+            "title": "Refused",
+            "type": "integer"
+          },
+          "reply_failures": {
+            "default": 0,
+            "title": "Reply Failures",
+            "type": "integer"
+          }
+        },
+        "title": "StatusUserCommandDiagnostics",
+        "type": "object"
+      },
+      "StatusVooiRouteHealth": {
+        "additionalProperties": false,
+        "description": "Reachability of a venue's VOOI order route (issue #475).",
+        "properties": {
+          "consecutive_failures": {
+            "default": 0,
+            "title": "Consecutive Failures",
+            "type": "integer"
+          },
+          "last_error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Error"
+          },
+          "last_failure_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Failure At"
+          },
+          "last_success_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Success At"
+          },
+          "market_count": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Market Count"
+          },
+          "markets_loaded_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Markets Loaded At"
+          }
+        },
+        "title": "StatusVooiRouteHealth",
         "type": "object"
       },
       "StatusWsAuthTickets": {
@@ -11542,6 +12053,77 @@
         "title": "TelegramSessionResponse",
         "type": "object"
       },
+      "TelegramSubscriptionMeResponse": {
+        "description": "`GET /notifications/telegram/subscriptions/me` \u2014 current principal subscription.",
+        "properties": {
+          "chat_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Chat Id"
+          },
+          "principal_id": {
+            "title": "Principal Id",
+            "type": "string"
+          },
+          "subscribed": {
+            "title": "Subscribed",
+            "type": "boolean"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          }
+        },
+        "required": [
+          "subscribed",
+          "principal_id"
+        ],
+        "title": "TelegramSubscriptionMeResponse",
+        "type": "object"
+      },
+      "TelegramWebhookResponse": {
+        "description": "Outcome of one Telegram webhook update (issue #506).\n\n`handled` is true when an operator or user-subscription command ran; otherwise `reason`\nsays why the update was ignored (`not_a_command`, `chat_mismatch`, `unauthorized_user`,\n`unknown_command`, `rate_limited`, `duplicate_update`). Operator replies go to the ops\nchat; user subscription replies go 1:1 to the sender chat.",
+        "properties": {
+          "command": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Command"
+          },
+          "handled": {
+            "title": "Handled",
+            "type": "boolean"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          }
+        },
+        "required": [
+          "handled",
+          "reason"
+        ],
+        "title": "TelegramWebhookResponse",
+        "type": "object"
+      },
       "TrustConfidenceDistributionItem": {
         "additionalProperties": false,
         "properties": {
@@ -11737,6 +12319,972 @@
           "type"
         ],
         "title": "ValidationError",
+        "type": "object"
+      },
+      "VooiBrokerExchangeSetting": {
+        "properties": {
+          "exchange": {
+            "enum": [
+              "aster",
+              "binance",
+              "bybit",
+              "extended",
+              "gate",
+              "hyperliquid",
+              "lighter",
+              "mexc",
+              "ondo",
+              "robinhood"
+            ],
+            "title": "Exchange",
+            "type": "string"
+          },
+          "identifier": {
+            "title": "Identifier",
+            "type": "string"
+          },
+          "limitFeeBps": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Limitfeebps"
+          },
+          "marketFeeBps": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Marketfeebps"
+          },
+          "maxFeeBps": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Maxfeebps"
+          }
+        },
+        "required": [
+          "exchange",
+          "identifier",
+          "limitFeeBps",
+          "marketFeeBps",
+          "maxFeeBps"
+        ],
+        "title": "VooiBrokerExchangeSetting",
+        "type": "object"
+      },
+      "VooiBrokerOrder": {
+        "properties": {
+          "baseSymbol": {
+            "title": "Basesymbol",
+            "type": "string"
+          },
+          "brokerCode": {
+            "title": "Brokercode",
+            "type": "string"
+          },
+          "clientOrderId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Clientorderid"
+          },
+          "createdAt": {
+            "title": "Createdat",
+            "type": "string"
+          },
+          "exchange": {
+            "enum": [
+              "aster",
+              "binance",
+              "bybit",
+              "extended",
+              "gate",
+              "hyperliquid",
+              "lighter",
+              "mexc",
+              "ondo",
+              "robinhood"
+            ],
+            "title": "Exchange",
+            "type": "string"
+          },
+          "orderId": {
+            "title": "Orderid",
+            "type": "string"
+          },
+          "positionSide": {
+            "enum": [
+              "both",
+              "long",
+              "short"
+            ],
+            "title": "Positionside",
+            "type": "string"
+          },
+          "price": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Price"
+          },
+          "quoteSymbol": {
+            "title": "Quotesymbol",
+            "type": "string"
+          },
+          "reduceOnly": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reduceonly"
+          },
+          "side": {
+            "enum": [
+              "buy",
+              "sell"
+            ],
+            "title": "Side",
+            "type": "string"
+          },
+          "size": {
+            "title": "Size",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "canceled",
+              "created",
+              "error",
+              "executed",
+              "partiallyFilled"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "timeInForce": {
+            "anyOf": [
+              {
+                "enum": [
+                  "gtc",
+                  "ioc",
+                  "fok",
+                  "alo"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Timeinforce"
+          },
+          "triggerPrice": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Triggerprice"
+          },
+          "type": {
+            "enum": [
+              "limit",
+              "liquidation",
+              "market",
+              "other",
+              "stopLoss",
+              "stopLossLimit",
+              "takeProfit",
+              "takeProfitLimit"
+            ],
+            "title": "Type",
+            "type": "string"
+          },
+          "updatedAt": {
+            "title": "Updatedat",
+            "type": "string"
+          },
+          "userId": {
+            "title": "Userid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "baseSymbol",
+          "brokerCode",
+          "clientOrderId",
+          "createdAt",
+          "exchange",
+          "orderId",
+          "positionSide",
+          "price",
+          "quoteSymbol",
+          "reduceOnly",
+          "side",
+          "size",
+          "status",
+          "timeInForce",
+          "triggerPrice",
+          "type",
+          "updatedAt",
+          "userId"
+        ],
+        "title": "VooiBrokerOrder",
+        "type": "object"
+      },
+      "VooiBrokerOrdersResponse": {
+        "properties": {
+          "cursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cursor"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/VooiBrokerOrder"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "cursor",
+          "items"
+        ],
+        "title": "VooiBrokerOrdersResponse",
+        "type": "object"
+      },
+      "VooiBrokerRegisterUserRequest": {
+        "properties": {
+          "publicKey": {
+            "anyOf": [
+              {
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Publickey"
+          }
+        },
+        "title": "VooiBrokerRegisterUserRequest",
+        "type": "object"
+      },
+      "VooiBrokerSetExchangeAsterRequest": {
+        "properties": {
+          "exchange": {
+            "const": "aster",
+            "title": "Exchange",
+            "type": "string"
+          },
+          "identifier": {
+            "minLength": 1,
+            "title": "Identifier",
+            "type": "string"
+          },
+          "limitFeeBps": {
+            "pattern": "^\\d+(\\.\\d+)?$",
+            "title": "Limitfeebps",
+            "type": "string"
+          },
+          "marketFeeBps": {
+            "pattern": "^\\d+(\\.\\d+)?$",
+            "title": "Marketfeebps",
+            "type": "string"
+          },
+          "maxFeeBps": {
+            "pattern": "^\\d+(\\.\\d+)?$",
+            "title": "Maxfeebps",
+            "type": "string"
+          }
+        },
+        "required": [
+          "marketFeeBps",
+          "limitFeeBps",
+          "maxFeeBps",
+          "exchange",
+          "identifier"
+        ],
+        "title": "VooiBrokerSetExchangeAsterRequest",
+        "type": "object"
+      },
+      "VooiBrokerSetExchangeBinanceRequest": {
+        "properties": {
+          "exchange": {
+            "const": "binance",
+            "title": "Exchange",
+            "type": "string"
+          },
+          "identifier": {
+            "maxLength": 24,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9./:_-]+$",
+            "title": "Identifier",
+            "type": "string"
+          }
+        },
+        "required": [
+          "exchange",
+          "identifier"
+        ],
+        "title": "VooiBrokerSetExchangeBinanceRequest",
+        "type": "object"
+      },
+      "VooiBrokerSetExchangeExtendedRequest": {
+        "properties": {
+          "exchange": {
+            "const": "extended",
+            "title": "Exchange",
+            "type": "string"
+          },
+          "identifier": {
+            "pattern": "^[1-9]\\d*$",
+            "title": "Identifier",
+            "type": "string"
+          },
+          "limitFeeBps": {
+            "pattern": "^\\d+(\\.\\d+)?$",
+            "title": "Limitfeebps",
+            "type": "string"
+          },
+          "marketFeeBps": {
+            "pattern": "^\\d+(\\.\\d+)?$",
+            "title": "Marketfeebps",
+            "type": "string"
+          },
+          "maxFeeBps": {
+            "pattern": "^\\d+(\\.\\d+)?$",
+            "title": "Maxfeebps",
+            "type": "string"
+          }
+        },
+        "required": [
+          "marketFeeBps",
+          "limitFeeBps",
+          "maxFeeBps",
+          "exchange",
+          "identifier"
+        ],
+        "title": "VooiBrokerSetExchangeExtendedRequest",
+        "type": "object"
+      },
+      "VooiBrokerSetExchangeHyperliquidRequest": {
+        "properties": {
+          "exchange": {
+            "const": "hyperliquid",
+            "title": "Exchange",
+            "type": "string"
+          },
+          "identifier": {
+            "minLength": 1,
+            "title": "Identifier",
+            "type": "string"
+          },
+          "limitFeeBps": {
+            "pattern": "^\\d+(\\.\\d+)?$",
+            "title": "Limitfeebps",
+            "type": "string"
+          },
+          "marketFeeBps": {
+            "pattern": "^\\d+(\\.\\d+)?$",
+            "title": "Marketfeebps",
+            "type": "string"
+          },
+          "maxFeeBps": {
+            "pattern": "^\\d+(\\.\\d+)?$",
+            "title": "Maxfeebps",
+            "type": "string"
+          }
+        },
+        "required": [
+          "marketFeeBps",
+          "limitFeeBps",
+          "maxFeeBps",
+          "exchange",
+          "identifier"
+        ],
+        "title": "VooiBrokerSetExchangeHyperliquidRequest",
+        "type": "object"
+      },
+      "VooiBrokerSetExchangeLighterRequest": {
+        "properties": {
+          "exchange": {
+            "const": "lighter",
+            "title": "Exchange",
+            "type": "string"
+          },
+          "identifier": {
+            "pattern": "^\\d+$",
+            "title": "Identifier",
+            "type": "string"
+          },
+          "limitFeeBps": {
+            "pattern": "^\\d+(\\.\\d+)?$",
+            "title": "Limitfeebps",
+            "type": "string"
+          },
+          "marketFeeBps": {
+            "pattern": "^\\d+(\\.\\d+)?$",
+            "title": "Marketfeebps",
+            "type": "string"
+          },
+          "maxFeeBps": {
+            "pattern": "^\\d+(\\.\\d+)?$",
+            "title": "Maxfeebps",
+            "type": "string"
+          }
+        },
+        "required": [
+          "marketFeeBps",
+          "limitFeeBps",
+          "maxFeeBps",
+          "exchange",
+          "identifier"
+        ],
+        "title": "VooiBrokerSetExchangeLighterRequest",
+        "type": "object"
+      },
+      "VooiBrokerSetExchangeMexcRequest": {
+        "properties": {
+          "exchange": {
+            "const": "mexc",
+            "title": "Exchange",
+            "type": "string"
+          },
+          "identifier": {
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9./:_-]+$",
+            "title": "Identifier",
+            "type": "string"
+          }
+        },
+        "required": [
+          "exchange",
+          "identifier"
+        ],
+        "title": "VooiBrokerSetExchangeMexcRequest",
+        "type": "object"
+      },
+      "VooiBrokerSetExchangeRobinhoodRequest": {
+        "properties": {
+          "exchange": {
+            "const": "robinhood",
+            "title": "Exchange",
+            "type": "string"
+          },
+          "identifier": {
+            "pattern": "^\\d+$",
+            "title": "Identifier",
+            "type": "string"
+          },
+          "limitFeeBps": {
+            "pattern": "^\\d+(\\.\\d+)?$",
+            "title": "Limitfeebps",
+            "type": "string"
+          },
+          "marketFeeBps": {
+            "pattern": "^\\d+(\\.\\d+)?$",
+            "title": "Marketfeebps",
+            "type": "string"
+          },
+          "maxFeeBps": {
+            "pattern": "^\\d+(\\.\\d+)?$",
+            "title": "Maxfeebps",
+            "type": "string"
+          }
+        },
+        "required": [
+          "marketFeeBps",
+          "limitFeeBps",
+          "maxFeeBps",
+          "exchange",
+          "identifier"
+        ],
+        "title": "VooiBrokerSetExchangeRobinhoodRequest",
+        "type": "object"
+      },
+      "VooiBrokerSetPublicKeyRequest": {
+        "properties": {
+          "publicKey": {
+            "anyOf": [
+              {
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Publickey"
+          },
+          "userId": {
+            "format": "uuid",
+            "title": "Userid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "userId",
+          "publicKey"
+        ],
+        "title": "VooiBrokerSetPublicKeyRequest",
+        "type": "object"
+      },
+      "VooiBrokerStatsExchangeBreakdown": {
+        "properties": {
+          "orderCount": {
+            "title": "Ordercount",
+            "type": "integer"
+          },
+          "uniqueTraders": {
+            "title": "Uniquetraders",
+            "type": "integer"
+          },
+          "volumeUsd": {
+            "title": "Volumeusd",
+            "type": "string"
+          }
+        },
+        "required": [
+          "orderCount",
+          "uniqueTraders",
+          "volumeUsd"
+        ],
+        "title": "VooiBrokerStatsExchangeBreakdown",
+        "type": "object"
+      },
+      "VooiBrokerStatsResponse": {
+        "properties": {
+          "aster": {
+            "$ref": "#/components/schemas/VooiBrokerStatsExchangeBreakdown"
+          },
+          "binance": {
+            "$ref": "#/components/schemas/VooiBrokerStatsExchangeBreakdown"
+          },
+          "bybit": {
+            "$ref": "#/components/schemas/VooiBrokerStatsExchangeBreakdown"
+          },
+          "extended": {
+            "$ref": "#/components/schemas/VooiBrokerStatsExchangeBreakdown"
+          },
+          "gate": {
+            "$ref": "#/components/schemas/VooiBrokerStatsExchangeBreakdown"
+          },
+          "hyperliquid": {
+            "$ref": "#/components/schemas/VooiBrokerStatsExchangeBreakdown"
+          },
+          "lighter": {
+            "$ref": "#/components/schemas/VooiBrokerStatsExchangeBreakdown"
+          },
+          "mexc": {
+            "$ref": "#/components/schemas/VooiBrokerStatsExchangeBreakdown"
+          },
+          "ondo": {
+            "$ref": "#/components/schemas/VooiBrokerStatsExchangeBreakdown"
+          },
+          "robinhood": {
+            "$ref": "#/components/schemas/VooiBrokerStatsExchangeBreakdown"
+          }
+        },
+        "required": [
+          "aster",
+          "binance",
+          "bybit",
+          "extended",
+          "gate",
+          "hyperliquid",
+          "lighter",
+          "mexc",
+          "ondo",
+          "robinhood"
+        ],
+        "title": "VooiBrokerStatsResponse",
+        "type": "object"
+      },
+      "VooiBrokerTopVolumeUser": {
+        "properties": {
+          "userId": {
+            "title": "Userid",
+            "type": "string"
+          },
+          "volume": {
+            "title": "Volume",
+            "type": "string"
+          }
+        },
+        "required": [
+          "userId",
+          "volume"
+        ],
+        "title": "VooiBrokerTopVolumeUser",
+        "type": "object"
+      },
+      "VooiBrokerTrade": {
+        "properties": {
+          "baseSymbol": {
+            "title": "Basesymbol",
+            "type": "string"
+          },
+          "brokerCode": {
+            "title": "Brokercode",
+            "type": "string"
+          },
+          "createdAt": {
+            "title": "Createdat",
+            "type": "string"
+          },
+          "exchange": {
+            "enum": [
+              "aster",
+              "binance",
+              "bybit",
+              "extended",
+              "gate",
+              "hyperliquid",
+              "lighter",
+              "mexc",
+              "ondo",
+              "robinhood"
+            ],
+            "title": "Exchange",
+            "type": "string"
+          },
+          "fee": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fee"
+          },
+          "feeToken": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Feetoken"
+          },
+          "orderId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Orderid"
+          },
+          "positionSide": {
+            "enum": [
+              "both",
+              "long",
+              "short"
+            ],
+            "title": "Positionside",
+            "type": "string"
+          },
+          "price": {
+            "title": "Price",
+            "type": "string"
+          },
+          "quoteSymbol": {
+            "title": "Quotesymbol",
+            "type": "string"
+          },
+          "realizedPnl": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Realizedpnl"
+          },
+          "side": {
+            "enum": [
+              "buy",
+              "sell"
+            ],
+            "title": "Side",
+            "type": "string"
+          },
+          "size": {
+            "title": "Size",
+            "type": "string"
+          },
+          "tradeId": {
+            "title": "Tradeid",
+            "type": "string"
+          },
+          "userId": {
+            "title": "Userid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "baseSymbol",
+          "brokerCode",
+          "createdAt",
+          "exchange",
+          "fee",
+          "feeToken",
+          "orderId",
+          "positionSide",
+          "price",
+          "quoteSymbol",
+          "realizedPnl",
+          "side",
+          "size",
+          "tradeId",
+          "userId"
+        ],
+        "title": "VooiBrokerTrade",
+        "type": "object"
+      },
+      "VooiBrokerTradesResponse": {
+        "properties": {
+          "cursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cursor"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/VooiBrokerTrade"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "cursor",
+          "items"
+        ],
+        "title": "VooiBrokerTradesResponse",
+        "type": "object"
+      },
+      "VooiBrokerUserProfile": {
+        "properties": {
+          "broker": {
+            "title": "Broker",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "broker",
+          "id"
+        ],
+        "title": "VooiBrokerUserProfile",
+        "type": "object"
+      },
+      "VooiBrokerUserStats": {
+        "properties": {
+          "tradesCount": {
+            "title": "Tradescount",
+            "type": "integer"
+          },
+          "userId": {
+            "title": "Userid",
+            "type": "string"
+          },
+          "volume": {
+            "title": "Volume",
+            "type": "string"
+          }
+        },
+        "required": [
+          "tradesCount",
+          "userId",
+          "volume"
+        ],
+        "title": "VooiBrokerUserStats",
+        "type": "object"
+      },
+      "VooiBrokerUsersStatsResponse": {
+        "properties": {
+          "cursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cursor"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/VooiBrokerUserStats"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "cursor",
+          "items"
+        ],
+        "title": "VooiBrokerUsersStatsResponse",
+        "type": "object"
+      },
+      "VooiBrokerUsersTopVolumeResponse": {
+        "properties": {
+          "cursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cursor"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/VooiBrokerTopVolumeUser"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "cursor",
+          "items"
+        ],
+        "title": "VooiBrokerUsersTopVolumeResponse",
+        "type": "object"
+      },
+      "VooiRouteReadiness": {
+        "additionalProperties": false,
+        "description": "Canonical readiness of the VOOI order route (issue #477, ADR-001).\n\nOne summary for `/status` and `/execution/preflight.runtime`. `state`:\n\n- `disabled`: `ARB_VOOI_EXECUTION_ENABLED=false`; every venue uses its native route.\n- `not_configured`: the route is on but the VOOI token is missing\n  (`live_credentials_missing`).\n- `degraded`: VOOI's last answer for a routed venue was a failure (`vooi_route_degraded`);\n  `degraded_venues` names them and `execution_venue_health.<venue>.vooi_route` has the\n  detail.\n- `ready`: configured and reachable. Live orders still need every live switch, which the\n  per-venue `reason_code` in `/execution/preflight.venues` reports.",
+        "properties": {
+          "degraded_venues": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Degraded Venues",
+            "type": "array"
+          },
+          "enabled": {
+            "default": false,
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "message": {
+            "default": "",
+            "title": "Message",
+            "type": "string"
+          },
+          "reason_code": {
+            "anyOf": [
+              {
+                "enum": [
+                  "vooi_route_disabled",
+                  "live_credentials_missing",
+                  "vooi_route_degraded"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": "vooi_route_disabled",
+            "title": "Reason Code"
+          },
+          "recommended_action": {
+            "default": "",
+            "title": "Recommended Action",
+            "type": "string"
+          },
+          "state": {
+            "default": "disabled",
+            "enum": [
+              "disabled",
+              "not_configured",
+              "degraded",
+              "ready"
+            ],
+            "title": "State",
+            "type": "string"
+          },
+          "token_configured": {
+            "default": false,
+            "title": "Token Configured",
+            "type": "boolean"
+          },
+          "venues": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Venues",
+            "type": "array"
+          }
+        },
+        "title": "VooiRouteReadiness",
         "type": "object"
       },
       "WsAuthTicketResponse": {
@@ -12679,6 +14227,44 @@
         "summary": "Ingest Monitor Alert"
       }
     },
+    "/notifications/telegram/subscriptions/me": {
+      "get": {
+        "description": "Subscription status for the authenticated Telegram principal.\n\nAuth is required (bearer and/or Telegram session middleware). When the middleware\nprincipal is not `telegram:<id>` (bearer-only client id), a valid Telegram session\nheader still identifies the subscriber \u2014 bearer authorizes the call, session binds\nidentity.",
+        "operationId": "get_my_telegram_subscription_notifications_telegram_subscriptions_me_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TelegramSubscriptionMeResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get My Telegram Subscription"
+      }
+    },
+    "/notifications/telegram/webhook": {
+      "post": {
+        "description": "Telegram bot webhook for operator and user-subscription commands.\n\nAuthenticated by the webhook secret Telegram echoes in `X-Telegram-Bot-Api-Secret-Token`\n(set with `setWebhook`), not by the API token. `503` while neither operator nor user\ncommands are configured, `401` on a wrong or missing secret, `400` on a non-JSON body.\nEvery other outcome is `200`, so Telegram does not retry an update the runtime ignored.",
+        "operationId": "telegram_webhook_notifications_telegram_webhook_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TelegramWebhookResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Telegram Webhook"
+      }
+    },
     "/opportunities": {
       "get": {
         "operationId": "get_opportunities_opportunities_get",
@@ -13055,6 +14641,716 @@
           }
         },
         "summary": "Get Status"
+      }
+    },
+    "/vooi/broker/exchanges": {
+      "get": {
+        "operationId": "list_vooi_broker_exchange_settings_vooi_broker_exchanges_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/VooiBrokerExchangeSetting"
+                  },
+                  "title": "Response List Vooi Broker Exchange Settings Vooi Broker Exchanges Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "List Vooi Broker Exchange Settings"
+      },
+      "post": {
+        "operationId": "set_vooi_broker_exchange_settings_vooi_broker_exchanges_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/VooiBrokerSetExchangeAsterRequest"
+                  },
+                  {
+                    "$ref": "#/components/schemas/VooiBrokerSetExchangeHyperliquidRequest"
+                  },
+                  {
+                    "$ref": "#/components/schemas/VooiBrokerSetExchangeLighterRequest"
+                  },
+                  {
+                    "$ref": "#/components/schemas/VooiBrokerSetExchangeRobinhoodRequest"
+                  },
+                  {
+                    "$ref": "#/components/schemas/VooiBrokerSetExchangeExtendedRequest"
+                  },
+                  {
+                    "$ref": "#/components/schemas/VooiBrokerSetExchangeBinanceRequest"
+                  },
+                  {
+                    "$ref": "#/components/schemas/VooiBrokerSetExchangeMexcRequest"
+                  }
+                ],
+                "title": "Payload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Set Vooi Broker Exchange Settings"
+      }
+    },
+    "/vooi/broker/exchanges/{exchange}": {
+      "delete": {
+        "operationId": "clear_vooi_broker_exchange_settings_vooi_broker_exchanges__exchange__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "exchange",
+            "required": true,
+            "schema": {
+              "enum": [
+                "aster",
+                "binance",
+                "bybit",
+                "extended",
+                "gate",
+                "hyperliquid",
+                "lighter",
+                "mexc",
+                "ondo",
+                "robinhood"
+              ],
+              "title": "Exchange",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Clear Vooi Broker Exchange Settings"
+      }
+    },
+    "/vooi/broker/orders": {
+      "get": {
+        "operationId": "get_vooi_broker_orders_vooi_broker_orders_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor"
+            }
+          },
+          {
+            "in": "query",
+            "name": "exchange",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "aster",
+                    "binance",
+                    "bybit",
+                    "extended",
+                    "gate",
+                    "hyperliquid",
+                    "lighter",
+                    "mexc",
+                    "ondo",
+                    "robinhood"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Exchange"
+            }
+          },
+          {
+            "in": "query",
+            "name": "from",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "exclusiveMinimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "From"
+            }
+          },
+          {
+            "in": "query",
+            "name": "to",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "exclusiveMinimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "To"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 100,
+              "maximum": 1000,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "userId",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Userid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VooiBrokerOrdersResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Vooi Broker Orders"
+      }
+    },
+    "/vooi/broker/stats": {
+      "get": {
+        "operationId": "get_vooi_broker_stats_vooi_broker_stats_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "from",
+            "required": true,
+            "schema": {
+              "exclusiveMinimum": 0,
+              "title": "From",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "to",
+            "required": true,
+            "schema": {
+              "exclusiveMinimum": 0,
+              "title": "To",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VooiBrokerStatsResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Vooi Broker Stats"
+      }
+    },
+    "/vooi/broker/trades": {
+      "get": {
+        "operationId": "get_vooi_broker_trades_vooi_broker_trades_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor"
+            }
+          },
+          {
+            "in": "query",
+            "name": "exchange",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "aster",
+                    "binance",
+                    "bybit",
+                    "extended",
+                    "gate",
+                    "hyperliquid",
+                    "lighter",
+                    "mexc",
+                    "ondo",
+                    "robinhood"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Exchange"
+            }
+          },
+          {
+            "in": "query",
+            "name": "from",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "exclusiveMinimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "From"
+            }
+          },
+          {
+            "in": "query",
+            "name": "to",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "exclusiveMinimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "To"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 100,
+              "maximum": 1000,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "userId",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Userid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VooiBrokerTradesResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Vooi Broker Trades"
+      }
+    },
+    "/vooi/broker/users": {
+      "post": {
+        "operationId": "create_vooi_broker_user_vooi_broker_users_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VooiBrokerRegisterUserRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VooiBrokerUserProfile"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Vooi Broker User"
+      }
+    },
+    "/vooi/broker/users/public-key": {
+      "put": {
+        "operationId": "set_vooi_broker_user_public_key_vooi_broker_users_public_key_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VooiBrokerSetPublicKeyRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Set Vooi Broker User Public Key"
+      }
+    },
+    "/vooi/broker/users/stats": {
+      "get": {
+        "operationId": "get_vooi_broker_users_stats_vooi_broker_users_stats_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "from",
+            "required": true,
+            "schema": {
+              "exclusiveMinimum": 0,
+              "title": "From",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "to",
+            "required": true,
+            "schema": {
+              "exclusiveMinimum": 0,
+              "title": "To",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 50,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VooiBrokerUsersStatsResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Vooi Broker Users Stats"
+      }
+    },
+    "/vooi/broker/users/top-volume": {
+      "get": {
+        "operationId": "get_vooi_broker_users_top_volume_vooi_broker_users_top_volume_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "dateFrom",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Datefrom"
+            }
+          },
+          {
+            "in": "query",
+            "name": "dateTo",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dateto"
+            }
+          },
+          {
+            "in": "query",
+            "name": "exchanges",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "enum": [
+                      "aster",
+                      "binance",
+                      "bybit",
+                      "extended",
+                      "gate",
+                      "hyperliquid",
+                      "lighter",
+                      "mexc",
+                      "ondo",
+                      "robinhood"
+                    ],
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Exchanges"
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 100,
+              "maximum": 1000,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VooiBrokerUsersTopVolumeResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Vooi Broker Users Top Volume"
       }
     },
     "/ws/auth-ticket": {

@@ -59,7 +59,7 @@ describe("WsTransportHealthCard", () => {
     expect(screen.getByText("degraded")).not.toBeNull();
     expect(screen.getByText("DEGRADED")).not.toBeNull();
     expect(screen.getByText(/live updates are unavailable/i)).not.toBeNull();
-    expect(screen.getByText(/opportunities page polls every/i)).not.toBeNull();
+    expect(screen.getByText(/deals page refreshes every/i)).not.toBeNull();
 
     fireEvent.click(screen.getByRole("button", { name: /retry live connection/i }));
     expect(retryNow).toHaveBeenCalledTimes(1);

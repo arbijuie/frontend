@@ -17,21 +17,12 @@ describe("Nav", () => {
     const nav = screen.getByRole("navigation", { name: "Primary" });
     const links = Array.from(nav.querySelectorAll("a"));
 
-    expect(links.map((link) => link.textContent)).toEqual([
-      "Opportunities",
-      "Status",
-      "Config",
-      "Backtest",
-      "Preflight",
-      "Automation",
-    ]);
+    expect(links.map((link) => link.textContent)).toEqual(["Deals", "Auto", "Health", "More"]);
     expect(links.map((link) => link.getAttribute("href"))).toEqual([
       "/",
-      "/status",
-      "/config",
-      "/backtest",
-      "/execution/preflight",
       "/automation",
+      "/status",
+      "/more",
     ]);
     expect(new Set(NAV_ITEMS.map((item) => item.to)).size).toBe(NAV_ITEMS.length);
   });
@@ -48,7 +39,7 @@ describe("Nav", () => {
     }
   );
 
-  it("does not mark Opportunities active on nested unknown paths", () => {
+  it("does not mark Deals active on nested unknown paths", () => {
     renderNav("/does-not-exist");
     const current = screen
       .getAllByRole("link")

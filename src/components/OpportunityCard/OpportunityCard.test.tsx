@@ -99,13 +99,13 @@ function makeItem(): OpportunityItem {
 }
 
 describe("OpportunityCard", () => {
-  it("renders structured reason messages", () => {
+  it("renders reasons in plain English", () => {
     render(
       <OpportunityCard item={makeItem()} updatedAt={"2026-01-01T00:00:00Z"} now={new Date()} />
     );
 
-    expect(screen.getByText(/score 4.00bps < min score 5.00bps/i)).toBeTruthy();
-    expect(screen.getByText(/funding direction flipped 1x/i)).toBeTruthy();
+    expect(screen.getByText(/Income too small to enter/)).toBeTruthy();
+    expect(screen.getByText(/Payout rate keeps changing direction/)).toBeTruthy();
   });
 
   it("includes basis divergence penalty in score breakdown", () => {
@@ -405,5 +405,25 @@ describe("OpportunityCard", () => {
     ).toBeTruthy();
     expect(screen.getByRole("article", { name: /BTC.*hyperliquid.*lighter/i })).toBeTruthy();
     expect(screen.getByRole("article", { name: /BTC.*hyperliquid.*binance/i })).toBeTruthy();
+  });
+
+  it("hides Open position and warns when the two prices look like different coins", () => {
+    const item = makeItem();
+    const long = item.legs?.find((leg) => leg.side === "long")?.venue ?? "";
+    const short = item.legs?.find((leg) => leg.side === "short")?.venue ?? "";
+    item.microstructure_by_exchange = {
+      [long]: { mid: "1.98" },
+      [short]: { mid: "0.087" },
+    } as OpportunityItem["microstructure_by_exchange"];
+    render(
+      <OpportunityCard
+        item={item}
+        updatedAt={"2026-01-01T00:00:00Z"}
+        now={new Date()}
+        onExecute={() => {}}
+      />
+    );
+    expect(screen.getByRole("alert").textContent).toContain("Probably not the same coin");
+    expect(screen.queryByRole("button", { name: /Open trade/ })).toBeNull();
   });
 });

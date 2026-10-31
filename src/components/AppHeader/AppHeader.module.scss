@@ -9,7 +9,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: v.space(2) v.space(4);
+  gap: v.space(2) v.space(3);
   width: min(100%, var(--app-max-width, 48rem));
   min-height: v.size(header-height);
   margin: 0 auto;
@@ -19,12 +19,34 @@
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: v.space(2);
+  gap: v.space("1-5");
   min-height: v.size(touch-target);
   color: v.color(text);
   font-weight: v.font-weight(bold);
   text-decoration: none;
   border-radius: v.radius(md);
+}
+
+.backButton {
+  @include v.button(ghost);
+  display: inline-flex;
+  align-items: center;
+  gap: v.space(1);
+  padding-inline: v.space("2-5");
+}
+
+.backIcon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.backLabel {
+  display: none;
+  line-height: v.line-height(tight);
+
+  @include v.bp-up(sm) {
+    display: inline;
+  }
 }
 
 .mark {
@@ -46,10 +68,6 @@
 .name {
   font-size: v.font-size(base);
   letter-spacing: -0.01em;
-}
-
-.tag {
-  @include v.badge(accent);
 }
 
 .operator {

@@ -42,3 +42,28 @@
 .filterHintButton {
   @include v.button-small(ghost);
 }
+
+.group {
+  margin-top: v.space(3);
+}
+
+.groupToggle {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  padding: v.space("2-5") v.space(3);
+  border: 0.0625rem solid v.color(border);
+  border-radius: v.radius(lg);
+  background: v.color(surface);
+  color: v.color(text);
+  font-size: v.font-size(sm);
+  font-weight: v.font-weight(semibold);
+  cursor: pointer;
+}
+
+.groupHint {
+  margin: v.space(1) 0 0;
+  font-size: v.font-size(xs);
+  color: v.color(text-muted);
+}

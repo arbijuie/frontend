@@ -6,6 +6,9 @@ import type {
   BacktestLock,
   BacktestLockListResponse,
   BacktestGateResponse,
+  BacktestHistoryResponse,
+  BacktestSurvivalResponse,
+  PersistenceForecastResponse,
 } from "./types";
 import { parseApiError } from "../lib/api-errors";
 
@@ -51,6 +54,27 @@ export async function createBacktestLock(payload: BacktestReplayRequest): Promis
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
+  if (!res.ok) throw await parseApiError(res);
+  return res.json();
+}
+
+export async function fetchBacktestHistory(): Promise<BacktestHistoryResponse> {
+  const res = await authFetch(`${API_URL}/backtest/history`);
+  if (!res.ok) throw await parseApiError(res);
+  return res.json();
+}
+
+export async function fetchBacktestSurvival(
+  lookbackDays: number | null = null
+): Promise<BacktestSurvivalResponse> {
+  const query = lookbackDays ? `?lookback_days=${lookbackDays}` : "";
+  const res = await authFetch(`${API_URL}/backtest/survival${query}`);
+  if (!res.ok) throw await parseApiError(res);
+  return res.json();
+}
+
+export async function fetchPersistenceForecast(): Promise<PersistenceForecastResponse> {
+  const res = await authFetch(`${API_URL}/backtest/survival/forecast`);
   if (!res.ok) throw await parseApiError(res);
   return res.json();
 }

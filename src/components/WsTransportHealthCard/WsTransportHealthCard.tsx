@@ -44,7 +44,9 @@ const WsTransportHealthCard = () => {
           </span>
           <span>{hint}</span>
           {((authStatus !== "ok" && authDetail) || transportDetail) && (
-            <span className={styles.detail}>{authStatus !== "ok" && authDetail ? authDetail : transportDetail}</span>
+            <span className={styles.detail}>
+              {authStatus !== "ok" && authDetail ? authDetail : transportDetail}
+            </span>
           )}
           {health === "degraded" && (
             <button
@@ -66,9 +68,7 @@ const WsTransportHealthCard = () => {
         />
         <StatCard
           label="REST fallback polling"
-          value={
-            health === "connected" ? "standby" : `Opportunities page polls every ${pollSeconds}s`
-          }
+          value={health === "connected" ? "standby" : `Deals page refreshes every ${pollSeconds}s`}
         />
         <StatCard
           label="Attempts"

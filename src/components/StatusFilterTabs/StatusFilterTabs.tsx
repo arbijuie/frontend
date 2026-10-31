@@ -11,7 +11,7 @@ interface Props {
 
 const StatusFilterTabs = ({ value, onChange, counts }: Props) => {
   return (
-    <div className={styles.tabs} role="group" aria-label="Filter opportunities by status">
+    <div className={styles.tabs} role="group" aria-label="Filter deals by status">
       {STATUS_FILTER_OPTIONS.map((f) => (
         <button
           key={f.key}

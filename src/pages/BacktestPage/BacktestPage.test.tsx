@@ -14,6 +14,14 @@ beforeAll(() => {
   Element.prototype.scrollIntoView = vi.fn();
 });
 
+vi.mock("../../components/BacktestHistoryPanel/BacktestHistoryPanel", () => ({
+  default: () => <div>History panel mock</div>,
+}));
+
+vi.mock("../../components/BacktestSurvivalPanel/BacktestSurvivalPanel", () => ({
+  default: () => <div>Survival panel mock</div>,
+}));
+
 vi.mock("../../hooks/useBacktest", () => ({
   useBacktestSummary: vi.fn(),
   useBacktestGate: vi.fn(),
@@ -74,6 +82,24 @@ const mockMetrics = {
   entry_cost_bps: 22,
   entries_by_strategy_type: { funding_arbitrage: 8, basis_convergence: 2 },
   exits_by_strategy_type: { funding_arbitrage: 7, basis_convergence: 3 },
+};
+
+const mockReplayResponse = {
+  metrics: mockMetrics,
+  replay_source: "runtime_capture",
+  replay_source_diagnostics: {
+    replay_source: "runtime_capture",
+    overlay_total: 0,
+    overlay_matched: 0,
+    overlay_missing: 0,
+    overlay_parse_errors: 0,
+    history_rows_loaded: 0,
+    overlay_symbols_total: 0,
+    overlay_symbols_complete: 0,
+    overlay_symbols_partial: 0,
+    overlay_symbols_missing: 0,
+    symbol_coverage: {},
+  },
 };
 
 const mockLock = {
@@ -169,7 +195,7 @@ describe("BacktestPage", () => {
   });
 
   it("happy path: replay -> shows used params -> create lock -> hint shown", async () => {
-    runReplayMutateAsync.mockResolvedValue({ metrics: mockMetrics });
+    runReplayMutateAsync.mockResolvedValue(mockReplayResponse);
     createLockMutateAsync.mockResolvedValue(mockLock);
 
     renderBacktestPage();
@@ -188,7 +214,7 @@ describe("BacktestPage", () => {
   });
 
   it("shows exit reasons after a successful replay", async () => {
-    runReplayMutateAsync.mockResolvedValue({ metrics: mockMetrics });
+    runReplayMutateAsync.mockResolvedValue(mockReplayResponse);
 
     renderBacktestPage();
     fireEvent.click(screen.getByRole("tab", { name: /^replay$/i }));
@@ -216,7 +242,7 @@ describe("BacktestPage", () => {
   });
 
   it("resets the lock-created state when a new replay is run", async () => {
-    runReplayMutateAsync.mockResolvedValue({ metrics: mockMetrics });
+    runReplayMutateAsync.mockResolvedValue(mockReplayResponse);
     createLockMutateAsync.mockResolvedValue(mockLock);
 
     renderBacktestPage();

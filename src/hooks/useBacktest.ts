@@ -6,6 +6,9 @@ import {
   fetchBacktestLock,
   runBacktestReplay,
   createBacktestLock,
+  fetchBacktestHistory,
+  fetchBacktestSurvival,
+  fetchPersistenceForecast,
 } from "../api/backtest-endpoint";
 import type { BacktestReplayRequest, BacktestReplayResponse, BacktestLock } from "../api/types";
 
@@ -74,4 +77,40 @@ export function useCreateBacktestLock() {
       ]);
     },
   });
+}
+
+export function useBacktestHistory() {
+  const query = useQuery({ queryKey: ["backtest-history"], queryFn: fetchBacktestHistory });
+  return {
+    data: query.data ?? null,
+    error: query.error instanceof Error ? query.error.message : null,
+    loading: query.isLoading,
+    refetch: query.refetch,
+  };
+}
+
+export function useBacktestSurvival(lookbackDays: number | null = null) {
+  const query = useQuery({
+    queryKey: ["backtest-survival", lookbackDays],
+    queryFn: () => fetchBacktestSurvival(lookbackDays),
+  });
+  return {
+    data: query.data ?? null,
+    error: query.error instanceof Error ? query.error.message : null,
+    loading: query.isLoading,
+    refetch: query.refetch,
+  };
+}
+
+export function usePersistenceForecast() {
+  const query = useQuery({
+    queryKey: ["backtest-survival-forecast"],
+    queryFn: fetchPersistenceForecast,
+  });
+  return {
+    data: query.data ?? null,
+    error: query.error instanceof Error ? query.error.message : null,
+    loading: query.isLoading,
+    refetch: query.refetch,
+  };
 }

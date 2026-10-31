@@ -1,0 +1,329 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: v.z(overlay);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.2s ease-out;
+
+  @include v.bp-up(md) {
+    align-items: center;
+    padding: v.space(4);
+  }
+}
+
+.sheet {
+  width: 100%;
+  max-width: 34rem;
+  max-height: 90dvh;
+  overflow-y: auto;
+  background: v.color(surface);
+  border: 0.0625rem solid v.color(border-strong);
+  border-top-left-radius: v.radius(xl);
+  border-top-right-radius: v.radius(xl);
+  padding: v.space(4);
+  box-shadow: v.shadow(lg);
+  animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+
+  @include v.bp-up(md) {
+    border-radius: v.radius(xl);
+    max-height: 85dvh;
+  }
+}
+
+.handleBar {
+  width: 2.5rem;
+  height: 0.25rem;
+  background: v.color(border-strong);
+  border-radius: v.radius(pill);
+  margin: 0 auto v.space(3);
+
+  @include v.bp-up(md) {
+    display: none;
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: v.space(3);
+  padding-bottom: v.space(2);
+  border-bottom: 0.0625rem solid v.color(border);
+}
+
+.titleGroup {
+  display: flex;
+  align-items: center;
+  gap: v.space(2);
+}
+
+.title {
+  margin: 0;
+  font-size: v.font-size(lg);
+  font-weight: v.font-weight(bold);
+  color: v.color(text);
+}
+
+.closeButton {
+  @include v.button-small(ghost);
+  padding: v.space(1);
+  color: v.color(text-muted);
+  font-size: v.font-size(sm);
+
+  &:hover {
+    color: v.color(text);
+  }
+}
+
+.opportunitySummary {
+  display: flex;
+  flex-direction: column;
+  gap: v.space(2);
+  padding: v.space(3);
+  margin-bottom: v.space(3);
+  border-radius: v.radius(lg);
+  background: v.color(surface-raised);
+  border: 0.0625rem solid v.color(border);
+}
+
+.summaryTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: v.space(2);
+}
+
+.symbol {
+  font-size: v.font-size(base);
+  font-weight: v.font-weight(bold);
+  color: v.color(text);
+}
+
+.routeGroup {
+  display: flex;
+  align-items: center;
+  gap: v.space(1);
+  font-size: v.font-size(xs);
+  color: v.color(text-secondary);
+}
+
+.aprBadge {
+  font-size: v.font-size(sm);
+  font-weight: v.font-weight(bold);
+  color: v.color(success-text);
+  background: v.color(success-tint);
+  padding: v.space("0-5") v.space(2);
+  border-radius: v.radius(md);
+}
+
+.modeBanner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: v.space(2) v.space(3);
+  margin-bottom: v.space(3);
+  border-radius: v.radius(md);
+  font-size: v.font-size(xs);
+  border: 0.0625rem solid v.color(border);
+  background: v.color(bg);
+}
+
+.modeLive {
+  color: v.color(success-text);
+  font-weight: v.font-weight(bold);
+}
+
+.modeDryRun {
+  color: v.color(warning-text);
+  font-weight: v.font-weight(bold);
+}
+
+.modeDisabled {
+  color: v.color(danger-text);
+  font-weight: v.font-weight(bold);
+}
+
+.section {
+  margin-bottom: v.space(4);
+}
+
+.sectionTitle {
+  font-size: v.font-size(xs);
+  font-weight: v.font-weight(semibold);
+  color: v.color(text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: v.space(2);
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: v.space(2);
+}
+
+.inputLabel {
+  font-size: v.font-size(xs);
+  color: v.color(text-secondary);
+  display: flex;
+  justify-content: space-between;
+}
+
+.sizeInput {
+  @include v.input;
+  font-size: v.font-size(base);
+  font-weight: v.font-weight(semibold);
+}
+
+.chipsRow {
+  display: flex;
+  gap: v.space(2);
+  flex-wrap: wrap;
+}
+
+.chip {
+  @include v.button-small(secondary);
+  flex: 1 1 auto;
+  text-align: center;
+  font-size: v.font-size(xs);
+}
+
+.chipActive {
+  background: v.color(accent-tint);
+  border-color: v.color(accent-border);
+  color: v.color(accent-text);
+}
+
+.pnlGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: v.space(2);
+  padding: v.space(2) v.space(3);
+  background: v.color(bg);
+  border-radius: v.radius(md);
+  border: 0.0625rem solid v.color(border);
+  margin-bottom: v.space(3);
+}
+
+.pnlItem {
+  display: flex;
+  flex-direction: column;
+  gap: v.space("0-5");
+}
+
+.pnlLabel {
+  font-size: v.font-size("2xs");
+  color: v.color(text-muted);
+}
+
+.pnlValue {
+  font-size: v.font-size(sm);
+  font-weight: v.font-weight(bold);
+  @include v.tabular-nums;
+}
+
+.pnlPositive {
+  color: v.color(success-text);
+}
+
+.pnlNegative {
+  color: v.color(danger-text);
+}
+
+.pnlNet {
+  color: v.color(accent-text);
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: v.space(2);
+  margin-top: v.space(3);
+}
+
+.submitButton {
+  @include v.button(primary);
+  width: 100%;
+  padding: v.space(3);
+  font-size: v.font-size(base);
+  font-weight: v.font-weight(bold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: v.space(2);
+}
+
+.cancelButton {
+  @include v.button(ghost);
+  width: 100%;
+  font-size: v.font-size(sm);
+}
+
+.progressList {
+  display: flex;
+  flex-direction: column;
+  gap: v.space(2);
+  padding: v.space(3);
+  background: v.color(bg);
+  border-radius: v.radius(md);
+  border: 0.0625rem solid v.color(border);
+  margin-top: v.space(2);
+}
+
+.progressItem {
+  display: flex;
+  align-items: center;
+  gap: v.space(2);
+  font-size: v.font-size(xs);
+  color: v.color(text-secondary);
+}
+
+.progressItemDone {
+  color: v.color(success-text);
+  font-weight: v.font-weight(medium);
+}
+
+.progressItemActive {
+  color: v.color(accent-text);
+  font-weight: v.font-weight(medium);
+}
+
+.blockerBox {
+  @include v.error-box;
+  margin-bottom: v.space(3);
+  font-size: v.font-size(xs);
+}
+
+.successBox {
+  padding: v.space(3);
+  border-radius: v.radius(md);
+  background: v.color(success-tint);
+  border: 0.0625rem solid v.color(success-border);
+  color: v.color(success-text);
+  font-size: v.font-size(sm);
+  margin-bottom: v.space(3);
+  display: flex;
+  flex-direction: column;
+  gap: v.space(2);
+}
+
+.viewPositionsLink {
+  @include v.button-small(primary);
+  text-decoration: none;
+  text-align: center;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}

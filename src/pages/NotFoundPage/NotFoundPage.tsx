@@ -16,7 +16,7 @@ const NotFoundPage = () => {
         description="Use the navigation below to pick a section."
       />
       <p className={styles.hint}>
-        <Link to="/">Go to Opportunities</Link>
+        <Link to="/">Go to Deals</Link>
       </p>
     </div>
   );

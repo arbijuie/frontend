@@ -1,9 +1,25 @@
 import styles from "./ReplayResultPanel.module.scss";
-import type { BacktestMetrics, BacktestReplayRequest } from "../../api/types";
+import HelpTooltip from "../HelpTooltip/HelpTooltip";
+import type {
+  BacktestMetrics,
+  BacktestReplayRequest,
+  ReplaySourceDiagnostics,
+  ReplaySourceKind,
+} from "../../api/types";
 import { signColor } from "../../lib/format";
+
+type CoverageTone = "good" | "warn" | "poor";
+
+const coverageTone = (coveragePct: number): CoverageTone => {
+  if (coveragePct >= 95) return "good";
+  if (coveragePct >= 60) return "warn";
+  return "poor";
+};
 
 interface ReplayResultPanelProps {
   metrics: BacktestMetrics;
+  replaySource?: ReplaySourceKind;
+  replayDiagnostics?: ReplaySourceDiagnostics;
   usedRequest?: BacktestReplayRequest | null;
   onCreateLock?: () => void;
   creatingLock?: boolean;
@@ -12,6 +28,8 @@ interface ReplayResultPanelProps {
 
 const ReplayResultPanel = ({
   metrics,
+  replaySource,
+  replayDiagnostics,
   usedRequest,
   onCreateLock,
   creatingLock,
@@ -19,6 +37,19 @@ const ReplayResultPanel = ({
 }: ReplayResultPanelProps) => {
   const entriesByStrategy = Object.entries(metrics.entries_by_strategy_type ?? {});
   const exitsByStrategy = Object.entries(metrics.exits_by_strategy_type ?? {});
+  const source = replaySource ?? replayDiagnostics?.replay_source ?? "runtime_capture";
+  const symbolCoverage = Object.entries(replayDiagnostics?.symbol_coverage ?? {}).sort(
+    ([symbolA, statsA], [symbolB, statsB]) => {
+      if (statsA.coverage_pct !== statsB.coverage_pct) {
+        return statsA.coverage_pct - statsB.coverage_pct;
+      }
+      return symbolA.localeCompare(symbolB);
+    }
+  );
+  const matched = replayDiagnostics?.overlay_matched ?? 0;
+  const overlayTotal = replayDiagnostics?.overlay_total ?? 0;
+  const overlayCoveragePct = overlayTotal > 0 ? (matched / overlayTotal) * 100 : 0;
+  const overlayTone = coverageTone(overlayCoveragePct);
   const lockButtonBusy = Boolean(creatingLock || lockCreated);
 
   return (
@@ -132,6 +163,80 @@ const ReplayResultPanel = ({
           ))}
         </div>
       )}
+
+      <div className={styles.section}>
+        <div className={styles.metricLabelWithHelp}>
+          <div className={styles.sectionLabel}>Replay Source Diagnostics</div>
+          <HelpTooltip
+            label="Replay Source Diagnostics"
+            text="Coverage badges use: good >=95%, warn 60-94.9%, poor <60%. Overlay matched/total shows how many replay snapshots were successfully overlaid by VOOI seed history."
+          />
+        </div>
+        <div className={styles.coverageLegend} role="group" aria-label="Coverage legend">
+          <span className={`${styles.coverageBadge} ${styles.good}`}>good &gt;=95%</span>
+          <span className={`${styles.coverageBadge} ${styles.warn}`}>warn 60-94.9%</span>
+          <span className={`${styles.coverageBadge} ${styles.poor}`}>poor &lt;60%</span>
+        </div>
+        <div className={styles.row}>
+          <span>Source</span>
+          <span>{source}</span>
+        </div>
+        <div className={styles.row}>
+          <span className={styles.metricInlineHelp}>
+            Overlay Matched / Total
+            <HelpTooltip
+              label="Overlay Matched / Total"
+              text="Coverage percent is matched / total * 100. Missing means one or both legs had no seed row for the hour bucket; parse means a seed row existed but could not be converted into a valid funding edge."
+            />
+          </span>
+          <span className={styles.coverageValue}>
+            {matched} / {overlayTotal}
+            <span className={`${styles.coverageBadge} ${styles[overlayTone]}`}>
+              {overlayCoveragePct.toFixed(1)}%
+            </span>
+          </span>
+        </div>
+        <div className={styles.row}>
+          <span>Overlay Missing</span>
+          <span>{replayDiagnostics?.overlay_missing ?? 0}</span>
+        </div>
+        <div className={styles.row}>
+          <span>Overlay Parse Errors</span>
+          <span>{replayDiagnostics?.overlay_parse_errors ?? 0}</span>
+        </div>
+        <div className={styles.row}>
+          <span>History Rows Loaded</span>
+          <span>{replayDiagnostics?.history_rows_loaded ?? 0}</span>
+        </div>
+        <div className={styles.row}>
+          <span>Symbols Complete / Partial / Missing</span>
+          <span>
+            {replayDiagnostics?.overlay_symbols_complete ?? 0} /{" "}
+            {replayDiagnostics?.overlay_symbols_partial ?? 0} /{" "}
+            {replayDiagnostics?.overlay_symbols_missing ?? 0}
+          </span>
+        </div>
+
+        {symbolCoverage.length > 0 && (
+          <div className={styles.coverageSection}>
+            <div className={styles.sectionSubLabel}>Per-Symbol Coverage</div>
+            {symbolCoverage.map(([symbol, stats]) => (
+              <div key={`coverage-${symbol}`} className={styles.row}>
+                <span>{symbol}</span>
+                <span className={styles.coverageDetail}>
+                  <span
+                    className={`${styles.coverageBadge} ${styles[coverageTone(stats.coverage_pct)]}`}
+                  >
+                    {stats.coverage_pct.toFixed(1)}%
+                  </span>{" "}
+                  ({stats.matched}/{stats.snapshots_total}) L-{stats.missing_long} S-
+                  {stats.missing_short} P-{stats.parse_errors}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
       {onCreateLock && (
         <button

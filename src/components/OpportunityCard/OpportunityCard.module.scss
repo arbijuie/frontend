@@ -77,6 +77,7 @@
 
 .expandButton {
   @include v.button-small(ghost);
+  text-decoration: none;
   margin-top: v.space(3);
 }
 
@@ -163,4 +164,101 @@
   width: 100%;
   margin: v.space(2) 0;
   border-style: dashed;
+}
+
+// Modernized UX styles
+
+.riskBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: v.space("0-5");
+  padding: v.space("0-5") v.space("1-5");
+  border-radius: v.radius(md);
+  font-size: v.font-size("2xs");
+  font-weight: v.font-weight(semibold);
+  text-transform: uppercase;
+}
+
+.riskLow {
+  background: v.color(info-tint);
+  color: v.color(info-text);
+  border: 0.0625rem solid v.color(info-border);
+}
+
+.riskMedium {
+  background: v.color(warning-tint);
+  color: v.color(warning-text);
+  border: 0.0625rem solid v.color(warning-border);
+}
+
+.riskHigh {
+  background: v.color(danger-tint);
+  color: v.color(danger-text);
+  border: 0.0625rem solid v.color(danger-border);
+}
+
+.cardActionRow {
+  display: flex;
+  align-items: center;
+  gap: v.space(2);
+  margin-top: v.space(3);
+}
+
+.executeButton {
+  @include v.button-small(primary);
+  flex: 1 1 auto;
+  font-weight: v.font-weight(bold);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: v.space(1);
+}
+
+.headline {
+  margin: v.space(2) 0;
+}
+
+.headlineLabel {
+  font-size: v.font-size(xs);
+  color: v.color(text-muted);
+}
+
+.headlineValue {
+  font-size: v.font-size(xl);
+  font-weight: v.font-weight(bold);
+  @include v.tabular-nums;
+}
+
+.priceDanger,
+.priceWarning {
+  display: flex;
+  flex-direction: column;
+  gap: v.space(1);
+  margin-top: v.space(2);
+  font-size: v.font-size(xs);
+}
+
+.priceDanger {
+  @include v.callout(danger);
+}
+
+.priceWarning {
+  @include v.callout(warning);
+}
+
+.reasons {
+  margin-top: v.space(2);
+  font-size: v.font-size(xs);
+  color: v.color(text-secondary);
+}
+
+.reasonsTitle {
+  margin-bottom: v.space(1);
+  font-weight: v.font-weight(semibold);
+  color: v.color(text);
+}
+
+.reasonsList {
+  margin: 0;
+  padding-left: v.space(4);
 }

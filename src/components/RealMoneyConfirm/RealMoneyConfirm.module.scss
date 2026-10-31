@@ -1,0 +1,25 @@
+.box {
+  @include v.callout(danger);
+  margin: v.space(3) 0;
+}
+.title {
+  margin: 0 0 v.space(1);
+  font-size: v.font-size(sm);
+  font-weight: v.font-weight(semibold);
+  color: v.color(danger-text);
+}
+.list {
+  margin: 0 0 v.space(2);
+  padding-left: v.space(4);
+  font-size: v.font-size(xs);
+  color: v.color(text-secondary);
+}
+.check {
+  display: flex;
+  align-items: flex-start;
+  gap: v.space(2);
+  min-height: v.size(touch-target);
+  font-size: v.font-size(sm);
+  font-weight: v.font-weight(semibold);
+  cursor: pointer;
+}

@@ -1,5 +1,7 @@
 import styles from "./OpportunitiesPage.module.scss";
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import type { OpportunityItem } from "../../api/types";
+import ExecutionSheet from "../../components/ExecutionSheet/ExecutionSheet";
 import { useOpportunities } from "../../hooks/useOpportunities";
 import { useOpportunitiesUrlState } from "../../hooks/useOpportunitiesUrlState";
 import { OPPORTUNITY_STRATEGY_LABEL, OPPORTUNITY_STRATEGY_TYPES } from "../../api/opportunities";
@@ -16,12 +18,15 @@ import { useNow } from "../../hooks/useNow";
 import { useTransientFlag } from "../../hooks/useTransientFlag";
 import { API_TOKEN, POLL_INTERVAL_MS } from "../../api/config";
 import { hasTelegramWebAppContext } from "../../api/telegram-session";
+import WelcomeHint from "../../components/WelcomeHint/WelcomeHint";
+import { dealsSummary } from "../../lib/dealsSummary";
 import { usePageTitle } from "../../hooks/usePageTitle";
 import TransportIndicator from "../../components/TransportIndicator/TransportIndicator";
 import type { StrategyFilter } from "../../lib/opportunitiesUrlState";
 
 export default function OpportunitiesPage() {
-  usePageTitle("Opportunities");
+  usePageTitle("Deals");
+  const [selectedOpportunity, setSelectedOpportunity] = useState<OpportunityItem | null>(null);
   const {
     sortKey,
     setSortKey,
@@ -72,7 +77,9 @@ export default function OpportunitiesPage() {
     !runtimeStrategyTypes.includes(strategyFilter);
   const runtimeStrategiesLabel =
     runtimeStrategyTypes.length > 0
-      ? runtimeStrategyTypes.map((strategyType) => OPPORTUNITY_STRATEGY_LABEL[strategyType]).join(", ")
+      ? runtimeStrategyTypes
+          .map((strategyType) => OPPORTUNITY_STRATEGY_LABEL[strategyType])
+          .join(", ")
       : "initializing";
   const emptyDescription = selectedStrategyInactive
     ? `Selected strategy ${OPPORTUNITY_STRATEGY_LABEL[strategyFilter]} is not active in runtime. Active strategies: ${runtimeStrategiesLabel}.`
@@ -81,6 +88,7 @@ export default function OpportunitiesPage() {
     Boolean(error && error.includes("401")) &&
     !(API_TOKEN && API_TOKEN.trim()) &&
     !hasTelegramWebAppContext();
+  const hasReadyDeals = Boolean(data?.opportunities.some((item) => item.status === "ready"));
 
   const handleRefresh = async () => {
     prevUpdatedAt.current = data?.updated_at ?? null;
@@ -95,7 +103,7 @@ export default function OpportunitiesPage() {
     <div className={styles.page}>
       <div className={styles.header}>
         <div>
-          <h1 className={styles.title}>Opportunities</h1>
+          <h1 className={styles.title}>Deals</h1>
           <div className={styles.filterRow}>
             <label htmlFor="opportunities-strategy-filter" className={styles.filterLabel}>
               Strategy
@@ -105,7 +113,7 @@ export default function OpportunitiesPage() {
               className={styles.filterSelect}
               value={strategyFilter}
               onChange={(event) => setStrategyFilter(event.target.value as StrategyFilter)}
-              aria-label="Filter opportunities by strategy"
+              aria-label="Filter deals by strategy"
             >
               <option value="all">All strategies</option>
               {OPPORTUNITY_STRATEGY_TYPES.map((strategyType) => (
@@ -146,14 +154,11 @@ export default function OpportunitiesPage() {
               </div>
             )}
           </div>
-          <div className={styles.summaryRow}>
-            <span className={styles.summaryPill}>count: {data?.count ?? "—"}</span>
-            <span className={styles.summaryPill}>ready: {data?.ready_count ?? "—"}</span>
-            <span className={styles.summaryPill}>strategy: {strategyFilter}</span>
-            <span className={styles.summaryPill}>runtime strategies: {runtimeStrategiesLabel}</span>
-            <span className={styles.summaryPill}>raw: {rawCandidates ?? "—"}</span>
-            <span className={styles.summaryPill}>post-cost: {postCostCandidates ?? "—"}</span>
-          </div>
+          {data && !hasReadyDeals && (
+            <p className={styles.plainSummary} role="status">
+              {dealsSummary(data.opportunities)}
+            </p>
+          )}
           {selectedStrategyInactive && (
             <div className={styles.strategyWarning} role="status">
               Selected strategy is not active in runtime. Switch to an active strategy or restart
@@ -163,9 +168,30 @@ export default function OpportunitiesPage() {
         </div>
       </div>
 
-      {config && <RuntimeKnobsCard config={config} />}
+      <WelcomeHint />
 
-      {status && <PipelineDiagnosticsHint status={status} />}
+      {(config || status || data) && (
+        <details className={styles.systemSection}>
+          <summary className={styles.systemSummary}>
+            <span>For experts: system numbers and controls</span>
+            <span>▼</span>
+          </summary>
+          <div className={styles.systemContent}>
+            <div className={styles.summaryRow}>
+              <span className={styles.summaryPill}>count: {data?.count ?? "—"}</span>
+              <span className={styles.summaryPill}>ready: {data?.ready_count ?? "—"}</span>
+              <span className={styles.summaryPill}>strategy: {strategyFilter}</span>
+              <span className={styles.summaryPill}>
+                runtime strategies: {runtimeStrategiesLabel}
+              </span>
+              <span className={styles.summaryPill}>raw: {rawCandidates ?? "—"}</span>
+              <span className={styles.summaryPill}>post-cost: {postCostCandidates ?? "—"}</span>
+            </div>
+            {config && <RuntimeKnobsCard config={config} />}
+            {status && <PipelineDiagnosticsHint status={status} />}
+          </div>
+        </details>
+      )}
 
       <div className={styles.hint} role="status">
         {justChecked ? "Already up to date" : ""}
@@ -196,15 +222,16 @@ export default function OpportunitiesPage() {
       )}
 
       {data && data.opportunities.length === 0 && (
-        <EmptyState
-          title="No opportunities right now"
-          description={emptyDescription}
-        />
+        <EmptyState title="No deals right now" description={emptyDescription} />
       )}
 
       {data && data.opportunities.length > 0 && (
         <>
-          <StatsGrid items={data.opportunities} />
+          <StatsGrid
+            items={data.opportunities}
+            statusFilter={statusFilter}
+            onStatusFilterChange={setStatusFilter}
+          />
           <OpportunitiesList
             items={data.opportunities}
             updatedAt={data.updated_at ?? null}
@@ -215,6 +242,7 @@ export default function OpportunitiesPage() {
             onStatusFilterChange={setStatusFilter}
             search={search}
             onSearchChange={setSearch}
+            onExecute={setSelectedOpportunity}
           />
         </>
       )}
@@ -224,6 +252,13 @@ export default function OpportunitiesPage() {
         onClick={handleRefresh}
         label="Refresh opportunities"
       />
+
+      {selectedOpportunity && (
+        <ExecutionSheet
+          opportunity={selectedOpportunity}
+          onClose={() => setSelectedOpportunity(null)}
+        />
+      )}
     </div>
   );
 }

@@ -131,7 +131,29 @@ describe("OpportunitiesList", () => {
     renderList(items);
 
     const cards = screen.getAllByTestId("opportunity-card").map((item) => item.textContent);
-    expect(cards).toEqual(["BBB", "AAA", "CCC"]);
+    expect(cards).toEqual(["BBB", "AAA"]);
+  });
+
+  it("keeps on-watch and blocked deals collapsed until opened", () => {
+    const items: OpportunityItem[] = [
+      makeItem({ symbol: "AAA", status: "ready" }),
+      makeItem({ symbol: "CCC", status: "watching" }),
+      makeItem({ symbol: "DDD", status: "blocked" }),
+      makeItem({ symbol: "EEE", status: "blocked" }),
+    ];
+
+    renderList(items);
+
+    expect(screen.getAllByTestId("opportunity-card").map((c) => c.textContent)).toEqual(["AAA"]);
+    fireEvent.click(screen.getByRole("button", { name: "Show blocked deals (2)" }));
+    expect(screen.getAllByTestId("opportunity-card").map((c) => c.textContent)).toEqual([
+      "AAA",
+      "DDD",
+      "EEE",
+    ]);
+    expect(
+      screen.getByRole("button", { name: "Show on watch deals (1)" }).getAttribute("aria-expanded")
+    ).toBe("false");
   });
 
   it("falls back to score when ready items have equal correlated counts", () => {
@@ -150,22 +172,26 @@ describe("OpportunitiesList", () => {
     const onSortKeyChange = vi.fn();
     renderList([makeItem({})], { onSortKeyChange });
 
-    fireEvent.change(screen.getByLabelText("Sort opportunities by"), {
+    fireEvent.change(screen.getByLabelText("Sort deals by"), {
       target: { value: "combined_score" },
     });
 
     expect(onSortKeyChange).toHaveBeenCalledWith("combined_score");
   });
 
-  it("calls onStatusFilterChange when a status tab is clicked", () => {
-    const onStatusFilterChange = vi.fn();
-    renderList([makeItem({ status: "ready" }), makeItem({ status: "watching" })], {
-      onStatusFilterChange,
-    });
+  it("shows only the deals of the selected status", () => {
+    renderList(
+      [
+        makeItem({ symbol: "AAA", status: "ready" }),
+        makeItem({ symbol: "BBB", status: "watching" }),
+      ],
+      {
+        statusFilter: "watching",
+      }
+    );
 
-    fireEvent.click(screen.getByRole("button", { name: /^watching/i }));
-
-    expect(onStatusFilterChange).toHaveBeenCalledWith("watching");
+    const cards = screen.getAllByTestId("opportunity-card").map((item) => item.textContent);
+    expect(cards).toEqual(["BBB"]);
   });
 
   it("filters the list instantly as you type, without waiting for the debounce", () => {
@@ -230,10 +256,16 @@ describe("OpportunitiesList", () => {
     expect(onStatusFilterChange).toHaveBeenCalledWith("all");
   });
 
+  it("explains an empty status filter in plain words", () => {
+    renderList([makeItem({ status: "watching" })], { statusFilter: "ready" });
+
+    expect(screen.getByText("No deals are ready right now")).toBeTruthy();
+  });
+
   it("shows an empty state with no hint when there are no items at all", () => {
     renderList([]);
 
-    expect(screen.getByText("No opportunities")).toBeTruthy();
+    expect(screen.getByText("No deals")).toBeTruthy();
     expect(screen.queryByText(/show all/i)).toBeNull();
   });
 

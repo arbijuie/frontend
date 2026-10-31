@@ -440,6 +440,56 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/notifications/telegram/subscriptions/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get My Telegram Subscription
+         * @description Subscription status for the authenticated Telegram principal.
+         *
+         *     Auth is required (bearer and/or Telegram session middleware). When the middleware
+         *     principal is not `telegram:<id>` (bearer-only client id), a valid Telegram session
+         *     header still identifies the subscriber — bearer authorizes the call, session binds
+         *     identity.
+         */
+        get: operations["get_my_telegram_subscription_notifications_telegram_subscriptions_me_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/notifications/telegram/webhook": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Telegram Webhook
+         * @description Telegram bot webhook for operator and user-subscription commands.
+         *
+         *     Authenticated by the webhook secret Telegram echoes in `X-Telegram-Bot-Api-Secret-Token`
+         *     (set with `setWebhook`), not by the API token. `503` while neither operator nor user
+         *     commands are configured, `401` on a wrong or missing secret, `400` on a non-JSON body.
+         *     Every other outcome is `200`, so Telegram does not retry an update the runtime ignored.
+         */
+        post: operations["telegram_webhook_notifications_telegram_webhook_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/opportunities": {
         parameters: {
             query?: never;
@@ -671,6 +721,160 @@ export interface paths {
         };
         /** Get Status */
         get: operations["get_status_status_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/vooi/broker/exchanges": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Vooi Broker Exchange Settings */
+        get: operations["list_vooi_broker_exchange_settings_vooi_broker_exchanges_get"];
+        put?: never;
+        /** Set Vooi Broker Exchange Settings */
+        post: operations["set_vooi_broker_exchange_settings_vooi_broker_exchanges_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/vooi/broker/exchanges/{exchange}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Clear Vooi Broker Exchange Settings */
+        delete: operations["clear_vooi_broker_exchange_settings_vooi_broker_exchanges__exchange__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/vooi/broker/orders": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Vooi Broker Orders */
+        get: operations["get_vooi_broker_orders_vooi_broker_orders_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/vooi/broker/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Vooi Broker Stats */
+        get: operations["get_vooi_broker_stats_vooi_broker_stats_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/vooi/broker/trades": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Vooi Broker Trades */
+        get: operations["get_vooi_broker_trades_vooi_broker_trades_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/vooi/broker/users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create Vooi Broker User */
+        post: operations["create_vooi_broker_user_vooi_broker_users_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/vooi/broker/users/public-key": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Set Vooi Broker User Public Key */
+        put: operations["set_vooi_broker_user_public_key_vooi_broker_users_public_key_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/vooi/broker/users/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Vooi Broker Users Stats */
+        get: operations["get_vooi_broker_users_stats_vooi_broker_users_stats_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/vooi/broker/users/top-volume": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Vooi Broker Users Top Volume */
+        get: operations["get_vooi_broker_users_top_volume_vooi_broker_users_top_volume_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1127,6 +1331,12 @@ export interface components {
             liquidity_drain_exit_ratio?: number | null;
             /** Min Samples Per Symbol */
             min_samples_per_symbol?: number | null;
+            /**
+             * Replay Source
+             * @default runtime_capture
+             * @enum {string}
+             */
+            replay_source: "runtime_capture" | "vooi_seed_overlay";
             /** Start */
             start?: string | null;
             /**
@@ -1142,6 +1352,13 @@ export interface components {
         /** BacktestReplayResponse */
         BacktestReplayResponse: {
             metrics: components["schemas"]["BacktestMetricsItem"];
+            /**
+             * Replay Source
+             * @default runtime_capture
+             * @enum {string}
+             */
+            replay_source: "runtime_capture" | "vooi_seed_overlay";
+            replay_source_diagnostics?: components["schemas"]["ReplaySourceDiagnosticsItem"];
         };
         /** BacktestSummaryResponse */
         BacktestSummaryResponse: {
@@ -1238,6 +1455,11 @@ export interface components {
             evaluated_at: string;
             /** Legs */
             legs?: components["schemas"]["CapitalLegAllocationItem"][];
+            /**
+             * Leverage
+             * @default 1
+             */
+            leverage: number;
             /** Long Exchange */
             long_exchange: string;
             /** Max Loss Usd */
@@ -1352,6 +1574,8 @@ export interface components {
             backtest_strategy_lock_path: string;
             /** Backtest Time Stop Hold Multiplier */
             backtest_time_stop_hold_multiplier: number;
+            /** Backtest Vooi History Db Path */
+            backtest_vooi_history_db_path: string;
             /** Basis Bonus Cap Bps */
             basis_bonus_cap_bps: number;
             /** Basis Divergence Threshold Bps */
@@ -1577,10 +1801,25 @@ export interface components {
              */
             vooi_base_url: string;
             /**
+             * Vooi Broker Key Configured
+             * @default false
+             */
+            vooi_broker_key_configured: boolean;
+            /**
              * Vooi Enabled
              * @default false
              */
             vooi_enabled: boolean;
+            /**
+             * Vooi Execution Enabled
+             * @default false
+             */
+            vooi_execution_enabled: boolean;
+            /**
+             * Vooi Mcp Token Configured
+             * @default false
+             */
+            vooi_mcp_token_configured: boolean;
         };
         /** ConfigUpdateRequest */
         ConfigUpdateRequest: {
@@ -2203,6 +2442,7 @@ export interface components {
             /** Screener Ready Candidates */
             screener_ready_candidates: number;
             trust_diagnostics?: components["schemas"]["PreflightTrustDiagnosticsItem"];
+            vooi_route?: components["schemas"]["VooiRouteReadiness"];
         };
         /**
          * ExecutionPreflightSourceItem
@@ -2241,7 +2481,9 @@ export interface components {
          * @description Execution support and live readiness of one venue (issue #415).
          *
          *     Every venue supplies market data for screening; `execution_support` says whether it can
-         *     also place live orders. `reason_code` is deterministic for a given configuration.
+         *     also place live orders. `order_route` is the venue's one order route (issue #473):
+         *     `native` or `vooi`; `credentials` are the route's credentials. `reason_code` is
+         *     deterministic for a given configuration.
          */
         ExecutionVenueCapabilityItem: {
             /**
@@ -2263,6 +2505,23 @@ export interface components {
             market_data: boolean;
             /** Message */
             message: string;
+            /**
+             * Order Modify
+             * @default blocked
+             * @enum {string}
+             */
+            order_modify: "supported" | "blocked";
+            /**
+             * Order Modify Reason Code
+             * @default order_modify_not_supported
+             */
+            order_modify_reason_code: "order_modify_not_supported" | null;
+            /**
+             * Order Route
+             * @default native
+             * @enum {string}
+             */
+            order_route: "native" | "vooi";
             /**
              * Reason Code
              * @enum {string}
@@ -2567,6 +2826,11 @@ export interface components {
             /** Failure Reason */
             failure_reason: string;
             /**
+             * Guard Failure Kind
+             * @default none
+             */
+            guard_failure_kind: string;
+            /**
              * Recent 5Xx
              * @default unknown
              */
@@ -2858,6 +3122,8 @@ export interface components {
             attempt_id: string;
             /** Basis Bps */
             basis_bps?: number | null;
+            /** Dry Run */
+            dry_run: boolean;
             /** Funding Accrued Usd */
             funding_accrued_usd: number;
             /** Health Flags */
@@ -3228,6 +3494,97 @@ export interface components {
              */
             samples_skipped_min_samples: number;
         };
+        /** ReplaySourceDiagnosticsItem */
+        ReplaySourceDiagnosticsItem: {
+            /**
+             * History Rows Loaded
+             * @default 0
+             */
+            history_rows_loaded: number;
+            /**
+             * Overlay Matched
+             * @default 0
+             */
+            overlay_matched: number;
+            /**
+             * Overlay Missing
+             * @default 0
+             */
+            overlay_missing: number;
+            /**
+             * Overlay Parse Errors
+             * @default 0
+             */
+            overlay_parse_errors: number;
+            /**
+             * Overlay Symbols Complete
+             * @default 0
+             */
+            overlay_symbols_complete: number;
+            /**
+             * Overlay Symbols Missing
+             * @default 0
+             */
+            overlay_symbols_missing: number;
+            /**
+             * Overlay Symbols Partial
+             * @default 0
+             */
+            overlay_symbols_partial: number;
+            /**
+             * Overlay Symbols Total
+             * @default 0
+             */
+            overlay_symbols_total: number;
+            /**
+             * Overlay Total
+             * @default 0
+             */
+            overlay_total: number;
+            /**
+             * Replay Source
+             * @default runtime_capture
+             * @enum {string}
+             */
+            replay_source: "runtime_capture" | "vooi_seed_overlay";
+            /** Symbol Coverage */
+            symbol_coverage?: {
+                [key: string]: components["schemas"]["ReplaySourceSymbolCoverageItem"];
+            };
+        };
+        /** ReplaySourceSymbolCoverageItem */
+        ReplaySourceSymbolCoverageItem: {
+            /**
+             * Coverage Pct
+             * @default 0
+             */
+            coverage_pct: number;
+            /**
+             * Matched
+             * @default 0
+             */
+            matched: number;
+            /**
+             * Missing Long
+             * @default 0
+             */
+            missing_long: number;
+            /**
+             * Missing Short
+             * @default 0
+             */
+            missing_short: number;
+            /**
+             * Parse Errors
+             * @default 0
+             */
+            parse_errors: number;
+            /**
+             * Snapshots Total
+             * @default 0
+             */
+            snapshots_total: number;
+        };
         /**
          * RiskCapitalAllocationItem
          * @description Capital-aware sizing state (issue #292): limits, committed capital, daily loss.
@@ -3254,6 +3611,10 @@ export interface components {
              */
             enabled: boolean;
             last_decision?: components["schemas"]["CapitalAllocationDecisionItem"] | null;
+            /** Leverage By Symbol */
+            leverage_by_symbol?: {
+                [key: string]: number;
+            };
             /** Limits */
             limits?: {
                 [key: string]: number;
@@ -3484,6 +3845,9 @@ export interface components {
         /**
          * StatusAutoExitDiagnostics
          * @description Rule-based auto-exit (issue #194): last pass and exits by trigger since start.
+         *
+         *     `preset` is the resolved auto-exit preset selection (`name@version`, comma separated,
+         *     issue #476), or None when no preset is selected.
          */
         StatusAutoExitDiagnostics: {
             /**
@@ -3530,6 +3894,8 @@ export interface components {
              * @default false
              */
             paused: boolean;
+            /** Preset */
+            preset?: string | null;
         };
         /** StatusCalibrationLoaderDiagnostics */
         StatusCalibrationLoaderDiagnostics: {
@@ -3995,6 +4361,10 @@ export interface components {
         /**
          * StatusExecutionVenueHealth
          * @description Entry gating for one venue (issue #294): hedge-failure breaker and degradation.
+         *
+         *     `order_route` is the venue's order route (issue #473); `vooi_route` is the VOOI route's
+         *     reachability for a venue on the `vooi` route (None until VOOI answered once, and for
+         *     native-route venues).
          */
         StatusExecutionVenueHealth: {
             /** Block Reasons */
@@ -4033,8 +4403,15 @@ export interface components {
             last_failure_reason?: string | null;
             /** Last Success At */
             last_success_at?: string | null;
+            /**
+             * Order Route
+             * @default native
+             * @enum {string}
+             */
+            order_route: "native" | "vooi";
             /** Reconcile Status */
             reconcile_status?: string | null;
+            vooi_route?: components["schemas"]["StatusVooiRouteHealth"] | null;
         };
         /**
          * StatusLatencyStage
@@ -4295,7 +4672,8 @@ export interface components {
          * @description Alert delivery health. `healthy` is false while any route's last delivery failed.
          *
          *     `events` breaks the counters down by alert event type (for example `opportunity_ready`,
-         *     `margin_critical`, `exchange_connectivity_lost`, `system_error`).
+         *     `margin_critical`, `exchange_connectivity_lost`, `system_error`). User product alerts
+         *     are reported separately under `user_alerts` / `user_commands` and never replace ops routes.
          */
         StatusNotificationDiagnostics: {
             /** Degraded Routes */
@@ -4324,6 +4702,7 @@ export interface components {
              * @default true
              */
             healthy: boolean;
+            operator_commands?: components["schemas"]["StatusOperatorCommandDiagnostics"];
             /**
              * Pending
              * @default 0
@@ -4348,6 +4727,8 @@ export interface components {
              * @default 0
              */
             suppressed: number;
+            user_alerts?: components["schemas"]["StatusUserAlertDiagnostics"];
+            user_commands?: components["schemas"]["StatusUserCommandDiagnostics"];
         };
         /**
          * StatusNotificationEventDiagnostics
@@ -4415,6 +4796,47 @@ export interface components {
              * @default 0
              */
             sent: number;
+        };
+        /**
+         * StatusOperatorCommandDiagnostics
+         * @description Telegram operator commands (issue #506): counters since start and the last refusal.
+         */
+        StatusOperatorCommandDiagnostics: {
+            /**
+             * Enabled
+             * @default false
+             */
+            enabled: boolean;
+            /**
+             * Handled
+             * @default 0
+             */
+            handled: number;
+            /** Last Command */
+            last_command?: string | null;
+            /** Last Command At */
+            last_command_at?: string | null;
+            /** Last Refusal */
+            last_refusal?: string | null;
+            /**
+             * Received
+             * @default 0
+             */
+            received: number;
+            /** Refusals */
+            refusals?: {
+                [key: string]: number;
+            };
+            /**
+             * Refused
+             * @default 0
+             */
+            refused: number;
+            /**
+             * Reply Failures
+             * @default 0
+             */
+            reply_failures: number;
         };
         /**
          * StatusOrderBookDiagnostics
@@ -4920,6 +5342,7 @@ export interface components {
             trust_diagnostics?: components["schemas"]["StatusTrustDiagnosticsItem"];
             /** Uptime S */
             uptime_s: number;
+            vooi_route?: components["schemas"]["VooiRouteReadiness"];
             ws_auth_tickets?: components["schemas"]["StatusWsAuthTickets"];
             /** Ws Feed Diagnostics */
             ws_feed_diagnostics?: {
@@ -5204,6 +5627,119 @@ export interface components {
             unhedged_since?: string | null;
             /** Unresolved Orders */
             unresolved_orders?: string[];
+        };
+        /**
+         * StatusUserAlertDiagnostics
+         * @description 1:1 user product-alert delivery (opportunity_new + execution open/close/fail).
+         */
+        StatusUserAlertDiagnostics: {
+            /**
+             * Active Subscribers
+             * @default 0
+             */
+            active_subscribers: number;
+            /**
+             * Enabled
+             * @default false
+             */
+            enabled: boolean;
+            /**
+             * Failed
+             * @default 0
+             */
+            failed: number;
+            /**
+             * Pending
+             * @default 0
+             */
+            pending: number;
+            /**
+             * Sent
+             * @default 0
+             */
+            sent: number;
+            /**
+             * Submitted
+             * @default 0
+             */
+            submitted: number;
+            /**
+             * Subscribers Notified
+             * @default 0
+             */
+            subscribers_notified: number;
+            /**
+             * Suppressed
+             * @default 0
+             */
+            suppressed: number;
+        };
+        /**
+         * StatusUserCommandDiagnostics
+         * @description Telegram user subscription commands (`/subscribe`, `/unsubscribe`, `/status`).
+         */
+        StatusUserCommandDiagnostics: {
+            /**
+             * Active Subscribers
+             * @default 0
+             */
+            active_subscribers: number;
+            /**
+             * Enabled
+             * @default false
+             */
+            enabled: boolean;
+            /**
+             * Handled
+             * @default 0
+             */
+            handled: number;
+            /** Last Command */
+            last_command?: string | null;
+            /** Last Command At */
+            last_command_at?: string | null;
+            /** Last Refusal */
+            last_refusal?: string | null;
+            /**
+             * Received
+             * @default 0
+             */
+            received: number;
+            /** Refusals */
+            refusals?: {
+                [key: string]: number;
+            };
+            /**
+             * Refused
+             * @default 0
+             */
+            refused: number;
+            /**
+             * Reply Failures
+             * @default 0
+             */
+            reply_failures: number;
+        };
+        /**
+         * StatusVooiRouteHealth
+         * @description Reachability of a venue's VOOI order route (issue #475).
+         */
+        StatusVooiRouteHealth: {
+            /**
+             * Consecutive Failures
+             * @default 0
+             */
+            consecutive_failures: number;
+            /** Last Error */
+            last_error?: string | null;
+            /** Last Failure At */
+            last_failure_at?: string | null;
+            /** Last Success At */
+            last_success_at?: string | null;
+            /** Market Count */
+            market_count?: number | null;
+            /** Markets Loaded At */
+            markets_loaded_at?: string | null;
         };
         /**
          * StatusWsAuthTickets
@@ -5514,6 +6050,37 @@ export interface components {
             /** Ttl S */
             ttl_s: number;
         };
+        /**
+         * TelegramSubscriptionMeResponse
+         * @description `GET /notifications/telegram/subscriptions/me` — current principal subscription.
+         */
+        TelegramSubscriptionMeResponse: {
+            /** Chat Id */
+            chat_id?: string | null;
+            /** Principal Id */
+            principal_id: string;
+            /** Subscribed */
+            subscribed: boolean;
+            /** Updated At */
+            updated_at?: string | null;
+        };
+        /**
+         * TelegramWebhookResponse
+         * @description Outcome of one Telegram webhook update (issue #506).
+         *
+         *     `handled` is true when an operator or user-subscription command ran; otherwise `reason`
+         *     says why the update was ignored (`not_a_command`, `chat_mismatch`, `unauthorized_user`,
+         *     `unknown_command`, `rate_limited`, `duplicate_update`). Operator replies go to the ops
+         *     chat; user subscription replies go 1:1 to the sender chat.
+         */
+        TelegramWebhookResponse: {
+            /** Command */
+            command?: string | null;
+            /** Handled */
+            handled: boolean;
+            /** Reason */
+            reason: string;
+        };
         /** TrustConfidenceDistributionItem */
         TrustConfidenceDistributionItem: {
             /**
@@ -5655,6 +6222,361 @@ export interface components {
             msg: string;
             /** Error Type */
             type: string;
+        };
+        /** VooiBrokerExchangeSetting */
+        VooiBrokerExchangeSetting: {
+            /**
+             * Exchange
+             * @enum {string}
+             */
+            exchange: "aster" | "binance" | "bybit" | "extended" | "gate" | "hyperliquid" | "lighter" | "mexc" | "ondo" | "robinhood";
+            /** Identifier */
+            identifier: string;
+            /** Limitfeebps */
+            limitFeeBps: string | null;
+            /** Marketfeebps */
+            marketFeeBps: string | null;
+            /** Maxfeebps */
+            maxFeeBps: string | null;
+        };
+        /** VooiBrokerOrder */
+        VooiBrokerOrder: {
+            /** Basesymbol */
+            baseSymbol: string;
+            /** Brokercode */
+            brokerCode: string;
+            /** Clientorderid */
+            clientOrderId: string | null;
+            /** Createdat */
+            createdAt: string;
+            /**
+             * Exchange
+             * @enum {string}
+             */
+            exchange: "aster" | "binance" | "bybit" | "extended" | "gate" | "hyperliquid" | "lighter" | "mexc" | "ondo" | "robinhood";
+            /** Orderid */
+            orderId: string;
+            /**
+             * Positionside
+             * @enum {string}
+             */
+            positionSide: "both" | "long" | "short";
+            /** Price */
+            price: string | null;
+            /** Quotesymbol */
+            quoteSymbol: string;
+            /** Reduceonly */
+            reduceOnly: boolean | null;
+            /**
+             * Side
+             * @enum {string}
+             */
+            side: "buy" | "sell";
+            /** Size */
+            size: string;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "canceled" | "created" | "error" | "executed" | "partiallyFilled";
+            /** Timeinforce */
+            timeInForce: ("gtc" | "ioc" | "fok" | "alo") | null;
+            /** Triggerprice */
+            triggerPrice: string | null;
+            /**
+             * Type
+             * @enum {string}
+             */
+            type: "limit" | "liquidation" | "market" | "other" | "stopLoss" | "stopLossLimit" | "takeProfit" | "takeProfitLimit";
+            /** Updatedat */
+            updatedAt: string;
+            /** Userid */
+            userId: string;
+        };
+        /** VooiBrokerOrdersResponse */
+        VooiBrokerOrdersResponse: {
+            /** Cursor */
+            cursor: string | null;
+            /** Items */
+            items: components["schemas"]["VooiBrokerOrder"][];
+        };
+        /** VooiBrokerRegisterUserRequest */
+        VooiBrokerRegisterUserRequest: {
+            /** Publickey */
+            publicKey?: string | null;
+        };
+        /** VooiBrokerSetExchangeAsterRequest */
+        VooiBrokerSetExchangeAsterRequest: {
+            /**
+             * Exchange
+             * @constant
+             */
+            exchange: "aster";
+            /** Identifier */
+            identifier: string;
+            /** Limitfeebps */
+            limitFeeBps: string;
+            /** Marketfeebps */
+            marketFeeBps: string;
+            /** Maxfeebps */
+            maxFeeBps: string;
+        };
+        /** VooiBrokerSetExchangeBinanceRequest */
+        VooiBrokerSetExchangeBinanceRequest: {
+            /**
+             * Exchange
+             * @constant
+             */
+            exchange: "binance";
+            /** Identifier */
+            identifier: string;
+        };
+        /** VooiBrokerSetExchangeExtendedRequest */
+        VooiBrokerSetExchangeExtendedRequest: {
+            /**
+             * Exchange
+             * @constant
+             */
+            exchange: "extended";
+            /** Identifier */
+            identifier: string;
+            /** Limitfeebps */
+            limitFeeBps: string;
+            /** Marketfeebps */
+            marketFeeBps: string;
+            /** Maxfeebps */
+            maxFeeBps: string;
+        };
+        /** VooiBrokerSetExchangeHyperliquidRequest */
+        VooiBrokerSetExchangeHyperliquidRequest: {
+            /**
+             * Exchange
+             * @constant
+             */
+            exchange: "hyperliquid";
+            /** Identifier */
+            identifier: string;
+            /** Limitfeebps */
+            limitFeeBps: string;
+            /** Marketfeebps */
+            marketFeeBps: string;
+            /** Maxfeebps */
+            maxFeeBps: string;
+        };
+        /** VooiBrokerSetExchangeLighterRequest */
+        VooiBrokerSetExchangeLighterRequest: {
+            /**
+             * Exchange
+             * @constant
+             */
+            exchange: "lighter";
+            /** Identifier */
+            identifier: string;
+            /** Limitfeebps */
+            limitFeeBps: string;
+            /** Marketfeebps */
+            marketFeeBps: string;
+            /** Maxfeebps */
+            maxFeeBps: string;
+        };
+        /** VooiBrokerSetExchangeMexcRequest */
+        VooiBrokerSetExchangeMexcRequest: {
+            /**
+             * Exchange
+             * @constant
+             */
+            exchange: "mexc";
+            /** Identifier */
+            identifier: string;
+        };
+        /** VooiBrokerSetExchangeRobinhoodRequest */
+        VooiBrokerSetExchangeRobinhoodRequest: {
+            /**
+             * Exchange
+             * @constant
+             */
+            exchange: "robinhood";
+            /** Identifier */
+            identifier: string;
+            /** Limitfeebps */
+            limitFeeBps: string;
+            /** Marketfeebps */
+            marketFeeBps: string;
+            /** Maxfeebps */
+            maxFeeBps: string;
+        };
+        /** VooiBrokerSetPublicKeyRequest */
+        VooiBrokerSetPublicKeyRequest: {
+            /** Publickey */
+            publicKey: string | null;
+            /**
+             * Userid
+             * Format: uuid
+             */
+            userId: string;
+        };
+        /** VooiBrokerStatsExchangeBreakdown */
+        VooiBrokerStatsExchangeBreakdown: {
+            /** Ordercount */
+            orderCount: number;
+            /** Uniquetraders */
+            uniqueTraders: number;
+            /** Volumeusd */
+            volumeUsd: string;
+        };
+        /** VooiBrokerStatsResponse */
+        VooiBrokerStatsResponse: {
+            aster: components["schemas"]["VooiBrokerStatsExchangeBreakdown"];
+            binance: components["schemas"]["VooiBrokerStatsExchangeBreakdown"];
+            bybit: components["schemas"]["VooiBrokerStatsExchangeBreakdown"];
+            extended: components["schemas"]["VooiBrokerStatsExchangeBreakdown"];
+            gate: components["schemas"]["VooiBrokerStatsExchangeBreakdown"];
+            hyperliquid: components["schemas"]["VooiBrokerStatsExchangeBreakdown"];
+            lighter: components["schemas"]["VooiBrokerStatsExchangeBreakdown"];
+            mexc: components["schemas"]["VooiBrokerStatsExchangeBreakdown"];
+            ondo: components["schemas"]["VooiBrokerStatsExchangeBreakdown"];
+            robinhood: components["schemas"]["VooiBrokerStatsExchangeBreakdown"];
+        };
+        /** VooiBrokerTopVolumeUser */
+        VooiBrokerTopVolumeUser: {
+            /** Userid */
+            userId: string;
+            /** Volume */
+            volume: string;
+        };
+        /** VooiBrokerTrade */
+        VooiBrokerTrade: {
+            /** Basesymbol */
+            baseSymbol: string;
+            /** Brokercode */
+            brokerCode: string;
+            /** Createdat */
+            createdAt: string;
+            /**
+             * Exchange
+             * @enum {string}
+             */
+            exchange: "aster" | "binance" | "bybit" | "extended" | "gate" | "hyperliquid" | "lighter" | "mexc" | "ondo" | "robinhood";
+            /** Fee */
+            fee: string | null;
+            /** Feetoken */
+            feeToken: string | null;
+            /** Orderid */
+            orderId: string | null;
+            /**
+             * Positionside
+             * @enum {string}
+             */
+            positionSide: "both" | "long" | "short";
+            /** Price */
+            price: string;
+            /** Quotesymbol */
+            quoteSymbol: string;
+            /** Realizedpnl */
+            realizedPnl: string | null;
+            /**
+             * Side
+             * @enum {string}
+             */
+            side: "buy" | "sell";
+            /** Size */
+            size: string;
+            /** Tradeid */
+            tradeId: string;
+            /** Userid */
+            userId: string;
+        };
+        /** VooiBrokerTradesResponse */
+        VooiBrokerTradesResponse: {
+            /** Cursor */
+            cursor: string | null;
+            /** Items */
+            items: components["schemas"]["VooiBrokerTrade"][];
+        };
+        /** VooiBrokerUserProfile */
+        VooiBrokerUserProfile: {
+            /** Broker */
+            broker: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+        };
+        /** VooiBrokerUserStats */
+        VooiBrokerUserStats: {
+            /** Tradescount */
+            tradesCount: number;
+            /** Userid */
+            userId: string;
+            /** Volume */
+            volume: string;
+        };
+        /** VooiBrokerUsersStatsResponse */
+        VooiBrokerUsersStatsResponse: {
+            /** Cursor */
+            cursor: string | null;
+            /** Items */
+            items: components["schemas"]["VooiBrokerUserStats"][];
+        };
+        /** VooiBrokerUsersTopVolumeResponse */
+        VooiBrokerUsersTopVolumeResponse: {
+            /** Cursor */
+            cursor: string | null;
+            /** Items */
+            items: components["schemas"]["VooiBrokerTopVolumeUser"][];
+        };
+        /**
+         * VooiRouteReadiness
+         * @description Canonical readiness of the VOOI order route (issue #477, ADR-001).
+         *
+         *     One summary for `/status` and `/execution/preflight.runtime`. `state`:
+         *
+         *     - `disabled`: `ARB_VOOI_EXECUTION_ENABLED=false`; every venue uses its native route.
+         *     - `not_configured`: the route is on but the VOOI token is missing
+         *       (`live_credentials_missing`).
+         *     - `degraded`: VOOI's last answer for a routed venue was a failure (`vooi_route_degraded`);
+         *       `degraded_venues` names them and `execution_venue_health.<venue>.vooi_route` has the
+         *       detail.
+         *     - `ready`: configured and reachable. Live orders still need every live switch, which the
+         *       per-venue `reason_code` in `/execution/preflight.venues` reports.
+         */
+        VooiRouteReadiness: {
+            /** Degraded Venues */
+            degraded_venues?: string[];
+            /**
+             * Enabled
+             * @default false
+             */
+            enabled: boolean;
+            /**
+             * Message
+             * @default
+             */
+            message: string;
+            /**
+             * Reason Code
+             * @default vooi_route_disabled
+             */
+            reason_code: ("vooi_route_disabled" | "live_credentials_missing" | "vooi_route_degraded") | null;
+            /**
+             * Recommended Action
+             * @default
+             */
+            recommended_action: string;
+            /**
+             * State
+             * @default disabled
+             * @enum {string}
+             */
+            state: "disabled" | "not_configured" | "degraded" | "ready";
+            /**
+             * Token Configured
+             * @default false
+             */
+            token_configured: boolean;
+            /** Venues */
+            venues?: string[];
         };
         /** WsAuthTicketResponse */
         WsAuthTicketResponse: {
@@ -6386,6 +7308,46 @@ export interface operations {
             };
         };
     };
+    get_my_telegram_subscription_notifications_telegram_subscriptions_me_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TelegramSubscriptionMeResponse"];
+                };
+            };
+        };
+    };
+    telegram_webhook_notifications_telegram_webhook_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TelegramWebhookResponse"];
+                };
+            };
+        };
+    };
     get_opportunities_opportunities_get: {
         parameters: {
             query?: {
@@ -6699,6 +7661,323 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["StatusResponse"];
+                };
+            };
+        };
+    };
+    list_vooi_broker_exchange_settings_vooi_broker_exchanges_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VooiBrokerExchangeSetting"][];
+                };
+            };
+        };
+    };
+    set_vooi_broker_exchange_settings_vooi_broker_exchanges_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VooiBrokerSetExchangeAsterRequest"] | components["schemas"]["VooiBrokerSetExchangeHyperliquidRequest"] | components["schemas"]["VooiBrokerSetExchangeLighterRequest"] | components["schemas"]["VooiBrokerSetExchangeRobinhoodRequest"] | components["schemas"]["VooiBrokerSetExchangeExtendedRequest"] | components["schemas"]["VooiBrokerSetExchangeBinanceRequest"] | components["schemas"]["VooiBrokerSetExchangeMexcRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    clear_vooi_broker_exchange_settings_vooi_broker_exchanges__exchange__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                exchange: "aster" | "binance" | "bybit" | "extended" | "gate" | "hyperliquid" | "lighter" | "mexc" | "ondo" | "robinhood";
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_vooi_broker_orders_vooi_broker_orders_get: {
+        parameters: {
+            query?: {
+                cursor?: string | null;
+                exchange?: ("aster" | "binance" | "bybit" | "extended" | "gate" | "hyperliquid" | "lighter" | "mexc" | "ondo" | "robinhood") | null;
+                from?: number | null;
+                to?: number | null;
+                limit?: number;
+                userId?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VooiBrokerOrdersResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_vooi_broker_stats_vooi_broker_stats_get: {
+        parameters: {
+            query: {
+                from: number;
+                to: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VooiBrokerStatsResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_vooi_broker_trades_vooi_broker_trades_get: {
+        parameters: {
+            query?: {
+                cursor?: string | null;
+                exchange?: ("aster" | "binance" | "bybit" | "extended" | "gate" | "hyperliquid" | "lighter" | "mexc" | "ondo" | "robinhood") | null;
+                from?: number | null;
+                to?: number | null;
+                limit?: number;
+                userId?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VooiBrokerTradesResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_vooi_broker_user_vooi_broker_users_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VooiBrokerRegisterUserRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VooiBrokerUserProfile"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    set_vooi_broker_user_public_key_vooi_broker_users_public_key_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VooiBrokerSetPublicKeyRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_vooi_broker_users_stats_vooi_broker_users_stats_get: {
+        parameters: {
+            query: {
+                from: number;
+                to: number;
+                cursor?: string | null;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VooiBrokerUsersStatsResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_vooi_broker_users_top_volume_vooi_broker_users_top_volume_get: {
+        parameters: {
+            query?: {
+                dateFrom?: string | null;
+                dateTo?: string | null;
+                exchanges?: ("aster" | "binance" | "bybit" | "extended" | "gate" | "hyperliquid" | "lighter" | "mexc" | "ondo" | "robinhood")[] | null;
+                cursor?: string | null;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VooiBrokerUsersTopVolumeResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

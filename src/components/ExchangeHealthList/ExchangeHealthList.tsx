@@ -12,10 +12,9 @@ const ExchangeHealthList = ({ exchangeStatus, activeExchanges }: ExchangeHealthL
     mergedExchanges.add(exchange);
   }
 
-  const entries = Array.from(mergedExchanges).map((exchange) => [
-    exchange,
-    exchangeStatus[exchange] ?? null,
-  ] as const);
+  const entries = Array.from(mergedExchanges).map(
+    (exchange) => [exchange, exchangeStatus[exchange] ?? null] as const
+  );
 
   if (entries.length === 0) {
     return <div className={styles.empty}>No exchange health data</div>;

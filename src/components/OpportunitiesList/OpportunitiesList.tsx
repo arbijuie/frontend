@@ -1,8 +1,8 @@
 import styles from "./OpportunitiesList.module.scss";
-import { useEffect, useMemo, useRef, useState } from "react";
+import type React from "react";
+import { useEffect, useRef, useState } from "react";
 import type { OpportunityItem } from "../../api/types";
 import OpportunityCard from "../OpportunityCard/OpportunityCard";
-import StatusFilterTabs from "../StatusFilterTabs/StatusFilterTabs";
 import SymbolSearch from "../SymbolSearch/SymbolSearch";
 import EmptyState from "../EmptyState/EmptyState";
 import { SORT_OPTIONS, type SortKey, type StatusFilter } from "../../lib/opportunitiesUrlState";
@@ -13,6 +13,12 @@ const STATUS_LABELS: Record<Exclude<StatusFilter, "all">, string> = {
   ready: "ready",
   watching: "watching",
   blocked: "blocked",
+};
+
+const STATUS_EMPTY_TITLES: Record<Exclude<StatusFilter, "all">, string> = {
+  ready: "No deals are ready right now",
+  watching: "No deals are on watch right now",
+  blocked: "No deals are blocked right now",
 };
 
 function sortItems(items: OpportunityItem[], sortKey: SortKey): OpportunityItem[] {
@@ -55,13 +61,46 @@ function buildEmptyMessage(
   if (trimmedSearch) {
     return { title: "No matches", description: `Nothing found for "${trimmedSearch}".` };
   }
-  if (statusLabel) {
+  if (statusFilter !== "all") {
     return {
-      title: `No ${statusLabel} opportunities`,
-      description: "Try a different status filter.",
+      title: STATUS_EMPTY_TITLES[statusFilter],
+      description: "Tap All deals above to see everything.",
     };
   }
-  return { title: "No opportunities" };
+  return { title: "No deals" };
+}
+
+function CollapsedGroup({
+  title,
+  hint,
+  items,
+  render,
+}: {
+  title: string;
+  hint: string;
+  items: OpportunityItem[];
+  render: (list: OpportunityItem[]) => React.ReactNode;
+}) {
+  const [open, setOpen] = useState(false);
+  if (items.length === 0) return null;
+  return (
+    <section className={styles.group}>
+      <button
+        type="button"
+        className={styles.groupToggle}
+        aria-expanded={open}
+        aria-label={`${open ? "Hide" : "Show"} ${title.toLowerCase()} deals (${items.length})`}
+        onClick={() => setOpen(!open)}
+      >
+        <span>
+          {title} ({items.length})
+        </span>
+        <span aria-hidden="true">{open ? "▲" : "▼"}</span>
+      </button>
+      {!open && <p className={styles.groupHint}>{hint}</p>}
+      {open && render(items)}
+    </section>
+  );
 }
 
 interface OpportunitiesListProps {
@@ -74,6 +113,7 @@ interface OpportunitiesListProps {
   onStatusFilterChange: (filter: StatusFilter) => void;
   search: string;
   onSearchChange: (search: string) => void;
+  onExecute?: (item: OpportunityItem) => void;
 }
 
 const OpportunitiesList = ({
@@ -86,6 +126,7 @@ const OpportunitiesList = ({
   onStatusFilterChange,
   search,
   onSearchChange,
+  onExecute,
 }: OpportunitiesListProps) => {
   const [searchDraft, setSearchDraft] = useState(search);
   const [prevSearchProp, setPrevSearchProp] = useState(search);
@@ -114,16 +155,7 @@ const OpportunitiesList = ({
     }, SEARCH_DEBOUNCE_MS);
   };
 
-  const counts = useMemo(
-    () => ({
-      all: items.length,
-      ready: items.filter((i) => i.status === "ready").length,
-      watching: items.filter((i) => i.status === "watching").length,
-      blocked: items.filter((i) => i.status === "blocked").length,
-    }),
-    [items]
-  );
-
+  const totalCount = items.length;
   const bySearch =
     searchDraft.trim() === ""
       ? items
@@ -132,8 +164,23 @@ const OpportunitiesList = ({
     statusFilter === "all" ? bySearch : bySearch.filter((i) => i.status === statusFilter);
   const sorted = sortItems(byStatus, sortKey);
   const emptyMessage = buildEmptyMessage(searchDraft, statusFilter);
+  const groupByStatus = statusFilter === "all" && sortKey === "priority";
+  const renderCards = (list: OpportunityItem[]) =>
+    list.map((item) => {
+      const longVenue = item.legs?.find((leg) => leg.side === "long")?.venue ?? "unknown";
+      const shortVenue = item.legs?.find((leg) => leg.side === "short")?.venue ?? "unknown";
+      return (
+        <OpportunityCard
+          key={`${item.symbol}-${longVenue}-${shortVenue}`}
+          item={item}
+          updatedAt={updatedAt}
+          now={now}
+          onExecute={onExecute}
+        />
+      );
+    });
   const hiddenByFilter =
-    sorted.length === 0 && statusFilter !== "all" && searchDraft.trim() === "" && counts.all > 0;
+    sorted.length === 0 && statusFilter !== "all" && searchDraft.trim() === "" && totalCount > 0;
 
   return (
     <div>
@@ -144,7 +191,7 @@ const OpportunitiesList = ({
             className={styles.sortSelect}
             value={sortKey}
             onChange={(e) => onSortKeyChange(e.target.value as SortKey)}
-            aria-label="Sort opportunities by"
+            aria-label="Sort deals by"
           >
             {SORT_OPTIONS.map((opt) => (
               <option key={opt.key} value={opt.key}>
@@ -153,12 +200,11 @@ const OpportunitiesList = ({
             ))}
           </select>
         </div>
-        <StatusFilterTabs value={statusFilter} onChange={onStatusFilterChange} counts={counts} />
       </div>
       {hiddenByFilter && (
         <div className={styles.filterHint}>
           <span>
-            There are {counts.all} opportunities in total, but none in the{" "}
+            There are {totalCount} opportunities in total, but none in the{" "}
             {STATUS_LABELS[statusFilter as Exclude<StatusFilter, "all">]} filter.
           </span>
           <button
@@ -172,19 +218,24 @@ const OpportunitiesList = ({
       )}
       {sorted.length === 0 ? (
         <EmptyState title={emptyMessage.title} description={emptyMessage.description} />
+      ) : groupByStatus ? (
+        <>
+          {renderCards(sorted.filter((i) => i.status === "ready"))}
+          <CollapsedGroup
+            title="On watch"
+            hint="Almost good enough. We keep checking them."
+            items={sorted.filter((i) => i.status === "watching")}
+            render={renderCards}
+          />
+          <CollapsedGroup
+            title="Blocked"
+            hint="Cannot be opened right now. Open a deal to see why."
+            items={sorted.filter((i) => i.status === "blocked")}
+            render={renderCards}
+          />
+        </>
       ) : (
-        sorted.map((item) => {
-          const longVenue = item.legs?.find((leg) => leg.side === "long")?.venue ?? "unknown";
-          const shortVenue = item.legs?.find((leg) => leg.side === "short")?.venue ?? "unknown";
-          return (
-            <OpportunityCard
-              key={`${item.symbol}-${longVenue}-${shortVenue}`}
-              item={item}
-              updatedAt={updatedAt}
-              now={now}
-            />
-          );
-        })
+        renderCards(sorted)
       )}
     </div>
   );

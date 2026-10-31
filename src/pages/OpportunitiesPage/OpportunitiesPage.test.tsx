@@ -125,7 +125,7 @@ describe("OpportunitiesPage", () => {
   it("applies selected strategy filter via hook options", () => {
     renderPage();
 
-    fireEvent.change(screen.getByLabelText("Filter opportunities by strategy"), {
+    fireEvent.change(screen.getByLabelText("Filter deals by strategy"), {
       target: { value: "cash_and_carry" },
     });
 

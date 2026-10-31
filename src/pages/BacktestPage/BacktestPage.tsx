@@ -14,10 +14,12 @@ import ReplayForm from "../../components/ReplayForm/ReplayForm";
 import ReplayResultPanel from "../../components/ReplayResultPanel/ReplayResultPanel";
 import BacktestLockList from "../../components/BacktestLockList/BacktestLockList";
 import BacktestLockDetail from "../../components/BacktestLockDetail/BacktestLockDetail";
+import BacktestHistoryPanel from "../../components/BacktestHistoryPanel/BacktestHistoryPanel";
+import BacktestSurvivalPanel from "../../components/BacktestSurvivalPanel/BacktestSurvivalPanel";
 import FloatingRefreshButton from "../../components/FloatingRefreshButton/FloatingRefreshButton";
 import { ApiValidationError } from "../../lib/api-errors";
 import { tabId, tabPanelId } from "../../lib/tabIds";
-import type { BacktestReplayRequest, BacktestMetrics } from "../../api/types";
+import type { BacktestReplayRequest, BacktestReplayResponse } from "../../api/types";
 import { usePageTitle } from "../../hooks/usePageTitle";
 
 const TABS = [
@@ -26,6 +28,8 @@ const TABS = [
   { key: "gate", label: "Gate" },
   { key: "locks", label: "Locks" },
   { key: "lock-detail", label: "Detail" },
+  { key: "history", label: "History" },
+  { key: "survival", label: "Survival" },
 ];
 
 const BacktestPage = () => {
@@ -51,7 +55,7 @@ const BacktestPage = () => {
   const [activeTab, setActiveTab] = useState("summary");
   const [selectedLockId, setSelectedLockId] = useState<string | null>(null);
   const [lastRequest, setLastRequest] = useState<BacktestReplayRequest | null>(null);
-  const [lastResult, setLastResult] = useState<BacktestMetrics | null>(null);
+  const [lastResult, setLastResult] = useState<BacktestReplayResponse | null>(null);
   const [replayError, setReplayError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string> | undefined>(undefined);
   const [lockHint, setLockHint] = useState<string | null>(null);
@@ -66,7 +70,7 @@ const BacktestPage = () => {
     setLastRequest(request);
     try {
       const result = await runReplay.mutateAsync(request);
-      setLastResult(result.metrics);
+      setLastResult(result);
     } catch (e) {
       if (e instanceof ApiValidationError) {
         setFieldErrors(e.fieldErrors);
@@ -164,7 +168,9 @@ const BacktestPage = () => {
             )}
             {lastResult && (
               <ReplayResultPanel
-                metrics={lastResult}
+                metrics={lastResult.metrics}
+                replaySource={lastResult.replay_source}
+                replayDiagnostics={lastResult.replay_source_diagnostics}
                 usedRequest={lastRequest}
                 onCreateLock={handleCreateLock}
                 creatingLock={createLock.isPending}
@@ -189,6 +195,10 @@ const BacktestPage = () => {
         {activeTab === "locks" && <BacktestLockList onSelectLock={handleSelectLock} />}
 
         {activeTab === "lock-detail" && <BacktestLockDetail lockId={selectedLockId} />}
+
+        {activeTab === "history" && <BacktestHistoryPanel />}
+
+        {activeTab === "survival" && <BacktestSurvivalPanel />}
       </div>
 
       <FloatingRefreshButton

@@ -13,9 +13,7 @@ import type { OpportunitiesResponse } from "../api/types";
 export type TransportState = "connecting" | "connected" | "reconnecting" | "polling-fallback";
 export type AuthStatus = "ok" | "rate-limited" | "ticket-rejected" | "auth-failed";
 export type TransportFallbackReason =
-  | "transport-reconnect-exhausted"
-  | "auth-retry-exhausted"
-  | "ticket-rate-limited-exhausted";
+  "transport-reconnect-exhausted" | "auth-retry-exhausted" | "ticket-rate-limited-exhausted";
 
 type WsCloseLike = {
   code: number;

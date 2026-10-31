@@ -1,0 +1,150 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: v.space(4);
+  max-width: 40rem;
+  margin-inline: auto;
+  width: 100%;
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dots {
+  display: flex;
+  gap: v.space(1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dot {
+  display: block;
+  width: 2rem;
+  height: 1.5rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+
+  &::after {
+    content: "";
+    display: block;
+    height: 0.375rem;
+    border-radius: v.radius(lg);
+    background: v.color(border-strong);
+  }
+
+  &[aria-current="step"]::after {
+    background: v.color(accent-fill);
+  }
+}
+
+.skip {
+  @include v.button-small(secondary);
+}
+
+.panel {
+  @include v.card(v.space(4));
+}
+
+.eyebrow {
+  @include v.eyebrow;
+  margin: 0 0 v.space(1);
+}
+
+.title {
+  margin: 0;
+  font-size: v.font-size(xl);
+  font-weight: v.font-weight(bold);
+  color: v.color(text);
+  line-height: 1.25;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.intro {
+  margin: v.space(2) 0 v.space(3);
+  font-size: v.font-size(sm);
+  color: v.color(text-secondary);
+}
+
+.points {
+  display: flex;
+  flex-direction: column;
+  gap: v.space(2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.point {
+  display: flex;
+  flex-direction: column;
+  gap: v.space(1);
+  padding: v.space("2-5") v.space(3);
+  border-left: 0.1875rem solid v.color(border-strong);
+  border-radius: v.radius(md);
+  background: v.color(surface-raised);
+}
+
+.income {
+  border-left-color: v.color(success-text);
+}
+.warning {
+  border-left-color: v.color(warning-text);
+}
+.danger {
+  border-left-color: v.color(danger-text);
+}
+
+.term {
+  font-weight: v.font-weight(semibold);
+  color: v.color(text);
+}
+
+.income .term {
+  color: v.color(success-text);
+}
+.warning .term {
+  color: v.color(warning-text);
+}
+.danger .term {
+  color: v.color(danger-text);
+}
+
+.text {
+  font-size: v.font-size(sm);
+  color: v.color(text-secondary);
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  gap: v.space(2);
+}
+
+.primary {
+  @include v.button(primary);
+  min-width: 9rem;
+}
+
+.secondary {
+  @include v.button(secondary);
+}
+
+.more {
+  margin: 0;
+  text-align: center;
+  font-size: v.font-size(sm);
+  color: v.color(text-secondary);
+
+  a {
+    color: v.color(accent-text);
+  }
+}

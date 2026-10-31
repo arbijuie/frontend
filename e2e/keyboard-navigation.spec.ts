@@ -1,12 +1,30 @@
 import { expect, test } from "@playwright/test";
+import type { Locator, Page } from "@playwright/test";
 import { mockApi } from "./fixtures/mockApi";
 
 const PAGES = [
-  { path: "/", name: "Opportunities" },
-  { path: "/status", name: "Status" },
+  { path: "/", name: "Deals" },
+  { path: "/status", name: "Health" },
   { path: "/config", name: "Config" },
   { path: "/backtest", name: "Backtest" },
+  { path: "/positions", name: "Positions" },
+  { path: "/more", name: "More" },
+  { path: "/welcome", name: "Welcome" },
+  { path: "/automation", name: "Auto" },
+  { path: "/execution/preflight", name: "Pre-trade check" },
+  { path: "/deals/AERO/hyperliquid/lighter", name: "Deal page" },
+  { path: "/operations", name: "System logs" },
 ];
+
+async function tabUntilFocused(page: Page, locator: Locator, attempts = 12): Promise<void> {
+  for (let attempt = 0; attempt < attempts; attempt += 1) {
+    await page.keyboard.press("Tab");
+    if (await locator.evaluate((element) => element === document.activeElement)) {
+      return;
+    }
+  }
+  throw new Error("Expected focus target was not reached via Tab navigation");
+}
 
 test.describe("Keyboard-only navigation", () => {
   test.beforeEach(async ({ page }) => {
@@ -32,18 +50,22 @@ test.describe("Keyboard-only navigation", () => {
     await expect(page.getByRole("main")).toBeFocused();
 
     await page.keyboard.press("Tab");
-    await expect(page.getByLabel("Filter opportunities by strategy")).toBeFocused();
+    await expect(page.getByLabel("Filter deals by strategy")).toBeFocused();
   });
 
-  test("moves through all four pages with the keyboard and announces each change", async ({
+  test("moves through the bottom menu with the keyboard and announces each change", async ({
     page,
   }) => {
     await page.goto("/");
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
     const nav = page.getByRole("navigation", { name: "Primary" });
 
-    for (const target of ["Status", "Config", "Backtest"]) {
-      const link = nav.getByRole("link", { name: target, exact: true });
+    for (const { link: label, title: target } of [
+      { link: "Health", title: "Health" },
+      { link: "Auto", title: "Auto" },
+      { link: "More", title: "More" },
+    ]) {
+      const link = nav.getByRole("link", { name: label, exact: true });
       await link.focus();
       await page.keyboard.press("Enter");
 
@@ -53,13 +75,66 @@ test.describe("Keyboard-only navigation", () => {
     }
   });
 
-  test("Opportunities: every status filter is reachable with Tab and reports its state", async ({
+  test("More: a screen is reachable from the bottom menu with the keyboard only", async ({
     page,
   }) => {
     await page.goto("/");
-    const group = page.getByRole("group", { name: "Filter opportunities by status" });
-    const allButton = group.getByRole("button", { name: /^All/ });
-    const readyButton = group.getByRole("button", { name: /^Ready/ });
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    const nav = page.getByRole("navigation", { name: "Primary" });
+
+    await nav.getByRole("link", { name: "More", exact: true }).focus();
+    await page.keyboard.press("Enter");
+    await expect(page).toHaveTitle(/More/);
+
+    await page.getByRole("link", { name: /My open deals/ }).focus();
+    await page.keyboard.press("Enter");
+
+    await expect(page).toHaveURL(/\/positions$/);
+    await expect(page.getByRole("heading", { level: 1, name: "My Positions" })).toBeVisible();
+  });
+
+  test("Deals: Escape closes the Execution Sheet and focus returns to the opener", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    const opener = page.getByRole("button", {
+      name: "Open trade for AERO, hyperliquid to lighter",
+    });
+    await opener.focus();
+    await page.keyboard.press("Enter");
+
+    const dialog = page.getByRole("dialog", { name: "Open Arbitrage Position" });
+    await expect(dialog).toBeVisible();
+
+    await page.keyboard.press("Escape");
+    await expect(dialog).toBeHidden();
+    await expect(opener).toBeFocused();
+  });
+
+  test("Positions: Escape closes the close-position dialog and focus returns to the opener", async ({
+    page,
+  }) => {
+    await page.goto("/positions");
+    const opener = page.getByRole("button", { name: "Close position" }).first();
+    await opener.focus();
+    await page.keyboard.press("Enter");
+
+    const dialog = page.getByRole("dialog", { name: /^Close .+\?$/ });
+    await expect(dialog).toBeVisible();
+    await expect(page.getByRole("button", { name: "Keep open" })).toBeFocused();
+
+    await page.keyboard.press("Escape");
+    await expect(dialog).toBeHidden();
+    await expect(opener).toBeFocused();
+  });
+
+  test("Deals: every status filter is reachable with Tab and reports its state", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    const group = page.getByRole("group", { name: "Filter deals by status" });
+    const allButton = group.getByRole("button", { name: /^Show all deals/ });
+    const readyButton = group.getByRole("button", { name: /^Show ready deals/ });
     await expect(allButton).toHaveAttribute("aria-pressed", "true");
 
     await allButton.focus();
@@ -72,9 +147,7 @@ test.describe("Keyboard-only navigation", () => {
     await expect(page).toHaveURL(/status=ready/);
   });
 
-  test("Opportunities: card details and help tooltip are operable from the keyboard", async ({
-    page,
-  }) => {
+  test("Deals: card details and help tooltip are operable from the keyboard", async ({ page }) => {
     await page.goto("/");
 
     await page
@@ -95,8 +168,9 @@ test.describe("Keyboard-only navigation", () => {
     await expect(page.getByRole("tooltip")).toBeHidden();
   });
 
-  test("Opportunities: repeated symbols get distinct button names", async ({ page }) => {
+  test("Deals: repeated symbols get distinct button names", async ({ page }) => {
     await page.goto("/");
+    await page.getByRole("button", { name: "Show on watch deals (2)" }).click();
 
     await expect(page.getByRole("button", { name: /^More details for AERO,/ })).toHaveCount(2);
     await expect(
@@ -120,8 +194,9 @@ test.describe("Keyboard-only navigation", () => {
     const dialog = page.getByRole("dialog", { name: /preview config changes/i });
     await expect(dialog).toBeFocused();
 
-    await page.keyboard.press("Tab");
-    await expect(page.getByRole("button", { name: "Cancel" })).toBeFocused();
+    const cancelButton = page.getByRole("button", { name: "Cancel" });
+    await tabUntilFocused(page, cancelButton, 6);
+    await expect(cancelButton).toBeFocused();
 
     await dialog.focus();
     await page.keyboard.press("Escape");
@@ -137,7 +212,7 @@ test.describe("Keyboard-only navigation", () => {
     await expect(summaryTab).toBeVisible();
     await summaryTab.focus();
 
-    await page.keyboard.press("Tab");
+    await tabUntilFocused(page, replayTab, 6);
     await expect(replayTab).toBeFocused();
     await expect(replayTab).toHaveAttribute("aria-selected", "false");
 
@@ -152,7 +227,7 @@ test.describe("Keyboard-only navigation", () => {
     await expect(page.getByRole("tab").last()).toBeFocused();
   });
 
-  test("Status: the scrollable exchange table can be focused from the keyboard", async ({
+  test("Health: the scrollable exchange table can be focused from the keyboard", async ({
     page,
   }) => {
     await page.goto("/status");
@@ -163,9 +238,9 @@ test.describe("Keyboard-only navigation", () => {
     await expect(region).toBeFocused();
   });
 
-  test("Status: refresh button keeps keyboard focus while the request runs", async ({ page }) => {
+  test("Health: refresh button keeps keyboard focus while the request runs", async ({ page }) => {
     await page.goto("/status");
-    const refresh = page.getByRole("button", { name: "Refresh status" });
+    const refresh = page.getByRole("button", { name: "Refresh health" });
     await expect(refresh).toBeVisible();
 
     await page.route("http://127.0.0.1:8000/status**", async (route) => {
@@ -187,9 +262,8 @@ test.describe("Keyboard-only navigation", () => {
     const menu = page.getByRole("navigation", { name: "Primary" });
     await expect(menu).toBeVisible();
 
-    await page.keyboard.press("Tab");
-    await page.keyboard.press("Tab");
     const firstMenuItem = menu.getByRole("link").first();
+    await tabUntilFocused(page, firstMenuItem, 12);
     await expect(firstMenuItem).toBeFocused();
     await expect(firstMenuItem).toHaveCSS("outline-style", "solid");
 

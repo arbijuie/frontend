@@ -1,0 +1,183 @@
+.page {
+  padding-bottom: v.space(8);
+}
+
+.header {
+  margin-bottom: v.space(4);
+}
+
+.title {
+  margin: 0 0 v.space(1);
+  font-size: v.font-size(xl);
+  font-weight: v.font-weight(bold);
+  color: v.color(text);
+}
+
+.subtitle {
+  font-size: v.font-size(sm);
+  color: v.color(text-secondary);
+  margin: 0;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: v.space(3);
+  margin-bottom: v.space(5);
+
+  @include v.bp-up(md) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: v.space(4);
+  margin-bottom: v.space(3);
+}
+
+.sectionTitle {
+  font-size: v.font-size(base);
+  font-weight: v.font-weight(bold);
+  color: v.color(text);
+  margin: 0;
+}
+
+.positionsList {
+  display: flex;
+  flex-direction: column;
+  gap: v.space(3);
+  margin-bottom: v.space(5);
+}
+
+.positionCard {
+  background: v.color(surface);
+  border: 0.0625rem solid v.color(border);
+  border-radius: v.radius(lg);
+  padding: v.space(4);
+  box-shadow: v.shadow(sm);
+  display: flex;
+  flex-direction: column;
+  gap: v.space(3);
+}
+
+.cardTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: v.space(2);
+}
+
+.symbolGroup {
+  display: flex;
+  align-items: center;
+  gap: v.space(2);
+}
+
+.symbol {
+  font-size: v.font-size(lg);
+  font-weight: v.font-weight(bold);
+  color: v.color(text);
+}
+
+.routeBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: v.space(1);
+  font-size: v.font-size(xs);
+  color: v.color(text-secondary);
+}
+
+.statusBadge {
+  font-size: v.font-size("2xs");
+  padding: v.space("0-5") v.space("1-5");
+  border-radius: v.radius(sm);
+  background: v.color(surface-raised);
+  border: 0.0625rem solid v.color(border);
+  text-transform: uppercase;
+  font-weight: v.font-weight(semibold);
+}
+
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: v.space(2);
+  padding: v.space(2) v.space(3);
+  background: v.color(surface-raised);
+  border-radius: v.radius(md);
+  border: 0.0625rem solid v.color(border);
+
+  @include v.bp-up(sm) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.metricItem {
+  display: flex;
+  flex-direction: column;
+  gap: v.space("0-5");
+}
+
+.metricLabel {
+  font-size: v.font-size("2xs");
+  color: v.color(text-muted);
+}
+
+.metricValue {
+  font-size: v.font-size(sm);
+  font-weight: v.font-weight(bold);
+  @include v.tabular-nums;
+}
+
+.positive {
+  color: v.color(success-text);
+}
+
+.negative {
+  color: v.color(danger-text);
+}
+
+.neutral {
+  color: v.color(text-secondary);
+}
+
+.cardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: v.space(2);
+  border-top: 0.0625rem solid v.color(border);
+  gap: v.space(2);
+}
+
+.openedTime {
+  font-size: v.font-size(xs);
+  color: v.color(text-muted);
+}
+
+.closeButton {
+  @include v.button-small(ghost);
+  color: v.color(danger-text);
+  border-color: v.color(danger-border);
+
+  &:hover {
+    background: v.color(danger-tint);
+  }
+}
+
+.errorBox {
+  @include v.error-box;
+  margin-bottom: v.space(4);
+}
+
+.exploreLink {
+  @include v.button(primary);
+  display: inline-flex;
+  align-items: center;
+  gap: v.space(2);
+  margin-top: v.space(3);
+  text-decoration: none;
+}

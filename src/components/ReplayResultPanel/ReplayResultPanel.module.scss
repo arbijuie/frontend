@@ -67,6 +67,18 @@
   color: v.color(text-secondary);
 }
 
+.metricLabelWithHelp {
+  display: inline-flex;
+  align-items: center;
+  gap: v.space(1);
+}
+
+.metricInlineHelp {
+  display: inline-flex;
+  align-items: center;
+  gap: v.space(1);
+}
+
 .row {
   display: flex;
   justify-content: space-between;
@@ -80,4 +92,56 @@
     min-width: 0;
     overflow-wrap: anywhere;
   }
+}
+
+.coverageSection {
+  margin-top: v.space(2);
+}
+
+.coverageLegend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: v.space(1);
+  margin-bottom: v.space("1-5");
+}
+
+.sectionSubLabel {
+  margin-bottom: v.space(1);
+  font-size: v.font-size("2xs");
+  color: v.color(text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.coverageDetail {
+  font-size: v.font-size(xs);
+  color: v.color(text-muted);
+}
+
+.coverageValue {
+  display: inline-flex;
+  align-items: center;
+  gap: v.space(1);
+}
+
+.coverageBadge {
+  @include v.badge(neutral);
+  justify-content: center;
+  min-width: 3.5rem;
+  padding-inline: v.space(1);
+}
+
+.good {
+  @include v.badge(success);
+  padding-inline: v.space(1);
+}
+
+.warn {
+  @include v.badge(warning);
+  padding-inline: v.space(1);
+}
+
+.poor {
+  @include v.badge(danger);
+  padding-inline: v.space(1);
 }

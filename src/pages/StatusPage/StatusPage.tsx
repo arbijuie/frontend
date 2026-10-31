@@ -10,6 +10,8 @@ import PipelineDiagnosticsHint from "../../components/PipelineDiagnosticsHint/Pi
 import DeepPipelineDiagnostics from "../../components/DeepPipelineDiagnostics/DeepPipelineDiagnostics";
 import WsFeedReliabilityList from "../../components/WsFeedReliabilityList/WsFeedReliabilityList";
 import RecoveryHealthCard from "../../components/RecoveryHealthCard/RecoveryHealthCard";
+import HealthLight from "../../components/HealthLight/HealthLight";
+import { healthSummary } from "../../lib/healthSummary";
 import { useNow } from "../../hooks/useNow";
 import { useTransientFlag } from "../../hooks/useTransientFlag";
 import { getLiveUptimeSeconds } from "../../lib/format";
@@ -19,7 +21,7 @@ import { usePageTitle } from "../../hooks/usePageTitle";
 import WsTransportHealthCard from "../../components/WsTransportHealthCard/WsTransportHealthCard";
 
 const StatusPage = () => {
-  usePageTitle("Status");
+  usePageTitle("Health");
   const { data, error, loading, fetching, refetch, fetchedAt } = useStatus();
   const { data: config } = useConfig({
     staleTime: 0,
@@ -44,7 +46,7 @@ const StatusPage = () => {
     <div className={styles.page}>
       <div className={styles.header}>
         <div>
-          <h1 className={styles.title}>Status</h1>
+          <h1 className={styles.title}>Health</h1>
           <div className={styles.liveRow}>
             <span className={styles.liveDot} aria-hidden="true" />
             live
@@ -54,6 +56,8 @@ const StatusPage = () => {
           </div>
         </div>
       </div>
+
+      {data && <HealthLight summary={healthSummary(data, now.getTime())} />}
 
       {config && <RuntimeKnobsCard config={config} />}
 
@@ -71,7 +75,7 @@ const StatusPage = () => {
           Error: {error}
         </div>
       )}
-      {loading && !data && <div role="status">Loading status...</div>}
+      {loading && !data && <div role="status">Loading health…</div>}
 
       {data && (
         <>
@@ -92,7 +96,7 @@ const StatusPage = () => {
         </>
       )}
 
-      <FloatingRefreshButton fetching={fetching} onClick={handleRefresh} label="Refresh status" />
+      <FloatingRefreshButton fetching={fetching} onClick={handleRefresh} label="Refresh health" />
     </div>
   );
 };

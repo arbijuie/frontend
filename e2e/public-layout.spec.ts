@@ -105,9 +105,9 @@ test.describe("Opportunities WebSocket scope", () => {
 
     await page
       .getByRole("navigation", { name: "Primary" })
-      .getByRole("link", { name: "Status", exact: true })
+      .getByRole("link", { name: "Health", exact: true })
       .click();
-    await expect(page.getByRole("heading", { level: 1, name: "Status" })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1, name: "Health" })).toBeVisible();
 
     expect(opened.length).toBe(afterFirstPage);
   });

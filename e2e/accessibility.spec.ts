@@ -57,16 +57,14 @@ test.describe("Accessibility baseline (pages with realistic data)", () => {
     await mockApi(page);
   });
 
-  test("Opportunities: list with ready, watching and blocked cards", async ({ page }) => {
+  test("Deals: list with ready, watching and blocked cards", async ({ page }) => {
     await page.goto("/");
     await expect(page.getByText("AERO").first()).toBeVisible();
     await expect(page.getByText("live (WS)")).toBeVisible();
     await expectNoSeriousViolations(page);
   });
 
-  test("Opportunities: expanded card with provenance and an open help tooltip", async ({
-    page,
-  }) => {
+  test("Deals: expanded card with provenance and an open help tooltip", async ({ page }) => {
     await page.goto("/");
     await page
       .getByRole("button", { name: "More details for AERO, hyperliquid to lighter" })
@@ -77,7 +75,7 @@ test.describe("Accessibility baseline (pages with realistic data)", () => {
     await expectNoSeriousViolations(page);
   });
 
-  test("Status: full page with diagnostics and live transport", async ({ page }) => {
+  test("Health: full page with diagnostics and live transport", async ({ page }) => {
     await page.goto("/status");
     await expect(page.getByRole("heading", { name: "Live Transport" })).toBeVisible();
     await expect(
@@ -155,10 +153,53 @@ test.describe("Accessibility baseline (pages with realistic data)", () => {
   }
 });
 
+test.describe("Accessibility baseline (trader screens)", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await mockApi(page);
+  });
+
+  const TRADER_PAGES = [
+    { path: "/positions", name: "Positions" },
+    { path: "/more", name: "More" },
+    { path: "/welcome", name: "Welcome" },
+    { path: "/automation", name: "Auto" },
+    { path: "/execution/preflight", name: "Pre-trade check" },
+    { path: "/deals/AERO/hyperliquid/lighter", name: "Deal page" },
+    { path: "/operations", name: "System logs" },
+  ];
+
+  for (const { path, name } of TRADER_PAGES) {
+    test(`${name}: no serious or critical violations`, async ({ page }) => {
+      await page.goto(path);
+      await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+      await expectNoSeriousViolations(page);
+    });
+  }
+
+  test("Deals: the open Execution Sheet has no serious or critical violations", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await page.getByRole("button", { name: "Open trade for AERO, hyperliquid to lighter" }).click();
+    await expect(page.getByRole("dialog", { name: "Open Arbitrage Position" })).toBeVisible();
+    await expectNoSeriousViolations(page);
+  });
+
+  test("Positions: the open close-position dialog has no serious or critical violations", async ({
+    page,
+  }) => {
+    await page.goto("/positions");
+    await page.getByRole("button", { name: "Close position" }).first().click();
+    await expect(page.getByRole("dialog", { name: /^Close .+\?$/ })).toBeVisible();
+    await expectNoSeriousViolations(page);
+  });
+});
+
 test.describe("Accessibility baseline (backend unavailable)", () => {
   const PAGES = [
-    { path: "/", name: "Opportunities" },
-    { path: "/status", name: "Status" },
+    { path: "/", name: "Deals" },
+    { path: "/status", name: "Health" },
     { path: "/config", name: "Config" },
     { path: "/backtest", name: "Backtest" },
   ];

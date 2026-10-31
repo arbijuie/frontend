@@ -1,0 +1,68 @@
+// Shared by the backtest History and Survival tabs (issue #514).
+.tableWrap {
+  @include v.scroll-x;
+  margin-bottom: v.space(3);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: v.font-size(sm);
+
+  th,
+  td {
+    padding: v.space(1) v.space("1-5");
+    text-align: left;
+    border-bottom: 0.0625rem solid v.color(border);
+    white-space: nowrap;
+    vertical-align: top;
+  }
+
+  th {
+    color: v.color(text-muted);
+    font-weight: v.font-weight(semibold);
+  }
+}
+
+.badgeNeutral {
+  @include v.badge(neutral);
+}
+
+.badgeSuccess {
+  @include v.badge(success);
+}
+
+.badgeDanger {
+  @include v.badge(danger);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr));
+  gap: v.space(2);
+  margin-bottom: v.space(3);
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: v.space(2);
+  margin-bottom: v.space(2);
+}
+
+.select {
+  @include v.select;
+  width: auto;
+  min-width: 8rem;
+}
+
+.label {
+  font-size: v.font-size(sm);
+  color: v.color(text-muted);
+}
+
+.assumptions {
+  @include v.callout(info);
+  margin-bottom: v.space(3);
+}

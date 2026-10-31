@@ -7,7 +7,7 @@ describe("StatusFilterTabs", () => {
   it("renders a labelled group with one button per filter", () => {
     render(<StatusFilterTabs value="all" onChange={vi.fn()} counts={counts} />);
 
-    expect(screen.getByRole("group", { name: "Filter opportunities by status" })).toBeTruthy();
+    expect(screen.getByRole("group", { name: "Filter deals by status" })).toBeTruthy();
     expect(screen.getAllByRole("button")).toHaveLength(4);
   });
 

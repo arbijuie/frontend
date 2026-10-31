@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AppShell } from "./App";
@@ -33,6 +33,7 @@ describe("AppShell public routes", () => {
 
     expect(screen.getByRole("heading", { level: 1, name: heading })).toBeTruthy();
     expect(screen.getByRole("navigation", { name: "Public" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Go back" })).toBeTruthy();
     expect(screen.queryByRole("navigation", { name: "Primary" })).toBeNull();
     expect(screen.getAllByRole("main")).toHaveLength(1);
     expect(screen.getByRole("link", { name: "Skip to main content" })).toBeTruthy();
@@ -59,5 +60,12 @@ describe("AppShell public routes", () => {
 
     expect(screen.getByRole("navigation", { name: "Primary" })).toBeTruthy();
     expect(screen.queryByRole("navigation", { name: "Public" })).toBeNull();
+  });
+
+  it("returns to Product when opened on a public deep link with no history", () => {
+    renderAt("/journal");
+
+    fireEvent.click(screen.getByRole("button", { name: "Go back" }));
+    expect(screen.getByRole("heading", { level: 1, name: "Product" })).toBeTruthy();
   });
 });

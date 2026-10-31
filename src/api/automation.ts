@@ -1,5 +1,11 @@
 import { API_URL, authFetch } from "./config";
-import type { AutomationControlRequest, AutomationOverviewResponse } from "./types";
+import { parseApiError } from "../lib/api-errors";
+import type {
+  AutoEntryDecisionListResponse,
+  AutoExitDecisionListResponse,
+  AutomationControlRequest,
+  AutomationOverviewResponse,
+} from "./types";
 
 export async function fetchAutomation(): Promise<AutomationOverviewResponse> {
   const res = await authFetch(`${API_URL}/automation`);
@@ -24,5 +30,17 @@ export async function postAutomationControl(
       .catch(() => "");
     throw new Error(`POST /automation/controls failed: ${res.status}${detail}`);
   }
+  return res.json();
+}
+
+export async function fetchAutoEntryDecisions(limit = 50): Promise<AutoEntryDecisionListResponse> {
+  const res = await authFetch(`${API_URL}/automation/entry/decisions?limit=${limit}`);
+  if (!res.ok) throw await parseApiError(res);
+  return res.json();
+}
+
+export async function fetchAutoExitDecisions(limit = 50): Promise<AutoExitDecisionListResponse> {
+  const res = await authFetch(`${API_URL}/automation/exit/decisions?limit=${limit}`);
+  if (!res.ok) throw await parseApiError(res);
   return res.json();
 }

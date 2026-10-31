@@ -94,7 +94,9 @@ describe("useOpportunitiesSocket with token auth", () => {
     expect(["connecting", "reconnecting"]).toContain(result.current.transportState);
     expect(result.current.authStatus).toBe("rate-limited");
     expect(result.current.authRetryAfterSeconds).toBe(5);
-    expect(result.current.authDetail).toBe("Retry-After below safe minimum; applying minimum delay.");
+    expect(result.current.authDetail).toBe(
+      "Retry-After below safe minimum; applying minimum delay."
+    );
     expect(result.current.authRetryAttempt).toBe(1);
 
     await act(async () => {
@@ -115,7 +117,9 @@ describe("useOpportunitiesSocket with token auth", () => {
 
     expect(result.current.authStatus).toBe("rate-limited");
     expect(result.current.authRetryAfterSeconds).toBe(5);
-    expect(result.current.authDetail).toBe("Retry-After missing or invalid; using safe default delay.");
+    expect(result.current.authDetail).toBe(
+      "Retry-After missing or invalid; using safe default delay."
+    );
 
     await act(async () => {
       vi.advanceTimersByTime(4999);
@@ -140,7 +144,9 @@ describe("useOpportunitiesSocket with token auth", () => {
 
     expect(result.current.authStatus).toBe("rate-limited");
     expect(result.current.authRetryAfterSeconds).toBe(5);
-    expect(result.current.authDetail).toBe("Retry-After below safe minimum; applying minimum delay.");
+    expect(result.current.authDetail).toBe(
+      "Retry-After below safe minimum; applying minimum delay."
+    );
   });
 
   it("falls back after repeated 429 ticket responses", async () => {

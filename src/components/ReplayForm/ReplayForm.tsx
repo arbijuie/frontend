@@ -62,7 +62,10 @@ const ReplayForm = ({ onSubmit, submitting, fieldErrors }: ReplayFormProps) => {
     e.preventDefault();
 
     const nextLocalErrors: Record<string, string> = {};
-    const request: BacktestReplayRequest = { strategy_id: strategyId || "baseline-v1" };
+    const request: BacktestReplayRequest = {
+      strategy_id: strategyId || "baseline-v1",
+      replay_source: "runtime_capture",
+    };
 
     if (symbols.trim()) {
       request.symbols = symbols

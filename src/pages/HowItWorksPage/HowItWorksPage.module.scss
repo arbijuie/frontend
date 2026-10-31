@@ -1,0 +1,84 @@
+.steps {
+  list-style: none;
+  margin: 0 0 v.space(4);
+  padding: 0;
+  display: grid;
+  gap: v.space(2);
+}
+
+.step {
+  @include v.card;
+  display: flex;
+  gap: v.space(3);
+  align-items: flex-start;
+}
+
+.stepIndex {
+  @include v.badge-solid(accent);
+  flex-shrink: 0;
+  width: 1.75rem;
+  height: 1.75rem;
+  justify-content: center;
+  border-radius: v.radius(pill);
+  font-size: v.font-size(sm);
+}
+
+.stepTitle {
+  margin: 0 0 v.space("0-5");
+  font-size: v.font-size(md);
+  font-weight: v.font-weight(semibold);
+}
+
+.stepText {
+  margin: 0;
+  color: v.color(text-muted);
+  font-size: v.font-size(sm);
+  line-height: v.line-height(normal);
+}
+
+.verdicts {
+  list-style: none;
+  margin: 0 0 v.space(4);
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  gap: v.space(2);
+}
+
+.verdict {
+  @include v.card;
+  border-left-width: 0.25rem;
+}
+
+.ready {
+  border-left-color: v.color(success-border);
+}
+
+.watching {
+  border-left-color: v.color(warning-border);
+}
+
+.blocked {
+  border-left-color: v.color(danger-border);
+}
+
+.verdictLabel {
+  margin: 0 0 v.space("0-5");
+  font-size: v.font-size(sm);
+  font-weight: v.font-weight(bold);
+  letter-spacing: 0.04em;
+}
+
+.costs {
+  margin: 0 0 v.space(4);
+  padding-left: v.space(3);
+  color: v.color(text-muted);
+  font-size: v.font-size(sm);
+  line-height: v.line-height(normal);
+}
+
+.lead {
+  margin: 0 0 v.space(4);
+  color: v.color(text-muted);
+  line-height: v.line-height(normal);
+}

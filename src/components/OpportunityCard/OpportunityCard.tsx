@@ -1,3 +1,4 @@
+import { Zap } from "lucide-react";
 import styles from "./OpportunityCard.module.scss";
 import { useId, useState } from "react";
 import { SOURCE_STATE_SET, type OpportunityItem, type FundingTrend } from "../../api/types";
@@ -5,6 +6,10 @@ import StatusBadge from "../StatusBadge/StatusBadge";
 import ExchangeBadge from "../ExchangeBadge/ExchangeBadge";
 import { signColor, getFundingTargetTime, formatCountdown } from "../../lib/format";
 import HelpTooltip from "../HelpTooltip/HelpTooltip";
+import { plainReasons } from "../../lib/plainReasons";
+import { checkPrices } from "../../lib/priceCheck";
+import { bpsToPercent, dealPath, formatPayoff } from "../../lib/dealFormat";
+import { Link, useInRouterContext } from "react-router-dom";
 import VisuallyHidden from "../VisuallyHidden/VisuallyHidden";
 
 const trendIcon: Record<FundingTrend, string> = { rising: "↑", falling: "↓", stable: "→" };
@@ -29,6 +34,7 @@ interface OpportunityCardProps {
   item: OpportunityItem;
   updatedAt: string | null;
   now: Date;
+  onExecute?: (item: OpportunityItem) => void;
 }
 
 function formatSigned(value: number, fractionDigits = 2): string {
@@ -90,11 +96,12 @@ function routeLabel(longVenue: string, shortVenue: string): string {
   return `${longVenue} to ${shortVenue}`;
 }
 
-const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
+const OpportunityCard = ({ item, updatedAt, now, onExecute }: OpportunityCardProps) => {
   const detailsId = useId();
   const headingId = useId();
   const routeId = useId();
   const [expanded, setExpanded] = useState(false);
+  const inRouter = useInRouterContext();
   const [showProvenance, setShowProvenance] = useState(false);
   const longLeg = item.legs?.find((leg) => leg.side === "long");
   const shortLeg = item.legs?.find((leg) => leg.side === "short");
@@ -135,12 +142,35 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
     updatedAt && item.short_hours_to_next_funding != null
       ? formatCountdown(getFundingTargetTime(updatedAt, item.short_hours_to_next_funding), now)
       : null;
+  const priceCheck = checkPrices(
+    longMicro?.mid,
+    shortMicro?.mid,
+    item.basis_bps,
+    item.strategy_type
+  );
+  const wrongCoin = priceCheck.level === "danger";
   return (
     <article className={styles.card} aria-labelledby={`${headingId} ${routeId}`}>
       <div className={styles.topRow}>
-        <h2 id={headingId} className={styles.symbol}>
-          {item.symbol}
-        </h2>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+          <h2 id={headingId} className={styles.symbol}>
+            {item.symbol}
+          </h2>
+          {item.liquidity_tier && (
+            <span
+              className={`${styles.riskBadge} ${
+                item.liquidity_tier === "H"
+                  ? styles.riskLow
+                  : item.liquidity_tier === "M"
+                    ? styles.riskMedium
+                    : styles.riskHigh
+              }`}
+            >
+              Risk:{" "}
+              {item.liquidity_tier === "H" ? "Low" : item.liquidity_tier === "M" ? "Med" : "High"}
+            </span>
+          )}
+        </div>
         <StatusBadge status={item.status} />
       </div>
       <div id={routeId} className={styles.route}>
@@ -151,66 +181,22 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
         <VisuallyHidden> to </VisuallyHidden>
         <ExchangeBadge exchange={shortVenue} />
       </div>
+      <div className={styles.headline}>
+        <div className={styles.headlineLabel}>Expected income</div>
+        <div
+          className={`${styles.headlineValue} ${item.funding_diff_apr > 0 ? styles.positive : styles.neutral}`}
+        >
+          {formatSigned(item.funding_diff_apr, 1)}% / year
+        </div>
+      </div>
       <div className={styles.metrics}>
         <div>
-          <div className={styles.metricLabel}>Funding Diff APR</div>
-          <div className={`${styles.metricValue} ${styles[signColor(item.funding_diff_apr)]}`}>
-            {item.funding_diff_apr.toFixed(2)}%
-          </div>
+          <div className={styles.metricLabel}>Costs to enter and exit</div>
+          <div className={styles.metricValue}>{bpsToPercent(item.total_cost_bps)}</div>
         </div>
         <div>
-          <div className={styles.metricLabelWithHelp}>
-            Funding Edge
-            <HelpTooltip
-              label="Funding Edge"
-              text="Projected funding PnL for expected hold window: funding_diff_apr * hold_hours / 8760 * 100"
-            />
-          </div>
-          <div className={`${styles.metricValue} ${styles[signColor(item.funding_edge_bps)]}`}>
-            {item.funding_edge_bps.toFixed(1)} bps
-          </div>
-        </div>
-        <div>
-          <div className={styles.metricLabel}>Total Cost</div>
-          <div className={`${styles.metricValue} ${styles.negative}`}>
-            {item.total_cost_bps.toFixed(1)} bps
-          </div>
-        </div>
-        <div>
-          <div className={styles.metricLabelWithHelp}>
-            Score
-            <HelpTooltip
-              label="Score"
-              text="Combined score = Funding Edge + Basis Bonus - Total Cost - Timing Penalty - Basis Divergence Penalty (plus instability/liquidity/rounding adjustment)"
-            />
-          </div>
-          <div className={`${styles.metricValue} ${styles[signColor(item.combined_score)]}`}>
-            {item.combined_score.toFixed(1)}
-          </div>
-        </div>
-        <div>
-          <div className={styles.metricLabel}>Basis</div>
-          <div className={`${styles.metricValue} ${styles[signColor(item.basis_bps)]}`}>
-            {item.basis_bps.toFixed(1)} bps
-          </div>
-        </div>
-        <div>
-          <div className={styles.metricLabel}>Breakeven</div>
-          <div className={styles.metricValue}>
-            {item.hours_to_breakeven != null ? `${item.hours_to_breakeven.toFixed(1)}h` : "—"}
-          </div>
-        </div>
-        <div>
-          <div className={styles.metricLabel}>Next funding (L)</div>
-          <div className={`${styles.metricValue} ${longCountdown?.urgent ? styles.negative : ""}`}>
-            {longCountdown ? longCountdown.text : "—"}
-          </div>
-        </div>
-        <div>
-          <div className={styles.metricLabel}>Next funding (S)</div>
-          <div className={`${styles.metricValue} ${shortCountdown?.urgent ? styles.negative : ""}`}>
-            {shortCountdown ? shortCountdown.text : "—"}
-          </div>
+          <div className={styles.metricLabel}>Pays off in</div>
+          <div className={styles.metricValue}>{formatPayoff(item.hours_to_breakeven)}</div>
         </div>
       </div>
 
@@ -218,24 +204,131 @@ const OpportunityCard = ({ item, updatedAt, now }: OpportunityCardProps) => {
         <div className={styles.instabilityBadge}>⚠ Funding unstable</div>
       )}
 
+      {priceCheck.level !== "ok" && (
+        <div
+          className={wrongCoin ? styles.priceDanger : styles.priceWarning}
+          role={wrongCoin ? "alert" : "status"}
+        >
+          <strong>{priceCheck.title}</strong>
+          <span>{priceCheck.text}</span>
+        </div>
+      )}
+
       {item.reasons?.length ? (
         <div className={styles.reasons}>
-          {item.reasons.map((reason) => reason.message).join(", ")}
+          <div className={styles.reasonsTitle}>
+            {item.status === "blocked" ? "Why it is blocked" : "Why we are waiting"}
+          </div>
+          <ul className={styles.reasonsList}>
+            {plainReasons(item.reasons).map((text) => (
+              <li key={text}>{text}</li>
+            ))}
+          </ul>
         </div>
       ) : null}
 
-      <button
-        className={styles.expandButton}
-        onClick={() => setExpanded(!expanded)}
-        aria-expanded={expanded}
-        aria-controls={detailsId}
-        aria-label={`${expanded ? "Hide details" : "More details"} for ${item.symbol}, ${routeLabel(longVenue, shortVenue)}`}
-      >
-        {expanded ? "Hide details" : "More details"}
-      </button>
+      <div className={styles.cardActionRow}>
+        {onExecute && !wrongCoin && item.status === "ready" && (
+          <button
+            type="button"
+            className={styles.executeButton}
+            onClick={() => onExecute(item)}
+            aria-label={`Open trade for ${item.symbol}, ${routeLabel(longVenue, shortVenue)}`}
+          >
+            <Zap size={14} aria-hidden="true" />
+            Open position
+          </button>
+        )}
+        {inRouter && (
+          <Link
+            to={dealPath(item)}
+            className={styles.expandButton}
+            aria-label={`Deal page for ${item.symbol}, ${routeLabel(longVenue, shortVenue)}`}
+          >
+            Deal page
+          </Link>
+        )}
+        <button
+          className={styles.expandButton}
+          onClick={() => setExpanded(!expanded)}
+          aria-expanded={expanded}
+          aria-controls={detailsId}
+          aria-label={`${expanded ? "Hide details" : "More details"} for ${item.symbol}, ${routeLabel(longVenue, shortVenue)}`}
+        >
+          {expanded ? "Hide details" : "More details"}
+        </button>
+      </div>
 
       {expanded && (
         <div id={detailsId} className={styles.details}>
+          <div className={styles.sectionLabel}>Numbers for experts</div>
+          <div className={styles.metrics}>
+            <div>
+              <div className={styles.metricLabel}>Funding Diff APR</div>
+              <div className={`${styles.metricValue} ${styles[signColor(item.funding_diff_apr)]}`}>
+                {item.funding_diff_apr.toFixed(2)}%
+              </div>
+            </div>
+            <div>
+              <div className={styles.metricLabelWithHelp}>
+                Funding Edge
+                <HelpTooltip
+                  label="Funding Edge"
+                  text="Projected funding PnL for expected hold window: funding_diff_apr * hold_hours / 8760 * 100"
+                />
+              </div>
+              <div className={`${styles.metricValue} ${styles[signColor(item.funding_edge_bps)]}`}>
+                {item.funding_edge_bps.toFixed(1)} bps
+              </div>
+            </div>
+            <div>
+              <div className={styles.metricLabel}>Total Cost</div>
+              <div className={`${styles.metricValue} ${styles.negative}`}>
+                {item.total_cost_bps.toFixed(1)} bps
+              </div>
+            </div>
+            <div>
+              <div className={styles.metricLabelWithHelp}>
+                Score
+                <HelpTooltip
+                  label="Score"
+                  text="Combined score = Funding Edge + Basis Bonus - Total Cost - Timing Penalty - Basis Divergence Penalty (plus instability/liquidity/rounding adjustment)"
+                />
+              </div>
+              <div className={`${styles.metricValue} ${styles[signColor(item.combined_score)]}`}>
+                {item.combined_score.toFixed(1)}
+              </div>
+            </div>
+            <div>
+              <div className={styles.metricLabel}>Basis</div>
+              <div className={`${styles.metricValue} ${styles[signColor(item.basis_bps)]}`}>
+                {item.basis_bps.toFixed(1)} bps
+              </div>
+            </div>
+            <div>
+              <div className={styles.metricLabel}>Breakeven</div>
+              <div className={styles.metricValue}>
+                {item.hours_to_breakeven != null ? `${item.hours_to_breakeven.toFixed(1)}h` : "—"}
+              </div>
+            </div>
+            <div>
+              <div className={styles.metricLabel}>Next funding (L)</div>
+              <div
+                className={`${styles.metricValue} ${longCountdown?.urgent ? styles.negative : ""}`}
+              >
+                {longCountdown ? longCountdown.text : "—"}
+              </div>
+            </div>
+            <div>
+              <div className={styles.metricLabel}>Next funding (S)</div>
+              <div
+                className={`${styles.metricValue} ${shortCountdown?.urgent ? styles.negative : ""}`}
+              >
+                {shortCountdown ? shortCountdown.text : "—"}
+              </div>
+            </div>
+          </div>
+
           <div className={styles.breakdownCard}>
             <div className={styles.breakdownTitle}>Score breakdown (bps)</div>
             <div className={styles.detailRow}>

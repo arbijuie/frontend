@@ -6,11 +6,23 @@ import EmptyState from "../../components/EmptyState/EmptyState";
 import FloatingRefreshButton from "../../components/FloatingRefreshButton/FloatingRefreshButton";
 import { usePageTitle } from "../../hooks/usePageTitle";
 import { useAutomation, useAutomationControl } from "../../hooks/useAutomation";
+import AutomationDecisionLogs from "./AutomationDecisionLogs";
+import RealMoneyConfirm from "../../components/RealMoneyConfirm/RealMoneyConfirm";
+import AutoSummaryCard from "../../components/AutoSummary/AutoSummaryCard";
+import { autoSummary } from "../../lib/autoSummary";
+import { plainCode } from "../../lib/plainReasons";
 import type { AutomationModeItem, AutomationOverviewResponse } from "../../api/types";
 
 const MODE_TITLE: Record<AutomationModeItem["kind"], string> = {
   entry: "Auto-entry",
   exit: "Auto-exit",
+};
+
+const STATE_LABEL: Record<AutomationModeItem["state"], string> = {
+  armed: "Ready to act",
+  blocked: "Held back",
+  paused: "Paused",
+  disabled: "Turned off",
 };
 
 const STATE_HELP: Record<AutomationModeItem["state"], string> = {
@@ -27,18 +39,20 @@ function postureWarnings(data: AutomationOverviewResponse): string[] {
   const { posture } = data;
   const warnings: string[] = [];
   if (!posture.exec_enabled) {
-    warnings.push("Execution is disabled: automation cannot open or close pairs.");
+    warnings.push("Trading is turned off in settings, so the bot cannot open or close deals.");
   }
   if (!posture.gate_passed) {
-    warnings.push(`Execution gate is not passed (${posture.gate_reason ?? "unknown reason"}).`);
+    warnings.push(
+      `A safety check is not passing yet: ${posture.gate_reason ? plainCode(posture.gate_reason).toLowerCase() : "reason unknown"}.`
+    );
   }
   if (posture.entries_stopped) {
     warnings.push(
-      `New entries are stopped after ${posture.consecutive_rollbacks} consecutive rollbacks.`
+      `New deals are stopped after ${posture.consecutive_rollbacks} failed openings in a row.`
     );
   }
   for (const guardrail of posture.guardrail_entry_blocks ?? []) {
-    warnings.push(`Guardrail "${guardrail}" blocks new entries.`);
+    warnings.push(`Safety rule "${plainCode(guardrail)}" stops new deals.`);
   }
   return warnings;
 }
@@ -46,11 +60,14 @@ function postureWarnings(data: AutomationOverviewResponse): string[] {
 interface ModeCardProps {
   mode: AutomationModeItem;
   pending: boolean;
+  realMoney: boolean;
   onControl: (action: "pause" | "resume", reason: string) => void;
 }
 
-const ModeCard = ({ mode, pending, onControl }: ModeCardProps) => {
+const ModeCard = ({ mode, pending, realMoney, onControl }: ModeCardProps) => {
   const [reason, setReason] = useState("");
+  const [realMoneyOk, setRealMoneyOk] = useState(false);
+  const needsRealMoneyOk = realMoney && mode.kind === "entry";
   const title = MODE_TITLE[mode.kind];
   const canPause = reason.trim().length >= 3;
 
@@ -63,35 +80,51 @@ const ModeCard = ({ mode, pending, onControl }: ModeCardProps) => {
           title={STATE_HELP[mode.state]}
           data-testid={`${mode.kind}-state`}
         >
-          {mode.state}
+          {STATE_LABEL[mode.state]}
         </span>
       </div>
       <ul className={styles.facts}>
-        <li>enabled: {String(mode.enabled)}</li>
+        <li>Turned on: {mode.enabled ? "Yes" : "No"}</li>
         {mode.paused && (
           <li>
-            paused {formatTime(mode.paused_at)} by {mode.paused_by ?? "-"}: {mode.pause_reason}
+            Paused {formatTime(mode.paused_at)} by {mode.paused_by ?? "-"}: {mode.pause_reason}
           </li>
         )}
-        <li>last run: {formatTime(mode.last_run_at)}</li>
+        <li>Last run: {formatTime(mode.last_run_at)}</li>
         <li>
-          actions: {mode.actions_total ?? 0} (failures {mode.failures_total ?? 0})
+          Actions: {mode.actions_total ?? 0} (failures {mode.failures_total ?? 0})
         </li>
         <li>
-          last action: {mode.last_action_symbol ?? "-"} {mode.last_action_outcome ?? ""}
+          Last action: {mode.last_action_symbol ?? "-"} {plainCode(mode.last_action_outcome)}
         </li>
-        {(mode.blockers ?? []).length > 0 && <li>blockers: {(mode.blockers ?? []).join(", ")}</li>}
+        {(mode.blockers ?? []).length > 0 && (
+          <li>Held back by: {(mode.blockers ?? []).map(plainCode).join("; ")}</li>
+        )}
       </ul>
       <div className={styles.controls}>
-        {mode.paused ? (
-          <button
-            type="button"
-            className={styles.button}
-            disabled={pending}
-            onClick={() => onControl("resume", "")}
-          >
-            Resume {title.toLowerCase()}
-          </button>
+        {mode.state === "disabled" && !mode.paused ? (
+          <span className={styles.decisionReasons}>Turned off in settings — nothing to pause.</span>
+        ) : mode.paused ? (
+          <div>
+            {needsRealMoneyOk && (
+              <RealMoneyConfirm
+                action="let the bot open deals"
+                checked={realMoneyOk}
+                onChange={setRealMoneyOk}
+              />
+            )}
+            <button
+              type="button"
+              className={styles.button}
+              disabled={pending || (needsRealMoneyOk && !realMoneyOk)}
+              onClick={() => {
+                onControl("resume", "");
+                setRealMoneyOk(false);
+              }}
+            >
+              Resume {title.toLowerCase()}
+            </button>
+          </div>
         ) : (
           <>
             <input
@@ -121,7 +154,7 @@ const ModeCard = ({ mode, pending, onControl }: ModeCardProps) => {
 };
 
 const AutomationPage = () => {
-  usePageTitle("Automation");
+  usePageTitle("Auto");
   const { data, error, loading, fetching, refetch } = useAutomation();
   const control = useAutomationControl();
 
@@ -135,24 +168,34 @@ const AutomationPage = () => {
   return (
     <div className={pageStyles.page}>
       <PageHeader
-        title="Automation"
-        subtitle="Autonomous entry and exit: state, guardrails, and operator controls"
+        title="Auto"
+        subtitle="Let the bot open and close deals for you, and pause it any time"
       />
 
-      {error && <div className={pageStyles.errorBox}>Automation error: {error}</div>}
-      {control.error && (
-        <div className={pageStyles.errorBox}>Control failed: {control.error.message}</div>
+      {error && (
+        <div className={pageStyles.errorBox} role="alert">
+          Could not load auto-trading: {error}
+        </div>
       )}
-      {loading && !data && <div>Loading automation...</div>}
+      {control.error && (
+        <div className={pageStyles.errorBox} role="alert">
+          Pause / resume failed: {control.error.message}
+        </div>
+      )}
+      {loading && !data && <div role="status">Loading auto-trading…</div>}
       {!loading && !data && !error && (
-        <EmptyState title="No automation data" description="The runtime has not answered yet." />
+        <EmptyState
+          title="No auto-trading data yet"
+          description="The server has not answered yet. Try refreshing in a moment."
+        />
       )}
 
       {data && (
         <>
+          <AutoSummaryCard summary={autoSummary(data)} />
           <div className={pageStyles.summaryRow}>
             <span className={pageStyles.summaryPill}>
-              mode: {data.posture.exec_dry_run ? "dry-run" : "live"}
+              {data.posture.exec_dry_run ? "Practice mode" : "Real money"}
             </span>
             <span className={pageStyles.summaryPill}>
               open positions: {data.posture.open_positions ?? 0}
@@ -164,7 +207,7 @@ const AutomationPage = () => {
 
           {warnings.length > 0 && (
             <div className={styles.banner} role="alert">
-              Guardrails are holding automation back:
+              Safety checks are holding the bot back:
               <ul className={styles.bannerList}>
                 {warnings.map((warning) => (
                   <li key={warning}>{warning}</li>
@@ -179,6 +222,7 @@ const AutomationPage = () => {
                 key={mode.kind}
                 mode={mode}
                 pending={control.isPending}
+                realMoney={data.posture.exec_enabled && !data.posture.exec_dry_run}
                 onControl={handleControl(mode.kind)}
               />
             ))}
@@ -192,8 +236,8 @@ const AutomationPage = () => {
               {(data.recent_entries ?? []).map((item) => (
                 <li key={`${item.evaluated_at}-${item.symbol}`}>
                   {formatTime(item.evaluated_at)} {item.symbol} {item.long_exchange}/
-                  {item.short_exchange} score {item.score_bps.toFixed(2)} bps →{" "}
-                  {item.outcome ?? "pending"}
+                  {item.short_exchange}, expected edge {(item.score_bps / 100).toFixed(2)}% →{" "}
+                  {item.outcome ? plainCode(item.outcome) : "Pending"}
                 </li>
               ))}
             </ul>
@@ -206,8 +250,9 @@ const AutomationPage = () => {
             <ul>
               {(data.recent_exits ?? []).map((item) => (
                 <li key={`${item.evaluated_at}-${item.attempt_id}`}>
-                  {formatTime(item.evaluated_at)} {item.symbol} on {item.trigger ?? "-"} →{" "}
-                  {item.outcome ?? "pending"}
+                  {formatTime(item.evaluated_at)} {item.symbol}, reason:{" "}
+                  {item.trigger ? plainCode(item.trigger) : "-"} →{" "}
+                  {item.outcome ? plainCode(item.outcome) : "Pending"}
                 </li>
               ))}
             </ul>
@@ -227,6 +272,8 @@ const AutomationPage = () => {
               ))}
             </ul>
           )}
+
+          <AutomationDecisionLogs />
         </>
       )}
 

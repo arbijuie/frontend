@@ -1,0 +1,215 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: v.space(3);
+  max-width: 44rem;
+  margin-inline: auto;
+  width: 100%;
+  padding-bottom: v.space(10);
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: v.space(1);
+  min-height: v.size(touch-target);
+  color: v.color(accent-text);
+  font-size: v.font-size(sm);
+  text-decoration: none;
+}
+
+.header {
+  margin: 0;
+}
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: v.space(2);
+}
+.title {
+  margin: 0;
+  font-size: v.font-size(xl);
+  font-weight: v.font-weight(bold);
+}
+.subtitle {
+  margin: v.space(1) 0 0;
+  color: v.color(text-secondary);
+  font-size: v.font-size(sm);
+}
+
+.hero {
+  @include v.card(v.space(4));
+}
+.heroLabel {
+  @include v.eyebrow(text-secondary);
+}
+.heroValue {
+  margin: v.space(1) 0 v.space(3);
+  font-size: 2rem;
+  font-weight: v.font-weight(bold);
+  font-variant-numeric: tabular-nums;
+  color: v.color(text);
+}
+.heroFacts,
+.legFacts,
+.estimate,
+.expertList {
+  display: grid;
+  gap: v.space(2);
+  margin: 0;
+
+  dt {
+    font-size: v.font-size(xs);
+    color: v.color(text-secondary);
+  }
+  dd {
+    margin: 0;
+    font-weight: v.font-weight(semibold);
+    font-variant-numeric: tabular-nums;
+  }
+}
+.heroFacts {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.income {
+  color: v.color(success-text);
+}
+.loss {
+  color: v.color(danger-text);
+}
+
+.danger,
+.warning {
+  display: flex;
+  flex-direction: column;
+  gap: v.space(1);
+}
+.danger {
+  @include v.callout(danger);
+}
+.warning {
+  @include v.callout(warning);
+}
+
+.card {
+  @include v.card(v.space(3) v.space("3-5"));
+}
+.cardTitle,
+.sectionTitle {
+  margin: 0 0 v.space(2);
+  font-size: v.font-size(md);
+  font-weight: v.font-weight(semibold);
+}
+.sectionTitle {
+  margin: v.space(1) 0 0;
+}
+.reasons {
+  margin: 0;
+  padding-left: v.space(4);
+  color: v.color(text-secondary);
+  font-size: v.font-size(sm);
+}
+
+.legs {
+  display: grid;
+  gap: v.space(2);
+
+  @include v.bp-up(md) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.leg {
+  @include v.card(v.space(3));
+}
+.legHead {
+  display: flex;
+  align-items: center;
+  gap: v.space(2);
+  margin-bottom: v.space(2);
+}
+.legAction {
+  font-weight: v.font-weight(semibold);
+}
+.legFacts {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.legExplain,
+.footnote,
+.plain {
+  margin: v.space(2) 0 0;
+  font-size: v.font-size(xs);
+  color: v.color(text-secondary);
+}
+.plain {
+  margin: 0;
+  font-size: v.font-size(sm);
+}
+
+.sizeLabel {
+  display: block;
+  margin-bottom: v.space(1);
+  font-size: v.font-size(xs);
+  color: v.color(text-secondary);
+}
+.sizeRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: v.space(1);
+  margin-bottom: v.space(3);
+}
+.sizeInput {
+  @include v.input;
+  width: 7rem;
+}
+.preset {
+  @include v.button-small(secondary);
+
+  &[aria-pressed="true"] {
+    border-color: v.color(accent-border);
+    color: v.color(accent-text);
+  }
+}
+.estimate > div {
+  display: flex;
+  justify-content: space-between;
+  gap: v.space(2);
+}
+.totalRow {
+  padding-top: v.space(2);
+  border-top: 0.0625rem solid v.color(border);
+}
+
+.expert {
+  @include v.card(v.space(3));
+
+  summary {
+    cursor: pointer;
+    font-size: v.font-size(sm);
+    color: v.color(text-secondary);
+  }
+}
+.expertList {
+  margin-top: v.space(2);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.stickyAction {
+  position: sticky;
+  bottom: calc(v.space(2) + 5rem);
+  z-index: 2;
+}
+.openButton {
+  @include v.button(primary);
+  width: 100%;
+}
+.blockedNote {
+  @include v.callout(danger);
+  margin: 0;
+  text-align: center;
+}
+.waitNote {
+  @include v.callout(accent);
+  margin: 0;
+  text-align: center;
+}

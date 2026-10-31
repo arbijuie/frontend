@@ -48,31 +48,108 @@ Notes:
 - `VITE_` variables are bundled into browser assets; do not treat them as secrets.
 - For production env template, use [frontend/.env.production.example](.env.production.example).
 
+## Navigation
+
+The operator layout has a bottom menu with four items, so it fits on a phone:
+
+| Item   | Route         | What it is                                                       |
+| ------ | ------------- | ---------------------------------------------------------------- |
+| Deals  | `/`           | Ranked list of deals, ready deals first                          |
+| Auto   | `/automation` | Automatic entry and exit, in plain words                         |
+| Health | `/status`     | Traffic light for exchanges and data freshness, plus diagnostics |
+| More   | `/more`       | Every other screen, grouped as My trading, Learn and For experts |
+
+The menu lives in `NAV_ITEMS` and the groups under More in `MORE_SECTIONS`, both in
+[frontend/src/lib/navigation.ts](src/lib/navigation.ts). A new operator screen is added to
+`MORE_SECTIONS` unless it truly belongs on the bottom menu.
+
+Public pages use their own layout and top navigation (`PUBLIC_NAV_ITEMS` in the same file).
+
 ## Main Routes
 
-- Operator pages: `/`, `/status`, `/config`, `/backtest`, `/execution/preflight`, `/automation`
-- Public pages: `/product`, `/how-it-works`, `/statistics`, `/journal`, `/onboarding`
-  - `/product` explains the screener and the product modes (static, no API calls).
-  - `/statistics` and `/journal` show live aggregates and daily history from the read-only
-    `/public/*` projections, and explain closed-channel, rate-limit and network failures.
-  - `/onboarding` is the guided 3-step check (prerequisites, public access and venue
-    connectivity, first runtime signal); it only reads `GET /healthz`, `/public/status` and
-    `/public/opportunities`.
+Operator layout (routes in [frontend/src/App.tsx](src/App.tsx)):
+
+- `/` Deals: ready deals first, On watch and Blocked folded. Each card has an "Open position"
+  button (see "Opening a position") and a link to the deal page.
+- `/deals/:symbol/:long/:short` Deal page: costs, both sides of the deal, a size calculator,
+  the reasons a deal is blocked and the wrong-coin warning.
+- `/positions` My Positions (More > My trading > My open deals): open pairs with Net PnL,
+  funding income, notional and Net APR, the 7 day realized PnL, and "Close position" (see
+  "Closing a position"). The Positions tab in `/operations` shows similar data for operators;
+  `/positions` is the trader view.
+- `/welcome` Getting started: four short screens explaining how deals work and how to read them.
+- `/status` Health.
+- `/config` Settings.
+- `/backtest` adds `History` (per-pair replay history and the history gate) and `Survival`
+  (READY-episode survival and the persistence forecast) tabs (issue #514).
+- `/execution/preflight` Pre-trade check.
+- `/automation` shows the entry and exit evaluator decision logs with a page-size control,
+  separate from the operator control log (issue #510).
+- `/operations` (issues #507 to #513) has one tab per operator surface, kept in the URL as
+  `?tab=`: `actions` (open/close with an explicit confirmation step and the attempt timeline),
+  `positions` (open pairs, venue accounts, daily PnL), `guardrails` (risk decisions and next
+  steps), `parity` (legacy versus shadow parity report and artifacts), and `continuity`
+  (durable snapshot capture health). Opens and closes are only enabled while
+  `/execution/preflight` reports execution enabled, and the mode (dry-run or live) is shown
+  before confirmation.
+- `/more` More.
+- Any other path shows the not-found page.
+
+Public layout:
+
+- `/product` explains the screener and the product modes (static, no API calls).
+- `/how-it-works` explains the pipeline, the READY/WATCHING/BLOCKED verdicts, and the costs
+  taken off the edge (static, no API calls; issue #515).
+- `/statistics` and `/journal` show live aggregates and daily history from the read-only
+  `/public/*` projections, and explain closed-channel, rate-limit and network failures.
+- `/onboarding` is the guided 3-step technical check (prerequisites, public access and venue
+  connectivity, first runtime signal); it only reads `GET /healthz`, `/public/status` and
+  `/public/opportunities`. In the app it is listed as More > For experts > System check. It is
+  not the Getting started guide for traders, which is `/welcome`.
 
 Navigation registries:
 
-- Operator nav: [frontend/src/lib/navigation.ts](src/lib/navigation.ts)
-- Public nav: [frontend/src/lib/navigation.ts](src/lib/navigation.ts)
+- Bottom menu, More groups and public navigation: [frontend/src/lib/navigation.ts](src/lib/navigation.ts)
+
+## Opening a position
+
+"Open position" opens the Execution Sheet (`ExecutionSheet`). The button on a deal card is only
+shown for Ready deals without a wrong-coin warning, and the sheet checks the same rules itself.
+"Open Both Legs" is enabled only when all of these are true:
+
+- the pre-trade safety check (`GET /execution/preflight`) has answered;
+- trading is turned on;
+- the exchange route is ready (no `vooi_route_unavailable` blocker);
+- the safety check does not block opening;
+- the deal status is Ready;
+- the price check does not show "probably not the same coin" (see `src/lib/priceCheck.ts`);
+- in real-money mode, the risk box is ticked. It is asked every time and never shown in
+  practice mode.
+
+When a rule fails, a short sentence on the sheet says why. The backend also refuses a manual open
+of a route that is not in the last screener output or is not Ready, with
+409 `route_not_screened` or 409 `route_not_ready`.
+
+## Closing a position
+
+"Close position" on `/positions` opens `ClosePositionDialog`. It names the symbol and both
+exchanges and says that orders are sent to close both legs. Outside practice mode it also says
+that the orders use real money. There are two buttons, "Close both legs" and "Keep open", and no
+checkbox, so a trader can exit quickly when funding flips.
+
+The dialog behaves like the Execution Sheet for the keyboard: focus starts on "Keep open", Tab
+stays inside, Escape cancels, and focus returns to the button that opened it (or to the page
+heading when that button is disabled or gone).
 
 ## Supported Viewports
 
 Layouts are mobile-first. Every primary page (operator and public) must be usable without
 horizontal page scroll at these widths:
 
-| Target | Width | Layout |
-| --- | --- | --- |
-| Phone | 390px | Single column; operator navigation is a fixed bottom tab bar |
-| Tablet | 768px | Two to four column grids; bottom tab bar |
+| Target  | Width        | Layout                                                           |
+| ------- | ------------ | ---------------------------------------------------------------- |
+| Phone   | 390px        | Single column; operator navigation is a fixed bottom tab bar     |
+| Tablet  | 768px        | Two to four column grids; bottom tab bar                         |
 | Desktop | 960px and up | Navigation moves into the sticky top header; content up to 72rem |
 
 Wide tables scroll inside their own container; the page itself never scrolls sideways.

@@ -8,6 +8,10 @@ vi.mock("../../hooks/useAutomation", () => ({
   useAutomationControl: vi.fn(),
 }));
 
+vi.mock("./AutomationDecisionLogs", () => ({
+  default: () => <section aria-label="Decision logs">Decision logs mock</section>,
+}));
+
 vi.mock("../../components/FloatingRefreshButton/FloatingRefreshButton", () => ({
   default: ({ label }: { label: string }) => <button type="button">{label}</button>,
 }));
@@ -97,8 +101,8 @@ describe("AutomationPage", () => {
 
     expect(screen.getByRole("heading", { level: 2, name: "Auto-entry" })).toBeTruthy();
     expect(screen.getByRole("heading", { level: 2, name: "Auto-exit" })).toBeTruthy();
-    expect(screen.getByTestId("entry-state").textContent).toBe("armed");
-    expect(screen.getByText(/score 42.50 bps/)).toBeTruthy();
+    expect(screen.getByTestId("entry-state").textContent).toBe("Ready to act");
+    expect(document.body.textContent).toMatch(/expected edge 0\.4[23]%/);
     expect(screen.queryByRole("alert")).toBeNull();
   });
 
@@ -119,10 +123,10 @@ describe("AutomationPage", () => {
     render(<AutomationPage />);
 
     const banner = screen.getByRole("alert");
-    expect(banner.textContent).toContain("acceptance_evidence_missing");
-    expect(banner.textContent).toContain("3 consecutive rollbacks");
-    expect(banner.textContent).toContain('Guardrail "margin" blocks new entries.');
-    expect(screen.getByText("blockers: guardrail_margin")).toBeTruthy();
+    expect(banner.textContent).toContain("acceptance evidence missing");
+    expect(banner.textContent).toContain("3 failed openings in a row");
+    expect(banner.textContent).toContain('Safety rule "Margin" stops new deals.');
+    expect(screen.getByText("Held back by: Guardrail margin")).toBeTruthy();
   });
 
   it("pauses only with a reason and sends the control", () => {
@@ -170,6 +174,72 @@ describe("AutomationPage", () => {
 
     render(<AutomationPage />);
 
-    expect(screen.getByText("No automation data")).toBeTruthy();
+    expect(screen.getByText("No auto-trading data yet")).toBeTruthy();
+  });
+
+  it("asks for real-money confirmation before resuming auto-entry in live mode", () => {
+    const overview = makeOverview({
+      entry: makeMode({ paused: true, state: "paused", paused_by: "op", pause_reason: "news" }),
+    });
+    overview.posture = { ...overview.posture, exec_enabled: true, exec_dry_run: false };
+    const mutate = mockHooks(overview);
+    render(<AutomationPage />);
+
+    const resume = screen.getByRole("button", { name: "Resume auto-entry" }) as HTMLButtonElement;
+    expect(resume.disabled).toBe(true);
+    fireEvent.click(screen.getByRole("checkbox", { name: /I understand the risks/ }));
+    fireEvent.click(resume);
+    expect(mutate).toHaveBeenCalledWith({ target: "entry", action: "resume", reason: "" });
+  });
+
+  it("uses plain words for every state", () => {
+    const states: [AutomationModeItem["state"], string][] = [
+      ["armed", "Ready to act"],
+      ["blocked", "Held back"],
+      ["paused", "Paused"],
+      ["disabled", "Turned off"],
+    ];
+    for (const [state, label] of states) {
+      mockHooks(makeOverview({ entry: makeMode({ state }) }));
+      const { unmount } = render(<AutomationPage />);
+      expect(screen.getByTestId("entry-state").textContent).toBe(label);
+      unmount();
+    }
+  });
+
+  it("shows whether a capability is turned on as Yes or No", () => {
+    mockHooks(makeOverview({ entry: makeMode({ enabled: false, state: "disabled" }) }));
+    render(<AutomationPage />);
+
+    expect(screen.getByText("Turned on: No")).toBeTruthy();
+    expect(screen.getByText("Turned on: Yes")).toBeTruthy();
+    expect(screen.queryByText(/enabled:/)).toBeNull();
+  });
+
+  it("names the mode as practice or real money", () => {
+    mockHooks(makeOverview());
+    const { unmount } = render(<AutomationPage />);
+    expect(screen.getByText("Practice mode")).toBeTruthy();
+    expect(screen.queryByText(/mode: dry-run/)).toBeNull();
+    unmount();
+
+    const live = makeOverview();
+    live.posture = { ...live.posture, exec_dry_run: false };
+    mockHooks(live);
+    render(<AutomationPage />);
+    expect(screen.getByText("Real money")).toBeTruthy();
+    expect(screen.queryByText(/mode: live/)).toBeNull();
+  });
+
+  it("capitalises every fact label in the mode card", () => {
+    mockHooks(makeOverview());
+    render(<AutomationPage />);
+
+    expect(screen.getAllByText(/^Last run:/).length).toBe(2);
+    expect(screen.getAllByText(/^Actions:/).length).toBe(2);
+    expect(screen.getAllByText(/^Last action:/).length).toBe(2);
+    expect(screen.queryByText(/^last run:/)).toBeNull();
+    expect(screen.queryByText(/^actions:/)).toBeNull();
+    expect(screen.queryByText(/^last action:/)).toBeNull();
   });
 });
