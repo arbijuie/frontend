@@ -136,7 +136,6 @@ export function strategyLabel(strategy: string): string {
 }
 
 export function formatVenue(venue: string): string {
-  if (venue === "dydx") return "dYdX";
   return venue.charAt(0).toUpperCase() + venue.slice(1);
 }
 

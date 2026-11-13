@@ -14,14 +14,12 @@ import {
 import ExecutionActionsPanel from "./panels/ExecutionActionsPanel";
 import PositionsPanel from "./panels/PositionsPanel";
 import GuardrailsPanel from "./panels/GuardrailsPanel";
-import ParityPanel from "./panels/ParityPanel";
 import ContinuityPanel from "./panels/ContinuityPanel";
 
 const SUBTITLE: Record<OperationsTab, string> = {
   actions: "Open and close two-leg pairs with explicit confirmation, and read the attempt history",
   positions: "Open pairs, venue accounts, and the daily PnL ledger",
   guardrails: "Risk guardrail decisions, entry blocks, closes, and capital limits",
-  parity: "Legacy versus shadow execution parity report and artifacts",
   continuity: "Durable snapshot capture health and gap windows",
 };
 
@@ -65,7 +63,6 @@ const OperationsPage = () => {
         {activeTab === "actions" && <ExecutionActionsPanel />}
         {activeTab === "positions" && <PositionsPanel />}
         {activeTab === "guardrails" && <GuardrailsPanel />}
-        {activeTab === "parity" && <ParityPanel />}
         {activeTab === "continuity" && <ContinuityPanel />}
       </div>
     </div>

@@ -12,7 +12,7 @@ async function expectNoSeriousViolations(page: Page) {
   expect(seriousOrCritical.map((v) => `${v.id}: ${v.nodes[0]?.target.join(" ")}`)).toEqual([]);
 }
 
-/** Every API call the page makes, to prove public pages stay on the read-only allowlist. */
+/** Every API call the page makes: public reads stay on the allowlist, everything else must be a GET. */
 function recordApiCalls(page: Page) {
   const calls: string[] = [];
   page.on("request", (request) => {
@@ -29,13 +29,23 @@ const PUBLIC_READS = new Set([
   "GET /public/journal",
 ]);
 
+const SHELL_CALLS = new Set(["POST /ws/auth-ticket"]);
+
+function unexpectedCalls(calls: string[]) {
+  return calls.filter((call) => {
+    if (SHELL_CALLS.has(call)) return false;
+    if (call.includes(" /public/")) return !PUBLIC_READS.has(call);
+    return !call.startsWith("GET ");
+  });
+}
+
 test.describe("Public Statistics page", () => {
   test("shows coverage, funnel, confidence and reasons from public projections", async ({
     page,
   }) => {
     const calls = recordApiCalls(page);
     await mockApi(page);
-    await page.goto("/statistics");
+    await page.goto("/learn/statistics");
 
     await expect(page.getByRole("heading", { level: 1, name: "Statistics" })).toBeVisible();
     const venues = page.getByRole("list", { name: "Venue data sources" });
@@ -52,7 +62,7 @@ test.describe("Public Statistics page", () => {
 
     await expectNoSeriousViolations(page);
     expect(calls.length).toBeGreaterThan(0);
-    expect(calls.filter((call) => !PUBLIC_READS.has(call))).toEqual([]);
+    expect(unexpectedCalls(calls)).toEqual([]);
   });
 
   test("explains a closed public channel", async ({ page }) => {
@@ -60,7 +70,7 @@ test.describe("Public Statistics page", () => {
     await page.route(`${API}/public/**`, (route) =>
       route.fulfill({ status: 401, contentType: "application/json", body: '{"detail":"no"}' })
     );
-    await page.goto("/statistics");
+    await page.goto("/learn/statistics");
 
     await expect(page.getByRole("alert").first()).toContainText(
       "Public data is not open on this deployment"
@@ -77,7 +87,7 @@ test.describe("Public Journal page", () => {
       if (request.url().includes("/public/journal")) journalRequests.push(request.url());
     });
     await mockApi(page);
-    await page.goto("/journal");
+    await page.goto("/learn/journal");
 
     await expect(page.getByRole("heading", { level: 1, name: "Journal" })).toBeVisible();
     await expect(page.getByRole("table")).toContainText("Funding arbitrage 50");
@@ -90,7 +100,7 @@ test.describe("Public Journal page", () => {
       "true"
     );
     await expect.poll(() => journalRequests.some((url) => url.endsWith("days=30"))).toBe(true);
-    expect(calls.filter((call) => !PUBLIC_READS.has(call))).toEqual([]);
+    expect(unexpectedCalls(calls)).toEqual([]);
   });
 
   test("explains rate limiting with the retry wait", async ({ page }) => {
@@ -107,7 +117,7 @@ test.describe("Public Journal page", () => {
         body: "",
       })
     );
-    await page.goto("/journal");
+    await page.goto("/learn/journal");
 
     await expect(page.getByRole("alert")).toContainText("Too many requests");
     await expect(page.getByRole("alert")).toContainText("Try again in 15 s.");

@@ -46,7 +46,6 @@ export async function fetchWsAuthTicket(): Promise<WsAuthTicketResponse> {
 export type WsAuthPayload = {
   type: "auth";
   ticket: string;
-  token?: string;
   session?: string;
 };
 

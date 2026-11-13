@@ -1,6 +1,37 @@
 import { expect, test, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { mockApi, mockBackendUnavailable } from "./fixtures/mockApi";
+import { openTradeButton } from "./fixtures/selectors";
+import { stopTrading } from "./fixtures/operationsData";
+
+// A critical stop with cooldown still pending, so the card shows every gate fact and the form.
+const latchedStopTrading = {
+  ...stopTrading,
+  state: "stopped",
+  latched_at: "2026-10-16T08:00:00Z",
+  last_tripped_at: "2026-10-16T09:00:00Z",
+  active: [
+    {
+      trigger: "risk_breach",
+      reason: "lighter margin below force-close",
+      observed: 1.05,
+      threshold: 1.1,
+      subject: "lighter",
+      critical: true,
+      first_tripped_at: "2026-10-16T08:00:00Z",
+      last_tripped_at: "2026-10-16T09:00:00Z",
+      trips: 2,
+    },
+  ],
+  gate: {
+    ...stopTrading.gate,
+    stopped: true,
+    cooldown_elapsed: false,
+    cooldown_remaining_s: 300,
+    ack_required: true,
+    blockers: ["cooldown_pending", "manual_ack_required"],
+  },
+};
 
 type AxeViolations = Awaited<ReturnType<AxeBuilder["analyze"]>>["violations"];
 
@@ -82,6 +113,26 @@ test.describe("Accessibility baseline (pages with realistic data)", () => {
       page.getByRole("heading", { name: "Pipeline Diagnostics", exact: true })
     ).toBeVisible();
     await expect(page.getByText(/relative intensity/i).first()).toBeAttached();
+    await expectNoSeriousViolations(page);
+  });
+
+  test("Health: latched stop-trading card with the acknowledgment review open", async ({
+    page,
+  }) => {
+    await page.route("http://127.0.0.1:8000/risk/stop-trading", (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify(latchedStopTrading),
+      })
+    );
+    await page.goto("/status");
+    await expect(page.getByText("Stopped", { exact: true })).toBeVisible();
+    await page
+      .getByLabel("Acknowledgment reason (what you checked or fixed)")
+      .fill("lighter margin topped up");
+    await page.getByRole("button", { name: "Review acknowledgment" }).click();
+    await expect(page.getByRole("alertdialog")).toBeVisible();
     await expectNoSeriousViolations(page);
   });
 
@@ -180,8 +231,9 @@ test.describe("Accessibility baseline (trader screens)", () => {
   test("Deals: the open Execution Sheet has no serious or critical violations", async ({
     page,
   }) => {
+    await mockApi(page, { allowOpenTrades: true });
     await page.goto("/");
-    await page.getByRole("button", { name: "Open trade for AERO, hyperliquid to lighter" }).click();
+    await openTradeButton(page, "AERO", "hyperliquid", "lighter").click();
     await expect(page.getByRole("dialog", { name: "Open Arbitrage Position" })).toBeVisible();
     await expectNoSeriousViolations(page);
   });
@@ -200,7 +252,7 @@ test.describe("Accessibility baseline (backend unavailable)", () => {
   const PAGES = [
     { path: "/", name: "Deals" },
     { path: "/status", name: "Health" },
-    { path: "/config", name: "Config" },
+    { path: "/config", name: "Settings" },
     { path: "/backtest", name: "Backtest" },
   ];
 

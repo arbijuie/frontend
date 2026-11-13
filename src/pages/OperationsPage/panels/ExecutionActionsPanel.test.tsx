@@ -131,7 +131,8 @@ describe("ExecutionActionsPanel", () => {
     renderPanel();
 
     expect(screen.getByRole("status")?.textContent ?? "").toContain("Mode: dry-run");
-    expect(screen.getByRole("region", { name: "Execution attempts table" })).toBeTruthy();
+    const region = screen.getByRole("region", { name: "Execution attempts table" });
+    expect(region.getAttribute("tabindex")).toBe("0");
     const table = screen.getByRole("table", { name: "Execution attempts" });
     expect(table?.textContent ?? "").toContain("rolled_back");
     expect(table?.textContent ?? "").toContain("second leg rejected");

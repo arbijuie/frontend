@@ -1,11 +1,12 @@
 import { expect, test } from "@playwright/test";
 import type { Locator, Page } from "@playwright/test";
 import { mockApi } from "./fixtures/mockApi";
+import { openTradeButton, primaryNav, primaryNavLink } from "./fixtures/selectors";
 
 const PAGES = [
   { path: "/", name: "Deals" },
   { path: "/status", name: "Health" },
-  { path: "/config", name: "Config" },
+  { path: "/config", name: "Settings" },
   { path: "/backtest", name: "Backtest" },
   { path: "/positions", name: "Positions" },
   { path: "/more", name: "More" },
@@ -58,14 +59,13 @@ test.describe("Keyboard-only navigation", () => {
   }) => {
     await page.goto("/");
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-    const nav = page.getByRole("navigation", { name: "Primary" });
 
     for (const { link: label, title: target } of [
-      { link: "Health", title: "Health" },
-      { link: "Auto", title: "Auto" },
-      { link: "More", title: "More" },
+      { link: "Health" as const, title: "Health" },
+      { link: "Settings" as const, title: "Settings" },
+      { link: "More" as const, title: "More" },
     ]) {
-      const link = nav.getByRole("link", { name: label, exact: true });
+      const link = primaryNavLink(page, label);
       await link.focus();
       await page.keyboard.press("Enter");
 
@@ -80,9 +80,8 @@ test.describe("Keyboard-only navigation", () => {
   }) => {
     await page.goto("/");
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-    const nav = page.getByRole("navigation", { name: "Primary" });
 
-    await nav.getByRole("link", { name: "More", exact: true }).focus();
+    await primaryNavLink(page, "More").focus();
     await page.keyboard.press("Enter");
     await expect(page).toHaveTitle(/More/);
 
@@ -93,13 +92,18 @@ test.describe("Keyboard-only navigation", () => {
     await expect(page.getByRole("heading", { level: 1, name: "My Positions" })).toBeVisible();
   });
 
+  test("Deals: Open trade CTA stays hidden while execution is latched off", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.getByText("AERO").first()).toBeVisible();
+    await expect(openTradeButton(page, "AERO", "hyperliquid", "lighter")).toHaveCount(0);
+  });
+
   test("Deals: Escape closes the Execution Sheet and focus returns to the opener", async ({
     page,
   }) => {
+    await mockApi(page, { allowOpenTrades: true });
     await page.goto("/");
-    const opener = page.getByRole("button", {
-      name: "Open trade for AERO, hyperliquid to lighter",
-    });
+    const opener = openTradeButton(page, "AERO", "hyperliquid", "lighter");
     await opener.focus();
     await page.keyboard.press("Enter");
 
@@ -259,7 +263,7 @@ test.describe("Keyboard-only navigation", () => {
   test("keyboard focus is visible on the menu and on the search box", async ({ page }) => {
     await page.goto("/");
     await expect(page.getByText("AERO").first()).toBeVisible();
-    const menu = page.getByRole("navigation", { name: "Primary" });
+    const menu = primaryNav(page);
     await expect(menu).toBeVisible();
 
     const firstMenuItem = menu.getByRole("link").first();

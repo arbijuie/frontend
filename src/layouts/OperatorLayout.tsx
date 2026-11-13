@@ -15,7 +15,7 @@ const OperatorLayout = () => {
       <OpportunitiesSocketProvider>
         <div className={styles.operatorShell}>
           <SkipLink />
-          <AppHeader surface="operator">
+          <AppHeader>
             <Nav />
           </AppHeader>
           <MainLandmark>

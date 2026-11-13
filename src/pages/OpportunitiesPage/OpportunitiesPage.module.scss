@@ -33,6 +33,11 @@
 
 .liveRow {
   @include v.page-subtitle;
+  margin-top: v.space(2);
+
+  .hint {
+    text-align: left;
+  }
 }
 
 .liveDot {

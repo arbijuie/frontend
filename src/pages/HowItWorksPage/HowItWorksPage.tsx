@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import pageStyles from "../../styles/Page.module.scss";
 import styles from "./HowItWorksPage.module.scss";
 import PageHeader from "../../components/PageHeader/PageHeader";
@@ -34,7 +35,15 @@ const HowItWorksPage = () => {
       <ul className={styles.verdicts} aria-label="Route verdicts">
         {VERDICTS.map(({ key, label, text }) => (
           <li key={key} className={`${styles.verdict} ${styles[key]}`}>
-            <h3 className={styles.verdictLabel}>{label}</h3>
+            <h3 className={styles.verdictLabel}>
+              <Link
+                to={`/?status=${key}`}
+                className={styles.verdictLink}
+                aria-label={`${label}: show ${key} deals`}
+              >
+                {label}
+              </Link>
+            </h3>
             <p className={styles.stepText}>{text}</p>
           </li>
         ))}

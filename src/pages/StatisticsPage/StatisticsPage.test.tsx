@@ -167,4 +167,28 @@ describe("StatisticsPage", () => {
     expect(screen.getByRole("heading", { level: 1, name: "Statistics" })).toBeTruthy();
     expect(screen.queryByText(/401/)).toBeNull();
   });
+
+  it("links the cards, venues, decision bars and reasons to Deals and Health", () => {
+    renderPage();
+
+    expect(screen.getByRole("link", { name: /^Routes screened now/ }).getAttribute("href")).toBe(
+      "/"
+    );
+    expect(screen.getByRole("link", { name: /^Ready after validation/ }).getAttribute("href")).toBe(
+      "/?status=ready"
+    );
+    expect(screen.getByRole("link", { name: /^Bybit, Unavailable/ }).getAttribute("href")).toBe(
+      "/status"
+    );
+    expect(screen.getByRole("link", { name: /^Blocked, 1\./ }).getAttribute("href")).toBe(
+      "/?status=blocked"
+    );
+    expect(screen.getByRole("link", { name: /^Market data is stale/ }).getAttribute("href")).toBe(
+      "/?status=blocked"
+    );
+    expect(screen.getByRole("link", { name: /^Edge has not persisted/ }).getAttribute("href")).toBe(
+      "/?status=watching"
+    );
+    expect(screen.queryByRole("link", { name: /^Uptime/ })).toBeNull();
+  });
 });

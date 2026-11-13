@@ -20,9 +20,12 @@ export const OPPORTUNITY_STRATEGY_LABEL: Record<OpportunityStrategyType, string>
 
 export type OpportunitiesFilterOptions = {
   strategyTypes?: OpportunityStrategyType[];
+  personalized?: boolean;
+  profileKey?: string;
 };
 
 export const OPPORTUNITIES_QUERY_KEY = ["opportunities"] as const;
+export const ME_OPPORTUNITIES_QUERY_KEY = ["me-opportunities"] as const;
 
 function normalizeStrategyTypes(
   strategyTypes: OpportunityStrategyType[] | undefined
@@ -35,10 +38,20 @@ function normalizeStrategyTypes(
 
 export function opportunitiesQueryKey(
   options?: OpportunitiesFilterOptions
-): readonly ["opportunities"] | readonly ["opportunities", ...OpportunityStrategyType[]] {
+):
+  | readonly ["opportunities"]
+  | readonly ["opportunities", ...OpportunityStrategyType[]]
+  | readonly ["me-opportunities", string]
+  | readonly ["me-opportunities", string, ...OpportunityStrategyType[]] {
   const normalized = normalizeStrategyTypes(options?.strategyTypes);
+  if (options?.personalized) {
+    const profileKey = options.profileKey ?? "default";
+    return normalized.length > 0
+      ? ([...ME_OPPORTUNITIES_QUERY_KEY, profileKey, ...normalized] as const)
+      : ([...ME_OPPORTUNITIES_QUERY_KEY, profileKey] as const);
+  }
   return normalized.length > 0
-    ? (["opportunities", ...normalized] as const)
+    ? ([...OPPORTUNITIES_QUERY_KEY, ...normalized] as const)
     : OPPORTUNITIES_QUERY_KEY;
 }
 
@@ -46,7 +59,8 @@ export async function fetchOpportunities(
   options?: OpportunitiesFilterOptions
 ): Promise<OpportunitiesResponse> {
   const normalized = normalizeStrategyTypes(options?.strategyTypes);
-  const url = new URL(`${API_URL}/opportunities`);
+  const endpoint = options?.personalized ? "/me/opportunities" : "/opportunities";
+  const url = new URL(`${API_URL}${endpoint}`);
   for (const strategyType of normalized) {
     url.searchParams.append("strategy_type", strategyType);
   }

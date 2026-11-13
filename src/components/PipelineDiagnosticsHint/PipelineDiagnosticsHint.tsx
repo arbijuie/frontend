@@ -86,8 +86,8 @@ const PipelineDiagnosticsHint = ({ status }: PipelineDiagnosticsHintProps) => {
         <div className={styles.infoBox}>
           <span className={`${styles.badge} ${styles.infoBadge}`}>info</span>
           Candidates are present but none are ready yet. Risk dampeners active: basis bonus capped{" "}
-          {basisBonusCapped}, adaptive hold applied {adaptiveHoldApplied}, basis divergence penalty{" "}
-          {basisDivergencePenalty}.
+          {basisBonusCapped}, unstable-funding hold shortened {adaptiveHoldApplied}, basis
+          divergence penalty {basisDivergencePenalty}.
         </div>
       );
     }

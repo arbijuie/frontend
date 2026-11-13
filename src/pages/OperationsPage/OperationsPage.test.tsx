@@ -10,7 +10,6 @@ beforeAll(() => {
 vi.mock("./panels/ExecutionActionsPanel", () => ({ default: () => <div>Actions panel</div> }));
 vi.mock("./panels/PositionsPanel", () => ({ default: () => <div>Positions panel</div> }));
 vi.mock("./panels/GuardrailsPanel", () => ({ default: () => <div>Guardrails panel</div> }));
-vi.mock("./panels/ParityPanel", () => ({ default: () => <div>Parity panel</div> }));
 vi.mock("./panels/ContinuityPanel", () => ({ default: () => <div>Continuity panel</div> }));
 
 function renderAt(path: string) {
@@ -41,7 +40,7 @@ describe("OperationsPage", () => {
 
     expect(isOperationsTab("nope")).toBe(false);
     expect(isOperationsTab(null)).toBe(false);
-    expect(isOperationsTab("parity")).toBe(true);
+    expect(isOperationsTab("parity")).toBe(false);
   });
 
   it("switches panels when a tab is clicked", () => {

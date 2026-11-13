@@ -1,5 +1,6 @@
 import pageStyles from "../../styles/Page.module.scss";
 import { useId, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   useBacktestSummary,
@@ -18,19 +19,15 @@ import BacktestHistoryPanel from "../../components/BacktestHistoryPanel/Backtest
 import BacktestSurvivalPanel from "../../components/BacktestSurvivalPanel/BacktestSurvivalPanel";
 import FloatingRefreshButton from "../../components/FloatingRefreshButton/FloatingRefreshButton";
 import { ApiValidationError } from "../../lib/api-errors";
+import {
+  BACKTEST_TABS,
+  DEFAULT_BACKTEST_TAB,
+  isBacktestTab,
+  type BacktestTab,
+} from "../../lib/backtestTabs";
 import { tabId, tabPanelId } from "../../lib/tabIds";
 import type { BacktestReplayRequest, BacktestReplayResponse } from "../../api/types";
 import { usePageTitle } from "../../hooks/usePageTitle";
-
-const TABS = [
-  { key: "summary", label: "Summary" },
-  { key: "replay", label: "Replay" },
-  { key: "gate", label: "Gate" },
-  { key: "locks", label: "Locks" },
-  { key: "lock-detail", label: "Detail" },
-  { key: "history", label: "History" },
-  { key: "survival", label: "Survival" },
-];
 
 const BacktestPage = () => {
   usePageTitle("Backtest");
@@ -48,12 +45,26 @@ const BacktestPage = () => {
     refetch: refetchGate,
   } = useBacktestGate();
   const tabsId = useId();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const requested = searchParams.get("tab");
+  const activeTab: BacktestTab = isBacktestTab(requested) ? requested : DEFAULT_BACKTEST_TAB;
+  const selectedLockId = searchParams.get("lock");
   const runReplay = useRunBacktestReplay();
   const createLock = useCreateBacktestLock();
   const queryClient = useQueryClient();
 
-  const [activeTab, setActiveTab] = useState("summary");
-  const [selectedLockId, setSelectedLockId] = useState<string | null>(null);
+  const selectTab = (key: string) => {
+    const next = new URLSearchParams(searchParams);
+    if (key === DEFAULT_BACKTEST_TAB) {
+      next.delete("tab");
+    } else {
+      next.set("tab", key);
+    }
+    if (key !== "lock-detail") {
+      next.delete("lock");
+    }
+    setSearchParams(next, { replace: true });
+  };
   const [lastRequest, setLastRequest] = useState<BacktestReplayRequest | null>(null);
   const [lastResult, setLastResult] = useState<BacktestReplayResponse | null>(null);
   const [replayError, setReplayError] = useState<string | null>(null);
@@ -95,8 +106,10 @@ const BacktestPage = () => {
   };
 
   const handleSelectLock = (lockId: string) => {
-    setSelectedLockId(lockId);
-    setActiveTab("lock-detail");
+    const next = new URLSearchParams(searchParams);
+    next.set("tab", "lock-detail");
+    next.set("lock", lockId);
+    setSearchParams(next, { replace: true });
   };
 
   const handleRefreshAll = async () => {
@@ -115,9 +128,9 @@ const BacktestPage = () => {
         {lastRefreshedAt ? `Last refreshed ${lastRefreshedAt.toLocaleTimeString()}` : ""}
       </div>
       <Tabs
-        tabs={TABS}
+        tabs={[...BACKTEST_TABS]}
         activeKey={activeTab}
-        onChange={setActiveTab}
+        onChange={selectTab}
         label="Backtest sections"
         idPrefix={tabsId}
       />

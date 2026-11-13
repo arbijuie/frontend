@@ -50,6 +50,14 @@ const ConfigAccordion = ({ config }: ConfigAccordionProps) => {
         onToggle={() => toggleSection("Fees")}
       >
         <ConfigRow
+          label="Hyperliquid Wallet (fee lookup)"
+          value={
+            config.hl_wallet_configured
+              ? config.hl_wallet_address || "configured"
+              : "Not set — real HL fees stay unavailable"
+          }
+        />
+        <ConfigRow
           label="Hyperliquid Taker Fee (per side)"
           value={config.hl_taker_fee_per_side}
           unit="%"
@@ -68,6 +76,24 @@ const ConfigAccordion = ({ config }: ConfigAccordionProps) => {
           label="Lighter Maker Fee (per side)"
           value={config.lighter_maker_fee_per_side}
           unit="%"
+        />
+      </ConfigSection>
+
+      <ConfigSection
+        title="Screener Venues"
+        isOpen={openSections.has("Screener Venues")}
+        onToggle={() => toggleSection("Screener Venues")}
+      >
+        <ConfigRow
+          label="Ranking / enrichment venues"
+          value={config.screener_active_venues || "all supported exchanges"}
+        />
+        <ConfigRow label="HL WS book coins" value={config.hl_ws_book_max_coins} />
+        <ConfigRow label="HL book concurrency" value={config.screener_hl_book_concurrency} />
+        <ConfigRow
+          label="Book fetch budget"
+          value={config.screener_book_fetch_budget_s}
+          unit="s"
         />
       </ConfigSection>
 

@@ -11,7 +11,6 @@ const VIEWPORTS = [
 interface PageCase {
   path: string;
   heading: string;
-  surface: "operator" | "public";
   ready?: (page: Page) => Promise<void>;
 }
 
@@ -19,7 +18,6 @@ const PAGES: PageCase[] = [
   {
     path: "/",
     heading: "Deals",
-    surface: "operator",
     ready: async (page) => {
       await expect(page.getByText("AERO").first()).toBeVisible();
     },
@@ -27,15 +25,13 @@ const PAGES: PageCase[] = [
   {
     path: "/status",
     heading: "Health",
-    surface: "operator",
     ready: async (page) => {
       await expect(page.getByRole("heading", { name: "Live Transport" })).toBeVisible();
     },
   },
   {
     path: "/config",
-    heading: "Config",
-    surface: "operator",
+    heading: "Settings",
     ready: async (page) => {
       await expect(page.getByRole("heading", { name: "Custom Runbook Fields" })).toBeVisible();
     },
@@ -43,26 +39,32 @@ const PAGES: PageCase[] = [
   {
     path: "/backtest",
     heading: "Backtest",
-    surface: "operator",
     ready: async (page) => {
       await expect(page.getByText("Total Snapshots")).toBeVisible();
     },
   },
-  { path: "/execution/preflight", heading: "Execution Preflight", surface: "operator" },
-  { path: "/automation", heading: "Auto", surface: "operator" },
+  { path: "/execution/preflight", heading: "Execution Preflight" },
+  {
+    path: "/automation",
+    heading: "Auto",
+    // Decision-log Tabs sit below the fold; wait until they mount so a strip-scroll
+    // regression cannot race past the above-the-fold heading assertion.
+    ready: async (page) => {
+      await expect(page.getByRole("tablist", { name: "Decision kind" })).toBeVisible();
+    },
+  },
   {
     path: "/operations",
     heading: "Operations",
-    surface: "operator",
     ready: async (page) => {
       await expect(page.getByRole("table", { name: "Execution attempts" })).toBeVisible();
     },
   },
-  { path: "/product", heading: "Product", surface: "public" },
-  { path: "/how-it-works", heading: "How it works", surface: "public" },
-  { path: "/statistics", heading: "Statistics", surface: "public" },
-  { path: "/journal", heading: "Journal", surface: "public" },
-  { path: "/onboarding", heading: "Onboarding", surface: "public" },
+  { path: "/learn/about", heading: "Product" },
+  { path: "/learn/how-it-works", heading: "How it works" },
+  { path: "/learn/statistics", heading: "Statistics" },
+  { path: "/learn/journal", heading: "Journal" },
+  { path: "/learn/onboarding", heading: "Onboarding" },
 ];
 
 interface Overflow {
@@ -137,7 +139,7 @@ test.describe("Responsive layout", () => {
     test.describe(`${viewport.name} ${viewport.width}px`, () => {
       test.use({ viewport: { width: viewport.width, height: viewport.height } });
 
-      for (const { path, heading, surface, ready } of PAGES) {
+      for (const { path, heading, ready } of PAGES) {
         test(`${path}: no horizontal overflow and navigation within reach`, async ({ page }) => {
           await page.goto(path);
           await expect(page.getByRole("heading", { level: 1, name: heading })).toBeVisible();
@@ -147,11 +149,9 @@ test.describe("Responsive layout", () => {
           expect(result.offenders, `elements wider than ${viewport.width}px`).toEqual([]);
           expect(result.scrollWidth).toBeLessThanOrEqual(result.viewportWidth);
 
-          // The page title and the surface navigation are on screen without scrolling.
+          // The page title and the bottom navigation are on screen without scrolling.
           await expect(page.getByRole("heading", { level: 1, name: heading })).toBeInViewport();
-          const nav = page.getByRole("navigation", {
-            name: surface === "operator" ? "Primary" : "Public",
-          });
+          const nav = page.getByRole("navigation", { name: "Primary" });
           await expect(nav).toBeInViewport();
           for (const link of await nav.getByRole("link").all()) {
             await expect(link).toBeInViewport();

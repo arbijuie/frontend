@@ -189,7 +189,37 @@ export const snapshotContinuity = {
   last_recovery_duration_ms: null,
 };
 
-export const parityArtifacts = { count: 0, items: [] };
+// GET /risk/stop-trading on Health (issue #669): running, nothing latched, gate idle.
+export const stopTrading = {
+  checked_at: "2026-10-16T09:05:00Z",
+  state: "running",
+  latched_at: null,
+  last_tripped_at: null,
+  released_at: null,
+  active: [],
+  acknowledgment: null,
+  gate: {
+    stopped: false,
+    cooldown_s: 900,
+    cooldown_elapsed: true,
+    cooldown_remaining_s: 0,
+    health_checks: [],
+    health_green: true,
+    ack_required: false,
+    acknowledged: false,
+    ready: false,
+    blockers: [],
+  },
+  require_manual_ack: true,
+  last_evaluated_at: null,
+  last_hits: [],
+  api_error_counts: {},
+  fill_slippage_samples: [],
+  data_ages_s: {},
+  thresholds: {},
+  restore_error: null,
+  events: [],
+};
 
 export const backtestHistory = {
   gate_enabled: true,

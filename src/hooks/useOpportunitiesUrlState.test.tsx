@@ -1,6 +1,8 @@
 import type { ReactNode } from "react";
 import { renderHook, act } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
+import HistoryPositionProvider from "../components/HistoryPositionProvider/HistoryPositionProvider";
+import { useHistoryPosition } from "./useHistoryPosition";
 import { useOpportunitiesUrlState } from "./useOpportunitiesUrlState";
 
 function Wrapper({ children }: { children: ReactNode }) {
@@ -9,6 +11,22 @@ function Wrapper({ children }: { children: ReactNode }) {
 
 function DefaultWrapper({ children }: { children: ReactNode }) {
   return <MemoryRouter initialEntries={["/"]}>{children}</MemoryRouter>;
+}
+
+function historyWrapper(initial: string) {
+  return function HistoryWrapper({ children }: { children: ReactNode }) {
+    return (
+      <MemoryRouter initialEntries={[initial]}>
+        <HistoryPositionProvider>{children}</HistoryPositionProvider>
+      </MemoryRouter>
+    );
+  };
+}
+
+function renderWithHistory(initial = "/") {
+  return renderHook(() => ({ url: useOpportunitiesUrlState(), position: useHistoryPosition() }), {
+    wrapper: historyWrapper(initial),
+  });
 }
 
 describe("useOpportunitiesUrlState", () => {
@@ -71,5 +89,52 @@ describe("useOpportunitiesUrlState", () => {
     });
 
     expect(result.current.isDefault).toBe(false);
+  });
+});
+
+describe("useOpportunitiesUrlState history", () => {
+  it("adds a history entry when a filter changes", () => {
+    const { result } = renderWithHistory();
+
+    act(() => result.current.url.setStatusFilter("ready"));
+
+    expect(result.current.url.statusFilter).toBe("ready");
+    expect(result.current.position.index).toBe(1);
+  });
+
+  it("replaces the current entry when the search changes", () => {
+    const { result } = renderWithHistory();
+
+    act(() => result.current.url.setSearch("btc"));
+
+    expect(result.current.url.search).toBe("btc");
+    expect(result.current.position.index).toBe(0);
+  });
+
+  it("does not add an entry when the active value is selected again", () => {
+    const { result } = renderWithHistory("/?status=ready");
+
+    act(() => result.current.url.setStatusFilter("ready"));
+    act(() => result.current.url.setSortKey("priority"));
+    act(() => result.current.url.setStrategyFilter("all"));
+
+    expect(result.current.position.index).toBe(0);
+  });
+
+  it("does not add an entry when resetting at defaults", () => {
+    const { result } = renderWithHistory();
+
+    act(() => result.current.url.resetToDefaults());
+
+    expect(result.current.position.index).toBe(0);
+  });
+
+  it("adds one entry when resetting from a changed state", () => {
+    const { result } = renderWithHistory("/?status=ready");
+
+    act(() => result.current.url.resetToDefaults());
+
+    expect(result.current.url.statusFilter).toBe("all");
+    expect(result.current.position.index).toBe(1);
   });
 });

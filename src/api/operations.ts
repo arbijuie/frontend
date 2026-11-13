@@ -2,8 +2,6 @@ import { API_URL, authFetch } from "./config";
 import { parseApiError } from "../lib/api-errors";
 import type {
   DailyPnlResponse,
-  MigrationParityArtifactListResponse,
-  MigrationParityReportResponse,
   PositionsResponse,
   RiskGuardrailsResponse,
   SnapshotContinuityResponse,
@@ -22,13 +20,5 @@ export const fetchDailyPnl = (days = 7) =>
 
 export const fetchRiskGuardrails = () => getJson<RiskGuardrailsResponse>("/risk/guardrails");
 
-export const fetchParityArtifacts = (limit = 50) =>
-  getJson<MigrationParityArtifactListResponse>(`/migration/parity/artifacts?limit=${limit}`);
-
-export const fetchParityReport = (windowS = 3600, limit = 200) =>
-  getJson<MigrationParityReportResponse>(
-    `/migration/parity/report?window_s=${windowS}&limit=${limit}`
-  );
-
 export const fetchSnapshotContinuity = () =>
-  getJson<SnapshotContinuityResponse>("/snapshots/continuity");
+  getJson<SnapshotContinuityResponse>("/snapshots/continuity?include_gap_scan=true");

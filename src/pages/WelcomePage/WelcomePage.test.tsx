@@ -1,7 +1,15 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import WelcomePage from "./WelcomePage";
+import { useUpdateMePreferences } from "../../hooks/useUpdateMePreferences";
+import { setTelegramSessionToken } from "../../api/config";
 import { WELCOME_HINT_KEY } from "../../components/WelcomeHint/WelcomeHint";
+
+vi.mock("../../hooks/useUpdateMePreferences", () => ({
+  useUpdateMePreferences: vi.fn(),
+}));
+
+const mockedUseUpdateMePreferences = vi.mocked(useUpdateMePreferences);
 
 function renderGuide() {
   return render(
@@ -15,7 +23,17 @@ function renderGuide() {
 }
 
 describe("WelcomePage", () => {
-  beforeEach(() => window.localStorage.clear());
+  const mutate = vi.fn();
+
+  beforeEach(() => {
+    window.localStorage.clear();
+    setTelegramSessionToken("test-session-token");
+    mutate.mockReset();
+    mockedUseUpdateMePreferences.mockReturnValue({
+      mutate,
+      isPending: false,
+    } as never);
+  });
 
   it("walks through four steps and ends on the deals screen", () => {
     renderGuide();
@@ -29,6 +47,12 @@ describe("WelcomePage", () => {
     fireEvent.click(screen.getByRole("button", { name: "Show me the deals" }));
     expect(screen.getByText("Deals screen")).toBeTruthy();
     expect(window.localStorage.getItem(WELCOME_HINT_KEY)).toBe("1");
+    expect(mutate).toHaveBeenCalledWith({
+      tutorial: {
+        welcome_hint_dismissed: true,
+        welcome_completed: true,
+      },
+    });
   });
 
   it("explains the 20% wrong-coin rule", () => {

@@ -3,7 +3,7 @@ import { render, screen } from "@testing-library/react";
 import ExchangeBadge from "./ExchangeBadge";
 
 describe("ExchangeBadge", () => {
-  it.each(["hyperliquid", "lighter", "aster", "binance", "bybit", "dydx", "extended"])(
+  it.each(["hyperliquid", "lighter", "aster", "binance", "bybit", "extended"])(
     "styles known venue %s with its own class",
     (exchange) => {
       render(<ExchangeBadge exchange={exchange} />);

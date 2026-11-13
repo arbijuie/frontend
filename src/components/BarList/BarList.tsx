@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import styles from "./BarList.module.scss";
 
 export type BarTone = "accent" | "success" | "warning" | "danger" | "neutral";
@@ -9,6 +10,10 @@ export interface BarListItem {
   tone?: BarTone;
   /** Optional text after the value, e.g. a share ("38%"). */
   note?: string;
+  /** Optional destination; the whole row becomes a link. */
+  to?: string;
+  /** Says where the link leads, e.g. "Show ready deals". */
+  toLabel?: string;
 }
 
 interface BarListProps {
@@ -33,8 +38,8 @@ const BarList = ({ label, items, max, formatValue = defaultFormat }: BarListProp
     <ul className={styles.list} aria-label={label}>
       {items.map((item) => {
         const share = scaleMax > 0 ? Math.min(1, Math.max(0, item.value / scaleMax)) : 0;
-        return (
-          <li key={item.label} className={styles.row}>
+        const content = (
+          <>
             <span className={styles.label}>{item.label}</span>
             <span className={styles.track} aria-hidden="true">
               <span
@@ -47,6 +52,25 @@ const BarList = ({ label, items, max, formatValue = defaultFormat }: BarListProp
               {formatValue(item.value)}
               {item.note && <span className={styles.note}> {item.note}</span>}
             </span>
+          </>
+        );
+        return (
+          <li key={item.label}>
+            {item.to ? (
+              <Link
+                to={item.to}
+                className={`${styles.row} ${styles.rowLink}`}
+                aria-label={
+                  item.toLabel
+                    ? `${item.label}, ${formatValue(item.value)}. ${item.toLabel}`
+                    : undefined
+                }
+              >
+                {content}
+              </Link>
+            ) : (
+              <div className={styles.row}>{content}</div>
+            )}
           </li>
         );
       })}

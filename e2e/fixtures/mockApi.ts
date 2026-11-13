@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import type { Page } from "@playwright/test";
 import {
   backtestGate,
@@ -19,11 +21,11 @@ import {
   backtestSurvival,
   dailyPnl,
   executionAttempts,
-  parityArtifacts,
   persistenceForecast,
   positions,
   riskGuardrails,
   snapshotContinuity,
+  stopTrading,
 } from "./operationsData";
 
 const API = "http://127.0.0.1:8000";
@@ -76,6 +78,11 @@ const automationDecisions = () => ({
 
 interface MockApiOptions {
   onWebSocket?: (url: string) => void;
+  /**
+   * When true, /config reports exec_enabled so tradingOpenGate shows Deal Open CTAs.
+   * Default fixtures keep execution latched off (MVP live posture).
+   */
+  allowOpenTrades?: boolean;
 }
 
 export async function mockApi(page: Page, options: MockApiOptions = {}) {
@@ -89,7 +96,15 @@ export async function mockApi(page: Page, options: MockApiOptions = {}) {
       return route.fulfill({ path: STATUS_FIXTURE_PATH, contentType: "application/json" });
     }
     if (pathname === "/config") {
-      return route.fulfill({ path: CONFIG_FIXTURE_PATH, contentType: "application/json" });
+      if (!options.allowOpenTrades) {
+        return route.fulfill({ path: CONFIG_FIXTURE_PATH, contentType: "application/json" });
+      }
+      const config = JSON.parse(readFileSync(resolve(CONFIG_FIXTURE_PATH), "utf8")) as Record<
+        string,
+        unknown
+      >;
+      config.exec_enabled = true;
+      return json(config);
     }
     if (pathname === "/healthz") return json(healthz);
     if (pathname === "/public/status") return json(publicStatus);
@@ -144,11 +159,8 @@ export async function mockApi(page: Page, options: MockApiOptions = {}) {
     if (pathname === "/positions") return json(positions);
     if (pathname === "/positions/pnl/daily") return json(dailyPnl);
     if (pathname === "/risk/guardrails") return json(riskGuardrails);
+    if (pathname === "/risk/stop-trading") return json(stopTrading);
     if (pathname === "/snapshots/continuity") return json(snapshotContinuity);
-    if (pathname === "/migration/parity/artifacts") return json(parityArtifacts);
-    if (pathname === "/migration/parity/report") {
-      return json({ detail: { code: "parity_window_empty", message: "no artifacts" } }, 404);
-    }
     if (pathname === "/backtest/history") return json(backtestHistory);
     if (pathname === "/backtest/survival") return json(backtestSurvival);
     if (pathname === "/backtest/survival/forecast") return json(persistenceForecast);

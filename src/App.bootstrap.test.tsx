@@ -5,7 +5,10 @@ import * as session from "./api/telegram-session";
 
 const providerMounted = vi.hoisted(() => vi.fn());
 
-vi.mock("./api/config", () => ({ API_TOKEN: "" }));
+vi.mock("./api/config", () => ({
+  hasRuntimeAuth: () => false,
+  authHeaders: () => ({}),
+}));
 vi.mock("./api/telegram-session", () => {
   class TelegramSessionBootstrapError extends Error {
     status = 0;
@@ -38,15 +41,15 @@ describe("App operator bootstrap scope", () => {
     vi.mocked(session.hasTelegramWebAppContext).mockReturnValue(true);
   });
 
-  it("renders a public page even when the Telegram bootstrap fails", async () => {
+  it("blocks a learn page with an alert when the Telegram bootstrap fails", async () => {
     vi.mocked(session.bootstrapTelegramSession).mockRejectedValue(new Error("boom"));
 
-    renderAt("/product");
+    renderAt("/learn/about");
 
-    expect(screen.getByRole("heading", { level: 1, name: "Product" })).toBeTruthy();
-    expect(screen.getByRole("navigation", { name: "Public" })).toBeTruthy();
-    expect(screen.queryByRole("alert")).toBeNull();
-    expect(session.bootstrapTelegramSession).not.toHaveBeenCalled();
+    expect((await screen.findByRole("alert")).textContent).toContain(
+      "Unable to bootstrap Telegram session."
+    );
+    expect(screen.queryByRole("heading", { level: 1, name: "Product" })).toBeNull();
     expect(providerMounted).not.toHaveBeenCalled();
   });
 

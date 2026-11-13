@@ -1,5 +1,4 @@
 export const API_URL = import.meta.env.VITE_ARB_API_URL as string;
-export const API_TOKEN = import.meta.env.VITE_ARB_API_TOKEN as string | undefined;
 export const POLL_INTERVAL_MS = 32_000;
 const TELEGRAM_SESSION_HEADER_NAME =
   (import.meta.env.VITE_ARB_TELEGRAM_SESSION_HEADER_NAME as string | undefined) ||
@@ -13,14 +12,10 @@ export const setTelegramSessionToken = (token: string | null): void => {
 
 export const getTelegramSessionToken = (): string | null => telegramSessionToken;
 
-export const hasRuntimeAuth = (): boolean =>
-  Boolean((API_TOKEN && API_TOKEN.trim()) || telegramSessionToken);
+export const hasRuntimeAuth = (): boolean => Boolean(telegramSessionToken);
 
 export const authHeaders = (): HeadersInit => {
   const headers: Record<string, string> = {};
-  if (API_TOKEN) {
-    headers.Authorization = `Bearer ${API_TOKEN}`;
-  }
   if (telegramSessionToken) {
     headers[TELEGRAM_SESSION_HEADER_NAME] = telegramSessionToken;
   }

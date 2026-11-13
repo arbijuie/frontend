@@ -1,67 +1,84 @@
 import type { ReactNode } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { ArrowLeft, ArrowLeftRight } from "lucide-react";
+import { ArrowLeft, ArrowLeftRight, ArrowRight } from "lucide-react";
 import styles from "./AppHeader.module.scss";
-import { APP_NAME } from "../../lib/navigation";
+import { APP_NAME, OPERATOR_HOME_PATH } from "../../lib/navigation";
+import { useHistoryPosition } from "../../hooks/useHistoryPosition";
 
 interface AppHeaderProps {
-  /** Which surface the header belongs to; sets the brand target. */
-  surface: "operator" | "public";
-  /** The surface navigation, rendered next to the brand. */
+  /** The navigation, rendered next to the brand. */
   children: ReactNode;
 }
 
+type LocationReturnState = { from?: string };
+
 /**
- * Shell header shared by the operator and public layouts (issue #380).
+ * Shell header (issue #380).
  *
- * The operator brand is plain text so it does not create an extra tab stop.
- * The public brand links to the product overview.
+ * Back never uses `history.length` (unreliable in Telegram WebViews and can leave
+ * the Mini App). Back walks the in-app history (pages and filter changes); with no earlier
+ * entry it honors `location.state.from` or falls back to Deals, and it is unavailable on
+ * Deals itself. Unavailable buttons use `aria-disabled` so they stay reachable with the
+ * keyboard.
  */
-const AppHeader = ({ surface, children }: AppHeaderProps) => {
+const AppHeader = ({ children }: AppHeaderProps) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const fallbackPath = surface === "public" ? "/product" : "/";
-  const canGoBack = window.history.length > 1 || location.pathname !== fallbackPath;
+  const { index, canGoForward } = useHistoryPosition();
+  const isRoot = location.pathname === OPERATOR_HOME_PATH;
+  const returnTo = (location.state as LocationReturnState | null)?.from;
+  const canGoBack = !isRoot || index > 0;
 
   const handleGoBack = () => {
-    if (window.history.length > 1) {
+    if (!canGoBack) {
+      return;
+    }
+    if (index > 0) {
       navigate(-1);
       return;
     }
-    if (location.pathname !== fallbackPath) {
-      navigate(fallbackPath, { replace: true });
+    if (typeof returnTo === "string" && returnTo.startsWith("/")) {
+      navigate(returnTo, { replace: true });
+      return;
+    }
+    navigate(OPERATOR_HOME_PATH, { replace: true });
+  };
+
+  const handleGoForward = () => {
+    if (canGoForward) {
+      navigate(1);
     }
   };
 
-  const brandContent = (
-    <>
-      <span className={styles.mark} aria-hidden="true">
-        <ArrowLeftRight className={styles.markIcon} />
-      </span>
-      <span className={styles.name}>{APP_NAME}</span>
-    </>
-  );
-
   return (
-    <header className={`${styles.header} ${styles[surface]}`}>
+    <header className={styles.header}>
       <div className={styles.inner}>
         <button
           type="button"
-          className={styles.backButton}
+          className={styles.historyButton}
           onClick={handleGoBack}
-          disabled={!canGoBack}
+          aria-disabled={!canGoBack || undefined}
           aria-label="Go back"
+          title="Back"
         >
-          <ArrowLeft className={styles.backIcon} aria-hidden="true" />
-          <span className={styles.backLabel}>Back</span>
+          <ArrowLeft className={styles.historyIcon} aria-hidden="true" />
         </button>
-        {surface === "public" ? (
-          <Link to="/product" className={styles.brand}>
-            {brandContent}
-          </Link>
-        ) : (
-          <span className={styles.brand}>{brandContent}</span>
-        )}
+        <button
+          type="button"
+          className={styles.historyButton}
+          onClick={handleGoForward}
+          aria-disabled={!canGoForward || undefined}
+          aria-label="Go forward"
+          title="Forward"
+        >
+          <ArrowRight className={styles.historyIcon} aria-hidden="true" />
+        </button>
+        <Link to={OPERATOR_HOME_PATH} className={styles.brand} aria-label={`${APP_NAME} home`}>
+          <span className={styles.mark} aria-hidden="true">
+            <ArrowLeftRight className={styles.markIcon} />
+          </span>
+          <span className={styles.name}>{APP_NAME}</span>
+        </Link>
         {children}
       </div>
     </header>

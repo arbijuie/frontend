@@ -10,8 +10,11 @@ import EmptyState from "../../components/EmptyState/EmptyState";
 import { useOpportunities } from "../../hooks/useOpportunities";
 import { usePageTitle } from "../../hooks/usePageTitle";
 import { useNow } from "../../hooks/useNow";
+import { useStatus } from "../../hooks/useStatus";
+import { useConfig } from "../../hooks/useConfig";
 import { checkPrices } from "../../lib/priceCheck";
 import { plainReasons } from "../../lib/plainReasons";
+import { tradingOpenGate } from "../../lib/tradingOpenGate";
 import { formatCountdown, getFundingTargetTime } from "../../lib/format";
 import {
   bpsToPercent,
@@ -123,7 +126,14 @@ const Estimate = ({ item }: { item: OpportunityItem }) => {
 const DealPage = () => {
   const { symbol = "", long = "", short = "" } = useParams();
   usePageTitle(symbol ? `${symbol} deal` : "Deal");
-  const { data, loading, error } = useOpportunities();
+  const { data, loading, error, personalized } = useOpportunities();
+  const { data: status, loading: statusLoading } = useStatus();
+  const { data: config } = useConfig();
+  const openGate = tradingOpenGate({
+    status: status ?? null,
+    execEnabled: config?.exec_enabled ?? null,
+    statusLoading,
+  });
   const now = useNow();
   const [opening, setOpening] = useState<OpportunityItem | null>(null);
 
@@ -311,6 +321,13 @@ const DealPage = () => {
           <p className={styles.waitNote}>
             You can open this deal once it is Ready. The app keeps checking it.
           </p>
+        ) : personalized ? (
+          <p className={styles.blockedNote}>
+            Opening is available only from the runtime feed. Turn off personal profile overrides
+            first.
+          </p>
+        ) : !openGate.allowed ? (
+          <p className={styles.blockedNote}>{openGate.message}</p>
         ) : (
           <button type="button" className={styles.openButton} onClick={() => setOpening(item)}>
             <Zap size={16} aria-hidden="true" /> Open position

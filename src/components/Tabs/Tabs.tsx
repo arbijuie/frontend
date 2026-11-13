@@ -16,17 +16,38 @@ interface TabsProps {
   idPrefix?: string;
 }
 
+/** Keep the active tab visible inside the overflow strip without scrolling the page. */
+function scrollTabIntoStrip(tab: HTMLElement) {
+  const tablist = tab.parentElement;
+  if (!tablist) return;
+
+  const tablistRect = tablist.getBoundingClientRect();
+  const tabRect = tab.getBoundingClientRect();
+  let delta = 0;
+  if (tabRect.left < tablistRect.left) {
+    delta = tabRect.left - tablistRect.left;
+  } else if (tabRect.right > tablistRect.right) {
+    delta = tabRect.right - tablistRect.right;
+  }
+  if (delta === 0) return;
+
+  const behavior = prefersReducedMotion() ? "auto" : "smooth";
+  if (typeof tablist.scrollBy === "function") {
+    tablist.scrollBy({ left: delta, behavior });
+    return;
+  }
+  tablist.scrollLeft += delta;
+}
+
 const Tabs = ({ tabs, activeKey, onChange, label, idPrefix }: TabsProps) => {
   const generatedPrefix = useId();
   const prefix = idPrefix ?? generatedPrefix;
   const activeRef = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
-    activeRef.current?.scrollIntoView({
-      behavior: prefersReducedMotion() ? "auto" : "smooth",
-      inline: "nearest",
-      block: "nearest",
-    });
+    if (activeRef.current) {
+      scrollTabIntoStrip(activeRef.current);
+    }
   }, [activeKey]);
 
   const focusAndSelect = (index: number) => {
@@ -55,7 +76,7 @@ const Tabs = ({ tabs, activeKey, onChange, label, idPrefix }: TabsProps) => {
           onClick={() => onChange(tab.key)}
           onKeyDown={(event) => handleKeyDown(event, index)}
           role="tab"
-          aria-selected={activeKey === tab.key}
+          aria-selected={tab.key === activeKey}
           aria-controls={tabPanelId(prefix, tab.key)}
         >
           {tab.label}

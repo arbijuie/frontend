@@ -2,26 +2,20 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import PositionsPanel from "./PositionsPanel";
 import GuardrailsPanel from "./GuardrailsPanel";
-import ParityPanel from "./ParityPanel";
 import ContinuityPanel from "./ContinuityPanel";
 import { GUARDRAIL_NEXT_STEP, continuityHealth, formatUsd } from "../../../lib/operations";
 import {
   useDailyPnl,
-  useParityArtifacts,
-  useParityReport,
   usePositions,
   useRiskGuardrails,
   useSnapshotContinuity,
 } from "../../../hooks/useOperations";
-import { ApiRequestError } from "../../../lib/api-errors";
 import type { SnapshotContinuityResponse } from "../../../api/types";
 
 vi.mock("../../../hooks/useOperations", () => ({
   usePositions: vi.fn(),
   useDailyPnl: vi.fn(),
   useRiskGuardrails: vi.fn(),
-  useParityReport: vi.fn(),
-  useParityArtifacts: vi.fn(),
   useSnapshotContinuity: vi.fn(),
 }));
 
@@ -63,6 +57,11 @@ const CONTINUITY: SnapshotContinuityResponse = {
   last_recovery_scanned_rows: 0,
   last_recovery_duration_ms: null,
 };
+
+function expectFocusableRegion(name: string) {
+  const region = screen.getByRole("region", { name });
+  expect(region.getAttribute("tabindex")).toBe("0");
+}
 
 describe("PositionsPanel", () => {
   it("shows the PnL split, accounts, positions, and a window selector", () => {
@@ -122,12 +121,53 @@ describe("PositionsPanel", () => {
     expect(screen.getByRole("table", { name: "Open positions" })?.textContent ?? "").toContain(
       "margin_low"
     );
+    expectFocusableRegion("Venue accounts table");
+    expectFocusableRegion("Open positions table");
     expect(screen.getByText("No ledger days yet")).toBeTruthy();
 
     fireEvent.change(screen.getByLabelText("Window"), { target: { value: "30" } });
     expect(dailyPnl).toHaveBeenLastCalledWith(30);
     expect(formatUsd(null)).toBe("-");
     expect(formatUsd(-2)).toBe("-$2.00");
+  });
+
+  it("makes the daily PnL table keyboard-focusable when there are ledger days", () => {
+    vi.mocked(usePositions).mockReturnValue(
+      view({
+        updated_at: null,
+        count: 0,
+        notional_usd: 0,
+        unrealized_pnl_usd: 0,
+        realized_pnl_usd: 0,
+        funding_accrued_usd: 0,
+        net_pnl_usd: 0,
+        accounts: {},
+        positions: [],
+      })
+    );
+    vi.mocked(useDailyPnl).mockReturnValue(
+      view({
+        days: [
+          {
+            day: "2026-10-16",
+            realized_pnl_usd: 0,
+            funding_pnl_usd: 0.05,
+            unrealized_pnl_usd: 0.4,
+            unrealized_change_usd: 0.4,
+            total_pnl_usd: 0.45,
+            positions_open: 1,
+            positions_closed: 0,
+          },
+        ],
+        realized_pnl_usd: 0,
+        funding_pnl_usd: 0.05,
+        total_pnl_usd: 0.45,
+      })
+    );
+    render(<PositionsPanel />);
+
+    expect(screen.getByRole("table", { name: "Daily PnL" })).toBeTruthy();
+    expectFocusableRegion("Daily PnL table");
   });
 });
 
@@ -203,65 +243,11 @@ describe("GuardrailsPanel", () => {
     expect(screen.getByRole("table", { name: "Guardrail closes" })?.textContent ?? "").toContain(
       "failed"
     );
+    expectFocusableRegion("Guardrail decisions table");
+    expectFocusableRegion("Guardrail closes table");
+    expectFocusableRegion("Guardrail thresholds table");
     expect(screen.getByText(/margin guardrail has no input/)).toBeTruthy();
     expect(screen.getByText(/Capital-aware sizing is off/)).toBeTruthy();
-  });
-});
-
-describe("ParityPanel", () => {
-  it("treats a 404 report as an empty window and lists artifacts with expandable diffs", () => {
-    vi.mocked(useParityReport).mockReturnValue(
-      view(null, new ApiRequestError("no artifacts", 404, "parity_window_empty"))
-    );
-    vi.mocked(useParityArtifacts).mockReturnValue(
-      view({
-        count: 1,
-        items: [
-          {
-            schema_version: "1",
-            generated_at: "2026-10-16T09:00:00Z",
-            attempt_id: "att-1",
-            shadow_correlation_version: "v1",
-            shadow_correlation_group_id: null,
-            evaluation_status: "evaluated",
-            joinable: true,
-            parity_status: "fail",
-            legacy_event_count: 4,
-            shadow_event_count: 3,
-            legacy_conflict_count: 0,
-            shadow_conflict_count: 1,
-            diffs: [
-              {
-                dimension: "events",
-                code: "count_mismatch",
-                severity: "blocked",
-                message: "4 vs 3",
-                legacy_value: "4",
-                shadow_value: "3",
-              },
-            ],
-          },
-        ],
-      })
-    );
-    render(<ParityPanel />);
-
-    expect(screen.getByText("No parity data in this window")).toBeTruthy();
-    expect(screen.queryByRole("alert")).toBeNull();
-    const table = screen.getByRole("table", { name: "Parity artifacts" });
-    expect(table?.textContent ?? "").toContain("fail");
-    fireEvent.click(screen.getByRole("button", { name: "1 diffs (1 blocked)" }));
-    expect(screen.getByRole("list", { name: "Diffs of att-1" })?.textContent ?? "").toContain(
-      "events/count_mismatch: 4 vs 3 (legacy 4, shadow 3)"
-    );
-  });
-
-  it("shows a non-404 report error as an alert", () => {
-    vi.mocked(useParityReport).mockReturnValue(view(null, new ApiRequestError("boom", 500, null)));
-    vi.mocked(useParityArtifacts).mockReturnValue(view({ count: 0, items: [] }));
-    render(<ParityPanel />);
-    expect(screen.getByRole("alert")?.textContent ?? "").toContain("Runtime error: boom");
-    expect(screen.getByText("No parity artifacts")).toBeTruthy();
   });
 });
 
@@ -276,6 +262,7 @@ describe("ContinuityPanel", () => {
     expect(screen.getByRole("table", { name: "Capture window" })?.textContent ?? "").toContain(
       "not_attempted"
     );
+    expectFocusableRegion("Capture window table");
   });
 
   it("classifies health deterministically", () => {

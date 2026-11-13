@@ -61,9 +61,27 @@ const StatisticsPage = () => {
   const correlatedPairs = (correlation.data?.pairs ?? []).filter((pair) => pair.above_threshold);
 
   const decisionCounts: BarListItem[] = [
-    { label: "Ready", value: byStatus.ready ?? 0, tone: "success" },
-    { label: "Watching", value: byStatus.watching ?? 0, tone: "warning" },
-    { label: "Blocked", value: byStatus.blocked ?? 0, tone: "danger" },
+    {
+      label: "Ready",
+      value: byStatus.ready ?? 0,
+      tone: "success",
+      to: "/?status=ready",
+      toLabel: "Show ready deals",
+    },
+    {
+      label: "Watching",
+      value: byStatus.watching ?? 0,
+      tone: "warning",
+      to: "/?status=watching",
+      toLabel: "Show watching deals",
+    },
+    {
+      label: "Blocked",
+      value: byStatus.blocked ?? 0,
+      tone: "danger",
+      to: "/?status=blocked",
+      toLabel: "Show blocked deals",
+    },
   ];
   const statusItems = decisionCounts.map((item) => ({ ...item, note: share(item.value, total) }));
   const liquidityItems: BarListItem[] = (["H", "M", "L"] as const).map((tier) => ({
@@ -122,11 +140,15 @@ const StatisticsPage = () => {
               label="Routes screened now"
               value={opportunities.data?.count ?? "—"}
               sub={opportunities.data ? `${opportunities.data.ready_count} ready` : "Not available"}
+              to="/"
+              toLabel="Show all deals"
             />
             <StatCard
               label="Ready after validation"
               value={statusData.screener_ready_candidates}
               sub={`of ${statusData.screener_validated_candidates} validated`}
+              to="/?status=ready"
+              toLabel="Show ready deals"
             />
             <StatCard
               label="Uptime"
@@ -146,7 +168,13 @@ const StatisticsPage = () => {
             <ul className={styles.venues} aria-label="Venue data sources">
               {venues.map(({ venue, state }) => (
                 <li key={venue} className={styles.venue}>
-                  <span className={styles.venueName}>{formatVenue(venue)}</span>
+                  <Link
+                    to="/status"
+                    className={`${styles.venueName} ${styles.stretchedLink}`}
+                    aria-label={`${formatVenue(venue)}, ${VENUE_SOURCE_LABEL[state]}. Open Health`}
+                  >
+                    {formatVenue(venue)}
+                  </Link>
                   <span className={`${styles.sourceBadge} ${SOURCE_TONE[state]}`}>
                     {VENUE_SOURCE_LABEL[state]}
                   </span>
@@ -210,7 +238,15 @@ const StatisticsPage = () => {
           <ul className={styles.reasons} aria-label="Most common reasons">
             {reasons.map((reason) => (
               <li key={`${reason.severity}:${reason.code}`} className={styles.reason}>
-                <span className={styles.reasonLabel}>{reasonLabel(reason.code)}</span>
+                <Link
+                  to={`/?status=${reason.severity}`}
+                  className={`${styles.reasonLabel} ${styles.stretchedLink}`}
+                  aria-label={`${reasonLabel(reason.code)}, ${reason.count} ${
+                    reason.count === 1 ? "route" : "routes"
+                  }. Show ${reason.severity} deals`}
+                >
+                  {reasonLabel(reason.code)}
+                </Link>
                 <span
                   className={`${styles.sourceBadge} ${
                     reason.severity === "blocked" ? styles.toneDanger : styles.toneWarning
@@ -273,8 +309,8 @@ const StatisticsPage = () => {
         <p>
           Liquidity tiers grade 24h volume and open interest; depth grades A to D grade the order
           book against the order size. Venue data sources come from the runtime's own feed health.
-          See the <Link to="/journal">Journal</Link> for daily history and the{" "}
-          <Link to="/product">Product</Link> page for the modes that set these thresholds.
+          See the <Link to="/learn/journal">Journal</Link> for daily history and the{" "}
+          <Link to="/learn/about">Product</Link> page for the modes that set these thresholds.
         </p>
       </div>
 

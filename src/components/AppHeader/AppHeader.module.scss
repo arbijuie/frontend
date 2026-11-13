@@ -1,8 +1,22 @@
-// Mobile: a slim brand bar that scrolls away; the operator nav is a fixed bottom bar.
-// Desktop (lg+): a sticky top bar that also holds the navigation.
 .header {
+  position: sticky;
+  top: 0;
+  z-index: v.z(nav);
+  padding-top: env(safe-area-inset-top, 0px);
   border-bottom: 0.0625rem solid v.color(border);
   background: v.color(bg);
+
+  @include v.bp-up(lg) {
+    background: color-mix(in srgb, v.color(bg) 92%, transparent);
+    backdrop-filter: blur(0.5rem);
+
+    .inner {
+      flex-wrap: nowrap;
+      height: v.size(header-height);
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+  }
 }
 
 .inner {
@@ -25,28 +39,58 @@
   font-weight: v.font-weight(bold);
   text-decoration: none;
   border-radius: v.radius(md);
+
+  &:focus-visible {
+    outline: 0.125rem solid v.color(focus);
+    outline-offset: 0.125rem;
+  }
 }
 
-.backButton {
+.historyButton {
   @include v.button(ghost);
+  position: relative;
   display: inline-flex;
   align-items: center;
-  gap: v.space(1);
-  padding-inline: v.space("2-5");
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
+  border-radius: v.radius(pill);
+
+  & + .historyButton {
+    margin-inline-start: calc(-1 * #{v.space(2)});
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: -0.375rem;
+  }
+
+  &:first-of-type::after {
+    inset-inline-end: -0.125rem;
+  }
+
+  & + .historyButton::after {
+    inset-inline-start: -0.125rem;
+  }
+
+  &:focus-visible {
+    outline: 0.125rem solid v.color(focus);
+    outline-offset: 0.125rem;
+  }
+
+  &[aria-disabled="true"] {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
 }
 
-.backIcon {
+.historyIcon {
   width: 1rem;
   height: 1rem;
-}
-
-.backLabel {
-  display: none;
-  line-height: v.line-height(tight);
-
-  @include v.bp-up(sm) {
-    display: inline;
-  }
 }
 
 .mark {
@@ -68,29 +112,4 @@
 .name {
   font-size: v.font-size(base);
   letter-spacing: -0.01em;
-}
-
-.operator {
-  @include v.bp-up(lg) {
-    position: sticky;
-    top: 0;
-    z-index: v.z(nav);
-    background: color-mix(in srgb, v.color(bg) 92%, transparent);
-    backdrop-filter: blur(0.5rem);
-
-    .inner {
-      flex-wrap: nowrap;
-      height: v.size(header-height);
-      padding-top: 0;
-      padding-bottom: 0;
-    }
-  }
-}
-
-.public {
-  .inner {
-    @include v.bp-up(md) {
-      flex-wrap: nowrap;
-    }
-  }
 }

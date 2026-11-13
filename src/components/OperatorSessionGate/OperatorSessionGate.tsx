@@ -1,5 +1,4 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { API_TOKEN } from "../../api/config";
 import styles from "./OperatorSessionGate.module.scss";
 import {
   bootstrapTelegramSession,
@@ -14,7 +13,8 @@ interface OperatorSessionGateProps {
 
 const OperatorSessionGate = ({ children }: OperatorSessionGateProps) => {
   const hasTelegramContext = hasTelegramWebAppContext();
-  const shouldBootstrapTelegramSession = !API_TOKEN && hasTelegramContext;
+  // Mini App context must bootstrap a Telegram session before operator API/WS calls.
+  const shouldBootstrapTelegramSession = hasTelegramContext;
   const [authReady, setAuthReady] = useState(!shouldBootstrapTelegramSession);
   const [authError, setAuthError] = useState<string | null>(null);
   const [bootstrapAttempt, setBootstrapAttempt] = useState(0);
@@ -37,12 +37,10 @@ const OperatorSessionGate = ({ children }: OperatorSessionGateProps) => {
         if (cancelled) {
           return;
         }
+        // Every non-2xx session answer keeps the shell closed. A 404 is a missing or mis-routed
+        // `/auth/telegram/session` (old backend, proxy gap, Telegram auth off), not a session:
+        // mounting the shell then would only turn into opaque 401s on every operator call.
         if (error instanceof TelegramSessionBootstrapError) {
-          if (error.status === 404) {
-            setAuthReady(true);
-            setAuthError(null);
-            return;
-          }
           setAuthError(formatTelegramBootstrapErrorForDisplay(error));
           return;
         }

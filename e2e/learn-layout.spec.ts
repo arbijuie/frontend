@@ -2,27 +2,38 @@ import { expect, test } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { mockApi } from "./fixtures/mockApi";
 
-const PUBLIC_PAGES = [
-  { path: "/product", name: "Product" },
-  { path: "/how-it-works", name: "How it works" },
-  { path: "/statistics", name: "Statistics" },
-  { path: "/journal", name: "Journal" },
-  { path: "/onboarding", name: "Onboarding" },
+const LEARN_PAGES = [
+  { path: "/learn/about", name: "Product" },
+  { path: "/learn/how-it-works", name: "How it works" },
+  { path: "/learn/statistics", name: "Statistics" },
+  { path: "/learn/journal", name: "Journal" },
+  { path: "/learn/onboarding", name: "Onboarding" },
 ];
 
-test.describe("Public layout", () => {
+const REDIRECTS = [
+  { from: "/product", to: "/learn/about", name: "Product" },
+  { from: "/how-it-works", to: "/learn/how-it-works", name: "How it works" },
+  { from: "/statistics", to: "/learn/statistics", name: "Statistics" },
+  { from: "/journal", to: "/learn/journal", name: "Journal" },
+  { from: "/onboarding", to: "/learn/onboarding", name: "Onboarding" },
+];
+
+test.describe("Learn pages under the operator layout", () => {
   test.beforeEach(async ({ page }) => {
     await mockApi(page);
   });
 
-  for (const { path, name } of PUBLIC_PAGES) {
-    test(`${name}: renders with public navigation and without the operator bar`, async ({
-      page,
-    }) => {
+  for (const { path, name } of LEARN_PAGES) {
+    test(`${name}: renders with the bottom menu and More highlighted`, async ({ page }) => {
       await page.goto(path);
       await expect(page.getByRole("heading", { level: 1, name })).toBeVisible();
-      await expect(page.getByRole("navigation", { name: "Public" })).toBeVisible();
-      await expect(page.getByRole("navigation", { name: "Primary" })).toHaveCount(0);
+      const nav = page.getByRole("navigation", { name: "Primary" });
+      await expect(nav).toBeVisible();
+      await expect(page.getByRole("navigation", { name: "Public" })).toHaveCount(0);
+      await expect(nav.getByRole("link", { name: "More", exact: true })).toHaveAttribute(
+        "aria-current",
+        "page"
+      );
       await expect(page.getByRole("main")).toHaveCount(1);
       await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
     });
@@ -36,14 +47,25 @@ test.describe("Public layout", () => {
         (v) => v.impact === "critical" || v.impact === "serious"
       );
       expect(seriousOrCritical.map((v) => v.id)).toEqual([]);
-
-      const ignoredLabels = results.incomplete.filter((item) => item.id === "aria-prohibited-attr");
-      expect(ignoredLabels).toEqual([]);
     });
   }
 
-  test("skip link is the first Tab stop on a public page", async ({ page }) => {
-    await page.goto("/product");
+  for (const { from, to, name } of REDIRECTS) {
+    test(`${from} redirects to ${to}`, async ({ page }) => {
+      await page.goto(from);
+      await expect(page).toHaveURL(new RegExp(`${to}$`));
+      await expect(page.getByRole("heading", { level: 1, name })).toBeVisible();
+    });
+  }
+
+  test("a redirect keeps the query and hash", async ({ page }) => {
+    await page.goto("/statistics?x=y#venues");
+    await expect(page).toHaveURL(/\/learn\/statistics\?x=y#venues$/);
+    await expect(page.getByRole("heading", { level: 1, name: "Statistics" })).toBeVisible();
+  });
+
+  test("skip link is the first Tab stop on a learn page", async ({ page }) => {
+    await page.goto("/learn/about");
     await expect(page.getByRole("heading", { level: 1, name: "Product" })).toBeVisible();
 
     await page.keyboard.press("Tab");
@@ -53,10 +75,12 @@ test.describe("Public layout", () => {
     await expect(page.getByRole("main")).toBeFocused();
   });
 
-  test("operator pages keep the bottom navigation", async ({ page }) => {
-    await page.goto("/status");
-    await expect(page.getByRole("navigation", { name: "Primary" })).toBeVisible();
-    await expect(page.getByRole("navigation", { name: "Public" })).toHaveCount(0);
+  test("More opens Onboarding from the menu", async ({ page }) => {
+    await page.goto("/more");
+    await page.getByRole("link", { name: /^Onboarding/ }).click();
+
+    await expect(page).toHaveURL(/\/learn\/onboarding$/);
+    await expect(page.getByRole("heading", { level: 1, name: "Onboarding" })).toBeVisible();
   });
 });
 
@@ -67,30 +91,6 @@ test.describe("Opportunities WebSocket scope", () => {
 
     await page.goto("/");
 
-    await expect(page.getByText("live (WS)")).toBeVisible();
-    expect(opened.length).toBeGreaterThan(0);
-  });
-
-  test("public pages do not open the opportunities WebSocket", async ({ page }) => {
-    const opened: string[] = [];
-    await mockApi(page, { onWebSocket: (url) => opened.push(url) });
-
-    await page.goto("/product");
-    await expect(page.getByRole("heading", { level: 1, name: "Product" })).toBeVisible();
-    await page.waitForLoadState("networkidle");
-
-    expect(opened).toEqual([]);
-  });
-
-  test("moving from a public page to an operator page opens the WebSocket", async ({ page }) => {
-    const opened: string[] = [];
-    await mockApi(page, { onWebSocket: (url) => opened.push(url) });
-
-    await page.goto("/product");
-    await expect(page.getByRole("heading", { level: 1, name: "Product" })).toBeVisible();
-    expect(opened).toEqual([]);
-
-    await page.goto("/");
     await expect(page.getByText("live (WS)")).toBeVisible();
     expect(opened.length).toBeGreaterThan(0);
   });

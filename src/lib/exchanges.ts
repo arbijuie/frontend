@@ -4,7 +4,6 @@ export const KNOWN_EXCHANGES = [
   "aster",
   "binance",
   "bybit",
-  "dydx",
   "extended",
 ] as const;
 

@@ -53,7 +53,12 @@ const ContinuityPanel = () => {
           </div>
 
           <h2 className={styles.sectionTitle}>Capture window</h2>
-          <div className={styles.tableWrap}>
+          <div
+            className={styles.tableWrap}
+            role="region"
+            aria-label="Capture window table"
+            tabIndex={0}
+          >
             <table className={styles.table} aria-label="Capture window">
               <tbody>
                 <tr>

@@ -33,7 +33,7 @@ const DROP_METRICS: Array<{ key: string; label: string }> = [
   { key: "missing_real_depth", label: "Missing real depth" },
   { key: "missing_real_fee", label: "Missing real fee" },
   { key: "basis_bonus_capped", label: "Basis bonus capped" },
-  { key: "adaptive_hold_applied", label: "Adaptive hold applied" },
+  { key: "adaptive_hold_applied", label: "Unstable-funding hold shortened" },
   { key: "basis_divergence_penalty", label: "Basis divergence penalty" },
   { key: "l2_book_fetch_error_hyperliquid", label: "Hyperliquid L2 fetch errors" },
 ];

@@ -53,6 +53,10 @@ vi.mock("../../components/WsTransportHealthCard/WsTransportHealthCard", () => ({
   default: () => <div>Transport health mock</div>,
 }));
 
+vi.mock("../../components/StopTradingCard/StopTradingCard", () => ({
+  default: () => <div>Stop-trading latch mock</div>,
+}));
+
 const mockedUseStatus = vi.mocked(useStatus);
 const mockedUseConfig = vi.mocked(useConfig);
 const mockedUseNow = vi.mocked(useNow);
@@ -107,6 +111,13 @@ describe("StatusPage", () => {
 
     expect(screen.getByRole("heading", { level: 2, name: "Market Data Sources" })).toBeTruthy();
     expect(screen.getByText("WS reliability mock")).toBeTruthy();
+  });
+
+  it("renders the Stop-Trading Latch section", () => {
+    render(<StatusPage />);
+
+    expect(screen.getByRole("heading", { level: 2, name: "Stop-Trading Latch" })).toBeTruthy();
+    expect(screen.getByText("Stop-trading latch mock")).toBeTruthy();
   });
 
   it("renders the Live Transport section", () => {

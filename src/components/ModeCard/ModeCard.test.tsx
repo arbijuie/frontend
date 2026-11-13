@@ -1,4 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it, vi } from "vitest";
 import ModeCard from "./ModeCard";
 import { PRODUCT_MODES } from "../../lib/productModes";
@@ -15,6 +16,20 @@ describe("ModeCard", () => {
     expect(card.textContent).toContain(steady.bestFor);
     expect(card.textContent).toContain(steady.gains);
     expect(card.textContent).toContain(steady.costs);
+    expect(screen.queryByRole("button")).toBeNull();
+    expect(screen.queryByRole("link")).toBeNull();
+  });
+
+  it("links to where the mode is chosen when a link is provided", () => {
+    render(
+      <MemoryRouter>
+        <ModeCard mode={steady} link={{ to: "/config", label: "Choose in Settings" }} />
+      </MemoryRouter>
+    );
+
+    const link = screen.getByRole("link", { name: "Choose in Settings: Steady" });
+    expect(link.getAttribute("href")).toBe("/config");
+    expect(link.textContent).toBe("Choose in Settings");
     expect(screen.queryByRole("button")).toBeNull();
   });
 

@@ -108,7 +108,6 @@ describe("labels", () => {
   it("names strategies and venues", () => {
     expect(strategyLabel("cash_and_carry")).toBe("Cash and carry");
     expect(strategyLabel("new_strategy")).toBe("new strategy");
-    expect(formatVenue("dydx")).toBe("dYdX");
     expect(formatVenue("hyperliquid")).toBe("Hyperliquid");
   });
 

@@ -17,11 +17,11 @@ describe("Nav", () => {
     const nav = screen.getByRole("navigation", { name: "Primary" });
     const links = Array.from(nav.querySelectorAll("a"));
 
-    expect(links.map((link) => link.textContent)).toEqual(["Deals", "Auto", "Health", "More"]);
+    expect(links.map((link) => link.textContent)).toEqual(["Deals", "Health", "Settings", "More"]);
     expect(links.map((link) => link.getAttribute("href"))).toEqual([
       "/",
-      "/automation",
       "/status",
+      "/config",
       "/more",
     ]);
     expect(new Set(NAV_ITEMS.map((item) => item.to)).size).toBe(NAV_ITEMS.length);
@@ -54,5 +54,15 @@ describe("Nav", () => {
       expect(link.tabIndex).toBe(0);
       expect(link.querySelector("svg")?.getAttribute("aria-hidden")).toBe("true");
     }
+  });
+
+  it("keeps More highlighted on a Learn page", () => {
+    render(
+      <MemoryRouter initialEntries={["/learn/statistics"]}>
+        <Nav />
+      </MemoryRouter>
+    );
+    expect(screen.getByRole("link", { name: "More" }).getAttribute("aria-current")).toBe("page");
+    expect(screen.getByRole("link", { name: "Deals" }).getAttribute("aria-current")).toBeNull();
   });
 });

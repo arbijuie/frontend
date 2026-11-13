@@ -61,7 +61,12 @@ const PositionsPanel = () => {
           {Object.keys(accounts).length === 0 ? (
             <p className={styles.hint}>No venue account is configured for margin reads.</p>
           ) : (
-            <div className={styles.tableWrap}>
+            <div
+              className={styles.tableWrap}
+              role="region"
+              aria-label="Venue accounts table"
+              tabIndex={0}
+            >
               <table className={styles.table} aria-label="Venue accounts">
                 <thead>
                   <tr>
@@ -101,7 +106,12 @@ const PositionsPanel = () => {
           {openPositions.length === 0 ? (
             <EmptyState title="No open positions" description="Pairs appear here while open." />
           ) : (
-            <div className={styles.tableWrap}>
+            <div
+              className={styles.tableWrap}
+              role="region"
+              aria-label="Open positions table"
+              tabIndex={0}
+            >
               <table className={styles.table} aria-label="Open positions">
                 <thead>
                   <tr>
@@ -200,7 +210,12 @@ const PositionsPanel = () => {
           {pnlDays.length === 0 ? (
             <EmptyState title="No ledger days yet" />
           ) : (
-            <div className={styles.tableWrap}>
+            <div
+              className={styles.tableWrap}
+              role="region"
+              aria-label="Daily PnL table"
+              tabIndex={0}
+            >
               <table className={styles.table} aria-label="Daily PnL">
                 <thead>
                   <tr>

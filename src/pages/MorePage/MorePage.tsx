@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import pageStyles from "../../styles/Page.module.scss";
 import styles from "./MorePage.module.scss";
 import PageHeader from "../../components/PageHeader/PageHeader";
 import { usePageTitle } from "../../hooks/usePageTitle";
@@ -8,7 +9,7 @@ const MorePage = () => {
   usePageTitle("More");
 
   return (
-    <div className={styles.page}>
+    <div className={`${pageStyles.page} ${styles.page}`}>
       <PageHeader title="More" />
       {MORE_SECTIONS.map((section) => (
         <section key={section.title} className={styles.section} aria-label={section.title}>
@@ -16,7 +17,7 @@ const MorePage = () => {
           <ul className={styles.list}>
             {section.items.map(({ to, label, description, icon: Icon }) => (
               <li key={to}>
-                <Link to={to} className={styles.row}>
+                <Link to={to} state={{ from: "/more" }} className={styles.row}>
                   <Icon className={styles.icon} aria-hidden="true" />
                   <span>
                     <span className={styles.label}>{label}</span>

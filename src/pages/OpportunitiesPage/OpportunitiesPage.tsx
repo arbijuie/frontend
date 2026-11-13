@@ -16,10 +16,11 @@ import RuntimeKnobsCard from "../../components/RuntimeKnobsCard/RuntimeKnobsCard
 import PipelineDiagnosticsHint from "../../components/PipelineDiagnosticsHint/PipelineDiagnosticsHint";
 import { useNow } from "../../hooks/useNow";
 import { useTransientFlag } from "../../hooks/useTransientFlag";
-import { API_TOKEN, POLL_INTERVAL_MS } from "../../api/config";
+import { POLL_INTERVAL_MS } from "../../api/config";
 import { hasTelegramWebAppContext } from "../../api/telegram-session";
 import WelcomeHint from "../../components/WelcomeHint/WelcomeHint";
 import { dealsSummary } from "../../lib/dealsSummary";
+import { tradingOpenGate } from "../../lib/tradingOpenGate";
 import { usePageTitle } from "../../hooks/usePageTitle";
 import TransportIndicator from "../../components/TransportIndicator/TransportIndicator";
 import type { StrategyFilter } from "../../lib/opportunitiesUrlState";
@@ -56,11 +57,18 @@ export default function OpportunitiesPage() {
     authDetail,
     transportDetail,
     retryConnection,
+    personalized,
   } = useOpportunities({ strategyTypes });
-  const { data: status } = useStatus();
+  const usesWsTransport = usesLiveTransport && !personalized;
+  const { data: status, loading: statusLoading } = useStatus();
   const { data: config } = useConfig({
     staleTime: 0,
     refetchInterval: POLL_INTERVAL_MS,
+  });
+  const openGate = tradingOpenGate({
+    status: status ?? null,
+    execEnabled: config?.exec_enabled ?? null,
+    statusLoading,
   });
   const { flag: justChecked, trigger: showJustChecked } = useTransientFlag();
   const prevUpdatedAt = useRef<string | null>(null);
@@ -85,10 +93,9 @@ export default function OpportunitiesPage() {
     ? `Selected strategy ${OPPORTUNITY_STRATEGY_LABEL[strategyFilter]} is not active in runtime. Active strategies: ${runtimeStrategiesLabel}.`
     : "The screener is running but nothing currently meets the configured thresholds.";
   const showTelegramLaunchHint =
-    Boolean(error && error.includes("401")) &&
-    !(API_TOKEN && API_TOKEN.trim()) &&
-    !hasTelegramWebAppContext();
+    Boolean(error && error.includes("401")) && !hasTelegramWebAppContext();
   const hasReadyDeals = Boolean(data?.opportunities.some((item) => item.status === "ready"));
+  const canExecuteFromFeed = openGate.allowed && !personalized;
 
   const handleRefresh = async () => {
     prevUpdatedAt.current = data?.updated_at ?? null;
@@ -134,7 +141,7 @@ export default function OpportunitiesPage() {
             )}
           </div>
           <div className={styles.liveRow}>
-            {usesLiveTransport ? (
+            {usesWsTransport ? (
               <TransportIndicator
                 state={transportState}
                 reconnectAttempt={reconnectAttempt}
@@ -146,7 +153,11 @@ export default function OpportunitiesPage() {
                 onRetry={retryConnection}
               />
             ) : (
-              <div className={styles.hint}>HTTP polling (strategy filter active)</div>
+              <div className={styles.hint}>
+                {personalized
+                  ? "HTTP polling (personal profile active)"
+                  : "HTTP polling (strategy filter active)"}
+              </div>
             )}
             {data?.updated_at && (
               <div className={styles.hint}>
@@ -181,6 +192,9 @@ export default function OpportunitiesPage() {
               <span className={styles.summaryPill}>count: {data?.count ?? "—"}</span>
               <span className={styles.summaryPill}>ready: {data?.ready_count ?? "—"}</span>
               <span className={styles.summaryPill}>strategy: {strategyFilter}</span>
+              <span className={styles.summaryPill}>
+                profile: {personalized ? "personalized" : "runtime"}
+              </span>
               <span className={styles.summaryPill}>
                 runtime strategies: {runtimeStrategiesLabel}
               </span>
@@ -242,7 +256,7 @@ export default function OpportunitiesPage() {
             onStatusFilterChange={setStatusFilter}
             search={search}
             onSearchChange={setSearch}
-            onExecute={setSelectedOpportunity}
+            onExecute={canExecuteFromFeed ? setSelectedOpportunity : undefined}
           />
         </>
       )}

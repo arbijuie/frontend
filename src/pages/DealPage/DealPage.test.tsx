@@ -2,13 +2,41 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import DealPage from "./DealPage";
 import { useOpportunities } from "../../hooks/useOpportunities";
+import { useStatus } from "../../hooks/useStatus";
+import { useConfig } from "../../hooks/useConfig";
 
 vi.mock("../../hooks/useOpportunities", () => ({ useOpportunities: vi.fn() }));
+vi.mock("../../hooks/useStatus", () => ({ useStatus: vi.fn() }));
+vi.mock("../../hooks/useConfig", () => ({ useConfig: vi.fn() }));
 vi.mock("../../components/ExecutionSheet/ExecutionSheet", () => ({
   default: () => <div>Execution sheet</div>,
 }));
 
 const mocked = vi.mocked(useOpportunities);
+const mockedStatus = vi.mocked(useStatus);
+const mockedConfig = vi.mocked(useConfig);
+
+function allowTrading() {
+  mockedStatus.mockReturnValue({
+    data: {
+      execution_entries_stopped: false,
+      stop_trading: { state: "running" },
+      vooi_route: { enabled: true, state: "ready" },
+    },
+    loading: false,
+    error: null,
+    fetching: false,
+    refetch: vi.fn(),
+    fetchedAt: 0,
+  } as never);
+  mockedConfig.mockReturnValue({
+    data: { exec_enabled: true },
+    loading: false,
+    error: null,
+    fetching: false,
+    refetch: vi.fn(),
+  } as never);
+}
 
 function deal(overrides: Record<string, unknown> = {}) {
   return {
@@ -37,11 +65,13 @@ function deal(overrides: Record<string, unknown> = {}) {
   };
 }
 
-function renderAt(path: string, items: unknown[]) {
+function renderAt(path: string, items: unknown[], personalized = false) {
+  allowTrading();
   mocked.mockReturnValue({
     data: { opportunities: items, updated_at: "2026-10-19T12:00:00Z" },
     loading: false,
     error: null,
+    personalized,
   } as never);
   return render(
     <MemoryRouter initialEntries={[path]}>
@@ -84,7 +114,7 @@ describe("DealPage", () => {
     expect(screen.queryByRole("button", { name: /Open position/ })).toBeNull();
   });
 
-  it("opens the trade sheet only for a Ready deal", () => {
+  it("opens the trade sheet only for a Ready deal when trading is allowed", () => {
     const { unmount } = renderAt("/deals/ETH/binance/lighter", [deal()]);
     expect(screen.queryByRole("button", { name: /Open position/ })).toBeNull();
     expect(screen.getByText(/once it is Ready/)).toBeTruthy();
@@ -94,8 +124,56 @@ describe("DealPage", () => {
     expect(screen.getByText("Execution sheet")).toBeTruthy();
   });
 
+  it("hides Open when stop-trading is latched even for Ready deals", () => {
+    mockedStatus.mockReturnValue({
+      data: {
+        execution_entries_stopped: false,
+        stop_trading: { state: "stopped" },
+        vooi_route: { enabled: true, state: "ready" },
+      },
+      loading: false,
+      error: null,
+      fetching: false,
+      refetch: vi.fn(),
+      fetchedAt: 0,
+    } as never);
+    mockedConfig.mockReturnValue({
+      data: { exec_enabled: true },
+      loading: false,
+      error: null,
+      fetching: false,
+      refetch: vi.fn(),
+    } as never);
+    mocked.mockReturnValue({
+      data: {
+        opportunities: [deal({ status: "ready", reasons: [] })],
+        updated_at: "2026-10-19T12:00:00Z",
+      },
+      loading: false,
+      error: null,
+      personalized: false,
+    } as never);
+    render(
+      <MemoryRouter initialEntries={["/deals/ETH/binance/lighter"]}>
+        <Routes>
+          <Route path="/deals/:symbol/:long/:short" element={<DealPage />} />
+        </Routes>
+      </MemoryRouter>
+    );
+    expect(screen.queryByRole("button", { name: /Open position/ })).toBeNull();
+    expect(screen.getByText(/stopped for safety/i)).toBeTruthy();
+  });
+
   it("explains when the deal has left the list", () => {
     renderAt("/deals/BTC/binance/lighter", [deal()]);
     expect(screen.getByText("This deal is no longer in the list")).toBeTruthy();
+  });
+
+  it("hides Open position for personalized feed even when deal is Ready", () => {
+    renderAt("/deals/ETH/binance/lighter", [deal({ status: "ready", reasons: [] })], true);
+    expect(screen.queryByRole("button", { name: /Open position/ })).toBeNull();
+    expect(
+      screen.getByText(/Opening is available only from the runtime feed/i)
+    ).toBeTruthy();
   });
 });

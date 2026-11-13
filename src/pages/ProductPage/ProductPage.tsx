@@ -9,7 +9,7 @@ import { PRODUCT_MODES } from "../../lib/productModes";
 const HIGHLIGHTS = [
   {
     title: "Screens funding across venues",
-    text: "Perpetual funding rates from Hyperliquid, Lighter, Aster, Binance, Bybit, dYdX and Extended, refreshed continuously.",
+    text: "Perpetual funding rates from Hyperliquid, Lighter, Aster, Binance, Bybit and Extended, refreshed continuously.",
   },
   {
     title: "Ranks routes after costs",
@@ -21,7 +21,9 @@ const HIGHLIGHTS = [
   },
 ];
 
-/** Public product overview (issue #303): what the screener does and the product modes. */
+const SETTINGS_LINK = { to: "/config", label: "Choose in Settings" };
+
+/** Product overview (issues #303 and #714): what the screener does and the product modes. */
 const ProductPage = () => {
   usePageTitle("Product");
 
@@ -44,12 +46,13 @@ const ProductPage = () => {
       <h2 className={pageStyles.sectionTitle}>Product modes</h2>
       <p className={styles.lead}>
         A mode sets how strict the screener is. Stricter modes show fewer, steadier signals; looser
-        modes show more signals sooner, with more noise. Operators switch modes on the Config page,
-        and each mode applies one runtime preset.
+        modes show more signals sooner, with more noise. Each user picks a mode in Settings: the
+        choice applies only to that user's Deals feed and never changes the shared runtime
+        settings.
       </p>
       <div className={styles.modes}>
         {PRODUCT_MODES.map((mode) => (
-          <ModeCard key={mode.key} mode={mode} />
+          <ModeCard key={mode.key} mode={mode} link={SETTINGS_LINK} />
         ))}
       </div>
 

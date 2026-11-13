@@ -25,6 +25,7 @@ export function useModalKeyboard({
 
   useEffect(() => {
     const previous = document.activeElement as HTMLElement | null;
+    const fallbackTarget = fallbackFocusRef?.current;
     const focusables = () => {
       const container = containerRef.current;
       return container ? Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE)) : [];
@@ -67,7 +68,7 @@ export function useModalKeyboard({
         previous !== document.body &&
         previous.isConnected &&
         !previous.hasAttribute("disabled");
-      const target = canReturn ? previous : fallbackFocusRef?.current;
+      const target = canReturn ? previous : fallbackTarget;
       target?.focus?.();
     };
   }, [containerRef, initialFocusRef, fallbackFocusRef]);

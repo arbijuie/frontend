@@ -1932,10 +1932,6 @@
             "title": "Durable Snapshots Retention Days",
             "type": "number"
           },
-          "dydx_indexer_url": {
-            "title": "Dydx Indexer Url",
-            "type": "string"
-          },
           "exec_adl_critical_quantile": {
             "title": "Exec Adl Critical Quantile",
             "type": "integer"
@@ -2060,6 +2056,21 @@
             "title": "Hl Taker Fee Per Side",
             "type": "number"
           },
+          "hl_wallet_address": {
+            "default": "",
+            "title": "Hl Wallet Address",
+            "type": "string"
+          },
+          "hl_wallet_configured": {
+            "default": false,
+            "title": "Hl Wallet Configured",
+            "type": "boolean"
+          },
+          "hl_ws_book_max_coins": {
+            "default": 120,
+            "title": "Hl Ws Book Max Coins",
+            "type": "integer"
+          },
           "hold_window_instability_scale": {
             "title": "Hold Window Instability Scale",
             "type": "number"
@@ -2075,6 +2086,11 @@
           "lighter_taker_fee_per_side": {
             "title": "Lighter Taker Fee Per Side",
             "type": "number"
+          },
+          "lighter_ws_book_max_markets": {
+            "default": 120,
+            "title": "Lighter Ws Book Max Markets",
+            "type": "integer"
           },
           "liquidity_weight": {
             "title": "Liquidity Weight",
@@ -2123,55 +2139,6 @@
           "max_volume_fraction": {
             "title": "Max Volume Fraction",
             "type": "number"
-          },
-          "migration_nautilus_adapter_enabled": {
-            "title": "Migration Nautilus Adapter Enabled",
-            "type": "boolean"
-          },
-          "migration_nautilus_adapter_rollout_ledger_path": {
-            "default": "",
-            "title": "Migration Nautilus Adapter Rollout Ledger Path",
-            "type": "string"
-          },
-          "migration_nautilus_adapter_rollout_plan_path": {
-            "default": "",
-            "title": "Migration Nautilus Adapter Rollout Plan Path",
-            "type": "string"
-          },
-          "migration_nautilus_adapter_rollout_step": {
-            "default": "S0",
-            "title": "Migration Nautilus Adapter Rollout Step",
-            "type": "string"
-          },
-          "migration_nautilus_adapter_venues": {
-            "title": "Migration Nautilus Adapter Venues",
-            "type": "string"
-          },
-          "migration_nautilus_compare_enabled": {
-            "title": "Migration Nautilus Compare Enabled",
-            "type": "boolean"
-          },
-          "migration_nautilus_enabled": {
-            "title": "Migration Nautilus Enabled",
-            "type": "boolean"
-          },
-          "migration_nautilus_fallback_policy": {
-            "const": "deny_and_observe",
-            "title": "Migration Nautilus Fallback Policy",
-            "type": "string"
-          },
-          "migration_nautilus_mode": {
-            "enum": [
-              "legacy_only",
-              "shadow_compare",
-              "nautilus_primary"
-            ],
-            "title": "Migration Nautilus Mode",
-            "type": "string"
-          },
-          "migration_nautilus_observe_only": {
-            "title": "Migration Nautilus Observe Only",
-            "type": "boolean"
           },
           "min_depth_quality": {
             "title": "Min Depth Quality",
@@ -2235,6 +2202,21 @@
             "title": "Runbook Presets",
             "type": "object"
           },
+          "screener_active_venues": {
+            "default": "",
+            "title": "Screener Active Venues",
+            "type": "string"
+          },
+          "screener_book_fetch_budget_s": {
+            "default": 25.0,
+            "title": "Screener Book Fetch Budget S",
+            "type": "number"
+          },
+          "screener_hl_book_concurrency": {
+            "default": 16,
+            "title": "Screener Hl Book Concurrency",
+            "type": "integer"
+          },
           "stale_data_s": {
             "title": "Stale Data S",
             "type": "number"
@@ -2268,6 +2250,11 @@
           "vooi_execution_enabled": {
             "default": false,
             "title": "Vooi Execution Enabled",
+            "type": "boolean"
+          },
+          "vooi_market_state_enabled": {
+            "default": false,
+            "title": "Vooi Market State Enabled",
             "type": "boolean"
           },
           "vooi_mcp_token_configured": {
@@ -2356,17 +2343,9 @@
           "exec_adl_critical_quantile",
           "exec_recovery_cooldown_s",
           "exec_recovery_require_manual_ack",
-          "migration_nautilus_enabled",
-          "migration_nautilus_mode",
-          "migration_nautilus_compare_enabled",
-          "migration_nautilus_observe_only",
-          "migration_nautilus_fallback_policy",
-          "migration_nautilus_adapter_enabled",
-          "migration_nautilus_adapter_venues",
           "binance_base_url",
           "aster_base_url",
           "bybit_base_url",
-          "dydx_indexer_url",
           "extended_base_url",
           "backtest_capture_enabled",
           "backtest_db_path",
@@ -2680,77 +2659,6 @@
               }
             ],
             "title": "Max Volume Fraction"
-          },
-          "migration_nautilus_adapter_enabled": {
-            "anyOf": [
-              {
-                "type": "boolean"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Migration Nautilus Adapter Enabled"
-          },
-          "migration_nautilus_adapter_rollout_step": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Migration Nautilus Adapter Rollout Step"
-          },
-          "migration_nautilus_compare_enabled": {
-            "anyOf": [
-              {
-                "type": "boolean"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Migration Nautilus Compare Enabled"
-          },
-          "migration_nautilus_enabled": {
-            "anyOf": [
-              {
-                "type": "boolean"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Migration Nautilus Enabled"
-          },
-          "migration_nautilus_mode": {
-            "anyOf": [
-              {
-                "enum": [
-                  "legacy_only",
-                  "shadow_compare",
-                  "nautilus_primary"
-                ],
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Migration Nautilus Mode"
-          },
-          "migration_nautilus_observe_only": {
-            "anyOf": [
-              {
-                "type": "boolean"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Migration Nautilus Observe Only"
           },
           "min_open_interest": {
             "anyOf": [
@@ -4191,9 +4099,6 @@
           "runtime": {
             "$ref": "#/components/schemas/ExecutionPreflightRuntimeItem"
           },
-          "source": {
-            "$ref": "#/components/schemas/ExecutionPreflightSourceItem"
-          },
           "venues": {
             "items": {
               "$ref": "#/components/schemas/ExecutionVenueCapabilityItem"
@@ -4274,41 +4179,6 @@
           "screener_ready_candidates"
         ],
         "title": "ExecutionPreflightRuntimeItem",
-        "type": "object"
-      },
-      "ExecutionPreflightSourceItem": {
-        "description": "Which evaluator produced this preflight decision (issue #170).",
-        "properties": {
-          "detail": {
-            "title": "Detail",
-            "type": "null"
-          },
-          "reason": {
-            "const": "cutover",
-            "default": "cutover",
-            "title": "Reason",
-            "type": "string"
-          },
-          "requested": {
-            "const": "nautilus",
-            "default": "nautilus",
-            "title": "Requested",
-            "type": "string"
-          },
-          "required_stage": {
-            "const": "F2",
-            "default": "F2",
-            "title": "Required Stage",
-            "type": "string"
-          },
-          "served_by": {
-            "const": "nautilus",
-            "default": "nautilus",
-            "title": "Served By",
-            "type": "string"
-          }
-        },
-        "title": "ExecutionPreflightSourceItem",
         "type": "object"
       },
       "ExecutionVenueCapabilityItem": {
@@ -4963,258 +4833,6 @@
           "fee_source"
         ],
         "title": "MicrostructureSnapshotItem",
-        "type": "object"
-      },
-      "MigrationParityArtifactItem": {
-        "additionalProperties": false,
-        "properties": {
-          "attempt_id": {
-            "title": "Attempt Id",
-            "type": "string"
-          },
-          "diffs": {
-            "items": {
-              "$ref": "#/components/schemas/MigrationParityDiffItem"
-            },
-            "title": "Diffs",
-            "type": "array"
-          },
-          "evaluation_status": {
-            "enum": [
-              "evaluated",
-              "not_evaluated"
-            ],
-            "title": "Evaluation Status",
-            "type": "string"
-          },
-          "generated_at": {
-            "title": "Generated At",
-            "type": "string"
-          },
-          "joinable": {
-            "title": "Joinable",
-            "type": "boolean"
-          },
-          "legacy_conflict_count": {
-            "title": "Legacy Conflict Count",
-            "type": "integer"
-          },
-          "legacy_event_count": {
-            "title": "Legacy Event Count",
-            "type": "integer"
-          },
-          "parity_status": {
-            "enum": [
-              "pass",
-              "watching",
-              "fail",
-              "not_evaluated"
-            ],
-            "title": "Parity Status",
-            "type": "string"
-          },
-          "schema_version": {
-            "title": "Schema Version",
-            "type": "string"
-          },
-          "shadow_conflict_count": {
-            "title": "Shadow Conflict Count",
-            "type": "integer"
-          },
-          "shadow_correlation_group_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Shadow Correlation Group Id"
-          },
-          "shadow_correlation_version": {
-            "title": "Shadow Correlation Version",
-            "type": "string"
-          },
-          "shadow_event_count": {
-            "title": "Shadow Event Count",
-            "type": "integer"
-          }
-        },
-        "required": [
-          "schema_version",
-          "generated_at",
-          "attempt_id",
-          "shadow_correlation_version",
-          "evaluation_status",
-          "joinable",
-          "parity_status",
-          "legacy_event_count",
-          "shadow_event_count",
-          "legacy_conflict_count",
-          "shadow_conflict_count"
-        ],
-        "title": "MigrationParityArtifactItem",
-        "type": "object"
-      },
-      "MigrationParityArtifactListResponse": {
-        "additionalProperties": false,
-        "properties": {
-          "count": {
-            "title": "Count",
-            "type": "integer"
-          },
-          "items": {
-            "items": {
-              "$ref": "#/components/schemas/MigrationParityArtifactItem"
-            },
-            "title": "Items",
-            "type": "array"
-          }
-        },
-        "required": [
-          "count"
-        ],
-        "title": "MigrationParityArtifactListResponse",
-        "type": "object"
-      },
-      "MigrationParityDiffItem": {
-        "additionalProperties": false,
-        "properties": {
-          "code": {
-            "title": "Code",
-            "type": "string"
-          },
-          "dimension": {
-            "title": "Dimension",
-            "type": "string"
-          },
-          "legacy_value": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Legacy Value"
-          },
-          "message": {
-            "title": "Message",
-            "type": "string"
-          },
-          "severity": {
-            "enum": [
-              "ok",
-              "watching",
-              "blocked"
-            ],
-            "title": "Severity",
-            "type": "string"
-          },
-          "shadow_value": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Shadow Value"
-          }
-        },
-        "required": [
-          "dimension",
-          "code",
-          "severity",
-          "message"
-        ],
-        "title": "MigrationParityDiffItem",
-        "type": "object"
-      },
-      "MigrationParityReportResponse": {
-        "additionalProperties": false,
-        "properties": {
-          "attempts_analyzed": {
-            "title": "Attempts Analyzed",
-            "type": "integer"
-          },
-          "generated_at": {
-            "title": "Generated At",
-            "type": "string"
-          },
-          "items": {
-            "items": {
-              "$ref": "#/components/schemas/MigrationParityArtifactItem"
-            },
-            "title": "Items",
-            "type": "array"
-          },
-          "not_evaluated_count": {
-            "default": 0,
-            "title": "Not Evaluated Count",
-            "type": "integer"
-          },
-          "parity_passed": {
-            "title": "Parity Passed",
-            "type": "boolean"
-          },
-          "reason_counts": {
-            "additionalProperties": {
-              "type": "integer"
-            },
-            "title": "Reason Counts",
-            "type": "object"
-          },
-          "schema_version": {
-            "title": "Schema Version",
-            "type": "string"
-          },
-          "severity_counts": {
-            "$ref": "#/components/schemas/MigrationParitySeverityCountsItem"
-          },
-          "window_end": {
-            "title": "Window End",
-            "type": "string"
-          },
-          "window_start": {
-            "title": "Window Start",
-            "type": "string"
-          }
-        },
-        "required": [
-          "schema_version",
-          "generated_at",
-          "window_start",
-          "window_end",
-          "attempts_analyzed",
-          "parity_passed"
-        ],
-        "title": "MigrationParityReportResponse",
-        "type": "object"
-      },
-      "MigrationParitySeverityCountsItem": {
-        "additionalProperties": false,
-        "properties": {
-          "blocked": {
-            "default": 0,
-            "title": "Blocked",
-            "type": "integer"
-          },
-          "ok": {
-            "default": 0,
-            "title": "Ok",
-            "type": "integer"
-          },
-          "watching": {
-            "default": 0,
-            "title": "Watching",
-            "type": "integer"
-          }
-        },
-        "title": "MigrationParitySeverityCountsItem",
         "type": "object"
       },
       "MonitorAlertIngestRequest": {
@@ -7591,90 +7209,6 @@
         "title": "SnapshotContinuityResponse",
         "type": "object"
       },
-      "StatusAdapterRolloutDiagnostics": {
-        "additionalProperties": false,
-        "description": "Staged venue/order-type rollout of the Nautilus adapter (issue #171).",
-        "properties": {
-          "active_step": {
-            "default": "S0",
-            "title": "Active Step",
-            "type": "string"
-          },
-          "detail": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Detail"
-          },
-          "excluded_venues": {
-            "items": {
-              "type": "string"
-            },
-            "title": "Excluded Venues",
-            "type": "array"
-          },
-          "ledger_error": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Ledger Error"
-          },
-          "ledger_steps_passed": {
-            "items": {
-              "type": "string"
-            },
-            "title": "Ledger Steps Passed",
-            "type": "array"
-          },
-          "order_types": {
-            "items": {
-              "type": "string"
-            },
-            "title": "Order Types",
-            "type": "array"
-          },
-          "plan_version": {
-            "default": "",
-            "title": "Plan Version",
-            "type": "string"
-          },
-          "reason": {
-            "default": "active",
-            "enum": [
-              "active",
-              "unknown_step",
-              "gate_missing",
-              "capability_missing"
-            ],
-            "title": "Reason",
-            "type": "string"
-          },
-          "requested_step": {
-            "default": "S0",
-            "title": "Requested Step",
-            "type": "string"
-          },
-          "venues": {
-            "items": {
-              "type": "string"
-            },
-            "title": "Venues",
-            "type": "array"
-          }
-        },
-        "title": "StatusAdapterRolloutDiagnostics",
-        "type": "object"
-      },
       "StatusAutoEntryDiagnostics": {
         "additionalProperties": false,
         "description": "Rule-based auto-entry (issue #193). `global_blockers` stopped every entry last pass.",
@@ -9127,203 +8661,6 @@
         "title": "StatusMarketDataSourceTransitionCounts",
         "type": "object"
       },
-      "StatusMigrationFallbackDiagnostics": {
-        "additionalProperties": false,
-        "properties": {
-          "adapter_enabled": {
-            "default": false,
-            "title": "Adapter Enabled",
-            "type": "boolean"
-          },
-          "adapter_health": {
-            "$ref": "#/components/schemas/StatusNautilusAdapterHealth"
-          },
-          "adapter_rollout": {
-            "$ref": "#/components/schemas/StatusAdapterRolloutDiagnostics"
-          },
-          "adapter_selection_reason": {
-            "default": "adapter_disabled",
-            "enum": [
-              "adapter_disabled",
-              "migration_not_primary",
-              "dry_run_required",
-              "adapter_unavailable",
-              "adapter_fallback",
-              "venue_out_of_scope",
-              "selected"
-            ],
-            "title": "Adapter Selection Reason",
-            "type": "string"
-          },
-          "adapter_venues": {
-            "items": {
-              "type": "string"
-            },
-            "title": "Adapter Venues",
-            "type": "array"
-          },
-          "compare_enabled": {
-            "default": false,
-            "title": "Compare Enabled",
-            "type": "boolean"
-          },
-          "enabled": {
-            "default": false,
-            "title": "Enabled",
-            "type": "boolean"
-          },
-          "execution_provider": {
-            "default": "legacy",
-            "enum": [
-              "legacy",
-              "nautilus"
-            ],
-            "title": "Execution Provider",
-            "type": "string"
-          },
-          "fallback_engaged": {
-            "default": true,
-            "title": "Fallback Engaged",
-            "type": "boolean"
-          },
-          "fallback_policy": {
-            "const": "deny_and_observe",
-            "default": "deny_and_observe",
-            "title": "Fallback Policy",
-            "type": "string"
-          },
-          "fallback_reason": {
-            "default": "migration_disabled",
-            "enum": [
-              "migration_disabled",
-              "legacy_only_mode",
-              "observe_only_mode",
-              "compare_disabled"
-            ],
-            "title": "Fallback Reason",
-            "type": "string"
-          },
-          "mode": {
-            "default": "legacy_only",
-            "enum": [
-              "legacy_only",
-              "shadow_compare",
-              "nautilus_primary"
-            ],
-            "title": "Mode",
-            "type": "string"
-          },
-          "observe_only": {
-            "default": true,
-            "title": "Observe Only",
-            "type": "boolean"
-          },
-          "preflight_source": {
-            "$ref": "#/components/schemas/StatusPreflightSourceDiagnostics"
-          }
-        },
-        "title": "StatusMigrationFallbackDiagnostics",
-        "type": "object"
-      },
-      "StatusNautilusAdapterHealth": {
-        "additionalProperties": false,
-        "description": "Adapter health fail-safe (issue #164); `fallback` means deny-and-observe is latched.",
-        "properties": {
-          "consecutive_faults": {
-            "default": 0,
-            "title": "Consecutive Faults",
-            "type": "integer"
-          },
-          "fallback_client_order_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Fallback Client Order Id"
-          },
-          "fallback_engaged_at": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Fallback Engaged At"
-          },
-          "fallback_reason": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Fallback Reason"
-          },
-          "fallback_trigger": {
-            "anyOf": [
-              {
-                "enum": [
-                  "consecutive_faults",
-                  "invariant_violation"
-                ],
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Fallback Trigger"
-          },
-          "fault_counts": {
-            "additionalProperties": {
-              "type": "integer"
-            },
-            "title": "Fault Counts",
-            "type": "object"
-          },
-          "fault_threshold": {
-            "default": 3,
-            "title": "Fault Threshold",
-            "type": "integer"
-          },
-          "last_fault": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Last Fault"
-          },
-          "resets_total": {
-            "default": 0,
-            "title": "Resets Total",
-            "type": "integer"
-          },
-          "state": {
-            "default": "healthy",
-            "enum": [
-              "healthy",
-              "degraded",
-              "fallback"
-            ],
-            "title": "State",
-            "type": "string"
-          }
-        },
-        "title": "StatusNautilusAdapterHealth",
-        "type": "object"
-      },
       "StatusNotificationDiagnostics": {
         "additionalProperties": false,
         "description": "Alert delivery health. `healthy` is false while any route's last delivery failed.\n\n`events` breaks the counters down by alert event type (for example `opportunity_ready`,\n`margin_critical`, `exchange_connectivity_lost`, `system_error`). User product alerts\nare reported separately under `user_alerts` / `user_commands` and never replace ops routes.",
@@ -9391,6 +8728,9 @@
             "default": 0,
             "title": "Suppressed",
             "type": "integer"
+          },
+          "telegram_updates": {
+            "$ref": "#/components/schemas/StatusTelegramUpdateDiagnostics"
           },
           "user_alerts": {
             "$ref": "#/components/schemas/StatusUserAlertDiagnostics"
@@ -9821,51 +9161,6 @@
           "positions"
         ],
         "title": "StatusPostCloseResidualItem",
-        "type": "object"
-      },
-      "StatusPreflightSourceDiagnostics": {
-        "additionalProperties": false,
-        "description": "Preflight source-of-truth cutover (issue #170).",
-        "properties": {
-          "last_reason": {
-            "anyOf": [
-              {
-                "const": "cutover",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Last Reason"
-          },
-          "last_served_by": {
-            "anyOf": [
-              {
-                "const": "nautilus",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Last Served By"
-          },
-          "requested": {
-            "const": "nautilus",
-            "default": "nautilus",
-            "title": "Requested",
-            "type": "string"
-          },
-          "served_total": {
-            "additionalProperties": {
-              "type": "integer"
-            },
-            "title": "Served Total",
-            "type": "object"
-          }
-        },
-        "title": "StatusPreflightSourceDiagnostics",
         "type": "object"
       },
       "StatusRateLimitDiagnostics": {
@@ -10409,9 +9704,6 @@
             },
             "title": "Market Data Sources",
             "type": "object"
-          },
-          "migration_fallback": {
-            "$ref": "#/components/schemas/StatusMigrationFallbackDiagnostics"
           },
           "notifications": {
             "$ref": "#/components/schemas/StatusNotificationDiagnostics"
@@ -11007,6 +10299,49 @@
         "title": "StatusStopTradingDiagnostics",
         "type": "object"
       },
+      "StatusTelegramUpdateDiagnostics": {
+        "additionalProperties": false,
+        "description": "How Telegram updates reach the runtime (long-polling or webhook).",
+        "properties": {
+          "enabled": {
+            "default": false,
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "errors": {
+            "default": 0,
+            "title": "Errors",
+            "type": "integer"
+          },
+          "handled": {
+            "default": 0,
+            "title": "Handled",
+            "type": "integer"
+          },
+          "mode": {
+            "default": "off",
+            "title": "Mode",
+            "type": "string"
+          },
+          "offset": {
+            "default": 0,
+            "title": "Offset",
+            "type": "integer"
+          },
+          "received": {
+            "default": 0,
+            "title": "Received",
+            "type": "integer"
+          },
+          "running": {
+            "default": false,
+            "title": "Running",
+            "type": "boolean"
+          }
+        },
+        "title": "StatusTelegramUpdateDiagnostics",
+        "type": "object"
+      },
       "StatusTrustDiagnosticsItem": {
         "additionalProperties": false,
         "properties": {
@@ -11138,7 +10473,7 @@
       },
       "StatusUserCommandDiagnostics": {
         "additionalProperties": false,
-        "description": "Telegram user subscription commands (`/subscribe`, `/unsubscribe`, `/status`).",
+        "description": "Telegram chat commands (`/start`, `/subscribe`, `/status`, \u2026).",
         "properties": {
           "active_subscribers": {
             "default": 0,
@@ -11209,6 +10544,11 @@
             "default": 0,
             "title": "Reply Failures",
             "type": "integer"
+          },
+          "user_alerts_enabled": {
+            "default": false,
+            "title": "User Alerts Enabled",
+            "type": "boolean"
           }
         },
         "title": "StatusUserCommandDiagnostics",
@@ -12281,6 +11621,262 @@
         "title": "TrustProvenanceTermCoverageItem",
         "type": "object"
       },
+      "TutorialPreferences": {
+        "properties": {
+          "onboarding_completed": {
+            "default": false,
+            "title": "Onboarding Completed",
+            "type": "boolean"
+          },
+          "welcome_completed": {
+            "default": false,
+            "title": "Welcome Completed",
+            "type": "boolean"
+          },
+          "welcome_hint_dismissed": {
+            "default": false,
+            "title": "Welcome Hint Dismissed",
+            "type": "boolean"
+          }
+        },
+        "title": "TutorialPreferences",
+        "type": "object"
+      },
+      "TutorialPreferencesUpdateRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "onboarding_completed": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Onboarding Completed"
+          },
+          "welcome_completed": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Welcome Completed"
+          },
+          "welcome_hint_dismissed": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Welcome Hint Dismissed"
+          }
+        },
+        "title": "TutorialPreferencesUpdateRequest",
+        "type": "object"
+      },
+      "UserPreferencesResponse": {
+        "properties": {
+          "effective_runbook_values": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            },
+            "title": "Effective Runbook Values",
+            "type": "object"
+          },
+          "invalid_profile": {
+            "default": false,
+            "title": "Invalid Profile",
+            "type": "boolean"
+          },
+          "runbook_config_fields": {
+            "default": [
+              "min_score_bps",
+              "min_volume_24h",
+              "min_open_interest",
+              "min_persistence_hours",
+              "expected_hold_hours",
+              "default_order_size_usd",
+              "max_entry_slippage_bps",
+              "portfolio_usd",
+              "max_position_pct",
+              "max_volume_fraction",
+              "basis_weight",
+              "basis_entry_bps",
+              "basis_exit_bps",
+              "basis_max_hold_multiplier",
+              "basis_funding_penalty_weight",
+              "basis_bonus_cap_bps",
+              "basis_divergence_threshold_bps",
+              "max_basis_divergence_hours",
+              "basis_expansion_penalty_bps_per_hour",
+              "cash_and_carry_entry_bps",
+              "borrow_rate_apr",
+              "lending_yield_apr",
+              "hold_window_instability_scale",
+              "stale_data_s",
+              "anti_churn_cooldown_s",
+              "anti_churn_score_multiplier",
+              "max_reasonable_apr",
+              "max_entry_adl_level",
+              "require_isolated_margin",
+              "allow_unknown_margin_mode",
+              "correlation_threshold",
+              "max_correlated_positions"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "title": "Runbook Config Fields",
+            "type": "array"
+          },
+          "runbook_overrides": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            },
+            "title": "Runbook Overrides",
+            "type": "object"
+          },
+          "runbook_presets": {
+            "additionalProperties": {
+              "additionalProperties": {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "type": "object"
+            },
+            "title": "Runbook Presets",
+            "type": "object"
+          },
+          "selected_preset": {
+            "anyOf": [
+              {
+                "enum": [
+                  "conservative",
+                  "balanced",
+                  "aggressive",
+                  "exploratory"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Selected Preset"
+          },
+          "tutorial": {
+            "$ref": "#/components/schemas/TutorialPreferences"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          }
+        },
+        "title": "UserPreferencesResponse",
+        "type": "object"
+      },
+      "UserPreferencesUpdateRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "preset": {
+            "anyOf": [
+              {
+                "enum": [
+                  "conservative",
+                  "balanced",
+                  "aggressive",
+                  "exploratory"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Preset"
+          },
+          "runbook_overrides": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "boolean"
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Runbook Overrides"
+          },
+          "tutorial": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TutorialPreferencesUpdateRequest"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "title": "UserPreferencesUpdateRequest",
+        "type": "object"
+      },
       "ValidationError": {
         "properties": {
           "ctx": {
@@ -13334,6 +12930,16 @@
   "openapi": "3.1.0",
   "paths": {
     "/auth/telegram/session": {
+      "delete": {
+        "description": "Logout: revoke the caller's current Telegram session token.\n\nRequires a live session (header or cookie). Idempotent for an already-revoked\ntoken that still authenticated this request via middleware resolution timing.",
+        "operationId": "revoke_telegram_session_auth_telegram_session_delete",
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Revoke Telegram Session"
+      },
       "post": {
         "operationId": "issue_telegram_session_auth_telegram_session_post",
         "requestBody": {
@@ -14083,20 +13689,32 @@
         "summary": "Get Healthz"
       }
     },
-    "/migration/parity/artifacts": {
+    "/me/opportunities": {
       "get": {
-        "operationId": "list_migration_parity_artifacts_migration_parity_artifacts_get",
+        "operationId": "get_my_opportunities_me_opportunities_get",
         "parameters": [
           {
             "in": "query",
-            "name": "limit",
+            "name": "strategy_type",
             "required": false,
             "schema": {
-              "default": 50,
-              "maximum": 200,
-              "minimum": 1,
-              "title": "Limit",
-              "type": "integer"
+              "anyOf": [
+                {
+                  "items": {
+                    "enum": [
+                      "funding_arbitrage",
+                      "basis_convergence",
+                      "cash_and_carry"
+                    ],
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Strategy Type"
             }
           }
         ],
@@ -14105,7 +13723,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MigrationParityArtifactListResponse"
+                  "$ref": "#/components/schemas/OpportunitiesResponse"
                 }
               }
             },
@@ -14122,54 +13740,53 @@
             "description": "Validation Error"
           }
         },
-        "summary": "List Migration Parity Artifacts"
+        "summary": "Get My Opportunities"
       }
     },
-    "/migration/parity/report": {
-      "get": {
-        "operationId": "get_migration_parity_report_migration_parity_report_get",
-        "parameters": [
-          {
-            "in": "query",
-            "name": "window_s",
-            "required": false,
-            "schema": {
-              "default": 3600.0,
-              "maximum": 604800.0,
-              "minimum": 60.0,
-              "title": "Window S",
-              "type": "number"
-            }
-          },
-          {
-            "in": "query",
-            "name": "limit",
-            "required": false,
-            "schema": {
-              "default": 200,
-              "maximum": 500,
-              "minimum": 1,
-              "title": "Limit",
-              "type": "integer"
-            }
-          },
-          {
-            "in": "query",
-            "name": "include_artifacts",
-            "required": false,
-            "schema": {
-              "default": false,
-              "title": "Include Artifacts",
-              "type": "boolean"
-            }
+    "/me/preferences": {
+      "delete": {
+        "operationId": "delete_my_preferences_me_preferences_delete",
+        "responses": {
+          "204": {
+            "description": "Successful Response"
           }
-        ],
+        },
+        "summary": "Delete My Preferences"
+      },
+      "get": {
+        "operationId": "get_my_preferences_me_preferences_get",
         "responses": {
           "200": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MigrationParityReportResponse"
+                  "$ref": "#/components/schemas/UserPreferencesResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get My Preferences"
+      },
+      "patch": {
+        "operationId": "patch_my_preferences_me_preferences_patch",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserPreferencesUpdateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserPreferencesResponse"
                 }
               }
             },
@@ -14186,7 +13803,7 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Get Migration Parity Report"
+        "summary": "Patch My Preferences"
       }
     },
     "/notifications/monitor-alert": {
@@ -14610,6 +14227,28 @@
     "/snapshots/continuity": {
       "get": {
         "operationId": "get_snapshots_continuity_snapshots_continuity_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "refresh",
+            "required": false,
+            "schema": {
+              "default": false,
+              "title": "Refresh",
+              "type": "boolean"
+            }
+          },
+          {
+            "in": "query",
+            "name": "include_gap_scan",
+            "required": false,
+            "schema": {
+              "default": true,
+              "title": "Include Gap Scan",
+              "type": "boolean"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "content": {
@@ -14620,6 +14259,16 @@
               }
             },
             "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
           }
         },
         "summary": "Get Snapshots Continuity"

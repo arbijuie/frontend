@@ -100,7 +100,12 @@ const GuardrailsPanel = () => {
           {decisions.length === 0 ? (
             <EmptyState title="No guardrail decisions in the last pass" />
           ) : (
-            <div className={styles.tableWrap}>
+            <div
+              className={styles.tableWrap}
+              role="region"
+              aria-label="Guardrail decisions table"
+              tabIndex={0}
+            >
               <table className={styles.table} aria-label="Guardrail decisions">
                 <thead>
                   <tr>
@@ -126,7 +131,12 @@ const GuardrailsPanel = () => {
           {closeRecords.length === 0 ? (
             <p className={styles.hint}>No guardrail has closed a position.</p>
           ) : (
-            <div className={styles.tableWrap}>
+            <div
+              className={styles.tableWrap}
+              role="region"
+              aria-label="Guardrail closes table"
+              tabIndex={0}
+            >
               <table className={styles.table} aria-label="Guardrail closes">
                 <thead>
                   <tr>
@@ -163,7 +173,12 @@ const GuardrailsPanel = () => {
           )}
 
           <h2 className={styles.sectionTitle}>Thresholds</h2>
-          <div className={styles.tableWrap}>
+          <div
+            className={styles.tableWrap}
+            role="region"
+            aria-label="Guardrail thresholds table"
+            tabIndex={0}
+          >
             <table className={styles.table} aria-label="Guardrail thresholds">
               <tbody>
                 {Object.entries(thresholds).map(([key, value]) => (

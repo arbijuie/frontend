@@ -47,7 +47,12 @@
 
 .verdict {
   @include v.card;
+  position: relative;
   border-left-width: 0.25rem;
+
+  &:hover {
+    background: v.color(surface-raised);
+  }
 }
 
 .ready {
@@ -67,6 +72,27 @@
   font-size: v.font-size(sm);
   font-weight: v.font-weight(bold);
   letter-spacing: 0.04em;
+}
+
+.verdictLink {
+  color: inherit;
+  text-decoration: none;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: v.radius(lg);
+  }
+
+  &:focus-visible {
+    outline: none;
+  }
+
+  &:focus-visible::after {
+    outline: 0.125rem solid v.color(focus);
+    outline-offset: -0.125rem;
+  }
 }
 
 .costs {

@@ -16,6 +16,7 @@
 
 .step {
   @include v.card(v.space("2-5") v.space(3));
+  position: relative;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -54,6 +55,38 @@
   font-size: v.font-size(md);
   font-weight: v.font-weight(semibold);
   color: v.color(text);
+}
+
+.stepButton {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: v.font-size(md);
+  font-weight: v.font-weight(semibold);
+  color: v.color(text);
+  text-align: left;
+  cursor: pointer;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: v.radius(lg);
+  }
+
+  &:hover::after {
+    background: v.color(accent-tint);
+  }
+
+  &:focus-visible {
+    outline: none;
+  }
+
+  &:focus-visible::after {
+    outline: 0.125rem solid v.color(focus);
+    outline-offset: -0.125rem;
+  }
 }
 
 .badge {
@@ -234,19 +267,6 @@
 
 .venueName {
   font-weight: v.font-weight(medium);
-  color: v.color(text);
-}
-
-.note {
-  @include v.callout(info);
-  display: flex;
-  flex-direction: column;
-  gap: v.space(1);
-  color: v.color(text-secondary);
-}
-
-.noteTitle {
-  font-weight: v.font-weight(semibold);
   color: v.color(text);
 }
 

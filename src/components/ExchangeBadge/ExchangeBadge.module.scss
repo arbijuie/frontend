@@ -8,7 +8,7 @@
   white-space: nowrap;
 }
 
-$venues: hyperliquid, lighter, aster, binance, bybit, dydx, extended;
+$venues: hyperliquid, lighter, aster, binance, bybit, extended;
 
 @each $venue in $venues {
   .#{$venue} {

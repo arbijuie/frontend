@@ -1,9 +1,11 @@
 import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import OnboardingPage from "./OnboardingPage";
 import { SIGNAL_POLL_MS } from "../../lib/onboarding";
+import { useUpdateMePreferences } from "../../hooks/useUpdateMePreferences";
+import { setTelegramSessionToken } from "../../api/config";
 
 const API = "http://api.test";
 
@@ -11,6 +13,12 @@ vi.mock("../../api/config", async (importOriginal) => ({
   ...(await importOriginal<typeof import("../../api/config")>()),
   API_URL: "http://api.test",
 }));
+
+vi.mock("../../hooks/useUpdateMePreferences", () => ({
+  useUpdateMePreferences: vi.fn(),
+}));
+
+const mockedUseUpdateMePreferences = vi.mocked(useUpdateMePreferences);
 
 const ALLOWED_PATHS = new Set(["/healthz", "/public/status", "/public/opportunities"]);
 
@@ -88,7 +96,7 @@ function renderPage() {
   const queryClient = new QueryClient({ defaultOptions: { queries: { retryDelay: 0 } } });
   return render(
     <QueryClientProvider client={queryClient}>
-      <MemoryRouter initialEntries={["/onboarding"]}>
+      <MemoryRouter initialEntries={["/learn/onboarding"]}>
         <OnboardingPage />
       </MemoryRouter>
     </QueryClientProvider>
@@ -110,7 +118,15 @@ async function goToStep(index: number) {
 }
 
 describe("OnboardingPage", () => {
+  beforeEach(() => {
+    mockedUseUpdateMePreferences.mockReturnValue({
+      mutate: vi.fn(),
+      isPending: false,
+    } as never);
+  });
+
   afterEach(() => {
+    setTelegramSessionToken(null);
     vi.useRealTimers();
     vi.unstubAllGlobals();
     vi.restoreAllMocks();
@@ -197,8 +213,6 @@ describe("OnboardingPage", () => {
       expect(venues.getByText("Hyperliquid")).toBeTruthy();
       expect(venues.getAllByText("Live stream")).toHaveLength(2);
       expect(nextButton().textContent).toBe("Next");
-      // The page explains why it needs no WebSocket ticket.
-      expect(screen.getByText("Live streaming and tickets")).toBeTruthy();
     });
 
     it("shows the WS degraded fallback when venues run on REST", async () => {
@@ -408,14 +422,64 @@ describe("OnboardingPage", () => {
     expect(stepHeading("First runtime signal")).toBeTruthy();
     expect(screen.queryByRole("button", { name: /^(Next|Continue anyway)$/ })).toBeNull();
     expect(screen.getByRole("link", { name: "Public statistics" }).getAttribute("href")).toBe(
-      "/statistics"
+      "/learn/statistics"
     );
     expect(screen.getByRole("link", { name: "Daily journal" }).getAttribute("href")).toBe(
-      "/journal"
+      "/learn/journal"
     );
     expect(screen.getByRole("link", { name: "Product modes" }).getAttribute("href")).toBe(
-      "/product"
+      "/learn/about"
     );
+  });
+
+  it("lets the user return to a step that was already reached", async () => {
+    mockFetch({
+      "/healthz": healthz,
+      "/public/status": statusReply(),
+      "/public/opportunities": opportunitiesReply(),
+    });
+    renderPage();
+    expect(screen.queryByRole("button", { name: /^Go to step/ })).toBeNull();
+
+    await goToStep(1);
+    expect(screen.queryByRole("button", { name: /^Go to step 3/ })).toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: "Go to step 1: Prerequisites" }));
+    expect(document.activeElement).toBe(stepHeading("Prerequisites"));
+
+    fireEvent.click(screen.getByRole("button", { name: "Go to step 2: Access and connectivity" }));
+    expect(stepHeading("Access and connectivity")).toBeTruthy();
+    expect(stepItems()[1].getAttribute("aria-current")).toBe("step");
+  });
+
+  it("does not retry onboarding sync after a failed preferences mutation", async () => {
+    const mutate = vi.fn((...args: unknown[]) => {
+      const options = args[1] as { onError?: (...callbackArgs: unknown[]) => void } | undefined;
+      options?.onError?.(new Error("sync failed"));
+    });
+    mockedUseUpdateMePreferences.mockImplementation(
+      () =>
+        ({
+          mutate,
+          isPending: false,
+        }) as never
+    );
+    setTelegramSessionToken("session-token");
+    mockFetch({
+      "/healthz": healthz,
+      "/public/status": statusReply(),
+      "/public/opportunities": opportunitiesReply(),
+    });
+    renderPage();
+
+    await goToStep(2);
+    await waitFor(() => expect(mutate).toHaveBeenCalledTimes(1));
+
+    fireEvent.click(screen.getByRole("button", { name: "Back" }));
+    await waitFor(() => expect(nextButton().getAttribute("aria-disabled")).toBeNull());
+    fireEvent.click(nextButton());
+
+    await waitFor(() => expect(mutate).toHaveBeenCalledTimes(1));
   });
 
   it("only sends GET requests to /healthz, /public/status and /public/opportunities", async () => {

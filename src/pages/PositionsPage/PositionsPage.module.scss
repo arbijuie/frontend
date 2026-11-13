@@ -1,5 +1,5 @@
 .page {
-  padding-bottom: v.space(8);
+  @include v.page-frame;
 }
 
 .header {

@@ -9,6 +9,9 @@ import {
 } from "../../api/types";
 import { useConfig } from "../../hooks/useConfig";
 import { useUpdateConfig } from "../../hooks/useUpdateConfig";
+import { useUpdateMePreferences } from "../../hooks/useUpdateMePreferences";
+import { useMePreferences } from "../../hooks/useMePreferences";
+import type { MePreferencesResponse } from "../../api/me-preferences";
 
 vi.mock("../../hooks/useConfig", () => ({
   useConfig: vi.fn(),
@@ -18,8 +21,43 @@ vi.mock("../../hooks/useUpdateConfig", () => ({
   useUpdateConfig: vi.fn(),
 }));
 
+vi.mock("../../hooks/useMePreferences", () => ({
+  useMePreferences: vi.fn(),
+}));
+
+vi.mock("../../hooks/useUpdateMePreferences", () => ({
+  useUpdateMePreferences: vi.fn(),
+}));
+
 vi.mock("../../components/ProductModes/ProductModes", () => ({
-  default: () => <div>Product modes mock</div>,
+  default: ({
+    selectedPreset,
+    hasOverrides,
+    onApplyPreset,
+    applyingPresetKey,
+    disableAll,
+  }: {
+    selectedPreset: string | null;
+    hasOverrides: boolean;
+    onApplyPreset: (preset: { key: string; name: string; values: Record<string, number> }) => void;
+    applyingPresetKey: string | null;
+    disableAll: boolean;
+  }) => (
+    <div>
+      <span data-testid="modes-selected">{selectedPreset ?? "none"}</span>
+      <span data-testid="modes-overrides">{hasOverrides ? "overrides" : "no-overrides"}</span>
+      <span data-testid="modes-applying">{applyingPresetKey ?? "idle"}</span>
+      <button
+        type="button"
+        disabled={disableAll}
+        onClick={() =>
+          onApplyPreset({ key: "balanced", name: "Balanced", values: { min_score_bps: 8 } })
+        }
+      >
+        Apply Standard mode
+      </button>
+    </div>
+  ),
 }));
 
 vi.mock("../../components/ConfigAccordion/ConfigAccordion", () => ({
@@ -28,6 +66,8 @@ vi.mock("../../components/ConfigAccordion/ConfigAccordion", () => ({
 
 const mockedUseConfig = vi.mocked(useConfig);
 const mockedUseUpdateConfig = vi.mocked(useUpdateConfig);
+const mockedUseMePreferences = vi.mocked(useMePreferences);
+const mockedUseUpdateMePreferences = vi.mocked(useUpdateMePreferences);
 
 function makeConfig(overrides: Partial<ConfigResponse> = {}): ConfigResponse {
   return {
@@ -100,7 +140,6 @@ function makeConfig(overrides: Partial<ConfigResponse> = {}): ConfigResponse {
     binance_base_url: "https://fapi.binance.com",
     aster_base_url: "https://fapi.asterdex.com",
     bybit_base_url: "https://api.bybit.com",
-    dydx_indexer_url: "https://indexer.dydx.trade",
     extended_base_url: "https://api.starknet.extended.exchange",
     backtest_capture_enabled: false,
     backtest_db_path: "data/backtest.sqlite3",
@@ -119,7 +158,7 @@ function makeConfig(overrides: Partial<ConfigResponse> = {}): ConfigResponse {
     backtest_gate_max_drawdown_bps: 50,
     durable_snapshots_enabled: true,
     durable_snapshots_db_path: "data/market_snapshots.sqlite3",
-    durable_snapshots_retention_days: 7,
+    durable_snapshots_retention_days: 2,
     durable_snapshots_prune_interval_s: 300,
     durable_snapshots_recover_on_startup: true,
     durable_snapshots_recover_max_rows: 100000,
@@ -143,6 +182,18 @@ describe("ConfigPage", () => {
 
   beforeEach(() => {
     vi.resetAllMocks();
+    mockedUseMePreferences.mockReturnValue({
+      data: null,
+      error: null,
+      loading: false,
+      fetching: false,
+      refetch: vi.fn(),
+    });
+    mockedUseUpdateMePreferences.mockReturnValue({
+      mutateAsync: vi.fn(),
+      mutate: vi.fn(),
+      isPending: false,
+    } as never);
   });
 
   it("does not send legacy fee alias keys in PATCH payload", async () => {
@@ -176,6 +227,406 @@ describe("ConfigPage", () => {
     expect(payload.min_score_bps).toBe(9);
     expect("hl_fee_per_side" in payload).toBe(false);
     expect("lighter_fee_per_side" in payload).toBe(false);
+  });
+
+  it("saves manual personal profile overrides via /me/preferences", async () => {
+    const mutateAsync = vi.fn().mockResolvedValue({
+      selected_preset: null,
+      runbook_overrides: { min_score_bps: 9 },
+      effective_runbook_values: { min_score_bps: 9 },
+      runbook_config_fields: ["min_score_bps"],
+      runbook_presets: {},
+      tutorial: {
+        welcome_hint_dismissed: false,
+        welcome_completed: false,
+        onboarding_completed: false,
+      },
+      updated_at: null,
+    });
+
+    mockedUseConfig.mockReturnValue({
+      data: makeConfig(),
+      error: null,
+      loading: false,
+      fetching: false,
+      refetch,
+    });
+    mockedUseUpdateConfig.mockReturnValue({ mutateAsync: vi.fn(), isPending: false } as never);
+    mockedUseMePreferences.mockReturnValue({
+      data: {
+        selected_preset: null,
+        runbook_overrides: {},
+        effective_runbook_values: { min_score_bps: 5 },
+        runbook_config_fields: ["min_score_bps"],
+        runbook_presets: {},
+        tutorial: {
+          welcome_hint_dismissed: false,
+          welcome_completed: false,
+          onboarding_completed: false,
+        },
+        updated_at: null,
+      },
+      error: null,
+      loading: false,
+      fetching: false,
+      refetch: vi.fn(),
+    });
+    mockedUseUpdateMePreferences.mockReturnValue({
+      mutateAsync,
+      mutate: vi.fn(),
+      isPending: false,
+    } as never);
+
+    render(<ConfigPage />);
+
+    fireEvent.change(screen.getAllByLabelText("Min Score (bps)")[0], { target: { value: "9" } });
+    fireEvent.click(screen.getByRole("button", { name: "Save personal profile" }));
+
+    await waitFor(() => {
+      expect(mutateAsync).toHaveBeenCalledWith({
+        preset: null,
+        runbook_overrides: { min_score_bps: 9 },
+      });
+    });
+  });
+
+  it("allows saving runtime defaults when current profile stores manual overrides", async () => {
+    const mutateAsync = vi.fn().mockResolvedValue({
+      selected_preset: null,
+      runbook_overrides: {},
+      effective_runbook_values: { min_score_bps: 5 },
+      runbook_config_fields: ["min_score_bps"],
+      runbook_presets: { balanced: { min_score_bps: 8 } },
+      tutorial: {
+        welcome_hint_dismissed: false,
+        welcome_completed: false,
+        onboarding_completed: false,
+      },
+      updated_at: null,
+    });
+
+    mockedUseConfig.mockReturnValue({
+      data: makeConfig({ min_score_bps: 5 }),
+      error: null,
+      loading: false,
+      fetching: false,
+      refetch,
+    });
+    mockedUseUpdateConfig.mockReturnValue({ mutateAsync: vi.fn(), isPending: false } as never);
+    mockedUseMePreferences.mockReturnValue({
+      data: {
+        selected_preset: null,
+        runbook_overrides: { min_score_bps: 9 },
+        effective_runbook_values: { min_score_bps: 9 },
+        runbook_config_fields: ["min_score_bps"],
+        runbook_presets: { balanced: { min_score_bps: 8 } },
+        tutorial: {
+          welcome_hint_dismissed: false,
+          welcome_completed: false,
+          onboarding_completed: false,
+        },
+        updated_at: null,
+      },
+      error: null,
+      loading: false,
+      fetching: false,
+      refetch: vi.fn(),
+    });
+    mockedUseUpdateMePreferences.mockReturnValue({
+      mutateAsync,
+      mutate: vi.fn(),
+      isPending: false,
+    } as never);
+
+    render(<ConfigPage />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Use runtime defaults" }));
+    fireEvent.click(screen.getByRole("button", { name: "Save personal profile" }));
+
+    await waitFor(() => {
+      expect(mutateAsync).toHaveBeenCalledWith({
+        preset: null,
+        runbook_overrides: {},
+      });
+    });
+  });
+
+  it("rebuilds runtime-based personal draft from refreshed config values", () => {
+    const staleProfile = {
+      selected_preset: null,
+      runbook_overrides: {},
+      effective_runbook_values: { min_score_bps: 5 },
+      runbook_config_fields: ["min_score_bps"],
+      runbook_presets: {},
+      tutorial: {
+        welcome_hint_dismissed: false,
+        welcome_completed: false,
+        onboarding_completed: false,
+      },
+      updated_at: null,
+    };
+
+    mockedUseConfig.mockReturnValue({
+      data: makeConfig({ min_score_bps: 5 }),
+      error: null,
+      loading: false,
+      fetching: false,
+      refetch,
+    });
+    mockedUseUpdateConfig.mockReturnValue({ mutateAsync: vi.fn(), isPending: false } as never);
+    mockedUseMePreferences.mockReturnValue({
+      data: staleProfile,
+      error: null,
+      loading: false,
+      fetching: false,
+      refetch: vi.fn(),
+    });
+
+    const { rerender } = render(<ConfigPage />);
+    expect((screen.getAllByLabelText("Min Score (bps)")[0] as HTMLInputElement).value).toBe("5");
+
+    mockedUseConfig.mockReturnValue({
+      data: makeConfig({ min_score_bps: 7 }),
+      error: null,
+      loading: false,
+      fetching: false,
+      refetch,
+    });
+    mockedUseMePreferences.mockReturnValue({
+      data: staleProfile,
+      error: null,
+      loading: false,
+      fetching: false,
+      refetch: vi.fn(),
+    });
+    rerender(<ConfigPage />);
+
+    expect((screen.getAllByLabelText("Min Score (bps)")[0] as HTMLInputElement).value).toBe("7");
+  });
+
+  it("saves selected personal preset as profile base", async () => {
+    const mutateAsync = vi.fn().mockResolvedValue({
+      selected_preset: "balanced",
+      runbook_overrides: {},
+      effective_runbook_values: { min_score_bps: 8 },
+      runbook_config_fields: ["min_score_bps"],
+      runbook_presets: { balanced: { min_score_bps: 8 } },
+      tutorial: {
+        welcome_hint_dismissed: false,
+        welcome_completed: false,
+        onboarding_completed: false,
+      },
+      updated_at: null,
+    });
+
+    mockedUseConfig.mockReturnValue({
+      data: makeConfig(),
+      error: null,
+      loading: false,
+      fetching: false,
+      refetch,
+    });
+    mockedUseUpdateConfig.mockReturnValue({ mutateAsync: vi.fn(), isPending: false } as never);
+    mockedUseMePreferences.mockReturnValue({
+      data: {
+        selected_preset: null,
+        runbook_overrides: {},
+        effective_runbook_values: { min_score_bps: 5 },
+        runbook_config_fields: ["min_score_bps"],
+        runbook_presets: { balanced: { min_score_bps: 8 } },
+        tutorial: {
+          welcome_hint_dismissed: false,
+          welcome_completed: false,
+          onboarding_completed: false,
+        },
+        updated_at: null,
+      },
+      error: null,
+      loading: false,
+      fetching: false,
+      refetch: vi.fn(),
+    });
+    mockedUseUpdateMePreferences.mockReturnValue({
+      mutateAsync,
+      mutate: vi.fn(),
+      isPending: false,
+    } as never);
+
+    render(<ConfigPage />);
+
+    fireEvent.click(screen.getAllByRole("button", { name: "balanced" })[0]);
+    fireEvent.click(screen.getByRole("button", { name: "Save personal profile" }));
+
+    await waitFor(() => {
+      expect(mutateAsync).toHaveBeenCalledWith({
+        preset: "balanced",
+        runbook_overrides: {},
+      });
+    });
+  });
+
+  it("keeps saved overrides when reloading the already selected personal preset", async () => {
+    const mutateAsync = vi.fn().mockResolvedValue({
+      selected_preset: "balanced",
+      runbook_overrides: { min_score_bps: 9 },
+      effective_runbook_values: { min_score_bps: 9 },
+      runbook_config_fields: ["min_score_bps"],
+      runbook_presets: { balanced: { min_score_bps: 8 } },
+      tutorial: {
+        welcome_hint_dismissed: false,
+        welcome_completed: false,
+        onboarding_completed: false,
+      },
+      updated_at: null,
+    });
+
+    mockedUseConfig.mockReturnValue({
+      data: makeConfig(),
+      error: null,
+      loading: false,
+      fetching: false,
+      refetch,
+    });
+    mockedUseUpdateConfig.mockReturnValue({ mutateAsync: vi.fn(), isPending: false } as never);
+    mockedUseMePreferences.mockReturnValue({
+      data: {
+        selected_preset: "balanced",
+        runbook_overrides: { min_score_bps: 9 },
+        effective_runbook_values: { min_score_bps: 9 },
+        runbook_config_fields: ["min_score_bps"],
+        runbook_presets: { balanced: { min_score_bps: 8 } },
+        tutorial: {
+          welcome_hint_dismissed: false,
+          welcome_completed: false,
+          onboarding_completed: false,
+        },
+        updated_at: null,
+      },
+      error: null,
+      loading: false,
+      fetching: false,
+      refetch: vi.fn(),
+    });
+    mockedUseUpdateMePreferences.mockReturnValue({
+      mutateAsync,
+      mutate: vi.fn(),
+      isPending: false,
+    } as never);
+
+    render(<ConfigPage />);
+
+    fireEvent.click(screen.getAllByRole("button", { name: "balanced" })[0]);
+    expect((screen.getAllByLabelText("Min Score (bps)")[0] as HTMLInputElement).value).toBe("9");
+    fireEvent.click(screen.getByRole("button", { name: "Save personal profile" }));
+
+    await waitFor(() => {
+      expect(mutateAsync).toHaveBeenCalledWith({
+        preset: "balanced",
+        runbook_overrides: { min_score_bps: 9 },
+      });
+    });
+  });
+
+  it("disables an active personal profile", async () => {
+    const mutateAsync = vi.fn().mockResolvedValue(undefined);
+
+    mockedUseConfig.mockReturnValue({
+      data: makeConfig(),
+      error: null,
+      loading: false,
+      fetching: false,
+      refetch,
+    });
+    mockedUseUpdateConfig.mockReturnValue({ mutateAsync: vi.fn(), isPending: false } as never);
+    mockedUseMePreferences.mockReturnValue({
+      data: {
+        selected_preset: "balanced",
+        runbook_overrides: { min_score_bps: 9 },
+        effective_runbook_values: { min_score_bps: 9 },
+        runbook_config_fields: ["min_score_bps"],
+        runbook_presets: { balanced: { min_score_bps: 8 } },
+        tutorial: {
+          welcome_hint_dismissed: false,
+          welcome_completed: false,
+          onboarding_completed: false,
+        },
+        updated_at: null,
+      },
+      error: null,
+      loading: false,
+      fetching: false,
+      refetch: vi.fn(),
+    });
+    mockedUseUpdateMePreferences.mockReturnValue({
+      mutateAsync,
+      mutate: vi.fn(),
+      isPending: false,
+    } as never);
+
+    render(<ConfigPage />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Disable profile" }));
+
+    await waitFor(() => {
+      expect(mutateAsync).toHaveBeenCalledWith({
+        preset: null,
+        runbook_overrides: {},
+      });
+    });
+  });
+
+  it("allows clearing an invalid stored profile even when it is inactive", async () => {
+    const mutateAsync = vi.fn().mockResolvedValue(undefined);
+
+    mockedUseConfig.mockReturnValue({
+      data: makeConfig(),
+      error: null,
+      loading: false,
+      fetching: false,
+      refetch,
+    });
+    mockedUseUpdateConfig.mockReturnValue({ mutateAsync: vi.fn(), isPending: false } as never);
+    mockedUseMePreferences.mockReturnValue({
+      data: {
+        selected_preset: null,
+        runbook_overrides: {},
+        effective_runbook_values: { min_score_bps: 5 },
+        runbook_config_fields: ["min_score_bps"],
+        runbook_presets: { balanced: { min_score_bps: 8 } },
+        tutorial: {
+          welcome_hint_dismissed: false,
+          welcome_completed: false,
+          onboarding_completed: false,
+        },
+        updated_at: null,
+        invalid_profile: true,
+      },
+      error: null,
+      loading: false,
+      fetching: false,
+      refetch: vi.fn(),
+    });
+    mockedUseUpdateMePreferences.mockReturnValue({
+      mutateAsync,
+      mutate: vi.fn(),
+      isPending: false,
+    } as never);
+
+    render(<ConfigPage />);
+
+    expect(screen.getByText("Profile status: invalid")).toBeTruthy();
+    expect(screen.getByText(/stored personal profile is invalid/i)).toBeTruthy();
+    const disableButton = screen.getByRole("button", { name: "Disable profile" }) as HTMLButtonElement;
+    expect(disableButton.disabled).toBe(false);
+
+    fireEvent.click(disableButton);
+
+    await waitFor(() => {
+      expect(mutateAsync).toHaveBeenCalledWith({
+        preset: null,
+        runbook_overrides: {},
+      });
+    });
   });
 
   it("disables the preview button until a field actually changes", () => {
@@ -504,8 +955,8 @@ describe("ConfigPage", () => {
   it("keeps the help button out of a checkbox's accessible name", () => {
     mockedUseConfig.mockReturnValue({
       data: makeConfig({
-        runbook_config_fields: ["min_score_bps", "migration_nautilus_enabled"],
-        migration_nautilus_enabled: false,
+        runbook_config_fields: ["min_score_bps", "allow_unknown_margin_mode"],
+        allow_unknown_margin_mode: false,
       }),
       error: null,
       loading: false,
@@ -516,8 +967,8 @@ describe("ConfigPage", () => {
 
     render(<ConfigPage />);
 
-    expect(screen.getByRole("checkbox", { name: "Nautilus Migration Enabled" })).toBeTruthy();
-    expect(screen.getByRole("button", { name: "Help: Nautilus Migration Enabled" })).toBeTruthy();
+    expect(screen.getByRole("checkbox", { name: "Allow Unknown Margin Mode" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Help: Allow Unknown Margin Mode" })).toBeTruthy();
   });
 
   it("announces the reset confirmation politely via role=status", () => {
@@ -536,5 +987,164 @@ describe("ConfigPage", () => {
     fireEvent.click(screen.getByRole("button", { name: /^reset$/i }));
 
     expect(screen.getByRole("status").textContent).toBe("Draft reset to live config");
+  });
+
+  describe("product modes (issue #714)", () => {
+    const preferences: MePreferencesResponse = {
+      selected_preset: null,
+      runbook_overrides: {},
+      effective_runbook_values: { min_score_bps: 5 },
+      runbook_config_fields: ["min_score_bps"],
+      runbook_presets: { balanced: { min_score_bps: 8 } },
+      tutorial: {
+        welcome_hint_dismissed: false,
+        welcome_completed: false,
+        onboarding_completed: false,
+      },
+      updated_at: null,
+    };
+
+    function renderWithProfile(
+      profile: Partial<MePreferencesResponse> = {},
+      mutateAsync = vi.fn()
+    ) {
+      const configMutateAsync = vi.fn();
+      mockedUseConfig.mockReturnValue({
+        data: makeConfig(),
+        error: null,
+        loading: false,
+        fetching: false,
+        refetch,
+      });
+      mockedUseUpdateConfig.mockReturnValue({
+        mutateAsync: configMutateAsync,
+        isPending: false,
+      } as never);
+      mockedUseMePreferences.mockReturnValue({
+        data: { ...preferences, ...profile },
+        error: null,
+        loading: false,
+        fetching: false,
+        refetch: vi.fn(),
+      });
+      mockedUseUpdateMePreferences.mockReturnValue({
+        mutateAsync,
+        mutate: vi.fn(),
+        isPending: false,
+      } as never);
+      render(<ConfigPage />);
+      return { configMutateAsync };
+    }
+
+    it("titles the page Settings, like the menu item", () => {
+      renderWithProfile();
+
+      expect(screen.getByRole("heading", { level: 1 }).textContent).toBe("Settings");
+      expect(document.title).toBe("Settings · Arbijuie");
+      expect(screen.queryByRole("heading", { level: 1, name: "Config" })).toBeNull();
+    });
+
+    it("derives the active mode and the overrides flag from the personal profile", () => {
+      renderWithProfile({ selected_preset: "balanced", runbook_overrides: { min_score_bps: 9 } });
+
+      expect(screen.getByTestId("modes-selected").textContent).toBe("balanced");
+      expect(screen.getByTestId("modes-overrides").textContent).toBe("overrides");
+      expect(screen.getByText(/a mode is your personal choice/i)).toBeTruthy();
+    });
+
+    it("applies a mode to the personal profile and never to the shared config", async () => {
+      const mutateAsync = vi.fn().mockResolvedValue({
+        ...preferences,
+        selected_preset: "balanced",
+        effective_runbook_values: { min_score_bps: 8 },
+      });
+      const { configMutateAsync } = renderWithProfile({}, mutateAsync);
+
+      expect(screen.getByTestId("modes-selected").textContent).toBe("none");
+      fireEvent.click(screen.getByRole("button", { name: "Apply Standard mode" }));
+
+      await waitFor(() => {
+        expect(mutateAsync).toHaveBeenCalledWith({ preset: "balanced", runbook_overrides: {} });
+      });
+      expect(configMutateAsync).not.toHaveBeenCalled();
+      await waitFor(() => {
+        expect(screen.getByRole("status").textContent).toBe(
+          "Standard mode applied to your Deals profile (preset balanced)"
+        );
+      });
+      expect(screen.getByTestId("modes-applying").textContent).toBe("idle");
+    });
+
+    it("shows the error when applying a mode fails", async () => {
+      const mutateAsync = vi.fn().mockRejectedValue(new Error("preferences store unavailable"));
+      renderWithProfile({}, mutateAsync);
+
+      fireEvent.click(screen.getByRole("button", { name: "Apply Standard mode" }));
+
+      await waitFor(() => {
+        expect(screen.getByRole("alert").textContent).toBe(
+          "Error: preferences store unavailable"
+        );
+      });
+      expect(screen.getByTestId("modes-applying").textContent).toBe("idle");
+      expect(screen.queryByText(/mode applied/i)).toBeNull();
+    });
+
+    it("explains that the modes wait for the personal profile to load", () => {
+      mockedUseConfig.mockReturnValue({
+        data: makeConfig(),
+        error: null,
+        loading: false,
+        fetching: false,
+        refetch,
+      });
+      mockedUseUpdateConfig.mockReturnValue({ mutateAsync: vi.fn(), isPending: false } as never);
+      mockedUseMePreferences.mockReturnValue({
+        data: null,
+        error: null,
+        loading: true,
+        fetching: true,
+        refetch: vi.fn(),
+      });
+      mockedUseUpdateMePreferences.mockReturnValue({
+        mutateAsync: vi.fn(),
+        mutate: vi.fn(),
+        isPending: false,
+      } as never);
+
+      render(<ConfigPage />);
+
+      expect(screen.queryByRole("button", { name: "Apply Standard mode" })).toBeNull();
+      expect(screen.getByText(/loading your personal profile before the modes/i)).toBeTruthy();
+    });
+
+    it("explains that no mode can be applied when the personal profile failed to load", () => {
+      mockedUseConfig.mockReturnValue({
+        data: makeConfig(),
+        error: null,
+        loading: false,
+        fetching: false,
+        refetch,
+      });
+      mockedUseUpdateConfig.mockReturnValue({ mutateAsync: vi.fn(), isPending: false } as never);
+      mockedUseMePreferences.mockReturnValue({
+        data: null,
+        error: "session expired",
+        loading: false,
+        fetching: false,
+        refetch: vi.fn(),
+      });
+      mockedUseUpdateMePreferences.mockReturnValue({
+        mutateAsync: vi.fn(),
+        mutate: vi.fn(),
+        isPending: false,
+      } as never);
+
+      render(<ConfigPage />);
+
+      expect(screen.queryByRole("button", { name: "Apply Standard mode" })).toBeNull();
+      expect(screen.getByText(/no mode can be applied right now/i)).toBeTruthy();
+      expect(screen.getByRole("alert").textContent).toBe("Error: session expired");
+    });
   });
 });

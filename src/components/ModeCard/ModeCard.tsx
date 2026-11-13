@@ -1,23 +1,29 @@
 import { useId } from "react";
+import { Link } from "react-router-dom";
 import styles from "./ModeCard.module.scss";
 import { RISK_LABEL, type ProductMode, type ThresholdFact } from "../../lib/productModes";
 
 interface ModeCardProps {
   mode: ProductMode;
-  /** Live thresholds of the mode's preset; omitted on the public product page. */
+  /** Live thresholds of the mode's preset; omitted on the product page. */
   thresholds?: ThresholdFact[];
-  /** Operator controls; omitted on the public product page. */
+  /** Apply controls on the Settings page; omitted on the product page. */
   action?: {
     isActive: boolean;
     isApplying: boolean;
     isDisabled: boolean;
     onApply: () => void;
   };
+  /** Where the mode can be chosen; the product page points every card at Settings. */
+  link?: {
+    to: string;
+    label: string;
+  };
   headingLevel?: 2 | 3;
 }
 
 /** One product mode: what it is for, what it trades off, and the preset it applies. */
-const ModeCard = ({ mode, thresholds, action, headingLevel = 3 }: ModeCardProps) => {
+const ModeCard = ({ mode, thresholds, action, link, headingLevel = 3 }: ModeCardProps) => {
   const titleId = useId();
   const Heading = headingLevel === 2 ? "h2" : "h3";
 
@@ -79,6 +85,12 @@ const ModeCard = ({ mode, thresholds, action, headingLevel = 3 }: ModeCardProps)
             {action.isApplying ? "Applying..." : `Apply ${mode.label} mode`}
           </button>
         ))}
+
+      {link && (
+        <Link className={styles.link} to={link.to} aria-label={`${link.label}: ${mode.label}`}>
+          {link.label}
+        </Link>
+      )}
     </article>
   );
 };

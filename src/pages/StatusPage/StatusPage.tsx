@@ -19,6 +19,7 @@ import { useConfig } from "../../hooks/useConfig";
 import { POLL_INTERVAL_MS } from "../../api/config";
 import { usePageTitle } from "../../hooks/usePageTitle";
 import WsTransportHealthCard from "../../components/WsTransportHealthCard/WsTransportHealthCard";
+import StopTradingCard from "../../components/StopTradingCard/StopTradingCard";
 
 const StatusPage = () => {
   usePageTitle("Health");
@@ -62,6 +63,9 @@ const StatusPage = () => {
       {config && <RuntimeKnobsCard config={config} />}
 
       {data && <PipelineDiagnosticsHint status={data} />}
+
+      <h2 className={styles.sectionTitle}>Stop-Trading Latch</h2>
+      <StopTradingCard />
 
       <h2 className={styles.sectionTitle}>Live Transport</h2>
       <WsTransportHealthCard />

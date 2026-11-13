@@ -173,7 +173,7 @@ const JournalPage = () => {
         </p>
         <p>
           The journal shows aggregates only: no individual routes, venues, sizes or account data.
-          For the current picture see <Link to="/statistics">Statistics</Link>.
+          For the current picture see <Link to="/learn/statistics">Statistics</Link>.
         </p>
       </div>
 

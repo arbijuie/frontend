@@ -2,7 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import pageStyles from "../../styles/Page.module.scss";
 import styles from "./WelcomePage.module.scss";
+import { hasRuntimeAuth } from "../../api/config";
 import { usePageTitle } from "../../hooks/usePageTitle";
+import { useUpdateMePreferences } from "../../hooks/useUpdateMePreferences";
 import { WELCOME_HINT_KEY } from "../../components/WelcomeHint/WelcomeHint";
 import { WELCOME_STEPS } from "./welcomeSteps";
 
@@ -23,6 +25,7 @@ const WelcomePage = () => {
   const headingRef = useRef<HTMLHeadingElement>(null);
   const movedRef = useRef(false);
   const navigate = useNavigate();
+  const updateMePreferences = useUpdateMePreferences();
   const step = WELCOME_STEPS[current];
 
   useEffect(() => {
@@ -36,6 +39,14 @@ const WelcomePage = () => {
 
   const finish = () => {
     markWelcomeDone();
+    if (hasRuntimeAuth()) {
+      updateMePreferences.mutate({
+        tutorial: {
+          welcome_hint_dismissed: true,
+          welcome_completed: true,
+        },
+      });
+    }
     navigate("/");
   };
 
@@ -103,8 +114,8 @@ const WelcomePage = () => {
 
       {current === LAST && (
         <p className={styles.more}>
-          Want the details? Read <Link to="/how-it-works">How it works</Link> or run the{" "}
-          <Link to="/onboarding">system check</Link>.
+          Want the details? Read <Link to="/learn/how-it-works">How it works</Link> or run the{" "}
+          <Link to="/learn/onboarding">system check</Link>.
         </p>
       )}
     </div>

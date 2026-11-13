@@ -23,7 +23,6 @@ export default defineConfig({
     reuseExistingServer: true,
     env: {
       VITE_ARB_API_URL: "http://127.0.0.1:8000",
-      VITE_ARB_API_TOKEN: "",
     },
   },
   projects: [

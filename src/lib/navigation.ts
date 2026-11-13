@@ -8,32 +8,30 @@ import {
   MoreHorizontal,
   Play,
   Settings,
+  ShieldCheck,
   Wrench,
   type LucideIcon,
   Rocket,
-  ShieldCheck,
   BarChart3,
-  CalendarDays,
 } from "lucide-react";
 
 export interface NavItem {
   to: string;
   label: string;
   icon: LucideIcon;
+  /** Extra path prefixes that keep this item highlighted (pages reached from it). */
+  matchPrefixes?: readonly string[];
 }
 
-export interface PublicNavItem {
-  to: string;
-  label: string;
-  description: string;
-}
-
-/** Bottom menu: always four items so it fits on a phone. */
+/**
+ * MVP bottom menu: Deals | Health | Settings | More.
+ * Auto/Positions stay reachable under More → Experts while execution is latched off.
+ */
 export const NAV_ITEMS: readonly NavItem[] = [
   { to: "/", label: "Deals", icon: LineChart },
-  { to: "/automation", label: "Auto", icon: Bot },
   { to: "/status", label: "Health", icon: Activity },
-  { to: "/more", label: "More", icon: MoreHorizontal },
+  { to: "/config", label: "Settings", icon: Settings },
+  { to: "/more", label: "More", icon: MoreHorizontal, matchPrefixes: ["/learn", "/welcome"] },
 ];
 
 export interface MoreSection {
@@ -41,25 +39,8 @@ export interface MoreSection {
   items: readonly { to: string; label: string; description: string; icon: LucideIcon }[];
 }
 
-/** Everything that is not on the bottom menu lives under More. */
+/** Every page lives under the operator layout, so the bottom menu is on every screen. */
 export const MORE_SECTIONS: readonly MoreSection[] = [
-  {
-    title: "My trading",
-    items: [
-      {
-        to: "/positions",
-        label: "My open deals",
-        description: "Positions you hold now.",
-        icon: Briefcase,
-      },
-      {
-        to: "/config",
-        label: "Settings",
-        description: "Limits, exchanges and trading style.",
-        icon: Settings,
-      },
-    ],
-  },
   {
     title: "Learn",
     items: [
@@ -70,34 +51,46 @@ export const MORE_SECTIONS: readonly MoreSection[] = [
         icon: Rocket,
       },
       {
-        to: "/statistics",
-        label: "Results so far",
-        description: "How many deals the app finds and how good they are.",
-        icon: BarChart3,
-      },
-      {
-        to: "/journal",
-        label: "Daily history",
-        description: "What the app saw each day.",
-        icon: CalendarDays,
-      },
-      {
-        to: "/how-it-works",
+        to: "/learn/how-it-works",
         label: "How it works",
         description: "How the app finds deals.",
         icon: BookOpen,
       },
       {
-        to: "/product",
+        to: "/learn/about",
         label: "About the app",
         description: "What the app can and cannot do.",
         icon: BookOpen,
+      },
+      {
+        to: "/learn/statistics",
+        label: "Results so far",
+        description: "How many deals the app finds and how good they are.",
+        icon: BarChart3,
+      },
+      {
+        to: "/learn/onboarding",
+        label: "Onboarding",
+        description: "Check that this device reaches the app and the exchanges.",
+        icon: ShieldCheck,
       },
     ],
   },
   {
     title: "For experts",
     items: [
+      {
+        to: "/automation",
+        label: "Auto",
+        description: "Automatic entries when trading is armed.",
+        icon: Bot,
+      },
+      {
+        to: "/positions",
+        label: "My open deals",
+        description: "Positions you hold now.",
+        icon: Briefcase,
+      },
       {
         to: "/backtest",
         label: "Backtest",
@@ -111,12 +104,6 @@ export const MORE_SECTIONS: readonly MoreSection[] = [
         icon: Play,
       },
       {
-        to: "/onboarding",
-        label: "System check",
-        description: "Check that this device reaches the app and the exchanges.",
-        icon: ShieldCheck,
-      },
-      {
         to: "/operations",
         label: "System logs",
         description: "Runtime operations and recovery.",
@@ -126,33 +113,8 @@ export const MORE_SECTIONS: readonly MoreSection[] = [
   },
 ];
 
-export const PUBLIC_NAV_ITEMS: readonly PublicNavItem[] = [
-  {
-    to: "/product",
-    label: "Product",
-    description: "What the screener does and the product modes.",
-  },
-  {
-    to: "/how-it-works",
-    label: "How it works",
-    description: "From venue feeds to a ranked, explained list of funding-rate routes.",
-  },
-  {
-    to: "/statistics",
-    label: "Statistics",
-    description: "Coverage, data sources and signal quality of the screener.",
-  },
-  {
-    to: "/journal",
-    label: "Journal",
-    description: "Daily history of what the screener observed.",
-  },
-  {
-    to: "/onboarding",
-    label: "Onboarding",
-    description: "Guided checks from prerequisites to the first runtime signal.",
-  },
-];
+/** Operator garage / Mini App home (Deals). */
+export const OPERATOR_HOME_PATH = "/";
 
 export const APP_NAME = "Arbijuie";
 

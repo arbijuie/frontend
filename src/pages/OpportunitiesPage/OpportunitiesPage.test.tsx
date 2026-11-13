@@ -4,6 +4,7 @@ import OpportunitiesPage from "./OpportunitiesPage";
 
 const mockUseOpportunities = vi.fn();
 const mockUseStatus = vi.fn();
+const mockOpportunitiesList = vi.fn();
 
 vi.mock("../../hooks/usePageTitle", () => ({
   usePageTitle: vi.fn(),
@@ -31,7 +32,7 @@ vi.mock("../../hooks/useOpportunities", () => ({
 
 vi.mock("../../api/config", async () => {
   const actual = await vi.importActual<typeof import("../../api/config")>("../../api/config");
-  return { ...actual, API_TOKEN: "" };
+  return { ...actual };
 });
 
 vi.mock("../../api/telegram-session", () => ({
@@ -50,7 +51,10 @@ vi.mock("../../components/StatsGrid/StatsGrid", () => ({
 }));
 
 vi.mock("../../components/OpportunitiesList/OpportunitiesList", () => ({
-  default: () => <div data-testid="opportunities-list" />,
+  default: (props: unknown) => {
+    mockOpportunitiesList(props);
+    return <div data-testid="opportunities-list" />;
+  },
 }));
 
 vi.mock("../../components/OpportunityCardSkeleton/OpportunityCardSkeleton", () => ({
@@ -77,6 +81,10 @@ vi.mock("../../components/PipelineDiagnosticsHint/PipelineDiagnosticsHint", () =
   default: () => <div data-testid="pipeline-hint" />,
 }));
 
+vi.mock("../../components/WelcomeHint/WelcomeHint", () => ({
+  default: () => null,
+}));
+
 vi.mock("../../components/TransportIndicator/TransportIndicator", () => ({
   default: () => <div data-testid="transport-indicator" />,
 }));
@@ -93,6 +101,7 @@ describe("OpportunitiesPage", () => {
   beforeEach(() => {
     mockUseOpportunities.mockReset();
     mockUseStatus.mockReset();
+    mockOpportunitiesList.mockReset();
     mockUseStatus.mockReturnValue({ data: null });
     mockUseOpportunities.mockReturnValue({
       data: {
@@ -248,5 +257,36 @@ describe("OpportunitiesPage", () => {
     renderPage("/?strategy=basis_convergence");
 
     expect(screen.getByText(/Selected strategy is not active in runtime/i)).toBeTruthy();
+  });
+
+  it("disables execution actions when personalized feed is active", () => {
+    mockUseOpportunities.mockReturnValue({
+      data: {
+        count: 1,
+        ready_count: 1,
+        updated_at: "2026-01-01T00:00:00Z",
+        opportunities: [{}],
+      },
+      error: null,
+      loading: false,
+      fetching: false,
+      refetch: vi.fn().mockResolvedValue({ data: null }),
+      transportState: "connected",
+      reconnectAttempt: 0,
+      authRetryAttempt: 0,
+      authStatus: "ok",
+      authRetryAfterSeconds: null,
+      authDetail: null,
+      retryConnection: vi.fn(),
+      personalized: true,
+    });
+
+    renderPage();
+
+    const lastProps = mockOpportunitiesList.mock.calls[mockOpportunitiesList.mock.calls.length - 1]?.[0] as
+      | { onExecute?: unknown }
+      | undefined;
+    expect(lastProps?.onExecute).toBeUndefined();
+    expect(screen.getByText(/profile:\s*personalized/i)).toBeTruthy();
   });
 });

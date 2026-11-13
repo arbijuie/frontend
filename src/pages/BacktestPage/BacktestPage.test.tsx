@@ -1,5 +1,6 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { MemoryRouter } from "react-router-dom";
 import BacktestPage from "./BacktestPage";
 import {
   useBacktestSummary,
@@ -38,14 +39,16 @@ const mockedUseBacktestLock = vi.mocked(useBacktestLock);
 const mockedUseRunBacktestReplay = vi.mocked(useRunBacktestReplay);
 const mockedUseCreateBacktestLock = vi.mocked(useCreateBacktestLock);
 
-function renderBacktestPage() {
+function renderBacktestPage(path = "/backtest") {
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false } },
   });
   return render(
-    <QueryClientProvider client={queryClient}>
-      <BacktestPage />
-    </QueryClientProvider>
+    <MemoryRouter initialEntries={[path]}>
+      <QueryClientProvider client={queryClient}>
+        <BacktestPage />
+      </QueryClientProvider>
+    </MemoryRouter>
   );
 }
 
@@ -175,6 +178,22 @@ describe("BacktestPage", () => {
   it("loads summary on the Summary tab", () => {
     renderBacktestPage();
     expect(screen.getByText("100")).not.toBeNull();
+  });
+
+  it("honors ?tab= from the URL", () => {
+    renderBacktestPage("/backtest?tab=history");
+    expect(screen.getByText("History panel mock")).not.toBeNull();
+    expect(screen.getByRole("tab", { name: /^history$/i }).getAttribute("aria-selected")).toBe(
+      "true"
+    );
+  });
+
+  it("restores lock detail from ?tab=lock-detail&lock=", async () => {
+    renderBacktestPage(`/backtest?tab=lock-detail&lock=${mockLock.lock_id}`);
+    expect(screen.getByRole("tab", { name: /^detail$/i }).getAttribute("aria-selected")).toBe(
+      "true"
+    );
+    expect(await screen.findByText(mockLock.lock_id, { exact: false })).not.toBeNull();
   });
 
   it("sets the document title", () => {

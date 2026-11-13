@@ -3,8 +3,6 @@ import { POLL_INTERVAL_MS } from "../api/config";
 import { fetchExecutionAttempts, postExecutionClose, postExecutionOpen } from "../api/execution";
 import {
   fetchDailyPnl,
-  fetchParityArtifacts,
-  fetchParityReport,
   fetchPositions,
   fetchRiskGuardrails,
   fetchSnapshotContinuity,
@@ -15,8 +13,6 @@ import type {
   ExecutionAttemptListResponse,
   ExecutionCloseRequest,
   ExecutionOpenRequest,
-  MigrationParityArtifactListResponse,
-  MigrationParityReportResponse,
   PositionsResponse,
   RiskGuardrailsResponse,
   SnapshotContinuityResponse,
@@ -112,24 +108,6 @@ export function useRiskGuardrails(): QueryView<RiskGuardrailsResponse> {
       queryKey: ["risk-guardrails"],
       queryFn: fetchRiskGuardrails,
       refetchInterval: POLL_INTERVAL_MS,
-    })
-  );
-}
-
-export function useParityReport(windowS = 3600): QueryView<MigrationParityReportResponse> {
-  return view(
-    useQuery<MigrationParityReportResponse>({
-      queryKey: ["migration-parity-report", windowS],
-      queryFn: () => fetchParityReport(windowS),
-    })
-  );
-}
-
-export function useParityArtifacts(limit = 50): QueryView<MigrationParityArtifactListResponse> {
-  return view(
-    useQuery<MigrationParityArtifactListResponse>({
-      queryKey: ["migration-parity-artifacts", limit],
-      queryFn: () => fetchParityArtifacts(limit),
     })
   );
 }

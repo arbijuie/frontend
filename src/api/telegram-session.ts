@@ -22,6 +22,12 @@ export function formatTelegramBootstrapErrorForDisplay(
   if (error.status === 401) {
     return "Telegram authorization failed. Reopen the app from the bot and try again.";
   }
+  if (error.status === 404) {
+    return (
+      "Telegram sign-in is not available on this server (HTTP 404). Check that the API " +
+      "serves /auth/telegram/session and that Telegram auth is enabled."
+    );
+  }
   if (error.status >= 500) {
     return "Telegram authentication service is temporarily unavailable.";
   }

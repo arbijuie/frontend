@@ -2,6 +2,7 @@ import { renderHook } from "@testing-library/react";
 import { useQuery } from "@tanstack/react-query";
 import { useOpportunities } from "./useOpportunities";
 import { useOpportunitiesTransport } from "./useOpportunitiesTransport";
+import { useMePreferences } from "./useMePreferences";
 import { fetchOpportunities, opportunitiesQueryKey } from "../api/opportunities";
 import { POLL_INTERVAL_MS } from "../api/config";
 import { makeTransport } from "../test-utils/transport-fixture";
@@ -12,6 +13,10 @@ vi.mock("@tanstack/react-query", () => ({
 
 vi.mock("./useOpportunitiesTransport", () => ({
   useOpportunitiesTransport: vi.fn(),
+}));
+
+vi.mock("./useMePreferences", () => ({
+  useMePreferences: vi.fn(),
 }));
 
 vi.mock("../api/opportunities", async () => {
@@ -25,6 +30,7 @@ vi.mock("../api/opportunities", async () => {
 
 const mockedUseQuery = vi.mocked(useQuery);
 const mockedUseTransport = vi.mocked(useOpportunitiesTransport);
+const mockedUseMePreferences = vi.mocked(useMePreferences);
 const mockedFetchOpportunities = vi.mocked(fetchOpportunities);
 
 function mockQuery(overrides: Record<string, unknown> = {}) {
@@ -42,6 +48,13 @@ describe("useOpportunities", () => {
   beforeEach(() => {
     vi.resetAllMocks();
     mockedUseTransport.mockReturnValue(makeTransport({ transportState: "reconnecting" }));
+    mockedUseMePreferences.mockReturnValue({
+      data: null,
+      error: null,
+      loading: false,
+      fetching: false,
+      refetch: vi.fn(),
+    });
   });
 
   it("uses polling interval and maps query state when not connected via WS", () => {
@@ -84,6 +97,21 @@ describe("useOpportunities", () => {
     );
   });
 
+  it("waits for me-preferences before the first opportunities fetch", () => {
+    mockedUseMePreferences.mockReturnValue({
+      data: null,
+      error: null,
+      loading: true,
+      fetching: true,
+      refetch: vi.fn(),
+    });
+    mockQuery();
+
+    renderHook(() => useOpportunities());
+
+    expect(mockedUseQuery).toHaveBeenCalledWith(expect.objectContaining({ enabled: false }));
+  });
+
   it("keeps polling and uses the filtered cache key for filtered strategy views even when WS is connected", () => {
     mockedUseTransport.mockReturnValue(makeTransport({ transportState: "connected" }));
     mockQuery();
@@ -101,6 +129,7 @@ describe("useOpportunities", () => {
     call.queryFn();
     expect(mockedFetchOpportunities).toHaveBeenCalledWith({
       strategyTypes: ["funding_arbitrage"],
+      personalized: false,
     });
   });
 
@@ -111,6 +140,47 @@ describe("useOpportunities", () => {
 
     expect(result.current.data).toBeNull();
     expect(result.current.error).toBe("network down");
+  });
+
+  it("uses profile identity in personalized query key", () => {
+    mockedUseMePreferences.mockReturnValue({
+      data: {
+        selected_preset: "balanced",
+        runbook_overrides: { stale_data_s: 45, min_score_bps: 7 },
+        effective_runbook_values: {},
+        runbook_config_fields: [],
+        runbook_presets: {},
+        tutorial: {
+          welcome_hint_dismissed: false,
+          welcome_completed: false,
+          onboarding_completed: false,
+        },
+        updated_at: null,
+      },
+      error: null,
+      loading: false,
+      fetching: false,
+      refetch: vi.fn(),
+    });
+    mockQuery();
+
+    renderHook(() => useOpportunities());
+
+    expect(mockedUseQuery).toHaveBeenCalledWith(
+      expect.objectContaining({
+        queryKey: opportunitiesQueryKey({
+          personalized: true,
+          profileKey: JSON.stringify({
+            preset: "balanced",
+            overrides: [
+              ["min_score_bps", 7],
+              ["stale_data_s", 45],
+            ],
+          }),
+        }),
+        refetchInterval: POLL_INTERVAL_MS,
+      })
+    );
   });
 
   it("exposes transport state, auth diagnostics, and retry from the transport context", () => {

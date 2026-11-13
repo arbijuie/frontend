@@ -1,0 +1,96 @@
+// Stop-trading latch on Health (issue #669): state line, latched reasons, recovery gate facts,
+// and the acknowledgment review step. Same building blocks as the Operations cards.
+.card {
+  @include v.card;
+  display: grid;
+  gap: v.space(2);
+  margin-bottom: v.space(3);
+}
+
+.text {
+  margin: 0;
+  font-size: v.font-size(sm);
+}
+
+.list {
+  margin: 0;
+  padding-left: v.space(3);
+  font-size: v.font-size(sm);
+
+  li + li {
+    margin-top: v.space(1);
+  }
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: v.space(1) v.space(2);
+  margin: 0;
+  font-size: v.font-size(sm);
+
+  dt {
+    color: v.color(text-muted);
+  }
+
+  dd {
+    margin: 0;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+}
+
+.form {
+  display: grid;
+  gap: v.space("0-5");
+}
+
+.label {
+  font-size: v.font-size(sm);
+  color: v.color(text-muted);
+}
+
+.input {
+  @include v.input;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: v.space(2);
+  margin-top: v.space(1);
+}
+
+.button {
+  @include v.button(secondary);
+}
+
+.primaryButton {
+  @include v.button(primary);
+}
+
+.warningNote {
+  @include v.callout(warning);
+}
+
+.okNote {
+  @include v.callout(success);
+}
+
+.errorBox {
+  @include v.error-box;
+  margin-bottom: 0;
+}
+
+.badgeSuccess {
+  @include v.badge(success);
+}
+
+.badgeDanger {
+  @include v.badge(danger);
+}
+
+.badgeWarning {
+  @include v.badge(warning);
+  margin-left: v.space(1);
+}

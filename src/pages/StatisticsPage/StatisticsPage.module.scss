@@ -40,25 +40,58 @@
 
 .venues {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 11rem), 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: v.space(2);
   margin: 0;
   padding: 0;
   list-style: none;
+
+  @include v.bp-up(md) {
+    grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+  }
 }
 
 .venue {
   @include v.card(v.space("2-5") v.space(3));
+  position: relative;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: row;
   align-items: center;
   justify-content: space-between;
   gap: v.space(2);
+  min-height: 3.5rem;
+
+  &:hover {
+    background: v.color(surface-raised);
+    border-color: v.color(border-strong);
+  }
 }
 
 .venueName {
+  min-width: 0;
   font-weight: v.font-weight(semibold);
   color: v.color(text);
+  overflow-wrap: anywhere;
+}
+
+.stretchedLink {
+  text-decoration: none;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: v.radius(lg);
+  }
+
+  &:focus-visible {
+    outline: none;
+  }
+
+  &:focus-visible::after {
+    outline: 0.125rem solid v.color(focus);
+    outline-offset: -0.125rem;
+  }
 }
 
 // Source and severity badges always spell the state out; the tone only reinforces it.
@@ -125,15 +158,22 @@
 }
 
 .reason {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto auto;
   align-items: center;
   gap: v.space(3);
-  padding: v.space(2) 0;
+  margin-inline: calc(-1 * #{v.space(2)});
+  padding: v.space(2) v.space(2);
+  border-radius: v.radius(md);
   font-size: v.font-size(sm);
 
   &:not(:last-child) {
     border-bottom: 0.0625rem solid v.color(border);
+  }
+
+  &:hover {
+    background: v.color(surface-raised);
   }
 }
 

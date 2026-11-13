@@ -3,9 +3,13 @@ import AxeBuilder from "@axe-core/playwright";
 import { mockApi } from "./fixtures/mockApi";
 import { publicStatus } from "./fixtures/publicData";
 
-// Guided onboarding (issue #306) on the public layout: read-only allowlisted endpoints only.
+// Guided onboarding (issue #306): the page reads only the allowlisted public endpoints.
+// The operator shell adds its own GET calls and the WebSocket ticket request; any other
+// write fails the test.
 const API = "http://127.0.0.1:8000";
 const ALLOWED_PATHS = new Set(["/healthz", "/public/status", "/public/opportunities"]);
+const SHELL_CALLS = new Set(["POST /ws/auth-ticket"]);
+const isPublicRead = (path: string) => path === "/healthz" || path.startsWith("/public/");
 const LIVE = { last_poll_ok: true, ws_connected: true, ws_healthy: true };
 
 interface ApiRequest {
@@ -15,22 +19,22 @@ interface ApiRequest {
 
 function trackApi(page: Page) {
   const requests: ApiRequest[] = [];
-  const sockets: string[] = [];
   page.on("request", (request) => {
     const url = new URL(request.url());
     if (url.origin === API) requests.push({ method: request.method(), path: url.pathname });
   });
-  page.on("websocket", (socket) => sockets.push(socket.url()));
-  return { requests, sockets };
+  return { requests };
 }
 
-function expectReadOnly({ requests, sockets }: ReturnType<typeof trackApi>) {
+function expectReadOnly({ requests }: ReturnType<typeof trackApi>) {
   expect(requests.length).toBeGreaterThan(0);
   for (const { method, path } of requests) {
+    if (SHELL_CALLS.has(`${method} ${path}`)) continue;
     expect(["GET", "HEAD"], `${method} ${path}`).toContain(method);
-    expect(ALLOWED_PATHS.has(path), `${method} ${path} is not allowlisted`).toBe(true);
+    if (isPublicRead(path)) {
+      expect(ALLOWED_PATHS.has(path), `${method} ${path} is not allowlisted`).toBe(true);
+    }
   }
-  expect(sockets.filter((url) => url.startsWith("ws://127.0.0.1:8000"))).toEqual([]);
 }
 
 /** Public status with a fresh `last_updated_at`, so the freshness check passes. */
@@ -72,10 +76,10 @@ test.describe("Onboarding wizard", () => {
       freshStatus({ exchanges: { hyperliquid: LIVE, lighter: LIVE, binance: LIVE, bybit: LIVE } })
     );
 
-    await page.goto("/onboarding");
+    await page.goto("/learn/onboarding");
     await expect(page.getByRole("heading", { level: 1, name: "Onboarding" })).toBeVisible();
-    await expect(page.getByRole("navigation", { name: "Public" })).toBeVisible();
-    await expect(page.getByRole("navigation", { name: "Primary" })).toHaveCount(0);
+    await expect(page.getByRole("navigation", { name: "Primary" })).toBeVisible();
+    await expect(page.getByRole("navigation", { name: "Public" })).toHaveCount(0);
 
     // Step 1: prerequisites and /healthz.
     await expect(page.getByRole("heading", { level: 2, name: "Prerequisites" })).toBeVisible();
@@ -107,15 +111,15 @@ test.describe("Onboarding wizard", () => {
     }
     await expect(page.getByRole("link", { name: "Public statistics" })).toHaveAttribute(
       "href",
-      "/statistics"
+      "/learn/statistics"
     );
     await expect(page.getByRole("link", { name: "Daily journal" })).toHaveAttribute(
       "href",
-      "/journal"
+      "/learn/journal"
     );
     await expect(page.getByRole("link", { name: "Product modes" })).toHaveAttribute(
       "href",
-      "/product"
+      "/learn/about"
     );
     await expectNoSeriousA11yViolations(page);
 
@@ -123,7 +127,9 @@ test.describe("Onboarding wizard", () => {
     await expect(page.getByRole("button", { name: "Run checks again" })).toBeVisible();
 
     expectReadOnly(traffic);
-    expect(new Set(traffic.requests.map(({ path }) => path))).toEqual(ALLOWED_PATHS);
+    expect(new Set(traffic.requests.map(({ path }) => path).filter(isPublicRead))).toEqual(
+      ALLOWED_PATHS
+    );
   });
 
   test("shows the WS degraded fallback and lets the user continue anyway", async ({ page }) => {
@@ -132,7 +138,7 @@ test.describe("Onboarding wizard", () => {
     // Default fixture: one venue on REST fallback, one unavailable.
     await routeStatus(page, freshStatus());
 
-    await page.goto("/onboarding");
+    await page.goto("/learn/onboarding");
     await expect(page.getByText("Running for 3 h.")).toBeVisible();
     await nextButton(page).click();
 
@@ -145,7 +151,6 @@ test.describe("Onboarding wizard", () => {
     const venues = page.getByRole("list", { name: "Venues" });
     await expect(venues.getByText("REST fallback")).toBeVisible();
     await expect(venues.getByText("Unavailable")).toBeVisible();
-    await expect(page.getByText("Live streaming and tickets")).toBeVisible();
     await expect(progressSteps(page).nth(1)).toContainText("Passed with warnings");
     await expectNoSeriousA11yViolations(page);
 
@@ -161,7 +166,7 @@ test.describe("Onboarding wizard", () => {
       route.fulfill({ status: 401, json: { detail: "Not authenticated" } })
     );
 
-    await page.goto("/onboarding");
+    await page.goto("/learn/onboarding");
     await expect(page.getByText("Running for 3 h.")).toBeVisible();
     await nextButton(page).click();
 
@@ -192,7 +197,7 @@ test.describe("Onboarding wizard", () => {
         : route.fulfill({ json: freshStatus() })
     );
 
-    await page.goto("/onboarding");
+    await page.goto("/learn/onboarding");
     await expect(page.getByText("Running for 3 h.")).toBeVisible();
     await nextButton(page).click();
 
@@ -217,7 +222,7 @@ test.describe("Onboarding wizard", () => {
     const traffic = trackApi(page);
     await page.route(`${API}/healthz`, (route) => route.abort("connectionrefused"));
 
-    await page.goto("/onboarding");
+    await page.goto("/learn/onboarding");
     // Network failures are retried twice before the fallback shows.
     await expect(page.getByText("The API cannot be reached", { exact: true })).toBeVisible({
       timeout: 10_000,

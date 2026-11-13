@@ -6,7 +6,6 @@ export const OPERATIONS_TABS = [
   { key: "actions", label: "Actions" },
   { key: "positions", label: "Positions" },
   { key: "guardrails", label: "Guardrails" },
-  { key: "parity", label: "Parity" },
   { key: "continuity", label: "Continuity" },
 ] as const;
 

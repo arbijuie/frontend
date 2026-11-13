@@ -112,7 +112,7 @@ describe("WsFeedReliabilityList", () => {
       <WsFeedReliabilityList
         status={makeStatus({
           market_data_sources: {
-            dydx: makeSource({
+            bybit: makeSource({
               state: "unavailable",
               reason: "rest_failed",
               ws_reason: "ws_disconnected",
@@ -122,12 +122,12 @@ describe("WsFeedReliabilityList", () => {
               degraded_for_s: 12.5,
             }),
           },
-          ws_feed_diagnostics: { dydx: makeFeed({ connected: false, healthy: false }) },
+          ws_feed_diagnostics: { bybit: makeFeed({ connected: false, healthy: false }) },
         })}
       />
     );
 
-    const block = within(venueBlock("dydx"));
+    const block = within(venueBlock("bybit"));
     expect(block.getByText("unavailable")).toBeTruthy();
     expect(block.getByText("REST poll failed")).toBeTruthy();
     expect(block.getByText("WS disconnected")).toBeTruthy();

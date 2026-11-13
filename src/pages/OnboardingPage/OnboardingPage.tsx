@@ -5,11 +5,12 @@ import styles from "./OnboardingPage.module.scss";
 import PageHeader from "../../components/PageHeader/PageHeader";
 import RecheckButton from "./RecheckButton";
 import { CheckList, StepStatusBadge, StepSummary, VenueList } from "./OnboardingChecks";
-import { API_URL } from "../../api/config";
+import { API_URL, hasRuntimeAuth } from "../../api/config";
 import { isFinalPublicError } from "../../api/public";
 import { useHealthz, usePublicOpportunities, usePublicStatus } from "../../hooks/usePublicData";
 import { useOnlineStatus } from "../../hooks/useOnlineStatus";
 import { usePageTitle } from "../../hooks/usePageTitle";
+import { useUpdateMePreferences } from "../../hooks/useUpdateMePreferences";
 import {
   SIGNAL_POLL_MS,
   STEP_STATUS_LABEL,
@@ -49,20 +50,24 @@ const LAST_STEP = STEPS.length - 1;
 
 const NEXT_LINKS = [
   {
-    to: "/statistics",
+    to: "/learn/statistics",
     label: "Public statistics",
     text: "Live counts of screened and ready routes, and venue health.",
   },
-  { to: "/journal", label: "Daily journal", text: "What the screener found, day by day." },
-  { to: "/product", label: "Product modes", text: "How strict each mode is and what it shows." },
+  { to: "/learn/journal", label: "Daily journal", text: "What the screener found, day by day." },
+  {
+    to: "/learn/about",
+    label: "Product modes",
+    text: "How strict each mode is and what it shows.",
+  },
 ];
 
 const sentence = (text: string) => (/[.!?]$/.test(text) ? text : `${text}.`);
 
 /**
  * Guided onboarding (issue #306): prerequisites, public access and venue connectivity, then
- * the first runtime signal. Reads only `GET /healthz`, `/public/status` and
- * `/public/opportunities`; it never calls operator, control or WebSocket ticket endpoints.
+ * the first runtime signal. The checks read only `GET /healthz`, `/public/status` and
+ * `/public/opportunities`; the page itself sends no requests to operator or control endpoints.
  */
 const OnboardingPage = () => {
   usePageTitle("Onboarding");
@@ -70,7 +75,9 @@ const OnboardingPage = () => {
   const [reached, setReached] = useState(0);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const navigatedRef = useRef(false);
+  const onboardingSyncedRef = useRef(false);
   const nextHintId = useId();
+  const { mutate: updateMePreferences } = useUpdateMePreferences();
 
   const apiUrl = (API_URL ?? "").trim();
   const apiAddress = apiUrl || window.location.origin;
@@ -127,6 +134,24 @@ const OnboardingPage = () => {
     if (navigatedRef.current) headingRef.current?.focus();
   }, [current]);
 
+  useEffect(() => {
+    if (
+      !hasRuntimeAuth() ||
+      current !== LAST_STEP ||
+      currentStatus !== "passed" ||
+      onboardingSyncedRef.current
+    ) {
+      return;
+    }
+    onboardingSyncedRef.current = true;
+    updateMePreferences({
+      tutorial: {
+        onboarding_completed: true,
+        welcome_hint_dismissed: true,
+      },
+    });
+  }, [current, currentStatus, updateMePreferences]);
+
   const goTo = (index: number) => {
     navigatedRef.current = true;
     setCurrent(index);
@@ -154,7 +179,18 @@ const OnboardingPage = () => {
             aria-current={index === current ? "step" : undefined}
           >
             <span className={styles.stepNumber}>Step {index + 1}</span>
-            <span className={styles.stepTitle}>{title}</span>
+            {index <= reached && index !== current ? (
+              <button
+                type="button"
+                className={`${styles.stepTitle} ${styles.stepButton}`}
+                aria-label={`Go to step ${index + 1}: ${title}`}
+                onClick={() => goTo(index)}
+              >
+                {title}
+              </button>
+            ) : (
+              <span className={styles.stepTitle}>{title}</span>
+            )}
             <StepStatusBadge status={statuses[index]} />
           </li>
         ))}
@@ -194,7 +230,7 @@ const OnboardingPage = () => {
             </div>
             <div className={styles.fact}>
               <dt>Account</dt>
-              <dd>None. The public view needs no sign-in.</dd>
+              <dd>Your Telegram session. The checks only read data; nothing is changed.</dd>
             </div>
           </dl>
         )}
@@ -203,18 +239,6 @@ const OnboardingPage = () => {
           checks={checks}
           extras={current === 1 ? { venues: <VenueList rows={venues.rows} /> } : undefined}
         />
-
-        {current === 1 && (
-          <div className={styles.note}>
-            <p className={styles.noteTitle}>Live streaming and tickets</p>
-            <p>
-              Operators get live updates over a WebSocket. Each connection needs a short-lived
-              ticket, and tickets are rate-limited, so a client that reconnects too often is refused
-              for a while. This public view never asks for a ticket: it reads the public endpoints
-              every few seconds instead, so a degraded stream or a ticket limit does not stop it.
-            </p>
-          </div>
-        )}
 
         {current === LAST_STEP && (
           <div className={styles.nextSteps}>

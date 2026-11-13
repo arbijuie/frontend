@@ -119,3 +119,10 @@
   margin-top: v.space(1);
   padding: v.space(1) v.space("2-5");
 }
+
+.link {
+  @include v.button(secondary);
+  align-self: flex-start;
+  margin-top: v.space(1);
+  text-decoration: none;
+}
